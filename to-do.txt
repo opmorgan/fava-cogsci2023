@@ -1,0 +1,5 @@
+To do list for Navon project:
+1. Decide what programming language to use. 
+	1.a Read up on how pavlovia handles recording RTs.
+2. Program task
+
