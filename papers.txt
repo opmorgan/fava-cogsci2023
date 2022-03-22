@@ -1,4 +1,4 @@
-A list of useful methodological references. 
+A list of useful methodological references.
 
 1. Navon, D. (1977). Forest before trees: The precedence of global features in visual perception. Cognitive psychology, 9(3), 353-383.
 
@@ -7,4 +7,8 @@ https://reader.elsevier.com/reader/sd/pii/0010028577900123?token=EDDADDB803278AC
 2. Grice, G. R., Canham, L., & Boroughs, J. M. (1983). Forest before trees? It depends where you look. Perception & psychophysics, 33(2), 121-128.
 
 https://link.springer.com/content/pdf/10.3758/BF03202829.pdf
+
+3. Yovel et al. (2001). Hemispheric asymmetries for global and local visual perception: effects of stimulus and task factors.
+
+https://drive.google.com/file/d/141eZ7KZFnRUv3XvaRAUmj3Hch94hs2kv/view?usp=sharing
 
