@@ -1,0 +1,15 @@
+Notes for April 12th meeting
+1. We *think* we want to use millisecond. 
+2. Let's see if we can find a navon milli demo. to adapt for our purposes. 
+2a. We might then need to make our own stimuli to present (which we had been considering anyway).
+3. Upload demo code once found. 
+4. Let's review original navon paper and a few relevant papers from cultural psych and hemi asymm lit that could inform decisions about the paradigm. 
+4a. Navon, 1977; McKone et al. 2010; Yovel et al. 2001; Rezvani et al. 2020
+5. Run Inquisit Navon demo on different screens / displays. 
+5a. Make sure retina and non-retina screens look the same.
+6. Read through script notes. 
+
+7. First thing we can do to alter code and run is to change it to 2 presentation locations instead of 4, then test run to make sure it all works. Baby step first change to get oriented. 
+
+Note 1: We also made a document of differnet experimental design decisions and analysis decisions. 
+
