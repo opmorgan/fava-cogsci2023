@@ -1,0 +1,2 @@
+inquisit.version	computer.platform	startdate	starttime	subjectid	groupid	sessionid	elapsedtime	completed	PropCorrect	meanRT	PropCorrect_consistent_global	meanrt_consistent_global	PropCorrect_conflict_global	meanrt_conflict_global	PropCorrect_neutral_global	meanrt_neutral_global	PropCorrect_consistent_local	meanrt_consistent_local	PropCorrect_conflict_local	meanrt_conflict_local	PropCorrect_neutral_local	meanrt_neutral_local
+6.6.0	mac	2022-08-18	17:19:18	1	1	1	5890	0	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan	nan
