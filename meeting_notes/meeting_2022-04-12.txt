@@ -11,5 +11,5 @@ Notes for April 12th meeting
 
 7. First thing we can do to alter code and run is to change it to 2 presentation locations instead of 4, then test run to make sure it all works. Baby step first change to get oriented. 
 
-Note 1: We also made a document of differnet experimental design decisions and analysis decisions. 
+Note 1: We also made a document of different experimental design decisions and analysis decisions. 
 
