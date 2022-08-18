@@ -137,7 +137,7 @@ Paint.Net.
 	=> The width of the global shape = 6* the width of the individual local shapes
 There are 9 different stimuli: 3 global shapes (H, S, "O"*) and 3 local shapes (H, S, "O").
 You are welcome to use these stimuli or substitute your own under 
-section Editable Stimuli -> item.stims
+section Editable Stimuli -> item.stimuli
 
 * the actual shape was supposed to be a rectangle but Navon (1977) notes that it was referred to as an "O"
 by participants
@@ -235,24 +235,24 @@ Presentation coordinates:		    Navon (1977, p.369): "The distance between the ce
 Note: these stimuli were created by Millisecond Software using Paint.Net and PowerPoint.
 They were crafted after the originals. 
 
-<item stims>
-/ 1 = "HH.png"
-/ 2 = "HS.png"
-/ 3 = "HRec.png"
-/ 4 = "SH.png"
-/ 5 = "SS.png"
-/ 6 = "SRec.png"
-/ 7 = "RecH.png"
-/ 8 = "RecS.png"
-/ 9 = "RecRec.png"
+<item stimuli>
+/ 1 = "resources/stimuli/HH.png"
+/ 2 = "resources/stimuli/HS.png"
+/ 3 = "resources/stimuli/HRec.png"
+/ 4 = "resources/stimuli/SH.png"
+/ 5 = "resources/stimuli/SS.png"
+/ 6 = "resources/stimuli/SRec.png"
+/ 7 = "resources/stimuli/RecH.png"
+/ 8 = "resources/stimuli/RecS.png"
+/ 9 = "resources/stimuli/RecRec.png"
 </item>
 
 <item mask>
-/ 1 = "Mask.png"
+/ 1 = "resources/mask.png"
 </item>
 
 <item beep>
-/ 1 = "Signal.wav"
+/ 1 = "resources/signal.wav"
 </item>
 **************************************************************************************************************
 **************************************************************************************************************
@@ -271,19 +271,19 @@ Note: these instructions are not originals and are only examples. Customize.
 </instruct>
 
 <htmlpage intro1>
-/ file = "generalintro1.html"
+/ file = "components/generalintro1.html"
 </htmlpage>
 
 <htmlpage intro2>
-/ file = "generalintro2.html"
+/ file = "components/generalintro2.html"
 </htmlpage>
 
 <htmlpage globalinstruct>
-/ file = "globalinstruct.html"
+/ file = "components/globalinstruct.html"
 </htmlpage>
 
 <htmlpage localinstruct>
-/ file = "localinstruct.html"
+/ file = "components/localinstruct.html"
 </htmlpage>
 
 <page end>
@@ -478,7 +478,7 @@ expressions.PropCorrect_neutral_local, expressions.meanrt_neutral_local)
 **************************************************************************************************************
 
 <picture target>
-/ items = stims
+/ items = stimuli
 / select = values.stim
 / position = (expressions.x_pos, expressions.y_pos)
 / size = (parameters.picturesize, parameters.picturesize)
@@ -521,7 +521,7 @@ expressions.PropCorrect_neutral_local, expressions.meanrt_neutral_local)
 	LISTS	
 **************************************************************************************************************
 **************************************************************************************************************
-Note: controls the selection of the 6 stims for the Gobal Condition
+Note: controls the selection of the 6 stimuli for the Gobal Condition
 (item list contain the possible itemnumbers)
 <list stimitemnumber_GlobalCondition>
 / items = (1, 2, 3, 4, 5, 6)
@@ -530,7 +530,7 @@ Note: controls the selection of the 6 stims for the Gobal Condition
 / resetinterval = 1
 </list>
 
-Note: controls the selection of the 6 stims for the Local Condition
+Note: controls the selection of the 6 stimuli for the Local Condition
 (item list contain the possible itemnumbers)
 <list stimitemnumber_LocalCondition>
 / items = (1, 2, 4, 5, 7, 8)
