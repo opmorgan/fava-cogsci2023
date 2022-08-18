@@ -1,4 +1,5 @@
 To do list for Navon project:
 - Write instructions
 - Set stimulus parameters
+-- First, change number of stimuli from four to two, at horizontal meridian.
 
