@@ -63,7 +63,7 @@ phase:								"practice" vs. "test"
 								
 									practice blocks
 condition:							1 = Global; 2 = Local									
-quadrant:							stores the currently selected quadrant the stimulus is presented in
+presentation_location:				stores the currently selected location the stimulus is presented in
 
 consistency:						"consistent": global and local shapes are consistent (e.g. an H made of little Hs)
 									"conflicting": global and local shapes are conflicting (e.g. an H made of little Ss)
@@ -81,8 +81,8 @@ response:							the participant's response (scancode of response button)
 																				
 correct:							the correctness of the response (1 = correct; 0 = otherwise)
 latency: 							the response latency (measured from onset of stimuli; in ms)
-x_pos:								the horizontal x-coordinate (in canvas %) depending on values.quadrant
-y_pos: 								the vertical y-coordinate (in canvas %) depending on values.quadrant
+x_pos:								the horizontal x-coordinate (in canvas %) depending on values.presentation_location
+y_pos: 								the vertical y-coordinate (in canvas %) depending on values.presentation_location
 
 
 (2) Summary data file: 'globallocaltask_summary*.iqdat' (a separate file for each participant)
@@ -120,8 +120,8 @@ ________________________________________________________________________________
 	=> altogether 8 test blocks of 36 trials = 288 trials total
 - the 6 stimuli per condition (global: overall shapes S and H only; local: building elements S and H only) are presented
 	6 times (random selection)
-- the stimuli can be either presented randomly in any of the 4 screen quadrants (default) or in the center of the screen 
-	(if random; the four different screen quadrants that the stimuli can be presented in are randomly selected 9 times each.)
+- the stimuli can be either presented randomly on one or the other side of the screen (default) or in the center of the screen 
+	(if random; the two different sides that the stimuli can be presented in are randomly selected 18 times each.)
 
 *Trial Sequence:
 Beep (50ms) + Fixation Cross (500ms) -> Stimulus (parameters.stimulusduration) -> mask until response -> ITI: 3s
@@ -186,15 +186,15 @@ The parameters you can change are:
 /numberofpracticeblocks:			the number of blocks in each condition that count as practice.
 									Navon (1977) used the first 2 blocks in each condition as practice blocks.
 									
-/randomtargetlocation:				true = target is presented randomly in any of the four screen quadrants; 
-											the four different screen quadrants that the stimuli can be presented in are randomly selected 9 times each. (default)
+/randomtargetlocation:				true = target is presented randomly in either side of the screen; 
+											the two different screen locations that the stimuli can be presented in are randomly selected 18 times each. (default)
 									false = target is presented in the center of the screen
 
-Quadrant screen coordinates:		Navon (1977, p.369): "The distance between the center of any of the stimuli and the fixation point was 24 mm."
+Presentation coordinates:		    Navon (1977, p.369): "The distance between the center of any of the stimuli and the fixation point was 24 mm."
 /xpos1 = 25%					
 /xpos2 = 75%
-/ypos1 = 25%
-/ypos2 = 75%
+/ypos1 = 50%
+/ypos2 = 50%
 
 </usermanual>
 
@@ -222,8 +222,8 @@ Quadrant screen coordinates:		Navon (1977, p.369): "The distance between the cen
 / randomtargetlocation = true
 / xpos1 = 25%
 / xpos2 = 75%
-/ ypos1 = 25%
-/ ypos2 = 75%
+/ ypos1 = 50%
+/ ypos2 = 50%
 </parameters>
 
 **************************************************************************************************************
@@ -271,19 +271,19 @@ Note: these instructions are not originals and are only examples. Customize.
 </instruct>
 
 <htmlpage intro1>
-/ file = "generalintro1.htm"
+/ file = "generalintro1.html"
 </htmlpage>
 
 <htmlpage intro2>
-/ file = "generalintro2.htm"
+/ file = "generalintro2.html"
 </htmlpage>
 
 <htmlpage globalinstruct>
-/ file = "globalinstruct.htm"
+/ file = "globalinstruct.html"
 </htmlpage>
 
 <htmlpage localinstruct>
-/ file = "localinstruct.htm"
+/ file = "localinstruct.html"
 </htmlpage>
 
 <page end>
@@ -328,7 +328,7 @@ raw data
 <data>
 / columns = (build, computer.platform, date, time, subject, group, session, blockcode, blocknum, 
 trialcode, trialnum,  
-values.phase, values.condition, values.quadrant, values.consistency, values.stimulus, stimulusitem
+values.phase, values.condition, values.presentation_location, values.consistency, values.stimulus, stimulusitem
 values.target, response, correct, latency, expressions.x_pos, expressions.y_pos)
 </data>
 
@@ -360,7 +360,7 @@ expressions.PropCorrect_neutral_local, expressions.meanrt_neutral_local)
 /condition:							1 = Global Condition;  2 = Local Condition
 /stim:								stores the itemnumber of the current stimulus picture
 /stimulus:							stores the name of the current stimulus picture
-/quadrant:							stores the currently selected quadrant the stimulus is presented in
+/presentation_location:			    stores the currently selected location the stimulus is presented in
 /counttrials:						counts the trials in a block
 /countblocks_global:				counts the number of global blocks
 /countblocks_local:					counts the number of local blocks
@@ -385,7 +385,7 @@ expressions.PropCorrect_neutral_local, expressions.meanrt_neutral_local)
 / condition = 0
 / stim = 0
 / stimulus = ""
-/ quadrant = 0
+/ presentation_location = 0
 / counttrials = 0
 / countblocks_global = 0
 / countblocks_local = 0
@@ -416,8 +416,8 @@ expressions.PropCorrect_neutral_local, expressions.meanrt_neutral_local)
 **************************************************************************************************************
 **************************************************************************************************************
 
-/x_pos:		sets the x-coordinate depending on values.quadrant
-/y_pos: 	sets the y-coordinate depending on values.quadrant
+/x_pos:		sets the x-coordinate depending on values.presentation_location
+/y_pos: 	sets the y-coordinate depending on values.presentation_location
 
 /meanRT_consistent_global-
 /meanRT_neutral_local:			mean latency of correct responses to the 6 different conditions
@@ -425,14 +425,14 @@ expressions.PropCorrect_neutral_local, expressions.meanrt_neutral_local)
 <expressions>
 / x_pos = {
 	if (parameters.randomtargetlocation == false) 50%;
-	else if (values.quadrant == 1 || values.quadrant == 2) parameters.xpos1; 
-	else if (values.quadrant == 3 || values.quadrant == 4) parameters.xpos2;
+	else if (values.presentation_location == 1) parameters.xpos1; 
+	else if (values.presentation_location == 2) parameters.xpos2;
 	
 }
 / y_pos = {
 	if (parameters.randomtargetlocation == false) 50%;
-	else if (values.quadrant == 1 || values.quadrant == 3) parameters.ypos1; 
-	else if (values.quadrant == 2 || values.quadrant == 4) parameters.ypos2;
+	else if (values.presentation_location == 1) parameters.ypos1; 
+	else if (values.presentation_location == 2) parameters.ypos2;
 	
 }
 
@@ -534,14 +534,17 @@ Note: controls the selection of the 6 stims for the Local Condition
 (item list contain the possible itemnumbers)
 <list stimitemnumber_LocalCondition>
 / items = (1, 2, 4, 5, 7, 8)
-/ poolsize = 36
+/ poolsize = 
+
 / replace = false
 / resetinterval = 1
 </list>
 
-Note: randomly selects (without replacement) one of the 4 quadrants for stimulus presentation
-<list quadrant>
-/ items = (1, 2, 3, 4)
+// Updating this section to use screen halves instead of quadrants
+Note: randomly selects (without replacement) one of n locations for stimulus presentation
+(Specified in variables xpos1, xpos2, ypos1, ypos3, used by x_pos, y_pos)
+<list presentation_location>
+/ items = (1, 2)
 / poolsize = 36
 / replace = false
 / resetinterval = 1
@@ -623,7 +626,7 @@ Note:
 	} else {
 		values.target = "";
 	};
-	values.quadrant = list.quadrant.nextvalue;
+	values.presentation_location = list.presentation_location.nextvalue;
 	trial.global.insertstimulustime(clearscreen, parameters.fixationduration);
 	trial.global.insertstimulustime(picture.target, parameters.fixationduration);
 	trial.global.insertstimulustime(picture.mask, (parameters.fixationduration + parameters.stimulusduration));
@@ -681,7 +684,7 @@ Note:
 	} else {
 		values.target = "";
 	};
-	values.quadrant = list.quadrant.nextvalue;
+	values.presentation_location = list.presentation_location.nextvalue;
 
 	trial.local.insertstimulustime(clearscreen, parameters.fixationduration);
 	trial.local.insertstimulustime(picture.target, parameters.fixationduration);
