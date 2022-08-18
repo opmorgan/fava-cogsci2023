@@ -1,4 +1,5 @@
 # Experiment design decisions
+Design parameters for the lateral presentation task are discussed in detail in this google sheet: https://docs.google.com/spreadsheets/d/1brRKj0Jy2RazAuAf1SCSuL6Zg7Xw1xi6BNSHdeUudZs/edit?usp=sharing
 
 ## Presentation time
 
