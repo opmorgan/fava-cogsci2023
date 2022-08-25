@@ -212,8 +212,8 @@ Presentation coordinates:		    Navon (1977, p.369): "The distance between the ce
 / picturesize = 20%
 / fontsize_fixation = 10%
 
-/ stimulusduration = 100
-/ fixationduration = 500
+/ stimulusduration = 120
+/ fixationduration = 600
 / iti = 3000
 / restduration = 20000
 
