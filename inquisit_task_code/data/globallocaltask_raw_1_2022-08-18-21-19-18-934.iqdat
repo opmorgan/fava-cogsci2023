@@ -1,3 +1,0 @@
-build	computer.platform	date	time	subject	group	session	blockcode	blocknum	trialcode	trialnum	phase	condition	quadrant	consistency	stimulus	stimulusitem1	target	response	correct	latency	x_pos	y_pos
-6.6.0	mac	2022-08-18	17:19:18	1	1	1	Global	3	global	1	practice	1	2	consistent	HH.png	+	H	35	1	20	25pct	75pct
-6.6.0	mac	2022-08-18	17:19:18	1	1	1	Global	3	global	2	practice	1	4	neutral	HRec.png	+	H	31	0	47	75pct	75pct

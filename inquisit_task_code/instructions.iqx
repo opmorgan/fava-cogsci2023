@@ -1,0 +1,37 @@
+﻿**************************************************************************************************************
+**************************************************************************************************************
+	EDITABLE INSTRUCTIONS: change instructions here
+**************************************************************************************************************
+**************************************************************************************************************
+Note: these instructions are not originals and are only examples. Customize.
+
+<instruct>
+/ fontstyle = ("Arial", 3.00%, false, false, false, false, 5, 1)
+/ navigationbuttonfontstyle = ("Arial", 3.00%, false, false, false, false, 5, 1)
+/ finishlabel = "press [space] to start"
+/ nextlabel = "press [space] to continue"
+/ screencolor = black
+/ txcolor = white
+</instruct>
+
+<htmlpage intro1>
+/ file = "components/generalintro1.html"
+</htmlpage>
+
+<htmlpage intro2>
+/ file = "components/generalintro2.html"
+</htmlpage>
+
+<htmlpage globalinstruct>
+/ file = "components/globalinstruct.html"
+</htmlpage>
+
+<htmlpage localinstruct>
+/ file = "components/localinstruct.html"
+</htmlpage>
+
+<page end>
+<center><br><br><br><br><br><br>
+You have reached the end of the task.<br>
+<h1>Thank you!</h1></center>
+</page>
