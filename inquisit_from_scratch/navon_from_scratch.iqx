@@ -62,7 +62,7 @@
 	// (b) Predefine set of 16 stimuli, in one trial type. Randomly present those 16.
     // It might be harder to handle responses in (b).
 	]
-	preinstructions = (instructions_practice_slash)
+/ preinstructions = (instructions_practice_slash)
 ]
 </block>
 
@@ -70,7 +70,7 @@
 / trials = [
 	1-16 = noreplace(stimuli_practice_present_z, stimuli_practice_absent_z)
 	]
-	preinstructions = (instructions_practice_z)
+/ preinstructions = (instructions_practice_z)
 ]
 </block>
 
@@ -113,11 +113,10 @@
 / preinstructions = (instructions_intro)
 / postinstructions = (instructions_end)
 / blocks = [
-	1=unpleasant_pleasant_practice;
-	2=flowers_insects_practice; // Define a block variable that can vary between participants (use this for randomizing order)
-	3=incompatible; // Can also define separate "expts", to put less text in "group"
-	4=insects_flowers_practice;
-	5=compatible
+	1=practice_slash;
+	2=main_slash;
+	3=practice_z;
+	4=main_z;
 	]
 </expt>
 
@@ -126,11 +125,10 @@
 / preinstructions = (instructions_intro)
 / postinstructions = (instructions_end)
 / blocks = [
-	1=unpleasant_pleasant_practice;
-	2=insects_flowers_practice;
-	3=compatible;
-	4=flowers_insects_practice;
-	5=incompatible; 
+	1=practice_z;
+	2=main_z;
+	3=practice_slash;
+	4=main_slash;
 	]
 </expt>
 
