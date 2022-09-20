@@ -156,7 +156,7 @@ This script provides html instruction pages that are not original to the task.
 Change instructions in the provided html documents.
 
 ___________________________________________________________________________________________________________________	
-EDITABLE CODE 
+EDITABLE CODE (Set in config.iqx)
 ___________________________________________________________________________________________________________________	
 check config.iqx for (relatively) easily editable parameters, stimuli, instructions etc. 
 Keep in mind that you can use this script as a template and therefore always "mess" with the entire code 

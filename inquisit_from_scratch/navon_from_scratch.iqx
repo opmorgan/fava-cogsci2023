@@ -1,0 +1,140 @@
+﻿// Workflow (https://www.rondotsch.nl/inquisit-tutorial/)
+// Define stimuli
+//    32 target-present
+// 	  8  target-absent
+// Define instructions and prompts
+//	  General instructions
+//	  response-specific instructions ("/")
+//	  response-specific instructions ("z")
+// Define trial types (what stimuli are presented? Which responses are valid/correct?)
+//	  instructions (keys for next, previous)
+//    practice target-present ("/")
+//	  practice target-absent ("/")
+//	  main target-present ("/")
+//    main target-absent ("/")
+//    practice target-present ("z")
+//	  practice target-absent ("z")
+//	  main target-present ("z")
+//    main target-absent ("z")
+// Define blocks, and instructions for each block
+//	  General instructions
+//	  response-specific instructions ("/")
+//    practice block ("/") (12 t-p, 4 t-a)
+//	  main block ("/") (32 t-p, 8 t-a, times 2) 
+//	  response-specific instructions ("z")
+//    practice block ("z") (12 t-p, 4 t-a)
+//	  main block ("z") (32 t-p, 8 t-a, times 2)
+// Experiment loop. Define order of blocks
+
+// Define stimuli
+//    32 target-present
+// 	  8  target-absent
+
+
+// Define instructions and prompts
+//	  General instructions
+//	  response-specific instructions ("/")
+//	  response-specific instructions ("z")
+
+
+// Define trial types (what stimuli are presented? Which responses are valid/correct?)
+//	  instructions (keys for next, previous)
+//    practice target-present ("/")
+//	  practice target-absent ("/")
+//	  main target-present ("/")
+//    main target-absent ("/")
+//    practice target-present ("z")
+//	  practice target-absent ("z")
+//	  main target-present ("z")
+//    main target-absent ("z")
+
+
+// Define blocks
+//    practice block ("/") (12 t-p, 4 t-a)
+//	  main block ("/") (32 t-p, 8 t-a, times 2) 
+//    practice block ("z") (12 t-p, 4 t-a)
+//	  main block ("z") (32 t-p, 8 t-a, times 2)
+<block practice_slash>
+/ trials = [
+	1-16 = noreplace(stimuli_practice_present_slash, stimuli_practice_absent_slash) 
+	// How to present 12 present, 4 absent?
+	// (a) Select without replacement on list of 12 present; list of 4 absent (does this work?)
+	// (b) Predefine set of 16 stimuli, in one trial type. Randomly present those 16.
+    // It might be harder to handle responses in (b).
+	]
+	preinstructions = (instructions_practice_slash)
+]
+</block>
+
+<block practice_z>
+/ trials = [
+	1-16 = noreplace(stimuli_practice_present_z, stimuli_practice_absent_z)
+	]
+	preinstructions = (instructions_practice_z)
+]
+</block>
+
+<block main_slash>
+/ trials = [
+	1-40 = noreplace(stimuli_main_present_slash, stimuli_main_absent_slash);
+	// How to present 32 present, 8 absent?
+	// (a) Select without replacement on list of 32 present; list of 8 absent (does this work?)
+	// (b) Predefine set of 40 stimuli, in one trial type. Randomly present those 40.
+	// It might be harder to handle responses in (b).
+	41-80 = noreplace(stimuli_main_present_slash, stimuli_main_absent_slash) 
+	]
+/ preinstructions = (instructions_main_slash)
+]
+</block>
+
+<block main_z>
+/ trials = [
+	1-40 = noreplace(stimuli_main_present_z, stimuli_main_absent_z);
+	41-80 = noreplace(stimuli_main_present_z, stimuli_main_absent_z) 
+	]
+/ preinstructions = (instructions_main_z)
+]
+</block>
+
+// Define experiment
+// Order:
+//	  General instructions
+//	  response-specific instructions ("/")
+//    practice block ("/") (12 t-p, 4 t-a)
+//	  main block ("/") (32 t-p, 8 t-a, times 2) 
+//	  response-specific instructions ("z")
+//    practice block ("z") (12 t-p, 4 t-a)
+//	  main block ("z") (32 t-p, 8 t-a, times 2)
+// For 1/2 subjects, do "z" blocks first.
+<expt>
+/ subjects = (1 of 2) // Subjects who will respond with "/" first
+// To automatically assign subject ID and group by odd/even, host on inquisit website.
+// https://www.millisecond.com/support/docs/current/html/articles/websubjectnumbers.htm
+/ preinstructions = (instructions_intro)
+/ postinstructions = (instructions_end)
+/ blocks = [
+	1=unpleasant_pleasant_practice;
+	2=flowers_insects_practice; // Define a block variable that can vary between participants (use this for randomizing order)
+	3=incompatible; // Can also define separate "expts", to put less text in "group"
+	4=insects_flowers_practice;
+	5=compatible
+	]
+</expt>
+
+<expt>
+/ subjects = (2 of 2) // Subjects who will respond with "z" first
+/ preinstructions = (instructions_intro)
+/ postinstructions = (instructions_end)
+/ blocks = [
+	1=unpleasant_pleasant_practice;
+	2=insects_flowers_practice;
+	3=compatible;
+	4=flowers_insects_practice;
+	5=incompatible; 
+	]
+</expt>
+
+<defaults>
+/ screencolor = (255, 255, 255)
+/ fontstyle = ("Avenir Next", 14pt)
+</defaults>
