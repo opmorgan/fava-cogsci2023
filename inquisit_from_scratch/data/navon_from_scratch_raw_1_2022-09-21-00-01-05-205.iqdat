@@ -1,0 +1,9 @@
+date	time	group	subject	session	build	blocknum	trialnum	blockcode	trialcode	pretrialpause	posttrialpause	trialduration	trialtimeout	response	correct	latency	stimulusnumber1	stimulusitem1	stimulusonset1	stimulusnumber2	stimulusitem2	stimulusonset2	stimulusnumber3	stimulusitem3	stimulusonset3	stimulusnumber4	stimulusitem4	stimulusonset4	stimulusnumber5	stimulusitem5	stimulusonset5
+2022-09-20	20:01:05	1	1	1	6.6.0	1	1	practice_slash	practice_present_slash	0	0	0	0	53	1	35	1	fixation	0	3	TARGET PRESENT	600	1	blank	733	1	mask	982	1	blank	733
+2022-09-20	20:01:05	1	1	1	6.6.0	1	2	practice_slash	practice_absent_slash	0	0	0	0	0	1	2000	1	fixation	0	8	TARGET ABSENT	600	1	blank	733	1	mask	983	1	blank	733
+2022-09-20	20:01:05	1	1	1	6.6.0	1	3	practice_slash	practice_absent_slash	0	0	0	0	0	1	2000	1	fixation	2	6	TARGET ABSENT	600	1	blank	733	1	mask	983	1	blank	733
+2022-09-20	20:01:05	1	1	1	6.6.0	1	4	practice_slash	practice_present_slash	0	0	0	0	0	0	2000	1	fixation	0	9	TARGET PRESENT	600	1	blank	733	1	mask	983	1	blank	733
+2022-09-20	20:01:05	1	1	1	6.6.0	1	5	practice_slash	practice_absent_slash	0	0	0	0	53	0	55	1	fixation	0	7	TARGET ABSENT	600	1	blank	733	1	mask	982	1	blank	733
+2022-09-20	20:01:05	1	1	1	6.6.0	1	6	practice_slash	practice_present_slash	0	0	0	0	0	0	2000	1	fixation	0	8	TARGET PRESENT	600	1	blank	733	1	mask	983	1	blank	733
+2022-09-20	20:01:05	1	1	1	6.6.0	1	7	practice_slash	practice_present_slash	0	0	0	0	0	0	2000	1	fixation	0	7	TARGET PRESENT	600	1	blank	733	1	mask	983	1	blank	733
+2022-09-20	20:01:05	1	1	1	6.6.0	1	8	practice_slash	practice_absent_slash	0	0	0	0	Ctrl+'Q'	0	0	1	fixation	0	1	TARGET ABSENT	-1	1	blank	-1	1	mask	-1	1	blank	-1

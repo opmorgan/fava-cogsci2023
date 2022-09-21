@@ -29,13 +29,148 @@
 // Define stimuli
 //    32 target-present
 // 	  8  target-absent
+<text stimuli_practice_present> // TODO replace placeholder
+/ items = stimuli_practice_present
+</text>
+<item stimuli_practice_present>
+/ 1 = "    TARGET PRESENT   "
+/ 2 = "    TARGET PRESENT   "
+/ 3 = "    TARGET PRESENT   "
+/ 4 = "    TARGET PRESENT   "
+/ 5 = "    TARGET PRESENT   "
+/ 6 = "    TARGET PRESENT   "
+/ 7 = "    TARGET PRESENT   "
+/ 8 = "    TARGET PRESENT   "
+/ 9 = "    TARGET PRESENT   "
+/10 = "    TARGET PRESENT   "
+/11 = "    TARGET PRESENT   "
+/12 = "    TARGET PRESENT   "
+</item>
+
+<text stimuli_practice_absent> // TODO replace placeholder
+/ items = stimuli_practice_absent
+</text>
+<item stimuli_practice_absent>
+/ 1 = "    TARGET ABSENT    "
+/ 2 = "    TARGET ABSENT    "
+/ 3 = "    TARGET ABSENT    "
+/ 4 = "    TARGET ABSENT    "
+/ 5 = "    TARGET ABSENT    "
+/ 6 = "    TARGET ABSENT    "
+/ 7 = "    TARGET ABSENT    "
+/ 8 = "    TARGET ABSENT    "
+</item>
+
+<text stimuli_main_present> // TODO replace placeholder
+/ items = stimuli_main_present
+</text>
+<item stimuli_main_present>
+/ 1 = "    TARGET PRESENT   "
+/ 2 = "    TARGET PRESENT   "
+/ 3 = "    TARGET PRESENT   "
+/ 4 = "    TARGET PRESENT   "
+/ 5 = "    TARGET PRESENT   "
+/ 6 = "    TARGET PRESENT   "
+/ 7 = "    TARGET PRESENT   "
+/ 8 = "    TARGET PRESENT   "
+/ 9 = "    TARGET PRESENT   "
+/10 = "    TARGET PRESENT   "
+/ 11 = "    TARGET PRESENT   "
+/ 12 = "    TARGET PRESENT   "
+/ 13 = "    TARGET PRESENT   "
+/ 14 = "    TARGET PRESENT   "
+/ 15 = "    TARGET PRESENT   "
+/ 16 = "    TARGET PRESENT   "
+/ 17 = "    TARGET PRESENT   "
+/ 18 = "    TARGET PRESENT   "
+/ 19 = "    TARGET PRESENT   "
+/20 = "    TARGET PRESENT   "
+/ 21 = "    TARGET PRESENT   "
+/ 22 = "    TARGET PRESENT   "
+/ 23 = "    TARGET PRESENT   "
+/ 24 = "    TARGET PRESENT   "
+/ 25 = "    TARGET PRESENT   "
+/ 26 = "    TARGET PRESENT   "
+/ 27 = "    TARGET PRESENT   "
+/ 28 = "    TARGET PRESENT   "
+/ 29 = "    TARGET PRESENT   "
+/30 = "    TARGET PRESENT   "
+/ 31 = "    TARGET PRESENT   "
+/ 32 = "    TARGET PRESENT   "
+</item>
+
+<text stimuli_main_absent> // TODO replace placeholder
+/ items = stimuli_main_absent
+</text>
+<item stimuli_main_absent>
+/ 1 = "    TARGET ABSENT    "
+/ 2 = "    TARGET ABSENT    "
+/ 3 = "    TARGET ABSENT    "
+/ 4 = "    TARGET ABSENT    "
+/ 5 = "    TARGET ABSENT    "
+/ 6 = "    TARGET ABSENT    "
+/ 7 = "    TARGET ABSENT    "
+/ 8 = "    TARGET ABSENT    "
+</item>
+
+<text stimuli_fixation> // TODO replace placeholder
+/ items = ("fixation")
+</text>
+
+<text stimuli_mask> // TODO replace placeholder
+/ items = ("mask")
+</text>
+
+<text stimuli_blank> // TODO replace placeholder
+/ items = ("blank")
+</text>
+
+<text prompt_interblock_break> // TODO: add timer
+/items = ("Nice job! You are halfway there. in 20 seconds, the next block will begin.")
+</text>
 
 
 // Define instructions and prompts
 //	  General instructions
 //	  response-specific instructions ("/")
 //	  response-specific instructions ("z")
+//	  feedback for correct/incorrect practice trials
+<page instructions_intro> // TODO: write, move to htmlpage
+Instructions (intro)
+</page>
 
+<page instructions_practice_slash> // TODO: write, move to htmlpage
+Practice round. When you see a square or circle, press "/"
+</page>
+
+<page instructions_practice_z> // TODO: write, move to htmlpage
+Practice round. When you see a square or circle, press "z"
+</page>
+
+<text incorrect_message>  
+/ items = ("      INCORRECT      ")
+/ txcolor = (255, 0, 0)
+</text>
+
+<text correct_message>  
+/ items = ("     CORRECT     ")
+/ txcolor = (0, 255, 0)
+</text>
+
+<page instructions_main_slash> // TODO: write, move to htmlpage
+Get ready for the real experiment! When you see a square or circle, press "/"
+</page>
+
+<page instructions_main_z> // TODO: write, move to htmlpage
+
+
+
+Get ready for the real experiment! When you see a square or circle, press "z"
+</page>
+
+<page instructions_end> // TODO: write, move to htmlpage
+Instructions (intro)
+</page>
 
 // Define trial types (what stimuli are presented? Which responses are valid/correct?)
 //	  instructions (keys for next, previous)
@@ -47,7 +182,131 @@
 //	  practice target-absent ("z")
 //	  main target-present ("z")
 //    main target-absent ("z")
+<instruct>
+/ nextkey = ("n")
+/ prevkey = ("p")
+</instruct>
 
+<trial practice_present_slash>
+/ stimulustimes = [0 = stimuli_fixation;
+				   600 = stimuli_practice_present; // parameters.fixation_duration (600ms)
+				   // Fixation cross should disappear here, with shapes
+				   734 = stimuli_blank; // shape_duration (134ms)
+				   990 = stimuli_mask; // blank_duration (256ms)
+				   1124 = stimuli_blank; // mask_duration (134ms)
+				   ]
+				   // TODO: set these times dynamically with /ontrialbegin, insertstimulustime
+				   //   Set durations in config
+				   //   https://forums.millisecond.com/Topic20499.aspx
+				   // Read "How to Control Trial Duration and Inter-Trial Intervals" in the manual.
+/ beginresponsetime = 600 // SET IN CONFIG as parameters.fixation_duration
+/ responseinterrupt = trial
+// TODO: Record responses with /ontrialend
+// TODO add posttrial iti with /posttrial
+/ validresponse = ("/") // TODO: MOVE TO CONFIG
+/ correctresponse = ("/")
+/ timeout = 2600 // TODO: MOVE TO CONFIG
+</trial>
+
+<trial practice_absent_slash>
+/ stimulustimes = [0 = stimuli_fixation;
+				   600 = stimuli_practice_absent; // parameters.fixation_duration (600ms)
+				   734 = stimuli_blank; // shape_duration (134ms)
+				   990 = stimuli_mask; // blank_duration (256ms)
+				   1124 = stimuli_blank; // mask_duration (134ms)
+				   ]
+/ beginresponsetime = 600 // SET IN CONFIG as parameters.fixation_duration
+/ responseinterrupt = trial
+/ validresponse = ("/", noresponse) // TODO: MOVE TO CONFIG
+/ correctresponse = (noresponse)
+/ timeout = 2600 // TODO: MOVE TO CONFIG
+</trial>
+
+<trial practice_present_z>
+/ stimulustimes = [0 = stimuli_fixation;
+				   600 = stimuli_practice_present; // parameters.fixation_duration (600ms)
+				   734 = stimuli_blank; // shape_duration (134ms)
+				   990 = stimuli_mask; // blank_duration (256ms)
+				   1124 = stimuli_blank; // mask_duration (134ms)
+				   ]
+/ beginresponsetime = 600 // SET IN CONFIG as parameters.fixation_duration
+/ responseinterrupt = trial
+/ validresponse = ("z") // TODO: MOVE TO CONFIG
+/ correctresponse = ("z")
+</trial>
+
+<trial practice_absent_z>
+/ stimulustimes = [0 = stimuli_fixation;
+				   600 = stimuli_practice_absent; // parameters.fixation_duration (600ms)
+				   734 = stimuli_blank; // shape_duration (134ms)
+				   990 = stimuli_mask; // blank_duration (256ms)
+				   1124 = stimuli_blank; // mask_duration (134ms)
+				   ]
+/ beginresponsetime = 600 // SET IN CONFIG as parameters.fixation_duration
+/ responseinterrupt = trial
+/ validresponse = ("z", noresponse) // TODO: MOVE TO CONFIG
+/ correctresponse = (noresponse)
+/ timeout = 2600 // TODO: MOVE TO CONFIG
+</trial>
+
+<trial main_present_slash>
+/ stimulustimes = [0 = stimuli_fixation;
+				   600 = stimuli_main_present; // parameters.fixation_duration (600ms)
+				   734 = stimuli_blank; // shape_duration (134ms)
+				   990 = stimuli_mask; // blank_duration (256ms)
+				   1124 = stimuli_blank; // mask_duration (134ms)
+				   ]
+/ beginresponsetime = 600 // SET IN CONFIG as parameters.fixation_duration
+/ responseinterrupt = trial
+/ validresponse = ("/") // TODO: MOVE TO CONFIG
+/ correctresponse = ("/")
+</trial>
+
+<trial main_absent_slash>
+/ stimulustimes = [0 = stimuli_fixation;
+				   600 = stimuli_practice_absent; // parameters.fixation_duration (600ms)
+				   734 = stimuli_blank; // shape_duration (134ms)
+				   990 = stimuli_mask; // blank_duration (256ms)
+				   1124 = stimuli_blank; // mask_duration (134ms)
+				   ]
+/ beginresponsetime = 600 // SET IN CONFIG as parameters.fixation_duration
+/ responseinterrupt = trial
+/ validresponse = ("/", noresponse) // TODO: MOVE TO CONFIG
+/ correctresponse = (noresponse)
+/ timeout = 2600 // TODO: MOVE TO CONFIG
+</trial>
+
+<trial main_present_z>
+/ stimulustimes = [0 = stimuli_fixation;
+				   600 = stimuli_main_present; // parameters.fixation_duration (600ms)
+				   734 = stimuli_blank; // shape_duration (134ms)
+				   990 = stimuli_mask; // blank_duration (256ms)
+				   1124 = stimuli_blank // mask_duration (134ms)
+				   ]
+/ beginresponsetime = 600 // SET IN CONFIG as parameters.fixation_duration
+/ responseinterrupt = trial
+/ validresponse = ("/") // TODO: MOVE TO CONFIG
+/ correctresponse = ("/")
+</trial>
+
+<trial main_absent_z>
+/ stimulustimes = [0 = stimuli_fixation;
+				   600 = stimuli_practice_absent; // parameters.fixation_duration (600ms)
+				   734 = stimuli_blank; // shape_duration (134ms)
+				   990 = stimuli_mask; // blank_duration (256ms)
+				   1124 = stimuli_blank; // mask_duration (134ms)
+				   ]
+/ beginresponsetime = 600 // SET IN CONFIG as parameters.fixation_duration
+/ responseinterrupt = trial
+/ validresponse = ("z", noresponse) // TODO: MOVE TO CONFIG
+/ correctresponse = (noresponse)
+/ timeout = 2600 // TODO: MOVE TO CONFIG
+</trial>
+
+<trial interblock_break>
+/ stimulusframes = [1 = prompt_interblock_break]
+/ trialduration = 20000 // TODO: MOVE TO CONFIG (parameters.interblock_break_duration)
+</trial>
 
 // Define blocks
 //    practice block ("/") (12 t-p, 4 t-a)
@@ -56,44 +315,48 @@
 //	  main block ("z") (32 t-p, 8 t-a, times 2)
 <block practice_slash>
 / trials = [
-	1-16 = noreplace(stimuli_practice_present_slash, stimuli_practice_absent_slash) 
+	1-16 = noreplace(practice_present_slash, practice_absent_slash) 
 	// How to present 12 present, 4 absent?
 	// (a) Select without replacement on list of 12 present; list of 4 absent (does this work?)
 	// (b) Predefine set of 16 stimuli, in one trial type. Randomly present those 16.
     // It might be harder to handle responses in (b).
 	]
 / preinstructions = (instructions_practice_slash)
-]
+/ errormessage = (incorrect_message, 300) // TODO: MOVE TO CONFIG
+/ correctmessage = (correct_message, 300) // TODO: MOVE TO CONFIG
 </block>
 
 <block practice_z>
 / trials = [
-	1-16 = noreplace(stimuli_practice_present_z, stimuli_practice_absent_z)
+	1-16 = noreplace(practice_present_z, practice_absent_z)
 	]
 / preinstructions = (instructions_practice_z)
-]
+/ errormessage = (incorrect_message, 300) // TODO: MOVE TO CONFIG
+/ correctmessage = (correct_message, 300) // TODO: MOVE TO CONFIG
 </block>
 
 <block main_slash>
 / trials = [
-	1-40 = noreplace(stimuli_main_present_slash, stimuli_main_absent_slash);
+	1-40 = noreplace(main_present_slash, main_absent_slash);
 	// How to present 32 present, 8 absent?
 	// (a) Select without replacement on list of 32 present; list of 8 absent (does this work?)
 	// (b) Predefine set of 40 stimuli, in one trial type. Randomly present those 40.
 	// It might be harder to handle responses in (b).
-	41-80 = noreplace(stimuli_main_present_slash, stimuli_main_absent_slash) 
+	41-80 = noreplace(main_present_slash, main_absent_slash) 
 	]
 / preinstructions = (instructions_main_slash)
-]
 </block>
 
 <block main_z>
 / trials = [
-	1-40 = noreplace(stimuli_main_present_z, stimuli_main_absent_z);
-	41-80 = noreplace(stimuli_main_present_z, stimuli_main_absent_z) 
+	1-40 = noreplace(main_present_z, main_absent_z);
+	41-80 = noreplace(main_present_z, main_absent_z) 
 	]
 / preinstructions = (instructions_main_z)
-]
+</block>
+
+<block interblock_break>
+/ trials = [1=interblock_break]
 </block>
 
 // Define experiment
@@ -115,8 +378,9 @@
 / blocks = [
 	1=practice_slash;
 	2=main_slash;
-	3=practice_z;
-	4=main_z;
+	3=interblock_break;
+	4=practice_z;
+	5=main_z;
 	]
 </expt>
 
@@ -127,8 +391,9 @@
 / blocks = [
 	1=practice_z;
 	2=main_z;
-	3=practice_slash;
-	4=main_slash;
+	3=interblock_break;
+	4=practice_slash;
+	5=main_slash;
 	]
 </expt>
 
