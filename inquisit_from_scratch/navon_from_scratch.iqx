@@ -1,12 +1,12 @@
 ﻿// Workflow (https://www.rondotsch.nl/inquisit-tutorial/)
-// Define stimuli
+// Define stim
 //    32 target-present
 // 	  8  target-absent
 // Define instructions and prompts
 //	  General instructions
 //	  response-specific instructions ("/")
 //	  response-specific instructions ("z")
-// Define trial types (what stimuli are presented? Which responses are valid/correct?)
+// Define trial types (what stim are presented? Which responses are valid/correct?)
 //	  instructions (keys for next, previous)
 //    practice target-present ("/")
 //	  practice target-absent ("/")
@@ -26,45 +26,77 @@
 //	  main block ("z") (32 t-p, 8 t-a, times 2)
 // Experiment loop. Define order of blocks
 
-// Define stimuli
+// User-specified variables // TODO: move to config
+<parameters>
+/ background_color = white
+/ foreground_color = black
+/ fontfamily_default = "Avenir Next"
+/ fontsize_default = 5% // Change to 14pt?
+/ fontsize_fixation = 10%
+/ iti = 2000
+/ fixation_duration = 600
+/ shape_duration = 134
+/ blank_duration = 256
+/ mask_duration = 134
+/ timeout = 2600 // Maximum response time
+/ feedback_duration = 500
+</parameters>
+
+<defaults>
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default)
+/ screencolor = parameters.background_color
+// txcolor = parameters.foreground_color
+/ txbgcolor = parameters.background_color
+</defaults>
+
+<expressions>
+/ fixation_onset = 0
+/ shape_onset = parameters.fixation_duration
+/ blank_onset = parameters.fixation_duration + parameters.shape_duration
+/ mask_onset = parameters.fixation_duration + parameters.shape_duration + parameters.blank_duration
+/ iti_onset = parameters.fixation_duration + parameters.shape_duration + parameters.blank_duration + parameters.mask_duration
+</expressions>
+
+
+//  Define stim
 //    32 target-present
 // 	  8  target-absent
-<text stimuli_practice_present> // TODO replace placeholder
-/ items = stimuli_practice_present
+<text stim_practice_present> // TODO replace placeholder
+/ items = stim_practice_present
 </text>
-<item stimuli_practice_present>
-/ 1 = "    TARGET PRESENT   "
-/ 2 = "    TARGET PRESENT   "
-/ 3 = "    TARGET PRESENT   "
-/ 4 = "    TARGET PRESENT   "
-/ 5 = "    TARGET PRESENT   "
-/ 6 = "    TARGET PRESENT   "
-/ 7 = "    TARGET PRESENT   "
-/ 8 = "    TARGET PRESENT   "
-/ 9 = "    TARGET PRESENT   "
-/10 = "    TARGET PRESENT   "
-/11 = "    TARGET PRESENT   "
-/12 = "    TARGET PRESENT   "
+<item stim_practice_present>
+/ 1 = "    1TARGET PRESENT   "
+/ 2 = "    2TARGET PRESENT   "
+/ 3 = "    3TARGET PRESENT   "
+/ 4 = "    4TARGET PRESENT   "
+/ 5 = "    5TARGET PRESENT   "
+/ 6 = "    6TARGET PRESENT   "
+/ 7 = "    7TARGET PRESENT   "
+/ 8 = "    8TARGET PRESENT   "
+/ 9 = "    9TARGET PRESENT   "
+/10 = "    10TARGET PRESENT   "
+/11 = "    11TARGET PRESENT   "
+/12 = "    12TARGET PRESENT   "
 </item>
 
-<text stimuli_practice_absent> // TODO replace placeholder
-/ items = stimuli_practice_absent
+<text stim_practice_absent> // TODO replace placeholder
+/ items = stim_practice_absent
 </text>
-<item stimuli_practice_absent>
-/ 1 = "    TARGET ABSENT    "
-/ 2 = "    TARGET ABSENT    "
-/ 3 = "    TARGET ABSENT    "
-/ 4 = "    TARGET ABSENT    "
-/ 5 = "    TARGET ABSENT    "
-/ 6 = "    TARGET ABSENT    "
-/ 7 = "    TARGET ABSENT    "
-/ 8 = "    TARGET ABSENT    "
+<item stim_practice_absent>
+/ 1 = "    aTARGET ABSENT    "
+/ 2 = "    bTARGET ABSENT    "
+/ 3 = "    cTARGET ABSENT    "
+/ 4 = "    dTARGET ABSENT    "
+/ 5 = "    eTARGET ABSENT    "
+/ 6 = "    fTARGET ABSENT    "
+/ 7 = "    gTARGET ABSENT    "
+/ 8 = "    hTARGET ABSENT    "
 </item>
 
-<text stimuli_main_present> // TODO replace placeholder
-/ items = stimuli_main_present
+<text stim_main_present> // TODO replace placeholder
+/ items = stim_main_present
 </text>
-<item stimuli_main_present>
+<item stim_main_present>
 / 1 = "    TARGET PRESENT   "
 / 2 = "    TARGET PRESENT   "
 / 3 = "    TARGET PRESENT   "
@@ -99,10 +131,10 @@
 / 32 = "    TARGET PRESENT   "
 </item>
 
-<text stimuli_main_absent> // TODO replace placeholder
-/ items = stimuli_main_absent
+<text stim_main_absent> // TODO replace placeholder
+/ items = stim_main_absent
 </text>
-<item stimuli_main_absent>
+<item stim_main_absent>
 / 1 = "    TARGET ABSENT    "
 / 2 = "    TARGET ABSENT    "
 / 3 = "    TARGET ABSENT    "
@@ -113,17 +145,22 @@
 / 8 = "    TARGET ABSENT    "
 </item>
 
-<text stimuli_fixation> // TODO replace placeholder
-/ items = ("fixation")
+<text stim_fixation>
+/ items = ("+")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_fixation, false, false, false, false, 5, 1)
+/ position = (50%, 50%)
 </text>
 
-<text stimuli_mask> // TODO replace placeholder
+<text stim_mask> // TODO replace placeholder
 / items = ("mask")
 </text>
 
-<text stimuli_blank> // TODO replace placeholder
-/ items = ("blank")
-</text>
+<shape stim_blank> // TODO replace placeholder
+/ shape = rectangle
+/ color = parameters.background_color
+/ size = (100%, 100%)
+/ position = (50%, 50%)
+</shape>
 
 <text prompt_interblock_break> // TODO: add timer
 /items = ("Nice job! You are halfway there. in 20 seconds, the next block will begin.")
@@ -172,7 +209,7 @@ Get ready for the real experiment! When you see a square or circle, press "z"
 Instructions (intro)
 </page>
 
-// Define trial types (what stimuli are presented? Which responses are valid/correct?)
+// Define trial types (what stim are presented? Which responses are valid/correct?)
 //	  instructions (keys for next, previous)
 //    practice target-present ("/")
 //	  practice target-absent ("/")
@@ -187,120 +224,186 @@ Instructions (intro)
 / prevkey = ("p")
 </instruct>
 
+/ fixation_onset = 0
+/ shape_onset = parameters.fixation_duration
+/ blank_onset = parameters.fixation_duration + parameters.shape_duration
+/ mask_onset = parameters.fixation_duration + parameters.shape_duration + parameters.blank_duration
+/ iti_onset = parameters.fixation_duration + parameters.shape_duration + parameters.blank_duration + parameters.mask_duration
+
 <trial practice_present_slash>
-/ stimulustimes = [0 = stimuli_fixation;
-				   600 = stimuli_practice_present; // parameters.fixation_duration (600ms)
-				   // Fixation cross should disappear here, with shapes
-				   734 = stimuli_blank; // shape_duration (134ms)
-				   990 = stimuli_mask; // blank_duration (256ms)
-				   1124 = stimuli_blank; // mask_duration (134ms)
-				   ]
-				   // TODO: set these times dynamically with /ontrialbegin, insertstimulustime
-				   //   Set durations in config
-				   //   https://forums.millisecond.com/Topic20499.aspx
-				   // Read "How to Control Trial Duration and Inter-Trial Intervals" in the manual.
-/ beginresponsetime = 600 // SET IN CONFIG as parameters.fixation_duration
-/ responseinterrupt = trial
-// TODO: Record responses with /ontrialend
-// TODO add posttrial iti with /posttrial
-/ validresponse = ("/") // TODO: MOVE TO CONFIG
+/ ontrialbegin = [
+	trial.practice_present_slash.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
+	trial.practice_present_slash.insertstimulustime(text.stim_practice_present, expressions.shape_onset); // 600ms: show stimulus
+	
+	trial.practice_present_slash.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
+	
+	trial.practice_present_slash.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
+    trial.practice_present_slash.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
+]
+
+/ stimulustimes = [0 = stim_fixation]
+/ beginresponsetime = parameters.fixation_duration
+/ timeout = parameters.timeout
+/ posttrialpause = parameters.iti
+
+/ responseinterrupt = immediate
+/ validresponse = ("/")
 / correctresponse = ("/")
-/ timeout = 2600 // TODO: MOVE TO CONFIG
+// TODO: Record responses with /ontrialend
 </trial>
 
 <trial practice_absent_slash>
-/ stimulustimes = [0 = stimuli_fixation;
-				   600 = stimuli_practice_absent; // parameters.fixation_duration (600ms)
-				   734 = stimuli_blank; // shape_duration (134ms)
-				   990 = stimuli_mask; // blank_duration (256ms)
-				   1124 = stimuli_blank; // mask_duration (134ms)
-				   ]
-/ beginresponsetime = 600 // SET IN CONFIG as parameters.fixation_duration
-/ responseinterrupt = trial
-/ validresponse = ("/", noresponse) // TODO: MOVE TO CONFIG
+/ ontrialbegin = [
+	trial.practice_absent_slash.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
+	trial.practice_absent_slash.insertstimulustime(text.stim_practice_absent, expressions.shape_onset); // 600ms: show stimulus
+	
+	trial.practice_absent_slash.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
+	
+	trial.practice_absent_slash.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
+    trial.practice_absent_slash.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
+]
+
+/ stimulustimes = [0 = stim_fixation]
+/ beginresponsetime = parameters.fixation_duration
+/ timeout = parameters.timeout
+/ posttrialpause = parameters.iti
+
+/ responseinterrupt = immediate
+/ validresponse = ("/", noresponse)
 / correctresponse = (noresponse)
-/ timeout = 2600 // TODO: MOVE TO CONFIG
+// TODO: Record responses with /ontrialend
 </trial>
 
 <trial practice_present_z>
-/ stimulustimes = [0 = stimuli_fixation;
-				   600 = stimuli_practice_present; // parameters.fixation_duration (600ms)
-				   734 = stimuli_blank; // shape_duration (134ms)
-				   990 = stimuli_mask; // blank_duration (256ms)
-				   1124 = stimuli_blank; // mask_duration (134ms)
-				   ]
-/ beginresponsetime = 600 // SET IN CONFIG as parameters.fixation_duration
-/ responseinterrupt = trial
-/ validresponse = ("z") // TODO: MOVE TO CONFIG
+/ ontrialbegin = [
+	trial.practice_present_z.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
+	trial.practice_present_z.insertstimulustime(text.stim_practice_present, expressions.shape_onset); // 600ms: show stimulus
+	
+	trial.practice_present_z.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
+	
+	trial.practice_present_z.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
+    trial.practice_present_z.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
+]
+
+/ stimulustimes = [0 = stim_fixation]
+/ beginresponsetime = parameters.fixation_duration
+/ timeout = parameters.timeout
+/ posttrialpause = parameters.iti
+
+/ responseinterrupt = immediate
+/ validresponse = ("z")
 / correctresponse = ("z")
+// TODO: Record responses with /ontrialend
 </trial>
 
 <trial practice_absent_z>
-/ stimulustimes = [0 = stimuli_fixation;
-				   600 = stimuli_practice_absent; // parameters.fixation_duration (600ms)
-				   734 = stimuli_blank; // shape_duration (134ms)
-				   990 = stimuli_mask; // blank_duration (256ms)
-				   1124 = stimuli_blank; // mask_duration (134ms)
-				   ]
-/ beginresponsetime = 600 // SET IN CONFIG as parameters.fixation_duration
-/ responseinterrupt = trial
-/ validresponse = ("z", noresponse) // TODO: MOVE TO CONFIG
+/ ontrialbegin = [
+	trial.practice_absent_z.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
+	trial.practice_present_z.insertstimulustime(text.stim_practice_absent, expressions.shape_onset); // 600ms: show stimulus
+	
+	trial.practice_absent_z.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
+	
+	trial.practice_absent_z.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
+    trial.practice_absent_z.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
+]
+
+/ stimulustimes = [0 = stim_fixation]
+/ beginresponsetime = parameters.fixation_duration
+/ timeout = parameters.timeout
+/ posttrialpause = parameters.iti
+
+/ responseinterrupt = immediate
+/ validresponse = ("z", noresponse)
 / correctresponse = (noresponse)
-/ timeout = 2600 // TODO: MOVE TO CONFIG
+// TODO: Record responses with /ontrialend
 </trial>
 
 <trial main_present_slash>
-/ stimulustimes = [0 = stimuli_fixation;
-				   600 = stimuli_main_present; // parameters.fixation_duration (600ms)
-				   734 = stimuli_blank; // shape_duration (134ms)
-				   990 = stimuli_mask; // blank_duration (256ms)
-				   1124 = stimuli_blank; // mask_duration (134ms)
-				   ]
-/ beginresponsetime = 600 // SET IN CONFIG as parameters.fixation_duration
-/ responseinterrupt = trial
-/ validresponse = ("/") // TODO: MOVE TO CONFIG
+/ ontrialbegin = [
+	trial.main_present_slash.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
+	trial.main_present_slash.insertstimulustime(text.stim_main_present, expressions.shape_onset); // 600ms: show stimulus
+	
+	trial.main_present_slash.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
+	
+	trial.main_present_slash.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
+    trial.main_present_slash.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
+]
+
+/ stimulustimes = [0 = stim_fixation]
+/ beginresponsetime = parameters.fixation_duration
+/ timeout = parameters.timeout
+/ posttrialpause = parameters.iti
+
+/ responseinterrupt = immediate
+/ validresponse = ("/")
 / correctresponse = ("/")
+// TODO: Record responses with /ontrialend
 </trial>
 
 <trial main_absent_slash>
-/ stimulustimes = [0 = stimuli_fixation;
-				   600 = stimuli_practice_absent; // parameters.fixation_duration (600ms)
-				   734 = stimuli_blank; // shape_duration (134ms)
-				   990 = stimuli_mask; // blank_duration (256ms)
-				   1124 = stimuli_blank; // mask_duration (134ms)
-				   ]
-/ beginresponsetime = 600 // SET IN CONFIG as parameters.fixation_duration
-/ responseinterrupt = trial
-/ validresponse = ("/", noresponse) // TODO: MOVE TO CONFIG
+/ ontrialbegin = [
+	trial.main_absent_slash.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
+	trial.main_absent_slash.insertstimulustime(text.stim_main_absent, expressions.shape_onset); // 600ms: show stimulus
+	
+	trial.main_absent_slash.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
+	
+	trial.main_absent_slash.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
+    trial.main_absent_slash.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
+]
+
+/ stimulustimes = [0 = stim_fixation]
+/ beginresponsetime = parameters.fixation_duration
+/ timeout = parameters.timeout
+/ posttrialpause = parameters.iti
+
+/ responseinterrupt = immediate
+/ validresponse = ("/", noresponse)
 / correctresponse = (noresponse)
-/ timeout = 2600 // TODO: MOVE TO CONFIG
+// TODO: Record responses with /ontrialend
 </trial>
 
 <trial main_present_z>
-/ stimulustimes = [0 = stimuli_fixation;
-				   600 = stimuli_main_present; // parameters.fixation_duration (600ms)
-				   734 = stimuli_blank; // shape_duration (134ms)
-				   990 = stimuli_mask; // blank_duration (256ms)
-				   1124 = stimuli_blank // mask_duration (134ms)
-				   ]
-/ beginresponsetime = 600 // SET IN CONFIG as parameters.fixation_duration
-/ responseinterrupt = trial
-/ validresponse = ("/") // TODO: MOVE TO CONFIG
-/ correctresponse = ("/")
+/ ontrialbegin = [
+	trial.main_present_z.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
+	trial.main_present_z.insertstimulustime(text.stim_main_present, expressions.shape_onset); // 600ms: show stimulus
+	
+	trial.main_present_z.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
+	
+	trial.main_present_z.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
+    trial.main_present_z.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
+]
+
+/ stimulustimes = [0 = stim_fixation]
+/ beginresponsetime = parameters.fixation_duration
+/ timeout = parameters.timeout
+/ posttrialpause = parameters.iti
+
+/ responseinterrupt = immediate
+/ validresponse = ("z")
+/ correctresponse = ("z")
+// TODO: Record responses with /ontrialend
 </trial>
 
 <trial main_absent_z>
-/ stimulustimes = [0 = stimuli_fixation;
-				   600 = stimuli_practice_absent; // parameters.fixation_duration (600ms)
-				   734 = stimuli_blank; // shape_duration (134ms)
-				   990 = stimuli_mask; // blank_duration (256ms)
-				   1124 = stimuli_blank; // mask_duration (134ms)
-				   ]
-/ beginresponsetime = 600 // SET IN CONFIG as parameters.fixation_duration
-/ responseinterrupt = trial
-/ validresponse = ("z", noresponse) // TODO: MOVE TO CONFIG
+/ ontrialbegin = [
+	trial.main_absent_z.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
+	trial.main_absent_z.insertstimulustime(text.stim_main_absent, expressions.shape_onset); // 600ms: show stimulus
+	
+	trial.main_absent_z.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
+	
+	trial.main_absent_z.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
+    trial.main_absent_z.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
+]
+
+/ stimulustimes = [0 = stim_fixation]
+/ beginresponsetime = parameters.fixation_duration
+/ timeout = parameters.timeout
+/ posttrialpause = parameters.iti
+
+/ responseinterrupt = immediate
+/ validresponse = ("z", noresponse)
 / correctresponse = (noresponse)
-/ timeout = 2600 // TODO: MOVE TO CONFIG
+// TODO: Record responses with /ontrialend
 </trial>
 
 <trial interblock_break>
@@ -315,15 +418,15 @@ Instructions (intro)
 //	  main block ("z") (32 t-p, 8 t-a, times 2)
 <block practice_slash>
 / trials = [
-	1-16 = noreplace(practice_present_slash, practice_absent_slash) 
+	1-16 = noreplace(practice_present_slash, practice_absent_slash) // Make sure this randomly selects from full pool; if not, move logic.
 	// How to present 12 present, 4 absent?
 	// (a) Select without replacement on list of 12 present; list of 4 absent (does this work?)
-	// (b) Predefine set of 16 stimuli, in one trial type. Randomly present those 16.
+	// (b) Predefine set of 16 stim, in one trial type. Randomly present those 16.
     // It might be harder to handle responses in (b).
 	]
 / preinstructions = (instructions_practice_slash)
-/ errormessage = (incorrect_message, 300) // TODO: MOVE TO CONFIG
-/ correctmessage = (correct_message, 300) // TODO: MOVE TO CONFIG
+/ errormessage = (incorrect_message, parameters.feedback_duration)
+/ correctmessage = (correct_message, parameters.feedback_duration)
 </block>
 
 <block practice_z>
@@ -331,8 +434,8 @@ Instructions (intro)
 	1-16 = noreplace(practice_present_z, practice_absent_z)
 	]
 / preinstructions = (instructions_practice_z)
-/ errormessage = (incorrect_message, 300) // TODO: MOVE TO CONFIG
-/ correctmessage = (correct_message, 300) // TODO: MOVE TO CONFIG
+/ errormessage = (incorrect_message, parameters.feedback_duration)
+/ correctmessage = (correct_message, parameters.feedback_duration)
 </block>
 
 <block main_slash>
@@ -340,7 +443,7 @@ Instructions (intro)
 	1-40 = noreplace(main_present_slash, main_absent_slash);
 	// How to present 32 present, 8 absent?
 	// (a) Select without replacement on list of 32 present; list of 8 absent (does this work?)
-	// (b) Predefine set of 40 stimuli, in one trial type. Randomly present those 40.
+	// (b) Predefine set of 40 stim, in one trial type. Randomly present those 40.
 	// It might be harder to handle responses in (b).
 	41-80 = noreplace(main_present_slash, main_absent_slash) 
 	]
@@ -397,7 +500,4 @@ Instructions (intro)
 	]
 </expt>
 
-<defaults>
-/ screencolor = (255, 255, 255)
-/ fontstyle = ("Avenir Next", 14pt)
-</defaults>
+

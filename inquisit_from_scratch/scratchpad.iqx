@@ -1,0 +1,64 @@
+﻿<values>
+/ trial_counter = 0 // used in trials
+/ stim_index = 0 // used in trials
+</values>
+
+<list stim_itemnumber_practice_present>
+Note: controls the selection of the 12 stimuli for the practice condition (present)
+(item list contain the possible itemnumbers)
+/ items = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+/ poolsize = 12
+/ replace = false
+/ resetinterval = 1
+</list>
+
+<item stim_practice>
+
+</item>
+<list stim_itemnumber_practice_present>
+Note: controls the selection of the 16 stimuli for the practice condition (present)
+(item list contain the possible itemnumbers)
+The first 12 are target-present; the last 4 are target-absent.
+/ items = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
+/ poolsize = 16
+/ replace = false
+/ resetinterval = 0 // Reset after all items have been selected -- number of items needs to match number presented per block
+</list>
+
+**** Drawing from sample script ****
+/ ontrialbegin = [
+	values.trial_counter += 1;
+	values.stim_index = list.stim_itemnumber_practice_present.nextvalue;
+	if (values.stim < 4){
+		values.target = "H";
+	} else if (values.stim < 9) {
+		values.target = "S";
+	} else {
+		values.target = "";
+	};
+	values.presentation_location = list.presentation_location.nextvalue;
+	trial.global.insertstimulustime(clearscreen, parameters.fixationduration);
+	trial.global.insertstimulustime(picture.target, parameters.fixationduration);
+	trial.global.insertstimulustime(picture.mask, (parameters.fixationduration + parameters.stimulusduration));
+]
+
+/ stimulustimes = [0 = fixation, signal]
+/ beginresponsetime = parameters.fixationduration
+/ responseinterrupt = immediate
+/ validresponse = (parameters.responsekey1, parameters.responsekey2)
+/ iscorrectresponse = [(values.stim <= 3 && trial.global.responsetext == parameters.responsekey1) || (values.stim > 3 && trial.global.responsetext == parameters.responsekey2)] 
+/ ontrialend = [
+	trial.global.resetstimulusframes();
+	values.stimulus = picture.target.currentitem;
+	
+	if (values.stim == 1 || values.stim == 5 || values.stim == 9){
+		values.consistency = "consistent";
+	} else if (values.stim == 2 || values.stim == 4){
+		values.consistency = "conflicting";
+	} else {
+		values.consistency = "neutral";
+	};
+]
+
+/ posttrialpause = parameters.iti
+/ recorddata = true
