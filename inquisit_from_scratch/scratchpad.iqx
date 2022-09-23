@@ -25,6 +25,92 @@ The first 12 are target-present; the last 4 are target-absent.
 / resetinterval = 0 // Reset after all items have been selected -- number of items needs to match number presented per block
 </list>
 
+//  Define stim
+//  Practice:
+//    12 target-present
+//    4  target-absent
+//  Main:
+//    32 target-present
+// 	  8  target-absent
+// TODO: refactor to use list of 16 for practice, list of 40 for main. 
+<shape stim_practice>
+// 1- 12 are target-present
+// 13-16 are target-absent
+/ items = stim_practice
+/ select = values.stim
+/ position = (50%, 50%)
+/ size = (parameters.picturesize, parameters.picturesize)
+</shape>
+<item stim_practice>
+/ 1 = "resources/stimuli/target-circlecircles.svg"
+/ 2 = "resources/stimuli/target_circlediamonds.svg"
+/ 3 = "resources/stimuli/target_circlesquares.svg"
+/ 4 = "resources/stimuli/target_circletriangles.svg"
+/ 5 = "resources/stimuli/target_diamondcircles.svg"
+/ 6 = "resources/stimuli/target_diamondsquares.svg"
+/ 7 = "resources/stimuli/target_squarecircle.svg"
+/ 8 = "resources/stimuli/target_squarediamond.svg"
+/ 9 = "resources/stimuli/target_squaresquare.svg"
+/ 10 = "resources/stimuli/target_squaretriangle.svg"
+/ 11 = "resources/stimuli/target_trianglecircles.svg"
+/ 12 = "resources/stimuli/target_trianglesquares.svg"
+/ 13 = "resources/stimuli/distractor_diamondtriangles.svg"
+/ 14 = "resources/stimuli/distractor_trianglesdiamonds.svg"
+/ 15 = "resources/stimuli/distractor_triangletriangles.svg"
+/ 16 = "resources/stimuli/distractor_diamonddiamonds.svg"
+</item>
+
+<shape stim_main>
+/ items = stim_practice
+/ select = values.stim
+/ position = (50%, 50%)
+/ size = (parameters.picturesize, parameters.picturesize)
+</shape>
+<item stim_main>
+// 1- 32 are target-present
+// 33-40 are target-absent
+/ 1 = "resources/stimuli/target-circlecircles.svg"
+/ 2 = "resources/stimuli/target_circlediamonds.svg"
+/ 3 = "resources/stimuli/target_circlesquares.svg"
+/ 4 = "resources/stimuli/target_circletriangles.svg"
+/ 5 = "resources/stimuli/target_diamondcircles.svg"
+/ 6 = "resources/stimuli/target_diamondsquares.svg"
+/ 7 = "resources/stimuli/target_squarecircle.svg"
+/ 8 = "resources/stimuli/target_squarediamond.svg"
+/ 9 = "resources/stimuli/target_squaresquare.svg"
+/ 10 = "resources/stimuli/target_squaretriangle.svg"
+/ 11 = "resources/stimuli/target_trianglecircles.svg"
+/ 12 = "resources/stimuli/target_trianglesquares.svg"
+/ 13 = "resources/stimuli/target-circlecircles.svg"
+/ 14 = "resources/stimuli/target_circlediamonds.svg"
+/ 15 = "resources/stimuli/target_circlesquares.svg"
+/ 16 = "resources/stimuli/target_circletriangles.svg"
+/ 17 = "resources/stimuli/target_diamondcircles.svg"
+/ 18 = "resources/stimuli/target_diamondsquares.svg"
+/ 19 = "resources/stimuli/target_squarecircle.svg"
+/ 20 = "resources/stimuli/target_squarediamond.svg"
+/ 21 = "resources/stimuli/target_squaresquare.svg"
+/ 22 = "resources/stimuli/target_squaretriangle.svg"
+/ 23 = "resources/stimuli/target_trianglecircles.svg"
+/ 24 = "resources/stimuli/target_trianglesquares.svg"
+/ 25 = "resources/stimuli/target-circlecircles.svg"
+/ 26 = "resources/stimuli/target_circlediamonds.svg"
+/ 27 = "resources/stimuli/target_circlesquares.svg"
+/ 28 = "resources/stimuli/target_circletriangles.svg"
+/ 29 = "resources/stimuli/target_diamondcircles.svg"
+/ 30 = "resources/stimuli/target_diamondsquares.svg"
+/ 31 = "resources/stimuli/target_diamondcircles.svg"
+/ 32 = "resources/stimuli/target_diamondsquares.svg"
+/ 33 = "resources/stimuli/distractor_diamondtriangles.svg"
+/ 34 = "resources/stimuli/distractor_trianglesdiamonds.svg"
+/ 35 = "resources/stimuli/distractor_triangletriangles.svg"
+/ 36 = "resources/stimuli/distractor_diamonddiamonds.svg"
+/ 37 = "resources/stimuli/distractor_diamondtriangles.svg"
+/ 38 = "resources/stimuli/distractor_trianglesdiamonds.svg"
+/ 39 = "resources/stimuli/distractor_triangletriangles.svg"
+/ 40 = "resources/stimuli/distractor_diamonddiamonds.svg"
+</item>
+
 **** Drawing from sample script ****
 / ontrialbegin = [
 	values.trial_counter += 1;
@@ -62,3 +148,330 @@ The first 12 are target-present; the last 4 are target-absent.
 
 / posttrialpause = parameters.iti
 / recorddata = true
+
+
+
+
+//////////////
+Hmm, maybe there's an easier way that I'm not seeing right now, but here's what I would do to pull this off.
+First, set up two picture elements and tie them together using the 'current' option in '/ select':
+
+<picture affective_pics>
+/ items = affective_pics
+/ select = noreplace
+[...]
+</picture>
+
+<picture neutral_pics>
+/ items = neutral_pics
+/ select = current(affective_pics)
+[...]
+</picture>
+
+Next set up two corresponding item elements to draw from. The key here is to leave these *empty*:
+
+<item affective_pics>
+</item>
+
+<item neutral_pics>
+</item>
+
+Then, define two counter elements that contain the actual *names* of the picture files you're going to use:
+
+<counter setup_affective_pics>
+/ items = ("affective_pic01.jpg", "affective_pic02.jpg", "affective_pic03.jpg", "affective_pic04.jpg")
+/ select = noreplace
+/ selectionrate = trial
+</counter>
+
+<counter setup_neutral_pics>
+/ items = ("neutral_pic01.jpg", "neutral_pic02.jpg", "neutral_pic03.jpg", "neutral_pic04.jpg")
+/ select = noreplace
+/ selectionrate = trial
+</counter>
+
+<trial setup_pairings>
+/ ontrialbegin = [item.affective_pics.item=counter.setup_affective_pics.selectedvalue]
+/ ontrialbegin = [item.neutral_pics.item=counter.setup_neutral_pics.selectedvalue]
+/ trialduration = 0
+</trial>
+
+At the onset of the experiment, run the dummy trial four times. Lo and behold, you'll have randomly generated affective-neutral pairings that will be kept constant accross the entire experiment.
+
+
+<picture targets>
+/ items = ("T1", "T2")
+/ select = noreplace
+[...]
+</picture>
+
+<picture distractors>
+/ items = ("D1", "D2")
+/ select = current(targets)
+[...]
+</picture>
+
+<trial test>
+/ stimulustimes = [0 = target; 100 = distractors]
+/ response = anyresponse
+</text>
+
+<picture stim_practice>
+// 1- 12 are target-present
+// 13-16 are target-absent
+/ items = stim_practice
+/ select = values.stim_index
+/ position = (50%, 50%)
+/ size = (parameters.stim_size, parameters.stim_size)
+</picture>
+<item stim_practice>
+// 1- 12 are target-present
+// 13-16 are target-absent
+/ 1 = "resources/stimuli/target-circlecircles.svg"
+/ 2 = "resources/stimuli/target_circlediamonds.svg"
+/ 3 = "resources/stimuli/target_circlesquares.svg"
+/ 4 = "resources/stimuli/target_circletriangles.svg"
+/ 5 = "resources/stimuli/target_diamondcircles.svg"
+/ 6 = "resources/stimuli/target_diamondsquares.svg"
+/ 7 = "resources/stimuli/target_squarecircle.svg"
+/ 8 = "resources/stimuli/target_squarediamond.svg"
+/ 9 = "resources/stimuli/target_squaresquare.svg"
+/ 10 = "resources/stimuli/target_squaretriangle.svg"
+/ 11 = "resources/stimuli/target_trianglecircles.svg"
+/ 12 = "resources/stimuli/target_trianglesquares.svg"
+/ 13 = "resources/stimuli/distractor_diamondtriangles.svg"
+/ 14 = "resources/stimuli/distractor_trianglesdiamonds.svg"
+/ 15 = "resources/stimuli/distractor_triangletriangles.svg"
+/ 16 = "resources/stimuli/distractor_diamonddiamonds.svg"
+</item>
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+// Define bilateral stimuli in two linked lists
+//
+// Practice
+//
+// T1 = square; T2 = circle; D1 = triangle; D2 = diamond
+// Left  |  Right
+// 1-12: target present [n = 12]
+Left (target present)  | Right (target absent) [n = 6]
+T1+D1 | D1+D2
+T2+D1
+D1+T2
+
+T1+D1 | D2+D1
+T2+D1
+D1+T2
+
+Left (absent) | Right (present) [n = 6]
+D1 + D2 | T1+D2
+		  D1+T1
+		  D2+T1
+		  
+D2 + D1 | T1+D1
+		  T2+D1
+		  D1+T1
+		  
+// 13-16: target absent [n = 4]
+Left (absent) | Right (absent) [n=2]
+D1+D2  |  D1+D2
+D1+D2  |  D2+D1
+
+Left (absent) | Right (absent) [n=2]
+D2+D1  |  D2+D1
+D1+D2  |  D1+D2
+
+<picture stim_practice_left>
+/ items = stim_practice_left
+/ select = noreplace
+</picture>
+
+<picture stim_practice_right>
+/ items = stim_practice_right
+/ select = picture.stim_practice_left.currentindex // Link to stim_practice_left
+</picture>
+
+<item stim_practice_left>
+// 1-12: target present
+// 13-16: target absent
+// T1 = circle; T2 = square; D1 = diamond; D2 = triangle
+// Left  |  Right
+// 1-12: target present [n = 12]
+Left (target present)  | Right (target absent) [n = 6]
+T1+D1 | D1+D2
+T2+D1
+D1+T2
+
+T1+D1 | D2+D1
+T2+D1
+D1+T2
+
+Left (absent) | Right (present) [n = 6]
+D1 + D2 | T1+D2
+		  D1+T1
+		  D2+T1
+		  
+D2 + D1 | T1+D1
+		  T2+D1
+		  D1+T1
+		  
+// 13-16: target absent [n = 4]
+Left (absent) | Right (absent) [n=2]
+D1+D2  |  D1+D2
+D1+D2  |  D2+D1
+
+Left (absent) | Right (absent) [n=2]
+D2+D1  |  D2+D1
+D2+D1  |  D1+D2
+/ 1 = "resources/stimuli/target_circlediamonds.svg"
+/ 2 = "resources/stimuli/target_squarediamond.svg"
+/ 3 = "resources/stimuli/target_diamondsquares.svg"
+/ 4 = "resources/stimuli/target_circlediamonds.svg"
+/ 5 = "resources/stimuli/target_squarediamonds.svg"
+/ 6 = "resources/stimuli/target_diamondsquares.svg"
+/ 7 = "resources/stimuli/distractor_diamondtriangles.svg"
+/ 8 = "resources/stimuli/distractor_diamondtriangles.svg"
+/ 9 = "resources/stimuli/distractor_diamondtriangles.svg"
+/ 10 = "resources/stimuli/distractor_trianglediamonds.svg"
+/ 11 = "resources/stimuli/distractor_trianglediamonds.svg"
+/ 12 = "resources/stimuli/distractor_trianglediamonds.svg"
+/ 13 = "resources/stimuli/distractor_diamondtriangles.svg"
+/ 14 = "resources/stimuli/distractor_diamondtriangles.sv"
+/ 15 = "resources/stimuli/distractor_trianglediamonds.svg"
+/ 16 = "resources/stimuli/distractor_trianglediamonds.svg"
+
+<item stim_practice_right>
+// 1-12: target present
+// 13-16: target absent
+// T1 = circle; T2 = square; D1 = diamond; D2 = triangle
+// Left  |  Right
+// 1-12: target present [n = 12]
+Left (target present)  | Right (target absent) [n = 6]
+T1+D1 | D1+D2
+T2+D1
+D1+T2
+
+T1+D1 | D2+D1
+T2+D1
+D1+T2
+
+Left (absent) | Right (present) [n = 6]
+D1 + D2 | T1+D2
+		  D1+T1
+		  D2+T1
+		  
+D2 + D1 | T1+D1
+		  T2+D1
+		  D1+T1
+		  
+// 13-16: target absent [n = 4]
+Left (absent) | Right (absent) [n=2]
+D1+D2  |  D1+D2
+D1+D2  |  D2+D1
+
+Left (absent) | Right (absent) [n=2]
+D2+D1  |  D2+D1
+D2+D1  |  D1+D2
+/ 1 = "resources/stimuli/distractor_diamondtriangles.svg"
+/ 2 = "resources/stimuli/distractor_diamondtriangles.svg"
+/ 3 = "resources/stimuli/distractor_diamondtriangles.svg"
+/ 4 = "resources/stimuli/distractor_trianglediamonds.svg"
+/ 5 = "resources/stimuli/distractor_trianglediamonds.svg"
+/ 6 = "resources/stimuli/distractor_trianglediamonds.svg"
+/ 7 = "resources/stimuli/target_circletriangles.svg"
+/ 8 = "resources/stimuli/target_diamondcircles.svg"
+/ 9 = "resources/stimuli/target_trianglecircles.svg"
+/ 10 = "resources/stimuli/target_circlediamonds.svg"
+/ 11 = "resources/stimuli/target_squarediamonds.svg"
+/ 12 = "resources/stimuli/target_diamondcircles.svg"
+/ 13 = "resources/stimuli/distractor_diamondtriangles.svg"
+/ 14 = "resources/stimuli/distractor_trianglediamonds.sv"
+/ 15 = "resources/stimuli/distractor_trianglediamonds.svg"
+/ 16 = "resources/stimuli/distractor_diamondtriangles.svg"
+
+
+// main
+<picture stim_main_left>
+/ items = stim_practice_left
+/ select = noreplace
+</picture>
+
+<picture stim_main_right>
+/ items = stim_practice_right
+/ select = picture.stim_main_left.currentindex // Link to stim_practice_left
+</picture>
+
+
+////////// Compound stimuli ////////////////////////////////////
+// T1 = square; T2 = circle; D1 = triangle; D2 = diamond
+// Left  |  Right
+//////// 1-32: target present [n = 32]
+
+////// Global target [n = 16]
+//// Left (target present)  | Right (target absent) [n = 8]
+// T1+D1 | D1+D2
+// T1+D2
+// T2+D1
+// T2+D2
+// T1+D1 | D2+D1
+// T1+D2
+// T2+D1
+// T2+D2
+//// Left (absent) | Right (present) [n = 8]
+// D1+D2 | T1+D1
+// 		   T1+D2
+// 		   T2+D1
+// 		   T2+D2
+// D1+D2 | D1+T1
+// 		   D1+T2
+// 		   D2+T1
+// 		   D2+T2
+		  
+////// Local target [n = 16]
+//// Left (target present)  | Right (target absent) [n = 8]
+// D1+T1 | D2+D1
+// D1+T2
+// D2+T1
+// D2+T2
+// D1+T1 | D1+D2
+// D1+T2
+// D2+T1
+// D2+T2
+//// Left (absent) | Right (present) [n = 8]
+// D2+D1 | T1+D1
+// 		   T1+D2
+// 		   T2+D1
+// 		   T2+D2
+// D2+D1 | D1+T1
+// 		   D1+T2
+// 		   D2+T1
+// 		   D2+T2
+
+//////// 33-40: target absent [n = 4]
+//// Left (absent) | Right (absent) [n=2]
+// D1+D2  |  D1+D2
+// D1+D2  |  D2+D1
+
+// Left (absent) | Right (absent) [n=2]
+// D2+D1  |  D2+D1
+// D1+D2  |  D1+D2
+////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
