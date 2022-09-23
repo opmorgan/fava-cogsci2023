@@ -26,6 +26,20 @@
 //	  main block ("z") (32 t-p, 8 t-a, times 2)
 // Experiment loop. Define order of blocks
 
+<monkey>
+/ latencydistribution = constant(250)
+/ percentcorrect = 75
+</monkey>
+
+<data>
+/ columns = (build, computer.platform, date, time, values.timestamp, values.time_elapsed_ms, 
+subject, group, session, blockcode, blocknum, 
+trialcode, trialnum, values.stimulus,
+values.target_present, response, correct, latency)
+// Consider coding practice/main as "phase", repsonse key as "response condition"
+</data>
+
+
 // User-specified variables // TODO: move to config
 <parameters>
 / background_color = white
@@ -33,13 +47,14 @@
 / fontfamily_default = "Avenir Next"
 / fontsize_default = 5% // Change to 14pt?
 / fontsize_fixation = 10%
-/ iti = 2000
+/ iti = 0 // Time between response and next fixation, or time after timeout with nonresponse
 / fixation_duration = 600
 / shape_duration = 134
 / blank_duration = 256
 / mask_duration = 134
 / timeout = 2600 // Maximum response time
 / feedback_duration = 500
+/ stim_size = 40%
 </parameters>
 
 <defaults>
@@ -50,6 +65,7 @@
 </defaults>
 
 <expressions>
+// Define event onset times using durations set in <parameters>
 / fixation_onset = 0
 / shape_onset = parameters.fixation_duration
 / blank_onset = parameters.fixation_duration + parameters.shape_duration
@@ -57,93 +73,126 @@
 / iti_onset = parameters.fixation_duration + parameters.shape_duration + parameters.blank_duration + parameters.mask_duration
 </expressions>
 
+<values>
+/ trial_counter = 0 // used in trials to control stimulus selection
+/ stim_index = 0 // used in trials to control stimulus selection
+/ target_present = "" // used in trials to track whether target is present
+/ stimulus = "" // used in trials to record which stimulus was presented
+/ time_elapsed_ms = 0 // used to record experiment duration
+/ timestamp = 0 // used to record time of events
+</values>
+
 
 //  Define stim
+//  Practice:
+//    12 target-present
+//    4  target-absent
+//  Main:
 //    32 target-present
 // 	  8  target-absent
-<text stim_practice_present> // TODO replace placeholder
-/ items = stim_practice_present
-</text>
-<item stim_practice_present>
-/ 1 = "    1TARGET PRESENT   "
-/ 2 = "    2TARGET PRESENT   "
-/ 3 = "    3TARGET PRESENT   "
-/ 4 = "    4TARGET PRESENT   "
-/ 5 = "    5TARGET PRESENT   "
-/ 6 = "    6TARGET PRESENT   "
-/ 7 = "    7TARGET PRESENT   "
-/ 8 = "    8TARGET PRESENT   "
-/ 9 = "    9TARGET PRESENT   "
-/10 = "    10TARGET PRESENT   "
-/11 = "    11TARGET PRESENT   "
-/12 = "    12TARGET PRESENT   "
+// TODO: refactor to use list of 16 for practice, list of 40 for main. 
+<picture stim_practice>
+// 1- 12 are target-present
+// 13-16 are target-absent
+/ items = stim_practice
+/ select = values.stim_index
+/ position = (50%, 50%)
+/ size = (parameters.stim_size, parameters.stim_size)
+</picture>
+<item stim_practice>
+// 1- 12 are target-present
+// 13-16 are target-absent
+/ 1 = "resources/stimuli/target-circlecircles.svg"
+/ 2 = "resources/stimuli/target_circlediamonds.svg"
+/ 3 = "resources/stimuli/target_circlesquares.svg"
+/ 4 = "resources/stimuli/target_circletriangles.svg"
+/ 5 = "resources/stimuli/target_diamondcircles.svg"
+/ 6 = "resources/stimuli/target_diamondsquares.svg"
+/ 7 = "resources/stimuli/target_squarecircle.svg"
+/ 8 = "resources/stimuli/target_squarediamond.svg"
+/ 9 = "resources/stimuli/target_squaresquare.svg"
+/ 10 = "resources/stimuli/target_squaretriangle.svg"
+/ 11 = "resources/stimuli/target_trianglecircles.svg"
+/ 12 = "resources/stimuli/target_trianglesquares.svg"
+/ 13 = "resources/stimuli/distractor_diamondtriangles.svg"
+/ 14 = "resources/stimuli/distractor_trianglesdiamonds.svg"
+/ 15 = "resources/stimuli/distractor_triangletriangles.svg"
+/ 16 = "resources/stimuli/distractor_diamonddiamonds.svg"
 </item>
 
-<text stim_practice_absent> // TODO replace placeholder
-/ items = stim_practice_absent
-</text>
-<item stim_practice_absent>
-/ 1 = "    aTARGET ABSENT    "
-/ 2 = "    bTARGET ABSENT    "
-/ 3 = "    cTARGET ABSENT    "
-/ 4 = "    dTARGET ABSENT    "
-/ 5 = "    eTARGET ABSENT    "
-/ 6 = "    fTARGET ABSENT    "
-/ 7 = "    gTARGET ABSENT    "
-/ 8 = "    hTARGET ABSENT    "
+<picture stim_main>
+// 1- 32 are target-present
+// 33-40 are target-absent
+/ items = stim_main
+/ select = values.stim_index
+/ position = (50%, 50%)
+/ size = (parameters.stim_size, parameters.stim_size)
+</picture>
+<item stim_main>
+// 1- 32 are target-present
+// 33-40 are target-absent
+/ 1 = "resources/stimuli/target-circlecircles.svg"
+/ 2 = "resources/stimuli/target_circlediamonds.svg"
+/ 3 = "resources/stimuli/target_circlesquares.svg"
+/ 4 = "resources/stimuli/target_circletriangles.svg"
+/ 5 = "resources/stimuli/target_diamondcircles.svg"
+/ 6 = "resources/stimuli/target_diamondsquares.svg"
+/ 7 = "resources/stimuli/target_squarecircle.svg"
+/ 8 = "resources/stimuli/target_squarediamond.svg"
+/ 9 = "resources/stimuli/target_squaresquare.svg"
+/ 10 = "resources/stimuli/target_squaretriangle.svg"
+/ 11 = "resources/stimuli/target_trianglecircles.svg"
+/ 12 = "resources/stimuli/target_trianglesquares.svg"
+/ 13 = "resources/stimuli/target-circlecircles.svg"
+/ 14 = "resources/stimuli/target_circlediamonds.svg"
+/ 15 = "resources/stimuli/target_circlesquares.svg"
+/ 16 = "resources/stimuli/target_circletriangles.svg"
+/ 17 = "resources/stimuli/target_diamondcircles.svg"
+/ 18 = "resources/stimuli/target_diamondsquares.svg"
+/ 19 = "resources/stimuli/target_squarecircle.svg"
+/ 20 = "resources/stimuli/target_squarediamond.svg"
+/ 21 = "resources/stimuli/target_squaresquare.svg"
+/ 22 = "resources/stimuli/target_squaretriangle.svg"
+/ 23 = "resources/stimuli/target_trianglecircles.svg"
+/ 24 = "resources/stimuli/target_trianglesquares.svg"
+/ 25 = "resources/stimuli/target-circlecircles.svg"
+/ 26 = "resources/stimuli/target_circlediamonds.svg"
+/ 27 = "resources/stimuli/target_circlesquares.svg"
+/ 28 = "resources/stimuli/target_circletriangles.svg"
+/ 29 = "resources/stimuli/target_diamondcircles.svg"
+/ 30 = "resources/stimuli/target_diamondsquares.svg"
+/ 31 = "resources/stimuli/target_diamondcircles.svg"
+/ 32 = "resources/stimuli/target_diamondsquares.svg"
+/ 33 = "resources/stimuli/distractor_diamondtriangles.svg"
+/ 34 = "resources/stimuli/distractor_trianglesdiamonds.svg"
+/ 35 = "resources/stimuli/distractor_triangletriangles.svg"
+/ 36 = "resources/stimuli/distractor_diamonddiamonds.svg"
+/ 37 = "resources/stimuli/distractor_diamondtriangles.svg"
+/ 38 = "resources/stimuli/distractor_trianglesdiamonds.svg"
+/ 39 = "resources/stimuli/distractor_triangletriangles.svg"
+/ 40 = "resources/stimuli/distractor_diamonddiamonds.svg"
 </item>
 
-<text stim_main_present> // TODO replace placeholder
-/ items = stim_main_present
-</text>
-<item stim_main_present>
-/ 1 = "    TARGET PRESENT   "
-/ 2 = "    TARGET PRESENT   "
-/ 3 = "    TARGET PRESENT   "
-/ 4 = "    TARGET PRESENT   "
-/ 5 = "    TARGET PRESENT   "
-/ 6 = "    TARGET PRESENT   "
-/ 7 = "    TARGET PRESENT   "
-/ 8 = "    TARGET PRESENT   "
-/ 9 = "    TARGET PRESENT   "
-/10 = "    TARGET PRESENT   "
-/ 11 = "    TARGET PRESENT   "
-/ 12 = "    TARGET PRESENT   "
-/ 13 = "    TARGET PRESENT   "
-/ 14 = "    TARGET PRESENT   "
-/ 15 = "    TARGET PRESENT   "
-/ 16 = "    TARGET PRESENT   "
-/ 17 = "    TARGET PRESENT   "
-/ 18 = "    TARGET PRESENT   "
-/ 19 = "    TARGET PRESENT   "
-/20 = "    TARGET PRESENT   "
-/ 21 = "    TARGET PRESENT   "
-/ 22 = "    TARGET PRESENT   "
-/ 23 = "    TARGET PRESENT   "
-/ 24 = "    TARGET PRESENT   "
-/ 25 = "    TARGET PRESENT   "
-/ 26 = "    TARGET PRESENT   "
-/ 27 = "    TARGET PRESENT   "
-/ 28 = "    TARGET PRESENT   "
-/ 29 = "    TARGET PRESENT   "
-/30 = "    TARGET PRESENT   "
-/ 31 = "    TARGET PRESENT   "
-/ 32 = "    TARGET PRESENT   "
-</item>
+// Define stimulus selection pools
+<list stim_selector_practice>
+// Note: controls the selection of the 16 stimuli for the practice condition
+// (item list contain the possible itemnumbers)
+// The first 12 are target-present; the last 4 are target-absent.
+/ items = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16)
+/ poolsize = 16
+/ replace = false
+/ resetinterval = 0 // Reset after all items have been selected -- number of items needs to match number presented per block
+</list>
 
-<text stim_main_absent> // TODO replace placeholder
-/ items = stim_main_absent
-</text>
-<item stim_main_absent>
-/ 1 = "    TARGET ABSENT    "
-/ 2 = "    TARGET ABSENT    "
-/ 3 = "    TARGET ABSENT    "
-/ 4 = "    TARGET ABSENT    "
-/ 5 = "    TARGET ABSENT    "
-/ 6 = "    TARGET ABSENT    "
-/ 7 = "    TARGET ABSENT    "
-/ 8 = "    TARGET ABSENT    "
-</item>
+<list stim_selector_main>
+// Note: controls the selection of the 16 stimuli for the practice condition
+// (item list contain the possible itemnumbers)
+// The first 32 are target-present; the last 8 are target-absent.
+/ items = (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40)
+/ poolsize = 40
+/ replace = false
+/ resetinterval = 0 // Reset after all items have been selected -- number of items needs to match number presented per block
+</list>
 
 <text stim_fixation>
 / items = ("+")
@@ -184,12 +233,12 @@ Practice round. When you see a square or circle, press "/"
 Practice round. When you see a square or circle, press "z"
 </page>
 
-<text incorrect_message>  
+<text incorrect_message>
 / items = ("      INCORRECT      ")
 / txcolor = (255, 0, 0)
 </text>
 
-<text correct_message>  
+<text correct_message>
 / items = ("     CORRECT     ")
 / txcolor = (0, 255, 0)
 </text>
@@ -199,9 +248,6 @@ Get ready for the real experiment! When you see a square or circle, press "/"
 </page>
 
 <page instructions_main_z> // TODO: write, move to htmlpage
-
-
-
 Get ready for the real experiment! When you see a square or circle, press "z"
 </page>
 
@@ -211,199 +257,166 @@ Instructions (intro)
 
 // Define trial types (what stim are presented? Which responses are valid/correct?)
 //	  instructions (keys for next, previous)
-//    practice target-present ("/")
-//	  practice target-absent ("/")
-//	  main target-present ("/")
-//    main target-absent ("/")
-//    practice target-present ("z")
-//	  practice target-absent ("z")
-//	  main target-present ("z")
-//    main target-absent ("z")
+//    practice  ("/") 12 target-present, 4 target-absent [16 trials total]
+//	  main      ("/") 32 target-present, 8 target-absent [40 trials total]
+//    practice  ("z") 12 target-present, 4 target-absent [16 trials total]
+//	  main      ("z") 32 target-present, 8 target-absent [40 trials total]
 <instruct>
 / nextkey = ("n")
 / prevkey = ("p")
 </instruct>
 
-/ fixation_onset = 0
-/ shape_onset = parameters.fixation_duration
-/ blank_onset = parameters.fixation_duration + parameters.shape_duration
-/ mask_onset = parameters.fixation_duration + parameters.shape_duration + parameters.blank_duration
-/ iti_onset = parameters.fixation_duration + parameters.shape_duration + parameters.blank_duration + parameters.mask_duration
-
-<trial practice_present_slash>
+<trial practice_slash>
 / ontrialbegin = [
-	trial.practice_present_slash.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
-	trial.practice_present_slash.insertstimulustime(text.stim_practice_present, expressions.shape_onset); // 600ms: show stimulus
+	values.trial_counter += 1;
+	values.stim_index = list.stim_selector_practice.nextvalue;
+	if (values.stim_index <= 12){ // Trials 1-12: present
+		values.target_present = "yes";
+	} else if (values.stim_index > 12) { //Trials 13-16: absent
+		values.target_present = "no";
+	} else {
+		values.target_present = "error: stimulus index out of bounds";
+	};
+	trial.practice_slash.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
+	trial.practice_slash.insertstimulustime(picture.stim_practice, expressions.shape_onset); // 600ms: show stimulus
 	
-	trial.practice_present_slash.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
+	trial.practice_slash.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
 	
-	trial.practice_present_slash.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
-    trial.practice_present_slash.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
+	trial.practice_slash.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
+    trial.practice_slash.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
 ]
 
 / stimulustimes = [0 = stim_fixation]
 / beginresponsetime = parameters.fixation_duration
-/ timeout = parameters.timeout
-/ posttrialpause = parameters.iti
-
 / responseinterrupt = immediate
-/ validresponse = ("/")
-/ correctresponse = ("/")
-// TODO: Record responses with /ontrialend
-</trial>
-
-<trial practice_absent_slash>
-/ ontrialbegin = [
-	trial.practice_absent_slash.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
-	trial.practice_absent_slash.insertstimulustime(text.stim_practice_absent, expressions.shape_onset); // 600ms: show stimulus
-	
-	trial.practice_absent_slash.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
-	
-	trial.practice_absent_slash.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
-    trial.practice_absent_slash.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
-]
-
-/ stimulustimes = [0 = stim_fixation]
-/ beginresponsetime = parameters.fixation_duration
 / timeout = parameters.timeout
-/ posttrialpause = parameters.iti
 
-/ responseinterrupt = immediate
 / validresponse = ("/", noresponse)
-/ correctresponse = (noresponse)
-// TODO: Record responses with /ontrialend
+/ iscorrectresponse = [(values.stim_index <= 12 && trial.practice_slash.responsetext == "/") || (values.stim_index > 12 && trial.practice_slash.responsetext != "/")] 
+
+/ ontrialend = [
+	trial.practice_slash.resetstimulusframes();
+	values.stimulus = picture.stim_practice.currentitem;
+	values.time_elapsed_ms = script.elapsedtime;
+	values.timestamp = script.currenttime;
+]
+
+/ posttrialpause = parameters.iti
+/ recorddata = true
 </trial>
 
-<trial practice_present_z>
+<trial practice_z>
 / ontrialbegin = [
-	trial.practice_present_z.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
-	trial.practice_present_z.insertstimulustime(text.stim_practice_present, expressions.shape_onset); // 600ms: show stimulus
+	values.trial_counter += 1;
+	values.stim_index = list.stim_selector_practice.nextvalue;
+	if (values.stim_index <= 12){ // Trials 1-12: present
+		values.target_present = "yes";
+	} else if (values.stim_index > 12) { //Trials 13-16: absent
+		values.target_present = "no";
+	} else {
+		values.target_present = "error: stimulus index out of bounds";
+	};
+	trial.practice_z.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
+	trial.practice_z.insertstimulustime(picture.stim_practice, expressions.shape_onset); // 600ms: show stimulus
 	
-	trial.practice_present_z.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
+	trial.practice_z.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
 	
-	trial.practice_present_z.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
-    trial.practice_present_z.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
+	trial.practice_z.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
+    trial.practice_z.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
 ]
 
 / stimulustimes = [0 = stim_fixation]
 / beginresponsetime = parameters.fixation_duration
-/ timeout = parameters.timeout
-/ posttrialpause = parameters.iti
-
 / responseinterrupt = immediate
-/ validresponse = ("z")
-/ correctresponse = ("z")
-// TODO: Record responses with /ontrialend
-</trial>
-
-<trial practice_absent_z>
-/ ontrialbegin = [
-	trial.practice_absent_z.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
-	trial.practice_present_z.insertstimulustime(text.stim_practice_absent, expressions.shape_onset); // 600ms: show stimulus
-	
-	trial.practice_absent_z.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
-	
-	trial.practice_absent_z.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
-    trial.practice_absent_z.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
-]
-
-/ stimulustimes = [0 = stim_fixation]
-/ beginresponsetime = parameters.fixation_duration
 / timeout = parameters.timeout
-/ posttrialpause = parameters.iti
 
-/ responseinterrupt = immediate
 / validresponse = ("z", noresponse)
-/ correctresponse = (noresponse)
-// TODO: Record responses with /ontrialend
+/ iscorrectresponse = [(values.stim_index <= 12 && trial.practice_z.responsetext == "z") || (values.stim_index > 12 && trial.practice_z.responsetext != "z")] 
+
+/ ontrialend = [
+	trial.practice_z.resetstimulusframes();
+	values.stimulus = picture.stim_practice.currentitem;
+	values.time_elapsed_ms = script.elapsedtime;
+    values.timestamp = script.currenttime;
+]
+
+/ posttrialpause = parameters.iti
+/ recorddata = true
 </trial>
 
-<trial main_present_slash>
+<trial main_slash>
 / ontrialbegin = [
-	trial.main_present_slash.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
-	trial.main_present_slash.insertstimulustime(text.stim_main_present, expressions.shape_onset); // 600ms: show stimulus
+	values.trial_counter += 1;
+	values.stim_index = list.stim_selector_main.nextvalue;
+	if (values.stim_index <= 32){ // Trials 1-32: present
+		values.target_present = "yes";
+	} else if (values.stim_index > 32) { //Trials 33-40: absent
+		values.target_present = "no";
+	} else {
+		values.target_present = "error: stimulus index out of bounds";
+	};
+	trial.main_slash.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
+	trial.main_slash.insertstimulustime(picture.stim_main, expressions.shape_onset); // 600ms: show stimulus
 	
-	trial.main_present_slash.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
+	trial.main_slash.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
 	
-	trial.main_present_slash.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
-    trial.main_present_slash.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
+	trial.main_slash.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
+    trial.main_slash.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
 ]
 
 / stimulustimes = [0 = stim_fixation]
 / beginresponsetime = parameters.fixation_duration
-/ timeout = parameters.timeout
-/ posttrialpause = parameters.iti
-
 / responseinterrupt = immediate
-/ validresponse = ("/")
-/ correctresponse = ("/")
-// TODO: Record responses with /ontrialend
-</trial>
-
-<trial main_absent_slash>
-/ ontrialbegin = [
-	trial.main_absent_slash.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
-	trial.main_absent_slash.insertstimulustime(text.stim_main_absent, expressions.shape_onset); // 600ms: show stimulus
-	
-	trial.main_absent_slash.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
-	
-	trial.main_absent_slash.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
-    trial.main_absent_slash.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
-]
-
-/ stimulustimes = [0 = stim_fixation]
-/ beginresponsetime = parameters.fixation_duration
 / timeout = parameters.timeout
-/ posttrialpause = parameters.iti
 
-/ responseinterrupt = immediate
 / validresponse = ("/", noresponse)
-/ correctresponse = (noresponse)
-// TODO: Record responses with /ontrialend
+/ iscorrectresponse = [(values.stim_index <= 32 && trial.main_slash.responsetext == "/") || (values.stim_index > 32 && trial.main_slash.responsetext != "/")] 
+// Hack: set correct response for absent trials to responsetext != "/"
+/ ontrialend = [
+	trial.main_slash.resetstimulusframes();
+	values.stimulus = picture.stim_main.currentitem;
+	values.time_elapsed_ms = script.elapsedtime;
+	values.timestamp = script.currenttime;
+]
+
+/ posttrialpause = parameters.iti
+/ recorddata = true
 </trial>
 
-<trial main_present_z>
+<trial main_z>
 / ontrialbegin = [
-	trial.main_present_z.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
-	trial.main_present_z.insertstimulustime(text.stim_main_present, expressions.shape_onset); // 600ms: show stimulus
+	values.trial_counter += 1;
+	values.stim_index = list.stim_selector_main.nextvalue;
+	if (values.stim_index <= 32){ // Trials 1-32: present
+		values.target_present = "yes";
+	} else if (values.stim_index > 32) { //Trials 33-40: absent
+		values.target_present = "no";
+	} else {
+		values.target_present = "error: stimulus index out of bounds";
+	};
+	trial.main_z.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
+	trial.main_z.insertstimulustime(picture.stim_main, expressions.shape_onset); // 600ms: show stimulus
 	
-	trial.main_present_z.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
+	trial.main_z.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
 	
-	trial.main_present_z.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
-    trial.main_present_z.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
+	trial.main_z.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
+    trial.main_z.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
 ]
 
 / stimulustimes = [0 = stim_fixation]
 / beginresponsetime = parameters.fixation_duration
-/ timeout = parameters.timeout
-/ posttrialpause = parameters.iti
-
 / responseinterrupt = immediate
-/ validresponse = ("z")
-/ correctresponse = ("z")
-// TODO: Record responses with /ontrialend
-</trial>
+/ timeout = parameters.timeout
 
-<trial main_absent_z>
-/ ontrialbegin = [
-	trial.main_absent_z.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
-	trial.main_absent_z.insertstimulustime(text.stim_main_absent, expressions.shape_onset); // 600ms: show stimulus
-	
-	trial.main_absent_z.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
-	
-	trial.main_absent_z.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
-    trial.main_absent_z.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
+/ validresponse = ("/", noresponse)
+/ iscorrectresponse = [(values.stim_index <= 32 && trial.main_z.responsetext == "/") || (values.stim_index > 32 && trial.main_z.responsetext != "z")] 
+
+/ ontrialend = [
+	trial.main_z.resetstimulusframes();
+	values.stimulus = picture.stim_main.currentitem;
+	values.time_elapsed_ms = script.elapsedtime;
+	values.timestamp = script.currenttime;
 ]
-
-/ stimulustimes = [0 = stim_fixation]
-/ beginresponsetime = parameters.fixation_duration
-/ timeout = parameters.timeout
-/ posttrialpause = parameters.iti
-
-/ responseinterrupt = immediate
-/ validresponse = ("z", noresponse)
-/ correctresponse = (noresponse)
-// TODO: Record responses with /ontrialend
 </trial>
 
 <trial interblock_break>
@@ -412,16 +425,17 @@ Instructions (intro)
 </trial>
 
 // Define blocks
-//    practice block ("/") (12 t-p, 4 t-a)
-//	  main block ("/") (32 t-p, 8 t-a, times 2) 
-//    practice block ("z") (12 t-p, 4 t-a)
-//	  main block ("z") (32 t-p, 8 t-a, times 2)
+//    practice block ("/") 12 target-present, 4 target-absent          [16 trials total]
+//	  main block     ("/") 32 target-present, 8 target-absent, times 2 [80 trials total]
+//    practice block ("z") 12 target-present, 4 target-absent          [16 trials total]
+//	  main block     ("z") 32 target-present, 8 target-absent, times 2 [80 trials total]
 <block practice_slash>
 / trials = [
-	1-16 = noreplace(practice_present_slash, practice_absent_slash) // Make sure this randomly selects from full pool; if not, move logic.
 	// How to present 12 present, 4 absent?
 	// (a) Select without replacement on list of 12 present; list of 4 absent (does this work?)
+	// 1-16 = noreplace(practice_present_slash, practice_absent_slash) // Make sure this randomly selects from full pool; if not, move logic.
 	// (b) Predefine set of 16 stim, in one trial type. Randomly present those 16.
+	1-16 = noreplace(practice_slash)
     // It might be harder to handle responses in (b).
 	]
 / preinstructions = (instructions_practice_slash)
@@ -431,7 +445,7 @@ Instructions (intro)
 
 <block practice_z>
 / trials = [
-	1-16 = noreplace(practice_present_z, practice_absent_z)
+	1-16 = noreplace(practice_z)
 	]
 / preinstructions = (instructions_practice_z)
 / errormessage = (incorrect_message, parameters.feedback_duration)
@@ -440,20 +454,22 @@ Instructions (intro)
 
 <block main_slash>
 / trials = [
-	1-40 = noreplace(main_present_slash, main_absent_slash);
 	// How to present 32 present, 8 absent?
 	// (a) Select without replacement on list of 32 present; list of 8 absent (does this work?)
+	// 1-40 = noreplace(main_present_slash, main_absent_slash);
+	// 41-80 = noreplace(main_present_slash, main_absent_slash) 
 	// (b) Predefine set of 40 stim, in one trial type. Randomly present those 40.
 	// It might be harder to handle responses in (b).
-	41-80 = noreplace(main_present_slash, main_absent_slash) 
+	 1-40 = noreplace(main_slash);
+	41-80 = noreplace(main_slash);
 	]
 / preinstructions = (instructions_main_slash)
 </block>
 
 <block main_z>
 / trials = [
-	1-40 = noreplace(main_present_z, main_absent_z);
-	41-80 = noreplace(main_present_z, main_absent_z) 
+	 1-40 = noreplace(main_slash);
+	41-80 = noreplace(main_slash);
 	]
 / preinstructions = (instructions_main_z)
 </block>
