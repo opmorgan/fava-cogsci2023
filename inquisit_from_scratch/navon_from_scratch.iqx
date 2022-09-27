@@ -62,8 +62,9 @@ values.target_present, response, correct, latency)
 / timeout = 2600 // Maximum response time
 / feedback_duration = 500
 / stim_size = 40%
-/ stim_xposition_left = 30%
-/ stim_xposition_right = 70%
+/ stim_xposition_left = 40%
+/ stim_xposition_right = 60%
+/ stim_yposition = 50%
 </parameters>
 
 <defaults>

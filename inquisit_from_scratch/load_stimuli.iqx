@@ -97,7 +97,7 @@ D1+D2  |  D1+D2
 
 <picture stim_mask_left>
 / items = stim_mask_left
-/ position = (parameters.stim_xposition_left, 50%)
+/ position = (parameters.stim_xposition_left, parameters.stim_yposition)
 / size = (parameters.stim_size, parameters.stim_size)
 </picture>
 
@@ -107,7 +107,7 @@ D1+D2  |  D1+D2
 
 <picture stim_mask_right>
 / items = stim_mask_right
-/ position = (parameters.stim_xposition_right, 50%)
+/ position = (parameters.stim_xposition_right, parameters.stim_yposition)
 / size = (parameters.stim_size, parameters.stim_size)
 </picture>
 
@@ -121,7 +121,7 @@ D1+D2  |  D1+D2
 // 13-16 are target-absent
 / items = stim_practice_left
 / select = noreplace
-/ position = (parameters.stim_xposition_left, 50%)
+/ position = (parameters.stim_xposition_left, parameters.stim_yposition)
 / size = (parameters.stim_size, parameters.stim_size)
 </picture>
 
@@ -130,7 +130,7 @@ D1+D2  |  D1+D2
 // 13-16 are target-absent
 / items = stim_practice_right
 / select = picture.stim_practice_left.currentindex // Link to stim_practice_left
-/ position = (parameters.stim_xposition_right, 50%)
+/ position = (parameters.stim_xposition_right, parameters.stim_yposition)
 / size = (parameters.stim_size, parameters.stim_size)
 </picture>
 
@@ -188,7 +188,7 @@ D1+D2  |  D1+D2
 // 33-30 are target-absent
 / items = stim_practice_left
 / select = noreplace
-/ position = (parameters.stim_xposition_left, 50%)
+/ position = (parameters.stim_xposition_left, parameters.stim_yposition)
 / size = (parameters.stim_size, parameters.stim_size)
 </picture>
 
@@ -197,7 +197,7 @@ D1+D2  |  D1+D2
 // 33-30 are target-absent
 / items = stim_practice_right
 / select = picture.stim_main_left.currentindex // Link to stim_main_left
-/ position = (parameters.stim_xposition_right, 50%)
+/ position = (parameters.stim_xposition_right, parameters.stim_yposition)
 / size = (parameters.stim_size, parameters.stim_size)
 </picture>
 
