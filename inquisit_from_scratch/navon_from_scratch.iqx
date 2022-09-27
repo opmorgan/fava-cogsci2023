@@ -90,7 +90,15 @@ values.target_present, response, correct, latency)
 //  Main:
 //    32 target-present
 // 	  8  target-absent
-// TODO: refactor to use list of 16 for practice, list of 40 for main. 
+
+//// Load stimuli specified in load_stimuli.iqx
+// Load picture objects with item lists:
+// stim_practice_left; stim_practice_right;
+// stim_main_left; stim_main_right
+<include>
+/ file = "load_stimuli.iqx"
+</include>
+
 <picture stim_practice>
 // 1- 12 are target-present
 // 13-16 are target-absent
@@ -99,25 +107,26 @@ values.target_present, response, correct, latency)
 / position = (50%, 50%)
 / size = (parameters.stim_size, parameters.stim_size)
 </picture>
+
 <item stim_practice>
 // 1- 12 are target-present
 // 13-16 are target-absent
-/ 1 = "resources/stimuli/target-circlecircles.svg"
+/ 1 = "resources/stimuli/target_circlediamonds.svg"
 / 2 = "resources/stimuli/target_circlediamonds.svg"
 / 3 = "resources/stimuli/target_circlesquares.svg"
 / 4 = "resources/stimuli/target_circletriangles.svg"
 / 5 = "resources/stimuli/target_diamondcircles.svg"
 / 6 = "resources/stimuli/target_diamondsquares.svg"
-/ 7 = "resources/stimuli/target_squarecircle.svg"
-/ 8 = "resources/stimuli/target_squarediamond.svg"
-/ 9 = "resources/stimuli/target_squaresquare.svg"
-/ 10 = "resources/stimuli/target_squaretriangle.svg"
+/ 7 = "resources/stimuli/target_squarecircles.svg"
+/ 8 = "resources/stimuli/target_squarediamonds.svg"
+/ 9 = "resources/stimuli/target_squarediamonds.svg"
+/ 10 = "resources/stimuli/target_squaretriangles.svg"
 / 11 = "resources/stimuli/target_trianglecircles.svg"
 / 12 = "resources/stimuli/target_trianglesquares.svg"
 / 13 = "resources/stimuli/distractor_diamondtriangles.svg"
-/ 14 = "resources/stimuli/distractor_trianglesdiamonds.svg"
-/ 15 = "resources/stimuli/distractor_triangletriangles.svg"
-/ 16 = "resources/stimuli/distractor_diamonddiamonds.svg"
+/ 14 = "resources/stimuli/distractor_trianglediamonds.svg"
+/ 15 = "resources/stimuli/distractor_trianglediamonds.svg"
+/ 16 = "resources/stimuli/distractor_trianglediamonds.svg"
 </item>
 
 <picture stim_main>
@@ -128,34 +137,35 @@ values.target_present, response, correct, latency)
 / position = (50%, 50%)
 / size = (parameters.stim_size, parameters.stim_size)
 </picture>
+
 <item stim_main>
 // 1- 32 are target-present
 // 33-40 are target-absent
-/ 1 = "resources/stimuli/target-circlecircles.svg"
+/ 1 = "resources/stimuli/target_circlediamonds.svg"
 / 2 = "resources/stimuli/target_circlediamonds.svg"
 / 3 = "resources/stimuli/target_circlesquares.svg"
 / 4 = "resources/stimuli/target_circletriangles.svg"
 / 5 = "resources/stimuli/target_diamondcircles.svg"
 / 6 = "resources/stimuli/target_diamondsquares.svg"
-/ 7 = "resources/stimuli/target_squarecircle.svg"
-/ 8 = "resources/stimuli/target_squarediamond.svg"
-/ 9 = "resources/stimuli/target_squaresquare.svg"
-/ 10 = "resources/stimuli/target_squaretriangle.svg"
+/ 7 = "resources/stimuli/target_squarecircles.svg"
+/ 8 = "resources/stimuli/target_squarediamonds.svg"
+/ 9 = "resources/stimuli/target_squarediamonds.svg"
+/ 10 = "resources/stimuli/target_squaretriangles.svg"
 / 11 = "resources/stimuli/target_trianglecircles.svg"
 / 12 = "resources/stimuli/target_trianglesquares.svg"
-/ 13 = "resources/stimuli/target-circlecircles.svg"
+/ 13 = "resources/stimuli/target_circlediamonds.svg"
 / 14 = "resources/stimuli/target_circlediamonds.svg"
 / 15 = "resources/stimuli/target_circlesquares.svg"
 / 16 = "resources/stimuli/target_circletriangles.svg"
 / 17 = "resources/stimuli/target_diamondcircles.svg"
 / 18 = "resources/stimuli/target_diamondsquares.svg"
-/ 19 = "resources/stimuli/target_squarecircle.svg"
-/ 20 = "resources/stimuli/target_squarediamond.svg"
-/ 21 = "resources/stimuli/target_squaresquare.svg"
-/ 22 = "resources/stimuli/target_squaretriangle.svg"
+/ 19 = "resources/stimuli/target_squarecircles.svg"
+/ 20 = "resources/stimuli/target_squarediamonds.svg"
+/ 21 = "resources/stimuli/target_squarediamonds.svg"
+/ 22 = "resources/stimuli/target_squaretriangles.svg"
 / 23 = "resources/stimuli/target_trianglecircles.svg"
 / 24 = "resources/stimuli/target_trianglesquares.svg"
-/ 25 = "resources/stimuli/target-circlecircles.svg"
+/ 25 = "resources/stimuli/target_circlediamonds.svg"
 / 26 = "resources/stimuli/target_circlediamonds.svg"
 / 27 = "resources/stimuli/target_circlesquares.svg"
 / 28 = "resources/stimuli/target_circletriangles.svg"
@@ -164,13 +174,13 @@ values.target_present, response, correct, latency)
 / 31 = "resources/stimuli/target_diamondcircles.svg"
 / 32 = "resources/stimuli/target_diamondsquares.svg"
 / 33 = "resources/stimuli/distractor_diamondtriangles.svg"
-/ 34 = "resources/stimuli/distractor_trianglesdiamonds.svg"
-/ 35 = "resources/stimuli/distractor_triangletriangles.svg"
-/ 36 = "resources/stimuli/distractor_diamonddiamonds.svg"
+/ 34 = "resources/stimuli/distractor_trianglediamonds.svg"
+/ 35 = "resources/stimuli/distractor_diamondtriangles.svg"
+/ 36 = "resources/stimuli/distractor_diamondtriangles.svg"
 / 37 = "resources/stimuli/distractor_diamondtriangles.svg"
-/ 38 = "resources/stimuli/distractor_trianglesdiamonds.svg"
-/ 39 = "resources/stimuli/distractor_triangletriangles.svg"
-/ 40 = "resources/stimuli/distractor_diamonddiamonds.svg"
+/ 38 = "resources/stimuli/distractor_trianglediamonds.svg"
+/ 39 = "resources/stimuli/distractor_diamondtriangles.svg"
+/ 40 = "resources/stimuli/distractor_diamondtriangles.svg"
 </item>
 
 // Define stimulus selection pools
