@@ -26,6 +26,9 @@
 //	  main block ("z") (32 t-p, 8 t-a, times 2)
 // Experiment loop. Define order of blocks
 
+**************************************************************************************************************
+	Data recording
+**************************************************************************************************************
 <monkey>
 / latencydistribution = constant(250)
 / percentcorrect = 75
@@ -34,11 +37,15 @@
 <data>
 / columns = (build, computer.platform, date, time, values.timestamp, values.time_elapsed_ms, 
 subject, group, session, blockcode, blocknum, 
-trialcode, trialnum, values.stimulus,
+trialcode, trialnum, values.stimulus_left, values.stimulus_right,
 values.target_present, response, correct, latency)
 // Consider coding practice/main as "phase", repsonse key as "response condition"
 </data>
 
+
+**************************************************************************************************************
+	Config: parameters, defaults, expressions
+**************************************************************************************************************
 
 // User-specified variables // TODO: move to config
 <parameters>
@@ -55,6 +62,8 @@ values.target_present, response, correct, latency)
 / timeout = 2600 // Maximum response time
 / feedback_duration = 500
 / stim_size = 40%
+/ stim_xposition_left = 30%
+/ stim_xposition_right = 70%
 </parameters>
 
 <defaults>
@@ -73,115 +82,37 @@ values.target_present, response, correct, latency)
 / iti_onset = parameters.fixation_duration + parameters.shape_duration + parameters.blank_duration + parameters.mask_duration
 </expressions>
 
+
+**************************************************************************************************************
+	Initialize values
+**************************************************************************************************************
 <values>
 / trial_counter = 0 // used in trials to control stimulus selection
 / stim_index = 0 // used in trials to control stimulus selection
 / target_present = "" // used in trials to track whether target is present
 / stimulus = "" // used in trials to record which stimulus was presented
+/ stimulus_left = "" // used in trials to record which stimulus was presented
+/ stimulus_right = "" // used in trials to record which stimulus was presented
 / time_elapsed_ms = 0 // used to record experiment duration
 / timestamp = 0 // used to record time of events
 </values>
 
 
-//  Define stim
+**************************************************************************************************************
+	Stimuli
+**************************************************************************************************************
+//// Load stimuli specified in load_stimuli.iqx:
+// stim_practice_left; stim_practice_right;
+// stim_main_left; stim_main_right
 //  Practice:
 //    12 target-present
 //    4  target-absent
 //  Main:
 //    32 target-present
 // 	  8  target-absent
-
-//// Load stimuli specified in load_stimuli.iqx
-// Load picture objects with item lists:
-// stim_practice_left; stim_practice_right;
-// stim_main_left; stim_main_right
 <include>
 / file = "load_stimuli.iqx"
 </include>
-
-<picture stim_practice>
-// 1- 12 are target-present
-// 13-16 are target-absent
-/ items = stim_practice
-/ select = values.stim_index
-/ position = (50%, 50%)
-/ size = (parameters.stim_size, parameters.stim_size)
-</picture>
-
-<item stim_practice>
-// 1- 12 are target-present
-// 13-16 are target-absent
-/ 1 = "resources/stimuli/target_circlediamonds.svg"
-/ 2 = "resources/stimuli/target_circlediamonds.svg"
-/ 3 = "resources/stimuli/target_circlesquares.svg"
-/ 4 = "resources/stimuli/target_circletriangles.svg"
-/ 5 = "resources/stimuli/target_diamondcircles.svg"
-/ 6 = "resources/stimuli/target_diamondsquares.svg"
-/ 7 = "resources/stimuli/target_squarecircles.svg"
-/ 8 = "resources/stimuli/target_squarediamonds.svg"
-/ 9 = "resources/stimuli/target_squarediamonds.svg"
-/ 10 = "resources/stimuli/target_squaretriangles.svg"
-/ 11 = "resources/stimuli/target_trianglecircles.svg"
-/ 12 = "resources/stimuli/target_trianglesquares.svg"
-/ 13 = "resources/stimuli/distractor_diamondtriangles.svg"
-/ 14 = "resources/stimuli/distractor_trianglediamonds.svg"
-/ 15 = "resources/stimuli/distractor_trianglediamonds.svg"
-/ 16 = "resources/stimuli/distractor_trianglediamonds.svg"
-</item>
-
-<picture stim_main>
-// 1- 32 are target-present
-// 33-40 are target-absent
-/ items = stim_main
-/ select = values.stim_index
-/ position = (50%, 50%)
-/ size = (parameters.stim_size, parameters.stim_size)
-</picture>
-
-<item stim_main>
-// 1- 32 are target-present
-// 33-40 are target-absent
-/ 1 = "resources/stimuli/target_circlediamonds.svg"
-/ 2 = "resources/stimuli/target_circlediamonds.svg"
-/ 3 = "resources/stimuli/target_circlesquares.svg"
-/ 4 = "resources/stimuli/target_circletriangles.svg"
-/ 5 = "resources/stimuli/target_diamondcircles.svg"
-/ 6 = "resources/stimuli/target_diamondsquares.svg"
-/ 7 = "resources/stimuli/target_squarecircles.svg"
-/ 8 = "resources/stimuli/target_squarediamonds.svg"
-/ 9 = "resources/stimuli/target_squarediamonds.svg"
-/ 10 = "resources/stimuli/target_squaretriangles.svg"
-/ 11 = "resources/stimuli/target_trianglecircles.svg"
-/ 12 = "resources/stimuli/target_trianglesquares.svg"
-/ 13 = "resources/stimuli/target_circlediamonds.svg"
-/ 14 = "resources/stimuli/target_circlediamonds.svg"
-/ 15 = "resources/stimuli/target_circlesquares.svg"
-/ 16 = "resources/stimuli/target_circletriangles.svg"
-/ 17 = "resources/stimuli/target_diamondcircles.svg"
-/ 18 = "resources/stimuli/target_diamondsquares.svg"
-/ 19 = "resources/stimuli/target_squarecircles.svg"
-/ 20 = "resources/stimuli/target_squarediamonds.svg"
-/ 21 = "resources/stimuli/target_squarediamonds.svg"
-/ 22 = "resources/stimuli/target_squaretriangles.svg"
-/ 23 = "resources/stimuli/target_trianglecircles.svg"
-/ 24 = "resources/stimuli/target_trianglesquares.svg"
-/ 25 = "resources/stimuli/target_circlediamonds.svg"
-/ 26 = "resources/stimuli/target_circlediamonds.svg"
-/ 27 = "resources/stimuli/target_circlesquares.svg"
-/ 28 = "resources/stimuli/target_circletriangles.svg"
-/ 29 = "resources/stimuli/target_diamondcircles.svg"
-/ 30 = "resources/stimuli/target_diamondsquares.svg"
-/ 31 = "resources/stimuli/target_diamondcircles.svg"
-/ 32 = "resources/stimuli/target_diamondsquares.svg"
-/ 33 = "resources/stimuli/distractor_diamondtriangles.svg"
-/ 34 = "resources/stimuli/distractor_trianglediamonds.svg"
-/ 35 = "resources/stimuli/distractor_diamondtriangles.svg"
-/ 36 = "resources/stimuli/distractor_diamondtriangles.svg"
-/ 37 = "resources/stimuli/distractor_diamondtriangles.svg"
-/ 38 = "resources/stimuli/distractor_trianglediamonds.svg"
-/ 39 = "resources/stimuli/distractor_diamondtriangles.svg"
-/ 40 = "resources/stimuli/distractor_diamondtriangles.svg"
-</item>
 
 // Define stimulus selection pools
 <list stim_selector_practice>
@@ -209,17 +140,6 @@ values.target_present, response, correct, latency)
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_fixation, false, false, false, false, 5, 1)
 / position = (50%, 50%)
 </text>
-
-<text stim_mask> // TODO replace placeholder
-/ items = ("mask")
-</text>
-
-<shape stim_blank> // TODO replace placeholder
-/ shape = rectangle
-/ color = parameters.background_color
-/ size = (100%, 100%)
-/ position = (50%, 50%)
-</shape>
 
 <text prompt_interblock_break> // TODO: add timer
 /items = ("Nice job! You are halfway there. in 20 seconds, the next block will begin.")
@@ -288,11 +208,15 @@ Instructions (intro)
 		values.target_present = "error: stimulus index out of bounds";
 	};
 	trial.practice_slash.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
-	trial.practice_slash.insertstimulustime(picture.stim_practice, expressions.shape_onset); // 600ms: show stimulus
+	trial.practice_slash.insertstimulustime(picture.stim_practice_left, expressions.shape_onset); // 600ms: show stimulus
+	trial.practice_slash.insertstimulustime(picture.stim_practice_right, expressions.shape_onset); // 600ms: show stimulus
+
 	
 	trial.practice_slash.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
 	
-	trial.practice_slash.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
+	trial.practice_slash.insertstimulustime(picture.stim_mask_left, expressions.mask_onset); // 600+134ms+256ms: show mask
+	trial.practice_slash.insertstimulustime(picture.stim_mask_right, expressions.mask_onset); // 600+134ms+256ms: show mask
+
     trial.practice_slash.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
 ]
 
@@ -306,7 +230,8 @@ Instructions (intro)
 
 / ontrialend = [
 	trial.practice_slash.resetstimulusframes();
-	values.stimulus = picture.stim_practice.currentitem;
+	values.stimulus_left = picture.stim_practice_left.currentitem;
+	values.stimulus_right = picture.stim_practice_right.currentitem;
 	values.time_elapsed_ms = script.elapsedtime;
 	values.timestamp = script.currenttime;
 ]
@@ -327,11 +252,14 @@ Instructions (intro)
 		values.target_present = "error: stimulus index out of bounds";
 	};
 	trial.practice_z.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
-	trial.practice_z.insertstimulustime(picture.stim_practice, expressions.shape_onset); // 600ms: show stimulus
+	trial.practice_z.insertstimulustime(picture.stim_practice_left, expressions.shape_onset); // 600ms: show stimulus
+	trial.practice_z.insertstimulustime(picture.stim_practice_right, expressions.shape_onset); // 600ms: show stimulus
+
 	
 	trial.practice_z.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
 	
-	trial.practice_z.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
+	trial.practice_z.insertstimulustime(picture.stim_mask_left, expressions.mask_onset); // 600+134ms+256ms: show mask
+	trial.practice_z.insertstimulustime(picture.stim_mask_right, expressions.mask_onset); // 600+134ms+256ms: show mask
     trial.practice_z.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
 ]
 
@@ -345,7 +273,8 @@ Instructions (intro)
 
 / ontrialend = [
 	trial.practice_z.resetstimulusframes();
-	values.stimulus = picture.stim_practice.currentitem;
+	values.stimulus = picture.stim_practice_left.currentitem;
+	values.stimulus = picture.stim_practice_right.currentitem;
 	values.time_elapsed_ms = script.elapsedtime;
     values.timestamp = script.currenttime;
 ]
@@ -366,11 +295,14 @@ Instructions (intro)
 		values.target_present = "error: stimulus index out of bounds";
 	};
 	trial.main_slash.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
-	trial.main_slash.insertstimulustime(picture.stim_main, expressions.shape_onset); // 600ms: show stimulus
+	trial.main_slash.insertstimulustime(picture.stim_main_left, expressions.shape_onset); // 600ms: show stimulus
+	trial.main_slash.insertstimulustime(picture.stim_main_right, expressions.shape_onset); // 600ms: show stimulus
 	
 	trial.main_slash.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
 	
-	trial.main_slash.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
+	trial.main_slash.insertstimulustime(picture.stim_mask_left, expressions.mask_onset); // 600+134ms+256ms: show mask
+	trial.main_slash.insertstimulustime(picture.stim_mask_right, expressions.mask_onset); // 600+134ms+256ms: show mask
+
     trial.main_slash.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
 ]
 
@@ -384,7 +316,8 @@ Instructions (intro)
 // Hack: set correct response for absent trials to responsetext != "/"
 / ontrialend = [
 	trial.main_slash.resetstimulusframes();
-	values.stimulus = picture.stim_main.currentitem;
+	values.stimulus_left = picture.stim_main_left.currentitem;
+	values.stimulus_right = picture.stim_main_right.currentitem;
 	values.time_elapsed_ms = script.elapsedtime;
 	values.timestamp = script.currenttime;
 ]
@@ -405,11 +338,14 @@ Instructions (intro)
 		values.target_present = "error: stimulus index out of bounds";
 	};
 	trial.main_z.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
-	trial.main_z.insertstimulustime(picture.stim_main, expressions.shape_onset); // 600ms: show stimulus
+	trial.main_z.insertstimulustime(picture.stim_main_left, expressions.shape_onset); // 600ms: show stimulus
+	trial.main_z.insertstimulustime(picture.stim_main_right, expressions.shape_onset); // 600ms: show stimulus
 	
 	trial.main_z.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
 	
-	trial.main_z.insertstimulustime(text.stim_mask, expressions.mask_onset); // 600+134ms+256ms: show mask
+	trial.main_z.insertstimulustime(picture.stim_mask_left, expressions.mask_onset); // 600+134ms+256ms: show mask
+	trial.main_z.insertstimulustime(picture.stim_mask_right, expressions.mask_onset); // 600+134ms+256ms: show mask
+
     trial.main_z.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
 ]
 
@@ -423,7 +359,8 @@ Instructions (intro)
 
 / ontrialend = [
 	trial.main_z.resetstimulusframes();
-	values.stimulus = picture.stim_main.currentitem;
+	values.stimulus_left = picture.stim_main_left.currentitem;
+	values.stimulus_right = picture.stim_main_right.currentitem;
 	values.time_elapsed_ms = script.elapsedtime;
 	values.timestamp = script.currenttime;
 ]

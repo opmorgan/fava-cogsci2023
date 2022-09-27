@@ -1,4 +1,5 @@
-﻿// Define bilateral stimuli in two linked lists
+﻿<usermanual>
+////////// Define bilateral stimuli in two linked lists //////////////////
 //
 ////////// Practice: Compound stimuli ////////////////////////////////////
 //
@@ -31,65 +32,6 @@ D1+D2  |  D2+D1
 Left (absent) | Right (absent) [n=2]
 D2+D1  |  D2+D1
 D1+D2  |  D1+D2
-
-<picture stim_practice_left>
-/ items = stim_practice_left
-/ select = noreplace
-</picture>
-
-<picture stim_practice_right>
-/ items = stim_practice_right
-/ select = picture.stim_practice_left.currentindex // Link to stim_practice_left
-</picture>
-
-<item stim_practice_left>
-////// T1 = square; T2 = circle; D1 = triangle; D2 = diamond ///////
-//// 1-12 Target present
-// 1-6 Left (target present) | Right (no target)
-/ 1 = "resources/stimuli/target_circlediamonds.svg"			// T1+D1
-/ 2 = "resources/stimuli/target_squarediamonds.svg"			// T2+D1
-/ 3 = "resources/stimuli/target_diamondsquares.svg"			// D1+T2
-/ 4 = "resources/stimuli/target_circlediamonds.svg"			// T1+D1
-/ 5 = "resources/stimuli/target_squarediamonds.svg"			// T2+D1
-/ 6 = "resources/stimuli/target_diamondsquares.svg"			// D1+T2
-// 7-12 Left (no target) | Right (target present)
-/ 7 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
-/ 8 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
-/ 9 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
-/ 10 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
-/ 11 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
-/ 12 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
-//// 13-16 No target
-/ 13 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
-/ 14 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
-/ 15 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
-/ 16 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
-</item>
-
-<item stim_practice_right>
-////// T1 = square; T2 = circle; D1 = triangle; D2 = diamond ///////
-//// 1-12 Target present
-// 1-6 Left (target present) | Right (no target)
-/ 1 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
-/ 2 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
-/ 3 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
-/ 4 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
-/ 5 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
-/ 6 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
-// 7-12 Left (no target) | Right (target present)
-/ 7 = "resources/stimuli/target_circletriangles.svg"		// T1+D2
-/ 8 = "resources/stimuli/target_diamondcircles.svg"			// D1+T1
-/ 9 = "resources/stimuli/target_trianglecircles.svg"		// D2+T1
-/ 10 = "resources/stimuli/target_circlediamonds.svg"		// T1+D2
-/ 11 = "resources/stimuli/target_squarediamonds.svg"		// D1+T1
-/ 12 = "resources/stimuli/target_diamondcircles.svg"		// D2+T1
-//// 13-16 No target
-/ 13 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
-/ 14 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
-/ 15 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
-/ 16 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
-</item>
-
 
 ////////// Main: Compound stimuli ////////////////////////////////////
 // T1 = square; T2 = circle; D1 = triangle; D2 = diamond
@@ -151,15 +93,112 @@ D1+D2  |  D1+D2
 // D2+D1  |  D2+D1
 // D2+D1  |  D2+D1
 ////////////////////////////////////////////////////////////////
+</usermanual>
 
-<picture stim_main_left>
+<picture stim_mask_left>
+/ items = stim_mask_left
+/ position = (parameters.stim_xposition_left, 50%)
+/ size = (parameters.stim_size, parameters.stim_size)
+</picture>
+
+<item stim_mask_left>
+/ 1 = "resources/stimuli/mask.svg"
+</item>
+
+<picture stim_mask_right>
+/ items = stim_mask_right
+/ position = (parameters.stim_xposition_right, 50%)
+/ size = (parameters.stim_size, parameters.stim_size)
+</picture>
+
+<item stim_mask_right>
+/ 1 = "resources/stimuli/mask.svg"
+</item>
+
+//// PRACTICE STIMULI
+<picture stim_practice_left>
+// 1-12 are target-present
+// 13-16 are target-absent
 / items = stim_practice_left
 / select = noreplace
+/ position = (parameters.stim_xposition_left, 50%)
+/ size = (parameters.stim_size, parameters.stim_size)
+</picture>
+
+<picture stim_practice_right>
+// 1-12 are target-present
+// 13-16 are target-absent
+/ items = stim_practice_right
+/ select = picture.stim_practice_left.currentindex // Link to stim_practice_left
+/ position = (parameters.stim_xposition_right, 50%)
+/ size = (parameters.stim_size, parameters.stim_size)
+</picture>
+
+<item stim_practice_left>
+////// T1 = square; T2 = circle; D1 = triangle; D2 = diamond ///////
+//// 1-12 Target present
+// 1-6 Left (target present) | Right (no target)
+/ 1 = "resources/stimuli/target_circlediamonds.svg"			// T1+D1
+/ 2 = "resources/stimuli/target_squarediamonds.svg"			// T2+D1
+/ 3 = "resources/stimuli/target_diamondsquares.svg"			// D1+T2
+/ 4 = "resources/stimuli/target_circlediamonds.svg"			// T1+D1
+/ 5 = "resources/stimuli/target_squarediamonds.svg"			// T2+D1
+/ 6 = "resources/stimuli/target_diamondsquares.svg"			// D1+T2
+// 7-12 Left (no target) | Right (target present)
+/ 7 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
+/ 8 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
+/ 9 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
+/ 10 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
+/ 11 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
+/ 12 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
+//// 13-16 No target
+/ 13 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
+/ 14 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
+/ 15 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
+/ 16 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
+</item>
+
+<item stim_practice_right>
+////// T1 = square; T2 = circle; D1 = triangle; D2 = diamond ///////
+//// 1-12 Target present
+// 1-6 Left (target present) | Right (no target)
+/ 1 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
+/ 2 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
+/ 3 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
+/ 4 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
+/ 5 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
+/ 6 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
+// 7-12 Left (no target) | Right (target present)
+/ 7 = "resources/stimuli/target_circletriangles.svg"		// T1+D2
+/ 8 = "resources/stimuli/target_diamondcircles.svg"			// D1+T1
+/ 9 = "resources/stimuli/target_trianglecircles.svg"		// D2+T1
+/ 10 = "resources/stimuli/target_circlediamonds.svg"		// T1+D2
+/ 11 = "resources/stimuli/target_squarediamonds.svg"		// D1+T1
+/ 12 = "resources/stimuli/target_diamondcircles.svg"		// D2+T1
+//// 13-16 No target
+/ 13 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
+/ 14 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
+/ 15 = "resources/stimuli/distractor_trianglediamonds.svg"	// D2+D1
+/ 16 = "resources/stimuli/distractor_diamondtriangles.svg"	// D1+D2
+</item>
+
+//// MAIN STIMULI
+<picture stim_main_left>
+// 1-32 are target-present
+// 33-30 are target-absent
+/ items = stim_practice_left
+/ select = noreplace
+/ position = (parameters.stim_xposition_left, 50%)
+/ size = (parameters.stim_size, parameters.stim_size)
 </picture>
 
 <picture stim_main_right>
+// 1-32 are target-present
+// 33-30 are target-absent
 / items = stim_practice_right
 / select = picture.stim_main_left.currentindex // Link to stim_main_left
+/ position = (parameters.stim_xposition_right, 50%)
+/ size = (parameters.stim_size, parameters.stim_size)
 </picture>
 
 <item stim_main_left>
