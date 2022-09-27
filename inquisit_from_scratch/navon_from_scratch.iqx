@@ -58,8 +58,8 @@ values.target_present, response, correct, latency)
 / fixation_duration = 600
 / shape_duration = 134
 / blank_duration = 256
-/ mask_duration = 134
-/ timeout = 2600 // Maximum response time
+/ mask_duration = 134 // Experiment setting: 134. Changed to 2000ms for testing
+/ timeout = 2600 // Maximum response time (stimulus onset + 2000)
 / feedback_duration = 500
 / stim_size = 40%
 / stim_xposition_left = 40%

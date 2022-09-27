@@ -102,7 +102,7 @@ D1+D2  |  D1+D2
 </picture>
 
 <item stim_mask_left>
-/ 1 = "resources/stimuli/mask.svg"
+/ 1 = "resources/stimuli/5x5mask.svg"
 </item>
 
 <picture stim_mask_right>
@@ -112,7 +112,7 @@ D1+D2  |  D1+D2
 </picture>
 
 <item stim_mask_right>
-/ 1 = "resources/stimuli/mask.svg"
+/ 1 = "resources/stimuli/5x5mask.svg"
 </item>
 
 //// PRACTICE STIMULI
