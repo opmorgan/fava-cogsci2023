@@ -37,7 +37,7 @@
 <data>
 / columns = (build, computer.platform, date, time, values.timestamp, values.time_elapsed_ms, 
 subject, group, session, blockcode, blocknum, 
-trialcode, trialnum, values.stimulus_left, values.stimulus_right,
+trialcode, trialnum, values.stimulus_left, values.stimulus_right, values.stim_index,
 values.target_present, response, correct, latency)
 // Consider coding practice/main as "phase", repsonse key as "response condition"
 </data>
