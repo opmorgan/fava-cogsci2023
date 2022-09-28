@@ -1,12 +1,16 @@
-﻿// Workflow (https://www.rondotsch.nl/inquisit-tutorial/)
-// Define stim
-//    32 target-present
-// 	  8  target-absent
-// Define instructions and prompts
+﻿//// Code outline
+// Data recording:
+// 	  Define what data to record
+// Config:
+//	  Define user-configured parameters, defaults, and expressions
+// Stimuli:
+//    practice: 12 target-present, 4 target-absent
+//	  main: 32 target-present, 8  target-absent
+// Instructions and prompts:
 //	  General instructions
 //	  response-specific instructions ("/")
 //	  response-specific instructions ("z")
-// Define trial types (what stim are presented? Which responses are valid/correct?)
+// Trials (Define trial types: what stim are presented? Which responses are valid/correct?)
 //	  instructions (keys for next, previous)
 //    practice target-present ("/")
 //	  practice target-absent ("/")
@@ -16,7 +20,7 @@
 //	  practice target-absent ("z")
 //	  main target-present ("z")
 //    main target-absent ("z")
-// Define blocks, and instructions for each block
+// Blocks:
 //	  General instructions
 //	  response-specific instructions ("/")
 //    practice block ("/") (12 t-p, 4 t-a)
@@ -39,7 +43,6 @@
 subject, group, session, blockcode, blocknum, 
 trialcode, trialnum, values.stimulus_left, values.stimulus_right, values.stim_index,
 values.target_present, response, correct, latency)
-// Consider coding practice/main as "phase", repsonse key as "response condition"
 </data>
 
 
@@ -58,10 +61,10 @@ values.target_present, response, correct, latency)
 / fixation_duration = 600
 / shape_duration = 134
 / blank_duration = 256
-/ mask_duration = 134 // Experiment setting: 134. Changed to 2000ms for testing
-/ timeout = 2600 // Maximum response time (stimulus onset + 2000)
+/ mask_duration = 134 // Experiment setting: 134. Set to 2000ms for testing
+/ time_limit = 2000 // Maximum response time, after stimulus onset
 / feedback_duration = 500
-/ interblock_break_duration = 1000 // Experiment setting: 20000. Set to 1000 for testing
+/ interblock_break_duration = 20000 // Experiment setting: 20000. Set to 1000ms for testing
 / stim_size = 40%
 / stim_xposition_left = 40%
 / stim_xposition_right = 60%
@@ -76,6 +79,8 @@ values.target_present, response, correct, latency)
 </defaults>
 
 <expressions>
+// Define durations using durations set in <parameters>
+/ timeout = parameters.fixation_duration + parameters.time_limit // Maximum response time (stimulus onset + 2000)
 // Define event onset times using durations set in <parameters>
 / fixation_onset = 0
 / shape_onset = parameters.fixation_duration
@@ -147,7 +152,9 @@ values.target_present, response, correct, latency)
 /items = ("Nice job! You are halfway there. in 20 seconds, the next block will begin.")
 </text>
 
-
+**************************************************************************************************************
+	Instructions and prompts
+**************************************************************************************************************
 // Define instructions and prompts
 //	  General instructions
 //	  response-specific instructions ("/")
@@ -187,6 +194,10 @@ Get ready for the real experiment! When you see a square or circle, press "z"
 Instructions (intro)
 </page>
 
+
+**************************************************************************************************************
+	Trials
+**************************************************************************************************************
 // Define trial types (what stim are presented? Which responses are valid/correct?)
 //	  instructions (keys for next, previous)
 //    practice  ("/") 12 target-present, 4 target-absent [16 trials total]
@@ -225,7 +236,7 @@ Instructions (intro)
 / stimulustimes = [0 = stim_fixation]
 / beginresponsetime = parameters.fixation_duration
 / responseinterrupt = immediate
-/ timeout = parameters.timeout
+/ timeout = expressions.timeout
 
 / validresponse = ("/", noresponse)
 / iscorrectresponse = [(values.stim_index <= 12 && trial.practice_slash.responsetext == "/") || (values.stim_index > 12 && trial.practice_slash.responsetext != "/")] 
@@ -269,7 +280,7 @@ Instructions (intro)
 / stimulustimes = [0 = stim_fixation]
 / beginresponsetime = parameters.fixation_duration
 / responseinterrupt = immediate
-/ timeout = parameters.timeout
+/ timeout = expressions.timeout
 
 / validresponse = ("z", noresponse)
 / iscorrectresponse = [(values.stim_index <= 12 && trial.practice_z.responsetext == "z") || (values.stim_index > 12 && trial.practice_z.responsetext != "z")] 
@@ -313,7 +324,7 @@ Instructions (intro)
 / stimulustimes = [0 = stim_fixation]
 / beginresponsetime = parameters.fixation_duration
 / responseinterrupt = immediate
-/ timeout = parameters.timeout
+/ timeout = expressions.timeout
 
 / validresponse = ("/", noresponse)
 / iscorrectresponse = [(values.stim_index <= 32 && trial.main_slash.responsetext == "/") || (values.stim_index > 32 && trial.main_slash.responsetext != "/")] 
@@ -356,7 +367,7 @@ Instructions (intro)
 / stimulustimes = [0 = stim_fixation]
 / beginresponsetime = parameters.fixation_duration
 / responseinterrupt = immediate
-/ timeout = parameters.timeout
+/ timeout = expressions.timeout
 
 / validresponse = ("z", noresponse)
 / iscorrectresponse = [(values.stim_index <= 32 && trial.main_z.responsetext == "z") || (values.stim_index > 32 && trial.main_z.responsetext != "z")] 
@@ -375,6 +386,10 @@ Instructions (intro)
 / trialduration = parameters.interblock_break_duration
 </trial>
 
+
+**************************************************************************************************************
+	Blocks
+**************************************************************************************************************
 // Define blocks
 //    practice block ("/") 12 target-present, 4 target-absent          [16 trials total]
 //	  main block     ("/") 32 target-present, 8 target-absent, times 2 [80 trials total]
@@ -429,6 +444,9 @@ Instructions (intro)
 / trials = [1=interblock_break]
 </block>
 
+**************************************************************************************************************
+	Blocks
+**************************************************************************************************************
 // Define experiment
 // Order:
 //	  General instructions
