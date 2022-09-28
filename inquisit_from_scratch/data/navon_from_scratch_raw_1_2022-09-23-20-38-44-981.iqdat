@@ -1,3 +1,0 @@
-build	computer.platform	date	time	timestamp	time_elapsed	subject	group	session	blockcode	blocknum	trialcode	trialnum	stimulus	target_present	response	correct	latency
-6.6.0	mac	2022-09-23	16:38:44	16:38:48	3219	1	1	1	practice_slash	1	practice_slash	1	resources/stimuli/target_circlesquares.svg	yes	53	1	265
-6.6.0	mac	2022-09-23	16:38:44	16:38:51	5739	1	1	1	practice_slash	1	practice_slash	2	resources/stimuli/target_circletriangles.svg	yes	Ctrl+'Q'	0	1400

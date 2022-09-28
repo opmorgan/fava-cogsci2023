@@ -120,7 +120,9 @@ D1+D2  |  D1+D2
 // 1-12 are target-present
 // 13-16 are target-absent
 / items = stim_practice_left
-/ select = noreplace
+// select = noreplace
+//TROUBLSHOOTING: CHANGING FROM NOREPLACE TO STIM.INDEX
+/ select = values.stim_index
 / position = (parameters.stim_xposition_left, parameters.stim_yposition)
 / size = (parameters.stim_size, parameters.stim_size)
 </picture>
@@ -129,7 +131,9 @@ D1+D2  |  D1+D2
 // 1-12 are target-present
 // 13-16 are target-absent
 / items = stim_practice_right
-/ select = picture.stim_practice_left.currentindex // Link to stim_practice_left
+// select = picture.stim_practice_left.currentindex // Link to stim_practice_left
+//TROUBLSHOOTING: CHANGING FROM NOREPLACE TO STIM.INDEX
+/ select = values.stim_index
 / position = (parameters.stim_xposition_right, parameters.stim_yposition)
 / size = (parameters.stim_size, parameters.stim_size)
 </picture>
@@ -186,8 +190,10 @@ D1+D2  |  D1+D2
 <picture stim_main_left>
 // 1-32 are target-present
 // 33-30 are target-absent
-/ items = stim_practice_left
-/ select = noreplace
+/ items = stim_main_left
+// select = noreplace
+//TROUBLSHOOTING: CHANGING FROM NOREPLACE TO STIM.INDEX
+/ select = values.stim_index
 / position = (parameters.stim_xposition_left, parameters.stim_yposition)
 / size = (parameters.stim_size, parameters.stim_size)
 </picture>
@@ -195,8 +201,10 @@ D1+D2  |  D1+D2
 <picture stim_main_right>
 // 1-32 are target-present
 // 33-30 are target-absent
-/ items = stim_practice_right
-/ select = picture.stim_main_left.currentindex // Link to stim_main_left
+/ items = stim_main_right
+// select = picture.stim_main_left.currentindex // Link to stim_main_left
+//TROUBLSHOOTING: CHANGING FROM NOREPLACE TO STIM.INDEX
+/ select = values.stim_index
 / position = (parameters.stim_xposition_right, parameters.stim_yposition)
 / size = (parameters.stim_size, parameters.stim_size)
 </picture>
@@ -206,7 +214,7 @@ D1+D2  |  D1+D2
 //// 1-32 Target present
 //// 1-16 Global target
 // 1-8 Left (global present) | Right (no target)
-/  1 = "resources/stimuli/target-circletriangles.svg" 		// T1+D1
+/  1 = "resources/stimuli/target_circletriangles.svg" 		// T1+D1
 /  2 = "resources/stimuli/target_circlediamonds.svg" 		// T1+D2
 /  3 = "resources/stimuli/target_squaretriangles.svg" 		// T2+D1
 /  4 = "resources/stimuli/target_squarediamonds.svg" 		// T2+D2
@@ -219,10 +227,10 @@ D1+D2  |  D1+D2
 / 10 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
 / 11 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
 / 12 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
-/ 13 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
-/ 14 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
-/ 15 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
-/ 16 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
+/ 13 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
+/ 14 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
+/ 15 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
+/ 16 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
 //// 17-32 Local target
 //17-24 Left (local present) | Right (no target)
 / 17 = "resources/stimuli/target_trianglecircles.svg"		// D1+T1
@@ -238,19 +246,19 @@ D1+D2  |  D1+D2
 / 26 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
 / 27 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
 / 28 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
-/ 29 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
-/ 30 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
-/ 31 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
-/ 32 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
+/ 29 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
+/ 30 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
+/ 31 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
+/ 32 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
 //// 33-40 No target
 / 33 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
 / 34 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
 / 35 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
 / 36 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
-/ 37 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
-/ 38 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
-/ 39 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
-/ 40 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
+/ 37 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
+/ 38 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
+/ 39 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
+/ 40 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
 </item>
 
 <item stim_main_right>
@@ -262,12 +270,12 @@ D1+D2  |  D1+D2
 /  2 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
 /  3 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
 /  4 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
-/  5 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
-/  6 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
-/  7 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
-/  8 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
+/  5 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
+/  6 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
+/  7 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
+/  8 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
 // 9-16 Left (no target) | Right (global present)
-/  9 = "resources/stimuli/target-circletriangles.svg" 		// T1+D1
+/  9 = "resources/stimuli/target_circletriangles.svg" 		// T1+D1
 / 10 = "resources/stimuli/target_circlediamonds.svg" 		// T1+D2
 / 11 = "resources/stimuli/target_squaretriangles.svg" 		// T2+D1
 / 12 = "resources/stimuli/target_squarediamonds.svg" 		// T2+D2
@@ -281,10 +289,10 @@ D1+D2  |  D1+D2
 / 18 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
 / 19 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
 / 20 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
-/ 21 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
-/ 22 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
-/ 23 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
-/ 24 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
+/ 21 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
+/ 22 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
+/ 23 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
+/ 24 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
 //25-32 Left (no target) | Right (local present)
 / 25 = "resources/stimuli/target_trianglecircles.svg"		// D1+T1
 / 26 = "resources/stimuli/target_trianglesquares.svg"		// D1+T2
@@ -297,10 +305,10 @@ D1+D2  |  D1+D2
 //// 33-40: No target
 / 33 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
 / 34 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
-/ 35 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
-/ 36 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
+/ 35 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
+/ 36 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
 / 37 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
 / 38 = "resources/stimuli/distractor_trianglediamonds.svg" 	// D1+D2
-/ 39 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
-/ 40 = "resources/stimuli/distractor-diamondtriangles.svg" 	// D2+D1
+/ 39 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
+/ 40 = "resources/stimuli/distractor_diamondtriangles.svg" 	// D2+D1
 </item>

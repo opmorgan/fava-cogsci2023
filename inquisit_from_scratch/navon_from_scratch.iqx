@@ -61,6 +61,7 @@ values.target_present, response, correct, latency)
 / mask_duration = 134 // Experiment setting: 134. Changed to 2000ms for testing
 / timeout = 2600 // Maximum response time (stimulus onset + 2000)
 / feedback_duration = 500
+/ interblock_break_duration = 1000 // Experiment setting: 20000. Set to 1000 for testing
 / stim_size = 40%
 / stim_xposition_left = 40%
 / stim_xposition_right = 60%
@@ -199,7 +200,7 @@ Instructions (intro)
 
 <trial practice_slash>
 / ontrialbegin = [
-	values.trial_counter += 1;
+	values.trial_counter += 1; // is this used?
 	values.stim_index = list.stim_selector_practice.nextvalue;
 	if (values.stim_index <= 12){ // Trials 1-12: present
 		values.target_present = "yes";
@@ -243,7 +244,7 @@ Instructions (intro)
 
 <trial practice_z>
 / ontrialbegin = [
-	values.trial_counter += 1;
+	values.trial_counter += 1; // is this used?
 	values.stim_index = list.stim_selector_practice.nextvalue;
 	if (values.stim_index <= 12){ // Trials 1-12: present
 		values.target_present = "yes";
@@ -261,6 +262,7 @@ Instructions (intro)
 	
 	trial.practice_z.insertstimulustime(picture.stim_mask_left, expressions.mask_onset); // 600+134ms+256ms: show mask
 	trial.practice_z.insertstimulustime(picture.stim_mask_right, expressions.mask_onset); // 600+134ms+256ms: show mask
+
     trial.practice_z.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
 ]
 
@@ -271,13 +273,14 @@ Instructions (intro)
 
 / validresponse = ("z", noresponse)
 / iscorrectresponse = [(values.stim_index <= 12 && trial.practice_z.responsetext == "z") || (values.stim_index > 12 && trial.practice_z.responsetext != "z")] 
+// Hack: set correct response for absent trials to responsetext != "z"
 
 / ontrialend = [
 	trial.practice_z.resetstimulusframes();
-	values.stimulus = picture.stim_practice_left.currentitem;
-	values.stimulus = picture.stim_practice_right.currentitem;
+	values.stimulus_left = picture.stim_practice_left.currentitem;
+	values.stimulus_right = picture.stim_practice_right.currentitem;
 	values.time_elapsed_ms = script.elapsedtime;
-    values.timestamp = script.currenttime;
+	values.timestamp = script.currenttime;
 ]
 
 / posttrialpause = parameters.iti
@@ -355,8 +358,8 @@ Instructions (intro)
 / responseinterrupt = immediate
 / timeout = parameters.timeout
 
-/ validresponse = ("/", noresponse)
-/ iscorrectresponse = [(values.stim_index <= 32 && trial.main_z.responsetext == "/") || (values.stim_index > 32 && trial.main_z.responsetext != "z")] 
+/ validresponse = ("z", noresponse)
+/ iscorrectresponse = [(values.stim_index <= 32 && trial.main_z.responsetext == "z") || (values.stim_index > 32 && trial.main_z.responsetext != "z")] 
 
 / ontrialend = [
 	trial.main_z.resetstimulusframes();
@@ -369,7 +372,7 @@ Instructions (intro)
 
 <trial interblock_break>
 / stimulusframes = [1 = prompt_interblock_break]
-/ trialduration = 20000 // TODO: MOVE TO CONFIG (parameters.interblock_break_duration)
+/ trialduration = parameters.interblock_break_duration
 </trial>
 
 // Define blocks
