@@ -434,7 +434,239 @@ display: none;
 </div>
 
 
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data_dir <span class="ot">&lt;-</span> here<span class="sc">::</span><span class="fu">here</span>(<span class="st">&quot;data&quot;</span>, <span class="st">&quot;input&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>input_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(<span class="at">path =</span> data_dir, <span class="at">pattern =</span> <span class="st">&quot;*.iqdat&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>data_raw <span class="ot">&lt;-</span> <span class="fu">read_tsv</span>(input_files[<span class="dv">1</span>])</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Inspect data</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>data_raw <span class="sc">%&gt;%</span> <span class="fu">colnames</span>()</span></code></pre></div>
+<p>[1] “build” “computer.platform” “date”<br />
+[4] “time” “timestamp” “time_elapsed_ms”<br />
+[7] “subject” “group” “session”<br />
+[10] “blockcode” “blocknum” “trialcode”<br />
+[13] “trialnum” “stimulus_left” “stimulus_right”<br />
+[16] “stim_index” “target_present” “response”<br />
+[19] “correct” “latency”</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>data_raw <span class="sc">%&gt;%</span> <span class="fu">head</span>()</span></code></pre></div>
+<div id="a-tibble-6-20" class="section level1">
+<h1>A tibble: 6 × 20</h1>
+<p>build computer.pl…¹ date time timest…² time_…³ subject group session
+<chr> <chr> <date> <time> <time> <dbl> <dbl> <dbl> <dbl> 1 6.6.0 mac
+2022-09-29 14:58:50 14:58:54 3248 1 1 1 2 6.6.0 mac 2022-09-29 14:58:50
+14:58:57 6365 1 1 1 3 6.6.0 mac 2022-09-29 14:58:50 14:59:00 9485 1 1 1
+4 6.6.0 mac 2022-09-29 14:58:50 14:59:03 12605 1 1 1 5 6.6.0 mac
+2022-09-29 14:58:50 14:59:05 13986 1 1 1 6 6.6.0 mac 2022-09-29 14:58:50
+14:59:08 17091 1 1 1 # … with 11 more variables: blockcode <chr>,
+blocknum <dbl>, trialcode <chr>, # trialnum <dbl>, stimulus_left <chr>,
+stimulus_right <chr>, # stim_index <dbl>, target_present <chr>, response
+<dbl>, correct <dbl>, # latency <dbl>, and abbreviated variable names
+¹​computer.platform, # ²​timestamp, ³​time_elapsed_ms</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>data_raw</span></code></pre></div>
+</div>
+<div id="a-tibble-193-20" class="section level1">
+<h1>A tibble: 193 × 20</h1>
+<p>build computer.p…¹ date time timest…² time_…³ subject group session
+<chr> <chr> <date> <time> <time> <dbl> <dbl> <dbl> <dbl> 1 6.6.0 mac
+2022-09-29 14:58:50 14:58:54 3248 1 1 1 2 6.6.0 mac 2022-09-29 14:58:50
+14:58:57 6365 1 1 1 3 6.6.0 mac 2022-09-29 14:58:50 14:59:00 9485 1 1 1
+4 6.6.0 mac 2022-09-29 14:58:50 14:59:03 12605 1 1 1 5 6.6.0 mac
+2022-09-29 14:58:50 14:59:05 13986 1 1 1 6 6.6.0 mac 2022-09-29 14:58:50
+14:59:08 17091 1 1 1 7 6.6.0 mac 2022-09-29 14:58:50 14:59:11 20210 1 1
+1 8 6.6.0 mac 2022-09-29 14:58:50 14:59:12 21588 1 1 1 9 6.6.0 mac
+2022-09-29 14:58:50 14:59:14 22956 1 1 1 10 6.6.0 mac 2022-09-29
+14:58:50 14:59:15 24325 1 1 1 # … with 183 more rows, 11 more variables:
+blockcode <chr>, blocknum <dbl>, # trialcode <chr>, trialnum <dbl>,
+stimulus_left <chr>, stimulus_right <chr>, # stim_index <dbl>,
+target_present <chr>, response <dbl>, correct <dbl>, # latency <dbl>,
+and abbreviated variable names ¹​computer.platform, # ²​timestamp,
+³​time_elapsed_ms</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Check that blocks have the right trials</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>data_raw <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(blockcode) <span class="sc">%&gt;%</span> <span class="fu">count</span>()</span></code></pre></div>
+</div>
+<div id="a-tibble-5-2" class="section level1">
+<h1>A tibble: 5 × 2</h1>
+</div>
+<div id="groups-blockcode-5" class="section level1">
+<h1>Groups: blockcode [5]</h1>
+<p>blockcode n <chr> <int> 1 interblock_break 1 2 main_slash 80 3 main_z
+80 4 practice_slash 16 5 practice_z 16</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>data_raw <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(trialcode) <span class="sc">%&gt;%</span> <span class="fu">count</span>()</span></code></pre></div>
+</div>
+<div id="a-tibble-5-2-1" class="section level1">
+<h1>A tibble: 5 × 2</h1>
+</div>
+<div id="groups-trialcode-5" class="section level1">
+<h1>Groups: trialcode [5]</h1>
+<p>trialcode n <chr> <int> 1 interblock_break 1 2 main_slash 80 3 main_z
+80 4 practice_slash 16 5 practice_z 16</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>data_raw <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(blockcode, trialcode) <span class="sc">%&gt;%</span> <span class="fu">count</span>()</span></code></pre></div>
+</div>
+<div id="a-tibble-5-3" class="section level1">
+<h1>A tibble: 5 × 3</h1>
+</div>
+<div id="groups-blockcode-trialcode-5" class="section level1">
+<h1>Groups: blockcode, trialcode [5]</h1>
+<p>blockcode trialcode n <chr> <chr> <int> 1 interblock_break
+interblock_break 1 2 main_slash main_slash 80 3 main_z main_z 80 4
+practice_slash practice_slash 16 5 practice_z practice_z 16</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data_raw <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(trialcode) <span class="sc">%&gt;%</span> <span class="fu">summarize</span>()</span></code></pre></div>
+</div>
+<div id="a-tibble-5-1" class="section level1">
+<h1>A tibble: 5 × 1</h1>
+<p>trialcode<br />
+<chr><br />
+1 interblock_break 2 main_slash<br />
+3 main_z<br />
+4 practice_slash<br />
+5 practice_z</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Check that response counts look right</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>data_raw <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(response) <span class="sc">%&gt;%</span> <span class="fu">count</span>()</span></code></pre></div>
+</div>
+<div id="a-tibble-3-2" class="section level1">
+<h1>A tibble: 3 × 2</h1>
+</div>
+<div id="groups-response-3" class="section level1">
+<h1>Groups: response [3]</h1>
+<p>response n <dbl> <int> 1 0 109 2 44 45 3 53 39</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="do">## </span><span class="al">TODO</span><span class="do">: inspect duration, total and by block</span></span></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="do">##TODO</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Confirm:</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="do">## When &quot;target present&quot;, exactly one of the two stimuli contains &quot;target&quot;</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="do">## When &quot;target absent&quot;, both stimuli contain &quot;distractor&quot;</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a><span class="do">## When &quot;target present&quot; and response is nonzero, marked &quot;correct&quot;</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a><span class="do">## When &quot;target present&quot; and response is zero, marked &quot;incorrect&quot;</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="do">## When &quot;target absent&quot; and response is nonzero, marked &quot;incorrect&quot;</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="do">## When &quot;target absent&quot; and response is zero, marked &quot;correct&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Recode responses</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>data_int <span class="ot">&lt;-</span> data_raw <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">response_raw =</span> response)</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>data_int <span class="ot">&lt;-</span> data_int <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">response_chr =</span> <span class="fu">case_when</span>(</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>                                         response_raw <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">&quot;&quot;</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>                                         response_raw <span class="sc">==</span> <span class="dv">44</span> <span class="sc">~</span> <span class="st">&quot;z&quot;</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>                                         response_raw <span class="sc">==</span> <span class="dv">53</span> <span class="sc">~</span> <span class="st">&quot;slash&quot;</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>                                         ),</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>                <span class="at">response =</span> <span class="fu">case_when</span>(</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>                                     response_raw <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">&quot;absent&quot;</span>,</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>                                     response_raw <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">44</span>, <span class="dv">53</span>) <span class="sc">~</span> <span class="st">&quot;present&quot;</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>                                     ),</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>                <span class="at">response_log =</span> <span class="fu">case_when</span>(</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>                  response <span class="sc">==</span> <span class="st">&quot;absent&quot;</span> <span class="sc">~</span> <span class="dv">0</span>,</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>                  response <span class="sc">==</span> <span class="st">&quot;present&quot;</span> <span class="sc">~</span> <span class="dv">1</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>                )</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="do">## Inspect recoded responses</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>data_int <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(response) <span class="sc">%&gt;%</span> <span class="fu">count</span>()</span></code></pre></div>
+</div>
+<div id="a-tibble-2-2" class="section level1">
+<h1>A tibble: 2 × 2</h1>
+</div>
+<div id="groups-response-2" class="section level1">
+<h1>Groups: response [2]</h1>
+<p>response n <chr> <int> 1 absent 109 2 present 84</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>data_int <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(response, correct) <span class="sc">%&gt;%</span> <span class="fu">count</span>()</span></code></pre></div>
+</div>
+<div id="a-tibble-4-3" class="section level1">
+<h1>A tibble: 4 × 3</h1>
+</div>
+<div id="groups-response-correct-4" class="section level1">
+<h1>Groups: response, correct [4]</h1>
+<p>response correct n <chr> <dbl> <int> 1 absent 0 86 2 absent 1 23 3
+present 0 17 4 present 1 67</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Recode blocks</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>data_int <span class="ot">&lt;-</span> data_int <span class="sc">%&gt;%</span> <span class="fu">rename</span>(<span class="at">block =</span> blockcode)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Recode reaction time</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>data_int <span class="ot">&lt;-</span> data_int <span class="sc">%&gt;%</span> <span class="fu">rename</span>(<span class="at">rt =</span> latency)</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Remove unused columns</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>data_int <span class="sc">%&gt;%</span> <span class="fu">select</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  subject, block, blocknum, trialnum, target_present, response, correct, rt</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="a-tibble-193-8" class="section level1">
+<h1>A tibble: 193 × 8</h1>
+<p>subject block blocknum trialnum target_present respo…¹ correct rt
+<dbl> <chr> <dbl> <dbl> <chr> <chr> <dbl> <dbl> 1 1 practice_slash 1 1
+yes present 1 266 2 1 practice_slash 1 2 yes absent 0 2000 3 1
+practice_slash 1 3 yes absent 0 2000 4 1 practice_slash 1 4 no absent 1
+2000 5 1 practice_slash 1 5 yes present 1 263 6 1 practice_slash 1 6 no
+absent 1 2000 7 1 practice_slash 1 7 yes absent 0 2000 8 1
+practice_slash 1 8 yes present 1 260 9 1 practice_slash 1 9 yes present
+1 259 10 1 practice_slash 1 10 no present 0 260 # … with 183 more rows,
+and abbreviated variable name ¹​response</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Remove non-trial rows</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>data_int <span class="ot">&lt;-</span> data_int <span class="sc">%&gt;%</span> <span class="fu">filter</span>(block <span class="sc">!=</span> <span class="st">&quot;interblock_break&quot;</span>)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>data_int <span class="sc">%&gt;%</span> <span class="fu">group_by</span>(block) <span class="sc">%&gt;%</span>  <span class="fu">summarize</span>()</span></code></pre></div>
+</div>
+<div id="a-tibble-4-1" class="section level1">
+<h1>A tibble: 4 × 1</h1>
+<p>block<br />
+<chr><br />
+1 main_slash<br />
+2 main_z<br />
+3 practice_slash 4 practice_z</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Add field for phase (main or practice)</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>data_int <span class="ot">&lt;-</span> data_int <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">phase =</span> <span class="fu">case_when</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">str_detect</span>(block, <span class="st">&quot;main&quot;</span>) <span class="sc">~</span> <span class="st">&quot;main&quot;</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">str_detect</span>(block, <span class="st">&quot;practice&quot;</span>) <span class="sc">~</span> <span class="st">&quot;practice&quot;</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>))</span></code></pre></div>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Calculate percent correct for each block, separating present and absent trials</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>response_counts_block_pa <span class="ot">&lt;-</span> data_int <span class="sc">%&gt;%</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(block, target_present) <span class="sc">%&gt;%</span> </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">total_responses =</span> <span class="fu">n</span>(),</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">n_present_resp =</span> <span class="fu">sum</span>(response_log),</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">n_absent_resp =</span> total_responses <span class="sc">-</span> n_present_resp,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">n_correct =</span> <span class="fu">sum</span>(correct),</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">percent_correct =</span> <span class="dv">100</span><span class="sc">*</span>(n_correct <span class="sc">/</span> total_responses)) </span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="do">## Inspect accuracy by block, present/absent</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>response_counts_block_pa</span></code></pre></div>
+</div>
+<div id="a-tibble-8-7" class="section level1">
+<h1>A tibble: 8 × 7</h1>
+</div>
+<div id="groups-block-4" class="section level1">
+<h1>Groups: block [4]</h1>
+<p>block target_present total_responses n_pres…¹ n_abs…² n_cor…³ perce…⁴
+<chr> <chr> <int> <dbl> <dbl> <dbl> <dbl> 1 main_slash no 16 7 9 9 56.2
+2 main_slash yes 64 23 41 23 35.9 3 main_z no 16 6 10 10 62.5 4 main_z
+yes 64 33 31 33 51.6 5 practice_slash no 4 2 2 2 50<br />
+6 practice_slash yes 12 7 5 7 58.3 7 practice_z no 4 2 2 2 50<br />
+8 practice_z yes 12 4 8 4 33.3 # … with abbreviated variable names
+¹​n_present_resp, ²​n_absent_resp, # ³​n_correct, ⁴​percent_correct</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Calculate percent correct for each block, collapsing present and absent trials</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>response_counts_by_block <span class="ot">&lt;-</span> data_int <span class="sc">%&gt;%</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(block) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">total_responses =</span> <span class="fu">n</span>(),</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">n_present_resp =</span> <span class="fu">sum</span>(response_log),</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>            <span class="at">n_absent_resp =</span> total_responses <span class="sc">-</span> n_present_resp,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">n_correct =</span> <span class="fu">sum</span>(correct),</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">percent_correct =</span> <span class="dv">100</span><span class="sc">*</span>(n_correct <span class="sc">/</span> total_responses)) </span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="do">## Inspect accuracy by block, present/absent</span></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>response_counts_by_block</span></code></pre></div>
+</div>
+<div id="a-tibble-4-6" class="section level1">
+<h1>A tibble: 4 × 6</h1>
+<p>block total_responses n_present_resp n_absent_resp n_correct percen…¹
+<chr> <int> <dbl> <dbl> <dbl> <dbl> 1 main_slash 80 30 50 32 40<br />
+2 main_z 80 39 41 43 53.8 3 practice_slash 16 9 7 9 56.2 4 practice_z 16
+6 10 6 37.5 # … with abbreviated variable name ¹​percent_correct</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Add accuracy data to main spreadsheet?</span></span></code></pre></div>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Exclusions</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Responded &quot;go&quot; almost every time?</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>exclude_all_gos <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Accuracy below 60% on any main block?</span></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>exclude_low_acc <span class="ot">=</span> <span class="dv">0</span></span></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Accuracy analyses</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Check for 60% or lower accuracy on either trial block</span></span></code></pre></div>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Reaction time analyses</span></span></code></pre></div>
+</div>
 
 
 

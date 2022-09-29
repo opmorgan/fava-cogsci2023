@@ -25,34 +25,46 @@ library(tidyverse)
 data_dir <- here::here("data", "input")
 input_files <- list.files(path = data_dir, pattern = "*.iqdat",
                           full.names = TRUE)
-input_files
-data_raw <- read_tsv(input_files[2])
+data_raw <- read_tsv(input_files[1])
 ```
 
-```{r inspect}
+```{r inspect_raw}
 ## Inspect data
 data_raw %>% colnames()
 data_raw %>% head()
 data_raw
 
-## Confirm that blocks have the right trials
+## Check that blocks have the right trials
 data_raw %>% group_by(blockcode) %>% count()
 data_raw %>% group_by(trialcode) %>% count()
-data_raw %>% group_by(blockcode, trialcode) %>% count() # Block "main_z" has incorrect trialcode, main_slash - fixing...
+data_raw %>% group_by(blockcode, trialcode) %>% count()
 
 data_raw %>% group_by(trialcode) %>% summarize()
-```
 
-```{r}
 ## Check that response counts look right
 data_raw %>% group_by(response) %>% count()
-data_raw
+
+## TODO: inspect duration, total and by block
+```
+
+```{r tests}
+##TODO
+## Confirm:
+## When "target present", exactly one of the two stimuli contains "target"
+## When "target absent", both stimuli contain "distractor"
+
+## When "target present" and response is nonzero, marked "correct"
+## When "target present" and response is zero, marked "incorrect"
+## When "target absent" and response is nonzero, marked "incorrect"
+## When "target absent" and response is zero, marked "correct"
+```
+
+```{r recode}
 ## Recode responses
-data_proc  <- data_raw %>%
+data_int <- data_raw %>%
   rename(response_raw = response)
 
-
-data_proc <- data_proc %>% mutate(response_chr = case_when(
+data_int <- data_int %>% mutate(response_chr = case_when(
                                          response_raw == 0 ~ "",
                                          response_raw == 44 ~ "z",
                                          response_raw == 53 ~ "slash"
@@ -60,40 +72,79 @@ data_proc <- data_proc %>% mutate(response_chr = case_when(
                 response = case_when(
                                      response_raw == 0 ~ "absent",
                                      response_raw %in% c(44, 53) ~ "present"
-                                     )
+                                     ),
+                response_log = case_when(
+                  response == "absent" ~ 0,
+                  response == "present" ~ 1
+                )
 )
 
-data_proc %>% group_by(response) %>% count()
-data_proc %>% group_by(response, correct) %>% count()
+## Inspect recoded responses
+data_int %>% group_by(response) %>% count()
+data_int %>% group_by(response, correct) %>% count()
 
+## Recode blocks
+data_int <- data_int %>% rename(block = blockcode)
+
+## Recode reaction time
+data_int <- data_int %>% rename(rt = latency)
 ```
+
+```{r clean}
+## Remove unused columns
+data_int %>% select(
+  subject, block, blocknum, trialnum, target_present, response, correct, rt
+)
+
+## Remove non-trial rows
+data_int <- data_int %>% filter(block != "interblock_break")
+data_int %>% group_by(block) %>%  summarize()
+
+## Add field for phase (main or practice)
+data_int <- data_int %>% mutate(phase = case_when(
+  str_detect(block, "main") ~ "main",
+  str_detect(block, "practice") ~ "practice"
+))
+```
+
+
+```{r calculate_percent_correct}
+## Calculate percent correct for each block, separating present and absent trials
+response_counts_block_pa <- data_int %>% 
+  group_by(block, target_present) %>% 
+  summarize(total_responses = n(),
+            n_present_resp = sum(response_log),
+            n_absent_resp = total_responses - n_present_resp,
+            n_correct = sum(correct),
+            percent_correct = 100*(n_correct / total_responses)) 
+## Inspect accuracy by block, present/absent
+response_counts_block_pa
+
+## Calculate percent correct for each block, collapsing present and absent trials
+response_counts_by_block <- data_int %>% 
+  group_by(block) %>% 
+  summarize(total_responses = n(),
+            n_present_resp = sum(response_log),
+            n_absent_resp = total_responses - n_present_resp,
+            n_correct = sum(correct),
+            percent_correct = 100*(n_correct / total_responses)) 
+## Inspect accuracy by block, present/absent
+response_counts_by_block
+```
+
 ```{r}
-## Prepare tbls with cleaned data
+## Add accuracy data to main spreadsheet?
 ```
 
-```{r}
-## Inspect performance by block
-```
-```{r}
-## Calculate percent correct for present and absent trials.
-data_int %>%
-  group_by(response) %>%
-  summarize(total_responses = n()) %>%
-  mutate(pct_correct = total_responses / sum(total_responses))
-
-
-  summarize(percent_correct = correct / sum(correct))
-
-data_int %>% colnames()
-```
 
 ```{r}
 ## Exclusions
 
 ## Responded "go" almost every time?
-data %>% group_by(response) %>% count()
+exclude_all_gos = 0
 
-## Accuracy below 60% on any trial?
+## Accuracy below 60% on any main block?
+exclude_low_acc = 0
 ```
 
 ```{r}
