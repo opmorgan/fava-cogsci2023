@@ -434,8 +434,8 @@ Instructions (intro)
 
 <block main_z>
 / trials = [
-	 1-40 = noreplace(main_slash);
-	41-80 = noreplace(main_slash);
+	 1-40 = noreplace(main_z);
+	41-80 = noreplace(main_z);
 	]
 / preinstructions = (instructions_main_z)
 </block>
