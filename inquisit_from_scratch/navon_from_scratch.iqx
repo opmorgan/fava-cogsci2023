@@ -35,7 +35,7 @@
 **************************************************************************************************************
 <monkey>
 / latencydistribution = constant(250)
-/ percentcorrect = 75
+/ percentcorrect = 95
 </monkey>
 
 <data>
