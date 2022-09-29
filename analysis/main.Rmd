@@ -21,26 +21,70 @@ library(here)
 library(tidyverse)
 ```
 
-```{r}
-data_dir <- here::here("analysis", "data", "input")
+```{r load}
+data_dir <- here::here("data", "input")
 input_files <- list.files(path = data_dir, pattern = "*.iqdat",
                           full.names = TRUE)
+input_files
+data_raw <- read_tsv(input_files[2])
+```
 
-data <- read_tsv(input_files[1])
+```{r inspect}
+## Inspect data
+data_raw %>% colnames()
+data_raw %>% head()
+data_raw
+
+## Confirm that blocks have the right trials
+data_raw %>% group_by(blockcode) %>% count()
+data_raw %>% group_by(trialcode) %>% count()
+data_raw %>% group_by(blockcode, trialcode) %>% count() # Block "main_z" has incorrect trialcode, main_slash - fixing...
+
+data_raw %>% group_by(trialcode) %>% summarize()
 ```
 
 ```{r}
-## Inspect data
-data %>% colnames()
-data %>% head()
+## Check that response counts look right
+data_raw %>% group_by(response) %>% count()
+data_raw
+## Recode responses
+data_proc  <- data_raw %>%
+  rename(response_raw = response)
 
-data %>% group_by(blockcode) %>% count()
-data %>% group_by(trialcode) %>% count()
+
+data_proc <- data_proc %>% mutate(response_chr = case_when(
+                                         response_raw == 0 ~ "",
+                                         response_raw == 44 ~ "z",
+                                         response_raw == 53 ~ "slash"
+                                         ),
+                response = case_when(
+                                     response_raw == 0 ~ "absent",
+                                     response_raw %in% c(44, 53) ~ "present"
+                                     )
+)
+
+data_proc %>% group_by(response) %>% count()
+data_proc %>% group_by(response, correct) %>% count()
+
+```
+```{r}
+## Prepare tbls with cleaned data
+```
+
+```{r}
+## Inspect performance by block
+```
+```{r}
+## Calculate percent correct for present and absent trials.
+data_int %>%
+  group_by(response) %>%
+  summarize(total_responses = n()) %>%
+  mutate(pct_correct = total_responses / sum(total_responses))
 
 
+  summarize(percent_correct = correct / sum(correct))
 
-data %>% group_by(blockcode, trialcode) %>% count() # Block "main_z" has incorrect trialcode, main_slash
-data %>% group_by(trialcode) %>% summarize()
+data_int %>% colnames()
 ```
 
 ```{r}
