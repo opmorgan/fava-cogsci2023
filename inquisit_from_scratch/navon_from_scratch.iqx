@@ -166,7 +166,7 @@ values.target_present, response, correct, latency)
 / nextkey = ("n")
 / prevkey = ("p")
 / navigationbuttonfontstyle = ("Arial", 3.00%, false, false, false, false, 5, 1)
-/ finishlabel = "Press [n] to start"
+/ finishlabel = "Press [n] to continue"
 / nextlabel = "Press [n] to continue"
 / prevlabel = "Press [p] to go back"
 </instruct>
