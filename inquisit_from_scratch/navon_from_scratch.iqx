@@ -56,6 +56,7 @@ values.target_present, response, correct, latency)
 / foreground_color = black
 / fontfamily_default = "Avenir Next"
 / fontsize_default = 5% // Change to 14pt?
+/ nav_button_fontsize_default = 3% // Change to 14pt?
 / fontsize_fixation = 10%
 / iti = 0 // Time between response and next fixation, or time after timeout with nonresponse
 / fixation_duration = 600
@@ -73,6 +74,7 @@ values.target_present, response, correct, latency)
 
 <defaults>
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_default)
+/ navigationbuttonfontstyle = (parameters.fontfamily_default, parameters.nav_button_fontsize_default)
 / screencolor = parameters.background_color
 // txcolor = parameters.foreground_color
 / txbgcolor = parameters.background_color
@@ -160,16 +162,61 @@ values.target_present, response, correct, latency)
 //	  response-specific instructions ("/")
 //	  response-specific instructions ("z")
 //	  feedback for correct/incorrect practice trials
-<page instructions_intro> // TODO: write, move to htmlpage
-Instructions (intro)
+<instruct>
+/ nextkey = ("n")
+/ prevkey = ("p")
+/ navigationbuttonfontstyle = ("Arial", 3.00%, false, false, false, false, 5, 1)
+/ finishlabel = "Press [n] to start"
+/ nextlabel = "Press [n] to continue"
+/ prevlabel = "Press [p] to go back"
+</instruct>
+
+<page instructions_battery_start> // TODO: write, move to htmlpage
+Welcome! Thank you for participating in this study.
+</page>
+
+<block instructions_task_intro>
+/ preinstructions = (instructions_task_intro_1, instructions_task_intro_2, instructions_task_intro_3, instructions_task_intro_4, instructions_task_intro_5)
+</block>
+
+<page instructions_task_intro_1> // TODO: write, move to htmlpage
+In this experiment, you will see big shapes made of little shapes, like this: 
+^^ [picture: picture: trianglesquare diamondtriangle]
+</page>
+
+<page instructions_task_intro_2> // TODO: write, move to htmlpage
+Your task will be to focus on the center of the screen, and press a key whenever you see a circle or square anywhere on the screen. 
+^^ The circle or square might be little or big—press the key any time you see any circle or square.
+^^ We will tell you which key to use in each round.
+</page>
+
+<page instructions_task_intro_3> // TODO: write, move to htmlpage
+For example, if you see these shapes on the screen, you should press the key, because there is a little square:
+^^ [picture: trianglesquare diamondtriangle]
+^^ We will tell you which key to use before each round.
+</page>
+
+<page instructions_task_intro_4> // TODO: write, move to htmlpage
+If you see these shapes on the screen, you should press the key, because there is a big circle:
+^^ [picture: trianglediamond squarediamond]
+^^ We will tell you which key to use before each round.
+</page>
+
+<page instructions_task_intro_5> // TODO: write, move to htmlpage
+If you see these shapes on the screen, you should not press the key, because there is no circle or square:
+^^ [diamondtriangle trianglediamond]
+^^ We will tell you which key to use before each round.
 </page>
 
 <page instructions_practice_slash> // TODO: write, move to htmlpage
-Practice round. When you see a square or circle, press "/"
+For this round, please press the "/" (slash) key with your right index finger whenever you see a circle or square.
+^^ Press "n" to begin a practice run.
 </page>
 
 <page instructions_practice_z> // TODO: write, move to htmlpage
-Practice round. When you see a square or circle, press "z"
+For this round, please press the "z" key with your left index finger whenever you see a circle or square.
+^^ Press "n" to begin a practice run.
+
 </page>
 
 <text incorrect_message>
@@ -183,15 +230,25 @@ Practice round. When you see a square or circle, press "z"
 </text>
 
 <page instructions_main_slash> // TODO: write, move to htmlpage
-Get ready for the real experiment! When you see a square or circle, press "/"
+Get ready for the real experiment! Whenever you see a square or circle, press "/"
+^^ Press "n" to begin the experiment round.
 </page>
 
 <page instructions_main_z> // TODO: write, move to htmlpage
-Get ready for the real experiment! When you see a square or circle, press "z"
+Get ready for the real experiment! Whenever you see a square or circle, press "z"
+^^ Press "n" to begin the experiment round.
 </page>
 
-<page instructions_end> // TODO: write, move to htmlpage
-Instructions (intro)
+<block instructions_task_outro>
+/ preinstructions = (instructions_task_outro)
+</block>
+
+<page instructions_task_outro> // TODO: write, move to htmlpage
+Nice job! You are done with the main experiment. To finish the study, you will fill out two brief questionnaires.
+</page>
+
+<page instructions_battery_end> // TODO: write, move to htmlpage
+Thank you! you are done with the study. Press "n" to be redirected to the Prolific study completion page.
 </page>
 
 
@@ -204,10 +261,6 @@ Instructions (intro)
 //	  main      ("/") 32 target-present, 8 target-absent [40 trials total]
 //    practice  ("z") 12 target-present, 4 target-absent [16 trials total]
 //	  main      ("z") 32 target-present, 8 target-absent [40 trials total]
-<instruct>
-/ nextkey = ("n")
-/ prevkey = ("p")
-</instruct>
 
 <trial practice_slash>
 / ontrialbegin = [
@@ -461,27 +514,31 @@ Instructions (intro)
 / subjects = (1 of 2) // Subjects who will respond with "/" first
 // To automatically assign subject ID and group by odd/even, host on inquisit website.
 // https://www.millisecond.com/support/docs/current/html/articles/websubjectnumbers.htm
-/ preinstructions = (instructions_intro)
-/ postinstructions = (instructions_end)
+/ preinstructions = (instructions_battery_start)
+/ postinstructions = (instructions_battery_end)
 / blocks = [
-	1=practice_slash;
-	2=main_slash;
-	3=interblock_break;
-	4=practice_z;
-	5=main_z;
+	1=instructions_task_intro;
+	2=practice_slash;
+	3=main_slash;
+	4=interblock_break;
+	5=practice_z;
+	6=main_z;
+	7=instructions_task_outro;
 	]
 </expt>
 
 <expt>
 / subjects = (2 of 2) // Subjects who will respond with "z" first
-/ preinstructions = (instructions_intro)
-/ postinstructions = (instructions_end)
+/ preinstructions = (instructions_battery_start)
+/ postinstructions = (instructions_battery_end)
 / blocks = [
-	1=practice_z;
-	2=main_z;
-	3=interblock_break;
-	4=practice_slash;
-	5=main_slash;
+	1=instructions_task_intro;
+	2=practice_z;
+	3=main_z;
+	4=interblock_break;
+	5=practice_slash;
+	6=main_slash;
+	7=instructions_task_outro;
 	]
 </expt>
 
