@@ -74,7 +74,6 @@ values.target_present, response, correct, latency)
 
 <defaults>
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_default)
-/ navigationbuttonfontstyle = (parameters.fontfamily_default, parameters.nav_button_fontsize_default)
 / screencolor = parameters.background_color
 // txcolor = parameters.foreground_color
 / txbgcolor = parameters.background_color
@@ -163,61 +162,49 @@ values.target_present, response, correct, latency)
 //	  response-specific instructions ("z")
 //	  feedback for correct/incorrect practice trials
 <instruct>
+/ navigationbuttonfontstyle = (parameters.fontfamily_default, parameters.nav_button_fontsize_default)
 / nextkey = ("n")
 / prevkey = ("p")
-/ navigationbuttonfontstyle = ("Arial", 3.00%, false, false, false, false, 5, 1)
 / finishlabel = "Press [n] to continue"
 / nextlabel = "Press [n] to continue"
 / prevlabel = "Press [p] to go back"
 </instruct>
 
-<page instructions_battery_start> // TODO: write, move to htmlpage
-Welcome! Thank you for participating in this study.
-</page>
+<htmlpage instructions_battery_start>
+/ file = "instructions_battery_start.html"
+</htmlpage>
 
 <block instructions_task_intro>
 / preinstructions = (instructions_task_intro_1, instructions_task_intro_2, instructions_task_intro_3, instructions_task_intro_4, instructions_task_intro_5)
 </block>
 
-<page instructions_task_intro_1> // TODO: write, move to htmlpage
-In this experiment, you will see big shapes made of little shapes, like this: 
-^^ [picture: picture: trianglesquare diamondtriangle]
-</page>
+<htmlpage instructions_task_intro_1>
+/ file = "instructions_task_intro_1.html"
+</htmlpage>
 
-<page instructions_task_intro_2> // TODO: write, move to htmlpage
-Your task will be to focus on the center of the screen, and press a key whenever you see a circle or square anywhere on the screen. 
-^^ The circle or square might be little or big—press the key any time you see any circle or square.
-^^ We will tell you which key to use in each round.
-</page>
+<htmlpage instructions_task_intro_2>
+/ file = "instructions_task_intro_2.html"
+</htmlpage>
 
-<page instructions_task_intro_3> // TODO: write, move to htmlpage
-For example, if you see these shapes on the screen, you should press the key, because there is a little square:
-^^ [picture: trianglesquare diamondtriangle]
-^^ We will tell you which key to use before each round.
-</page>
+<htmlpage instructions_task_intro_3>
+/ file = "instructions_task_intro_3.html"
+</htmlpage>
 
-<page instructions_task_intro_4> // TODO: write, move to htmlpage
-If you see these shapes on the screen, you should press the key, because there is a big circle:
-^^ [picture: trianglediamond squarediamond]
-^^ We will tell you which key to use before each round.
-</page>
+<htmlpage instructions_task_intro_4>
+/ file = "instructions_task_intro_4.html"
+</htmlpage>
 
-<page instructions_task_intro_5> // TODO: write, move to htmlpage
-If you see these shapes on the screen, you should not press the key, because there is no circle or square:
-^^ [diamondtriangle trianglediamond]
-^^ We will tell you which key to use before each round.
-</page>
+<htmlpage instructions_task_intro_5>
+/ file = "instructions_task_intro_5.html"
+</htmlpage>
 
-<page instructions_practice_slash> // TODO: write, move to htmlpage
-For this round, please press the "/" (slash) key with your right index finger whenever you see a circle or square.
-^^ Press "n" to begin a practice run.
-</page>
+<htmlpage instructions_practice_slash>
+/ file = "instructions_practice_slash.html"
+</htmlpage>
 
-<page instructions_practice_z> // TODO: write, move to htmlpage
-For this round, please press the "z" key with your left index finger whenever you see a circle or square.
-^^ Press "n" to begin a practice run.
-
-</page>
+<htmlpage instructions_practice_z>
+/ file = "instructions_practice_slash.html"
+</htmlpage>
 
 <text incorrect_message>
 / items = ("      INCORRECT      ")
@@ -229,27 +216,25 @@ For this round, please press the "z" key with your left index finger whenever yo
 / txcolor = (0, 255, 0)
 </text>
 
-<page instructions_main_slash> // TODO: write, move to htmlpage
-Get ready for the real experiment! Whenever you see a square or circle, press "/"
-^^ Press "n" to begin the experiment round.
-</page>
+<htmlpage instructions_main_slash>
+/ file = "instructions_main_slash.html"
+</htmlpage>
 
-<page instructions_main_z> // TODO: write, move to htmlpage
-Get ready for the real experiment! Whenever you see a square or circle, press "z"
-^^ Press "n" to begin the experiment round.
-</page>
+<htmlpage instructions_main_z>
+/ file = "instructions_main_z.html"
+</htmlpage>
 
 <block instructions_task_outro>
 / preinstructions = (instructions_task_outro)
 </block>
 
-<page instructions_task_outro> // TODO: write, move to htmlpage
-Nice job! You are done with the main experiment. To finish the study, you will fill out two brief questionnaires.
-</page>
+<htmlpage instructions_task_outro>
+/ file = "instructions_task_outro.html"
+</htmlpage>
 
-<page instructions_battery_end> // TODO: write, move to htmlpage
-Thank you! you are done with the study. Press "n" to be redirected to the Prolific study completion page.
-</page>
+<htmlpage instructions_battery_end>
+/ file = "instructions_battery_end.html"
+</htmlpage>
 
 
 **************************************************************************************************************

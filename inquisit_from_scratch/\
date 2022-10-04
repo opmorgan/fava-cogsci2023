@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+</head>
+
+<style>
+body {
+    font-family: Avenir Next;
+    font-size: 5vh;
+}
+</style>
+
+<body>
+Welcome! Thank you for participating in this study.
+</body>
+
