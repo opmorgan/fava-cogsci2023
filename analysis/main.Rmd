@@ -111,7 +111,7 @@ data_int <- data_int %>% mutate(phase = case_when(
 ```{r calculate_percent_correct}
 ## Calculate percent correct for each block, separating present and absent trials
 response_counts_block_pa <- data_int %>% 
-  group_by(block, target_present) %>% 
+  group_by(block, phase, target_present) %>% 
   summarize(total_responses = n(),
             n_present_resp = sum(response_log),
             n_absent_resp = total_responses - n_present_resp,
@@ -122,7 +122,7 @@ response_counts_block_pa
 
 ## Calculate percent correct for each block, collapsing present and absent trials
 response_counts_by_block <- data_int %>% 
-  group_by(block) %>% 
+  group_by(block, phase) %>% 
   summarize(total_responses = n(),
             n_present_resp = sum(response_log),
             n_absent_resp = total_responses - n_present_resp,
@@ -142,6 +142,20 @@ response_counts_by_block
 
 ## Responded "go" almost every time?
 exclude_all_gos = 0
+
+response_counts_block_main <- response_counts_by_block %>% 
+  filter(phase == "main")
+
+for (block in response_counts_block_main$block) {
+  print("test")
+  print(block)
+}
+
+go_counts <- response_counts_by_block %>% 
+  filter(phase == "main") %>% 
+  .[["n_present_resp"]]
+
+go_counts
 
 ## Accuracy below 60% on any main block?
 exclude_low_acc = 0
