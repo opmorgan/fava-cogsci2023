@@ -58,6 +58,8 @@ values.target_present, response, correct, latency)
 / fontsize_default = 5% // Change to 14pt?
 / nav_button_fontsize_default = 3% // Change to 14pt?
 / fontsize_fixation = 8% // Change to make smaller (e.g., 5%) if using visual fixation cue
+/ fontsize_survey = 2% // Change to make smaller (e.g., 5%) if using visual fixation cue
+/ fontsize_survey_caption = 3% // Change to make smaller (e.g., 5%) if using visual fixation cue
 / iti = 0 // Time between response and next fixation, or time after timeout with nonresponse
 / fixation_duration = 600
 / shape_duration = 134 // Experiment setting: 134
@@ -126,6 +128,7 @@ values.target_present, response, correct, latency)
 // 	  8  target-absent
 <include>
 / file = "load_stimuli.iqx"
+/ file = "load_surveys.iqx"
 </include>
 
 // Define stimulus selection pools
@@ -512,6 +515,7 @@ values.target_present, response, correct, latency)
 **************************************************************************************************************
 // Define experiment
 // Order:
+//	  Demographics
 //	  General instructions
 //	  response-specific instructions ("/")
 //    practice block ("/") (12 t-p, 4 t-a)
@@ -519,6 +523,7 @@ values.target_present, response, correct, latency)
 //	  response-specific instructions ("z")
 //    practice block ("z") (12 t-p, 4 t-a)
 //	  main block ("z") (32 t-p, 8 t-a, times 2)
+//	  Handedness questionnaire; open-ended feedback form
 // For 1/2 subjects, do "z" blocks first.
 <expt>
 / subjects = (1 of 2) // Subjects who will respond with "/" first
@@ -527,13 +532,16 @@ values.target_present, response, correct, latency)
 / preinstructions = (instructions_battery_start)
 / postinstructions = (instructions_battery_end)
 / blocks = [
-	1=instructions_task_intro;
-	2=practice_slash;
-	3=main_slash;
-	4=interblock_break;
-	5=practice_z;
-	6=main_z;
-	7=instructions_task_outro;
+	1=demographics;
+	2=instructions_task_intro;
+	3=practice_slash;
+	4=main_slash;
+	5=interblock_break;
+	6=practice_z;
+	7=main_z;
+	8=instructions_task_outro;
+	9=ehi_short;
+	10=open_ended_feedback;
 	]
 </expt>
 
@@ -542,13 +550,16 @@ values.target_present, response, correct, latency)
 / preinstructions = (instructions_battery_start)
 / postinstructions = (instructions_battery_end)
 / blocks = [
-	1=instructions_task_intro;
-	2=practice_z;
-	3=main_z;
-	4=interblock_break;
-	5=practice_slash;
-	6=main_slash;
-	7=instructions_task_outro;
+	1=demographics;
+	2=instructions_task_intro;
+	3=practice_z;
+	4=main_z;
+	5=interblock_break;
+	6=practice_slash;
+	7=main_slash;
+	8=instructions_task_outro;
+	9=ehi_short;
+	10=open_ended_feedback;
 	]
 </expt>
 
