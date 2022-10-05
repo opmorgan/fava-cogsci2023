@@ -207,7 +207,7 @@ values.target_present, response, correct, latency)
 </htmlpage>
 
 <htmlpage instructions_practice_z>
-/ file = "instructions_practice_slash.html"
+/ file = "instructions_practice_z.html"
 </htmlpage>
 
 <text incorrect_message>
