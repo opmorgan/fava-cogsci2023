@@ -57,10 +57,10 @@ values.target_present, response, correct, latency)
 / fontfamily_default = "Avenir Next"
 / fontsize_default = 5% // Change to 14pt?
 / nav_button_fontsize_default = 3% // Change to 14pt?
-/ fontsize_fixation = 5%
+/ fontsize_fixation = 8% // Change to make smaller (e.g., 5%) if using visual fixation cue
 / iti = 0 // Time between response and next fixation, or time after timeout with nonresponse
 / fixation_duration = 600
-/ shape_duration = 134 // Experiment setting: 134. For testing: 
+/ shape_duration = 134 // Experiment setting: 134
 / blank_duration = 256
 / mask_duration = 134 // Experiment setting: 134. Set to 2000ms for testing
 / time_limit = 2000 // Maximum response time, after stimulus onset
@@ -263,7 +263,7 @@ values.target_present, response, correct, latency)
 	//trial.practice_slash.insertstimulustime(clearscreen, expressions.fixation_onset_normal); // 600ms/n (after cue): Refresh screen
 	//trial.practice_slash.insertstimulustime(text.stim_fixation, expressions.fixation_onset_normal); // 600ms/n (after cue): Show normal fixation cross after cue
 
-	trial.practice_slash.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
+	//trial.practice_slash.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
 	trial.practice_slash.insertstimulustime(picture.stim_practice_left, expressions.shape_onset); // 600ms: show stimulus
 	trial.practice_slash.insertstimulustime(picture.stim_practice_right, expressions.shape_onset); // 600ms: show stimulus
 
@@ -313,7 +313,7 @@ values.target_present, response, correct, latency)
 	//trial.practice_z.insertstimulustime(clearscreen, expressions.fixation_onset_normal); // 600ms/n (after cue): Refresh screen
 	//trial.practice_z.insertstimulustime(text.stim_fixation, expressions.fixation_onset_normal); // 600ms/n (after cue): Show normal fixation cross after cue
 
-	trial.practice_z.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
+	//trial.practice_z.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
 	trial.practice_z.insertstimulustime(picture.stim_practice_left, expressions.shape_onset); // 600ms: show stimulus
 	trial.practice_z.insertstimulustime(picture.stim_practice_right, expressions.shape_onset); // 600ms: show stimulus
 
@@ -364,7 +364,7 @@ values.target_present, response, correct, latency)
 	//trial.main_slash.insertstimulustime(clearscreen, expressions.fixation_onset_normal); // 600ms/n (after cue): Refresh screen
 	//trial.main_slash.insertstimulustime(text.stim_fixation, expressions.fixation_onset_normal); // 600ms/n (after cue): Show normal fixation cross after cue
 	
-	trial.main_slash.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
+	//trial.main_slash.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
 	trial.main_slash.insertstimulustime(picture.stim_main_left, expressions.shape_onset); // 600ms: show stimulus
 	trial.main_slash.insertstimulustime(picture.stim_main_right, expressions.shape_onset); // 600ms: show stimulus
 	
@@ -413,7 +413,7 @@ values.target_present, response, correct, latency)
 	//trial.main_z.insertstimulustime(clearscreen, expressions.fixation_onset_normal); // 600ms/n (after cue): Refresh screen
 	//trial.main_z.insertstimulustime(text.stim_fixation, expressions.fixation_onset_normal); // 600ms/n (after cue): Show normal fixation cross after cue
 	
-	trial.main_z.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
+	//trial.main_z.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
 	trial.main_z.insertstimulustime(picture.stim_main_left, expressions.shape_onset); // 600ms: show stimulus
 	trial.main_z.insertstimulustime(picture.stim_main_right, expressions.shape_onset); // 600ms: show stimulus
 	
