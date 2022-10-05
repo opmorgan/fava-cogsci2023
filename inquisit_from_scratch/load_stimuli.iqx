@@ -95,6 +95,19 @@ D1+D2  |  D1+D2
 ////////////////////////////////////////////////////////////////
 </usermanual>
 
+<text stim_fixation>
+/ items = ("+")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_fixation, false, false, false, false, 5, 1)
+/ position = (50%, 50%)
+</text>
+
+// For "zooming" visual fixation cue
+<text stim_fixation_big>
+/ items = ("+")
+/ fontstyle = (parameters.fontfamily_default, expressions.fontsize_fixation_big, false, false, false, false, 5, 1)
+/ position = (50%, 50%)
+</text>
+
 <picture stim_mask_left>
 / items = stim_mask_left
 / position = (parameters.stim_xposition_left, parameters.stim_yposition)
