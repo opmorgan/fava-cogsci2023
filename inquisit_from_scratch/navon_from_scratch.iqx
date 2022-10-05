@@ -60,15 +60,15 @@ values.target_present, response, correct, latency)
 / fontsize_fixation = 10%
 / iti = 0 // Time between response and next fixation, or time after timeout with nonresponse
 / fixation_duration = 600
-/ shape_duration = 134
+/ shape_duration = 134 // Experiment setting: 134. For testing: 
 / blank_duration = 256
 / mask_duration = 134 // Experiment setting: 134. Set to 2000ms for testing
 / time_limit = 2000 // Maximum response time, after stimulus onset
 / feedback_duration = 500
 / interblock_break_duration = 20000 // Experiment setting: 20000. Set to 1000ms for testing
-/ stim_size = 40%
-/ stim_xposition_left = 40%
-/ stim_xposition_right = 60%
+/ stim_size = 11.12% // Stimulus width, in % screen size
+/ stim_xposition_left = 44%
+/ stim_xposition_right = 56%
 / stim_yposition = 50%
 </parameters>
 
