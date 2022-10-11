@@ -147,8 +147,8 @@ response_counts_block_main <- response_counts_by_block %>%
   filter(phase == "main")
 
 for (block in response_counts_block_main$block) {
-  print("test")
   print(block)
+  print(str_c("Number of 'go' responses: ", ))
 }
 
 go_counts <- response_counts_by_block %>% 
