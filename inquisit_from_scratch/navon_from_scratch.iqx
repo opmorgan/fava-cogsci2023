@@ -557,7 +557,7 @@ values.target_present, response, correct, latency)
 	9=main_z;
 	10=instructions_task_outro;
 	11=ehi_short;
-	12=open_ended_feedback;
+	12=end_questions;
 	13=instructions_battery_end;
 	]
 </expt>
@@ -576,7 +576,7 @@ values.target_present, response, correct, latency)
 	9=main_slash;
 	10=instructions_task_outro;
 	11=ehi_short;
-	12=open_ended_feedback;
+	12=end_questions;
 	13=instructions_battery_end;
 	]
 </expt>

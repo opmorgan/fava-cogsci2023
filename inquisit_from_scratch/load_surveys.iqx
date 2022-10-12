@@ -75,10 +75,10 @@
 </radiobuttons>
 
 **************************************************************************************************************
-	Open-ended feedback
+	End-of-task questions
 **************************************************************************************************************
-<survey open_ended_feedback>
-/pages = [1=open_ended_feedback]
+<survey end_questions>
+/pages = [1=task_experience; 2=open_ended_feedback]
 / showpagenumbers = false
 / showquestionnumbers = false
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
@@ -88,6 +88,7 @@
 / backlabel = "Back"
 </survey>
 
+// Open-ended feedback
 <surveypage open_ended_feedback>
 / questions = [1=open_ended_feedback]
 / showpagenumbers = false
@@ -98,6 +99,28 @@
 / caption = "(Optional) Is there anything you would like to share with the research team? Please write any feedback or information you think might be useful below."
 / required = false
 </textbox>
+
+// Task experience
+<surveypage task_experience>
+/ questions = [1=task_experience; 2=task_experience_other]
+/ showpagenumbers = false
+/ showquestionnumbers = false
+</surveypage>
+
+<radiobuttons task_experience>
+/ caption = "Have you ever done this task before?"
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
+/ responsefontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
+/ options = ("Yes", "No", "Not sure (please explain):")
+/ required = true 
+</radiobuttons>
+
+<textbox task_experience_other>
+/ caption = ""
+/ required = false
+</textbox>
+
+
 
 **************************************************************************************************************
 	Demographics
@@ -116,11 +139,6 @@
 / backlabel = "Back"
 </survey>
 
-<surveypage task_experience>
-/ questions = [1=task_experience; 2=task_experience_other]
-/ showpagenumbers = false
-/ showquestionnumbers = false
-</surveypage>
 
 <surveypage age_country_sex>
 / questions = [1=age; 2=country; 3=sex; 4=sex_other]
@@ -186,20 +204,6 @@
 / required = false
 </textbox>
 
-
-// Task experience
-<radiobuttons task_experience>
-/ caption = "Have you ever done this task before?"
-/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
-/ responsefontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
-/ options = ("Yes", "No", "Not sure (please explain):")
-/ required = true 
-</radiobuttons>
-
-<textbox task_experience_other>
-/ caption = ""
-/ required = false
-</textbox>
 
 // Age
 <dropdown age>
