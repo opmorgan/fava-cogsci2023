@@ -178,6 +178,10 @@ values.target_present, response, correct, latency)
 / file = "instructions_battery_start.html"
 </htmlpage>
 
+<htmlpage instructions_demographics_intro>
+/ file = "instructions_demographics_intro.html"
+</htmlpage>
+
 <block instructions_task_intro>
 / preinstructions = (instructions_task_intro_1, instructions_task_intro_2, instructions_task_intro_3, instructions_task_intro_4, instructions_task_intro_5)
 </block>
@@ -529,7 +533,7 @@ values.target_present, response, correct, latency)
 / subjects = (1 of 2) // Subjects who will respond with "/" first
 // To automatically assign subject ID and group by odd/even, host on inquisit website.
 // https://www.millisecond.com/support/docs/current/html/articles/websubjectnumbers.htm
-/ preinstructions = (instructions_battery_start)
+/ preinstructions = (instructions_battery_start, instructions_demographics_intro)
 / postinstructions = (instructions_battery_end)
 / blocks = [
 	1=demographics;
@@ -547,7 +551,7 @@ values.target_present, response, correct, latency)
 
 <expt>
 / subjects = (2 of 2) // Subjects who will respond with "z" first
-/ preinstructions = (instructions_battery_start)
+/ preinstructions = (instructions_battery_start, instructions_demographics_intro)
 / postinstructions = (instructions_battery_end)
 / blocks = [
 	1=demographics;
