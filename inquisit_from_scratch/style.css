@@ -3,19 +3,29 @@ body {
   font-size: 5vh; //* To match Inquisit's 5% *//
 }
 
-.welcome {
+.splash {
+  border-radius: 1em;
+  padding: 1em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+
+.splash_temp {
   display: block;
   text-align: center;
   margin: 0;
-  margin-top:40vh
-}
-
-.instruction_left {
-  text-align: left;
+  margin-top:20vh
 }
 
 .instruction_center {
   text-align: center;
+}
+
+.instruction_left {
+  text-align: left;
 }
 
 .image_pair{
