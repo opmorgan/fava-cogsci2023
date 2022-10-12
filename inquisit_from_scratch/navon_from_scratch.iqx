@@ -167,11 +167,11 @@ values.target_present, response, correct, latency)
 //	  feedback for correct/incorrect practice trials
 <instruct>
 / navigationbuttonfontstyle = (parameters.fontfamily_default, parameters.nav_button_fontsize_default)
-/ nextkey = ("n")
-/ prevkey = ("p")
-/ finishlabel = "Press [n] to continue"
-/ nextlabel = "Press [n] to continue"
-/ prevlabel = "Press [p] to go back"
+/ nextkey = (" ")
+/ prevkey = (14) // 14=Backspace
+/ finishlabel = "Press SPACE to continue"
+/ nextlabel = "Press SPACE to continue"
+/ prevlabel = "Press BACKSPACE to go back"
 </instruct>
 
 <htmlpage instructions_battery_start>
