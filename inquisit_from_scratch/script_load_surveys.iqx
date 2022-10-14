@@ -126,7 +126,7 @@
 	Demographics
 **************************************************************************************************************
 <survey demographics>
-/ pages = [1=task_experience; 2=age_country_sex; 3=education; 4=race]
+/ pages = [1=age_country_sex; 2=education; 3=race]
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
 / itemspacing = 2%
 / showpagenumbers = false

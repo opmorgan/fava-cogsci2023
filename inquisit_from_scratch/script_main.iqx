@@ -127,8 +127,8 @@ values.target_present, response, correct, latency)
 //    32 target-present
 // 	  8  target-absent
 <include>
-/ file = "load_stimuli.iqx"
-/ file = "load_surveys.iqx"
+/ file = "script_load_stimuli.iqx"
+/ file = "script_load_surveys.iqx"
 </include>
 
 // Define stimulus selection pools
