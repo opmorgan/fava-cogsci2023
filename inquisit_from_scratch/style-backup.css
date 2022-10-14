@@ -1,0 +1,36 @@
+body {
+  font-family: Avenir Next;
+  font-size: 5vh; //* To match Inquisit's 5% *//
+}
+
+.splash {
+  border-radius: 1em;
+  padding: 1em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+
+.instruction_center {
+  text-align: center;
+}
+
+.instruction_left {
+  text-align: left;
+}
+
+.image_pair{
+  display: flex;
+  justify-content: center;
+}
+
+.image_left img{
+  height: 40vh; /* Matching inquisit's 40% */
+  padding-right: 10vw; /* For 20% screen width between stimuli */
+}
+
+.image_right img{
+  height: 40vh; /* Matching inquisit's 40% */
+}

@@ -152,8 +152,7 @@ values.target_present, response, correct, latency)
 / resetinterval = 0 // Reset after all items have been selected -- number of items needs to match number presented per block
 </list>
 
-
-<text prompt_interblock_break> // TODO: add timer
+<text prompt_interblock_break> // TODO: add advance key
 /items = ("Nice job! You are halfway there. in 20 seconds, the next block will begin.")
 </text>
 
@@ -161,7 +160,9 @@ values.target_present, response, correct, latency)
 	Instructions and prompts
 **************************************************************************************************************
 // Define instructions and prompts
-//	  General instructions
+//	  General 
+
+
 //	  response-specific instructions ("/")
 //	  response-specific instructions ("z")
 //	  feedback for correct/incorrect practice trials
@@ -174,53 +175,78 @@ values.target_present, response, correct, latency)
 / prevlabel = "Press BACKSPACE to go back"
 </instruct>
 
-<htmlpage instructions_battery_start>
-/ file = "instructions_battery_start.html"
+	1=inst_1_welcome;
+	2=inst_2_demographics;
+	3=inst_3_intro_quickpreview;
+	4=inst_4_intro_fixation;
+	
+<htmlpage inst_1_welcome>
+/ file = "inst_1_welcome.html"
 </htmlpage>
 
-<block instructions_battery_start>
-/ preinstructions = (instructions_battery_start)
+<htmlpage inst_2_demographics>
+/ file = "inst_2_demographics.html"
+</htmlpage>
+
+<block inst_1_2>
+/ preinstructions = (inst_1_welcome, inst_2_demographics)
 </block>
 
-<htmlpage instructions_demographics_intro>
-/ file = "instructions_demographics_intro.html"
+
+<htmlpage inst_3_quickpreview>
+/ file = "inst_3_quickpreview.html"
 </htmlpage>
 
-<block instructions_demographics_intro>
-/ preinstructions = (instructions_demographics_intro)
+<htmlpage inst_4_intro_fixation>
+/ file = "inst_4_intro_fixation.html"
+</htmlpage>
+
+<htmlpage inst_5_SLASH_intro_shapes>
+/ file = "inst_5_SLASH_intro_shapes.html"
+</htmlpage>
+
+<htmlpage inst_6_intro_mask>
+/ file = "inst_6_intro_mask.html"
+</htmlpage>
+
+<htmlpage inst_7_SLASH_intro_present1>
+/ file = "inst_7_SLASH_intro_present1.html"
+</htmlpage>
+
+<htmlpage inst_8_SLASH_intro_present2>
+/ file = "inst_8_SLASH_intro_present2.html"
+</htmlpage>
+
+<htmlpage inst_9_intro_absent>
+/ file = "inst_9_intro_absent.html"
+</htmlpage>
+
+
+<block inst_3_13_SLASH>
+/ preinstructions = (
+inst_3_quickpreview, 
+inst_4_intro_fixation, 
+inst_5_SLASH_intro_shapes, 
+inst_6_intro_mask, 
+inst_7_SLASH_intro_present1, 
+inst_8_SLASH_intro_present2,
+inst_9_intro_absent
+)
 </block>
 
-<block instructions_task_intro>
-/ preinstructions = (instructions_task_intro_1, instructions_task_intro_2, instructions_task_intro_3, instructions_task_intro_4, instructions_task_intro_5)
+
+<block test_block>
+/ preinstructions = (
+inst_4_intro_fixation, 
+inst_5_SLASH_intro_shapes, 
+inst_6_intro_mask, 
+inst_7_SLASH_intro_present1, 
+inst_8_SLASH_intro_present2,
+inst_9_intro_absent
+)
 </block>
 
-<htmlpage instructions_task_intro_1>
-/ file = "instructions_task_intro_1.html"
-</htmlpage>
 
-<htmlpage instructions_task_intro_2>
-/ file = "instructions_task_intro_2.html"
-</htmlpage>
-
-<htmlpage instructions_task_intro_3>
-/ file = "instructions_task_intro_3.html"
-</htmlpage>
-
-<htmlpage instructions_task_intro_4>
-/ file = "instructions_task_intro_4.html"
-</htmlpage>
-
-<htmlpage instructions_task_intro_5>
-/ file = "instructions_task_intro_5.html"
-</htmlpage>
-
-<htmlpage instructions_practice_slash>
-/ file = "instructions_practice_slash.html"
-</htmlpage>
-
-<htmlpage instructions_practice_z>
-/ file = "instructions_practice_z.html"
-</htmlpage>
 
 <text incorrect_message>
 / items = ("      INCORRECT      ")
@@ -231,31 +257,6 @@ values.target_present, response, correct, latency)
 / items = ("     CORRECT     ")
 / txcolor = (0, 255, 0)
 </text>
-
-<htmlpage instructions_main_slash>
-/ file = "instructions_main_slash.html"
-</htmlpage>
-
-<htmlpage instructions_main_z>
-/ file = "instructions_main_z.html"
-</htmlpage>
-
-<block instructions_task_outro>
-/ preinstructions = (instructions_task_outro)
-</block>
-
-<htmlpage instructions_task_outro>
-/ file = "instructions_task_outro.html"
-</htmlpage>
-
-<htmlpage instructions_battery_end>
-/ file = "instructions_battery_end.html"
-</htmlpage>
-
-<block instructions_battery_end>
-/ preinstructions = (instructions_battery_end)
-</block>
-
 
 **************************************************************************************************************
 	Trials
@@ -486,7 +487,6 @@ values.target_present, response, correct, latency)
 	1-16 = noreplace(practice_slash)
     // It might be harder to handle responses in (b).
 	]
-/ preinstructions = (instructions_practice_slash)
 / errormessage = (incorrect_message, parameters.feedback_duration)
 / correctmessage = (correct_message, parameters.feedback_duration)
 </block>
@@ -495,7 +495,6 @@ values.target_present, response, correct, latency)
 / trials = [
 	1-16 = noreplace(practice_z)
 	]
-/ preinstructions = (instructions_practice_z)
 / errormessage = (incorrect_message, parameters.feedback_duration)
 / correctmessage = (correct_message, parameters.feedback_duration)
 </block>
@@ -511,7 +510,6 @@ values.target_present, response, correct, latency)
 	 1-40 = noreplace(main_slash);
 	41-80 = noreplace(main_slash);
 	]
-/ preinstructions = (instructions_main_slash)
 </block>
 
 <block main_z>
@@ -519,7 +517,6 @@ values.target_present, response, correct, latency)
 	 1-40 = noreplace(main_z);
 	41-80 = noreplace(main_z);
 	]
-/ preinstructions = (instructions_main_z)
 </block>
 
 <block interblock_break>
@@ -546,38 +543,14 @@ values.target_present, response, correct, latency)
 // To automatically assign subject ID and group by odd/even, host on inquisit website.
 // https://www.millisecond.com/support/docs/current/html/articles/websubjectnumbers.htm
 / blocks = [
-	1=instructions_battery_start;
-	2=instructions_demographics_intro;
-	3=demographics;
-	4=instructions_task_intro;
-	5=practice_slash;
-	6=main_slash;
-	7=interblock_break;
-	8=practice_z;
-	9=main_z;
-	10=instructions_task_outro;
-	11=ehi_short;
-	12=end_questions;
-	13=instructions_battery_end;
+	1=test_block;
 	]
 </expt>
 
 <expt>
 / subjects = (2 of 2) // Subjects who will respond with "z" first
 / blocks = [
-	1=instructions_battery_start;
-	2=instructions_demographics_intro;
-	3=demographics;
-	4=instructions_task_intro;
-	5=practice_z;
-	6=main_z;
-	7=interblock_break;
-	8=practice_slash;
-	9=main_slash;
-	10=instructions_task_outro;
-	11=ehi_short;
-	12=end_questions;
-	13=instructions_battery_end;
+	1=demographics
 	]
 </expt>
 
