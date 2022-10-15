@@ -152,10 +152,6 @@ values.target_present, response, correct, latency)
 / resetinterval = 0 // Reset after all items have been selected -- number of items needs to match number presented per block
 </list>
 
-<text prompt_interblock_break> // TODO: add advance key
-/items = ("Nice job! You are halfway there. in 20 seconds, the next block will begin.")
-</text>
-
 **************************************************************************************************************
 	Instructions and prompts
 **************************************************************************************************************
@@ -179,7 +175,9 @@ values.target_present, response, correct, latency)
 	2=inst_2_demographics;
 	3=inst_3_intro_quickpreview;
 	4=inst_4_intro_fixation;
-	
+
+**************************************************************************************************************
+// At the beginning, before demographics: 1-2
 <htmlpage inst_1_welcome>
 / file = "inst_1_welcome.html"
 </htmlpage>
@@ -188,11 +186,7 @@ values.target_present, response, correct, latency)
 / file = "inst_2_demographics.html"
 </htmlpage>
 
-<block inst_1_2>
-/ preinstructions = (inst_1_welcome, inst_2_demographics)
-</block>
-
-
+// After demographics, before practice1: 3-10
 <htmlpage inst_3_quickpreview>
 / file = "inst_3_quickpreview.html"
 </htmlpage>
@@ -221,8 +215,47 @@ values.target_present, response, correct, latency)
 / file = "inst_9_intro_absent.html"
 </htmlpage>
 
+<htmlpage inst_10_SLASH_practice1>
+/ file = "inst_10_SLASH_practice1.html"
+</htmlpage>
 
-<block inst_3_13_SLASH>
+// After practice1, before main1: 11
+<htmlpage inst_11_SLASH_main1>
+/ file = "inst_11_SLASH_main1.html"
+</htmlpage>
+
+// After main1, before practice 2: interblock break, 12
+<page interblock_break>
+^^Nice job! You are halfway done—feel free to take a break. Press the spacebar when you are ready to continue.
+</page>
+
+
+<htmlpage inst_12_SLASH_practice2>
+/ file = "inst_12_SLASH_practice2.html"
+</htmlpage>
+
+// After practice 2, before main 2: 13
+<htmlpage inst_13_SLASH_main2>
+/ file = "inst_13_SLASH_main2.html"
+</htmlpage>
+
+// After main 2, before end questions: 14
+<htmlpage inst_14_end_questions>
+/ file = "inst_14_end_questions.html"
+</htmlpage>
+
+// At the very end: 15
+<htmlpage inst_15_goodbye>
+/ file = "inst_15_goodbye.html"
+</htmlpage>
+
+**************************************************************************************************************
+// Define instruction blocks
+<block inst_1_2_UNIVERSAL>
+/ preinstructions = (inst_1_welcome, inst_2_demographics)
+</block>
+
+<block inst_3_10_SLASH>
 / preinstructions = (
 inst_3_quickpreview, 
 inst_4_intro_fixation, 
@@ -230,19 +263,54 @@ inst_5_SLASH_intro_shapes,
 inst_6_intro_mask, 
 inst_7_SLASH_intro_present1, 
 inst_8_SLASH_intro_present2,
-inst_9_intro_absent
+inst_9_intro_absent,
+inst_10_SLASH_practice1,
 )
+</block>
+
+<block inst_11_SLASH_main1>
+/ preinstructions = (inst_11_SLASH_main1)
+</block>
+
+<block interblock_break>
+/ preinstructions = (interblock_break)
+</block>
+
+<block inst_12_SLASH_practice2>
+/ preinstructions = (inst_12_SLASH_practice2)
+</block>
+
+<block inst_13_SLASH_main2>
+/ preinstructions = (inst_13_SLASH_main2)
+</block>
+
+<block inst_14_end_questions>
+/ preinstructions = (inst_14_end_questions)
+</block>
+
+<block inst_15_goodbye>
+/ preinstructions = (inst_15_goodbye)
 </block>
 
 
 <block test_block>
 / preinstructions = (
+inst_1_welcome, 
+inst_2_demographics,
+inst_3_quickpreview, 
 inst_4_intro_fixation, 
 inst_5_SLASH_intro_shapes, 
 inst_6_intro_mask, 
 inst_7_SLASH_intro_present1, 
 inst_8_SLASH_intro_present2,
-inst_9_intro_absent
+inst_9_intro_absent,
+inst_10_SLASH_practice1,
+inst_11_SLASH_main1,
+interblock_break,
+inst_12_SLASH_practice2,
+inst_13_SLASH_main2,
+inst_14_end_questions,
+inst_15_goodbye,
 )
 </block>
 
@@ -464,10 +532,6 @@ inst_9_intro_absent
 ]
 </trial>
 
-<trial interblock_break>
-/ stimulusframes = [1 = prompt_interblock_break]
-/ trialduration = parameters.interblock_break_duration
-</trial>
 
 
 **************************************************************************************************************
@@ -519,9 +583,6 @@ inst_9_intro_absent
 	]
 </block>
 
-<block interblock_break>
-/ trials = [1=interblock_break]
-</block>
 
 **************************************************************************************************************
 	Blocks
