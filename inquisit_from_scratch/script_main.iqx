@@ -199,6 +199,10 @@ values.target_present, response, correct, latency)
 / file = "inst_5_SLASH_intro_shapes.html"
 </htmlpage>
 
+<htmlpage inst_5_ZEE_intro_shapes>
+/ file = "inst_5_ZEE_intro_shapes.html"
+</htmlpage>
+
 <htmlpage inst_6_intro_mask>
 / file = "inst_6_intro_mask.html"
 </htmlpage>
@@ -207,9 +211,18 @@ values.target_present, response, correct, latency)
 / file = "inst_7_SLASH_intro_present1.html"
 </htmlpage>
 
+<htmlpage inst_7_ZEE_intro_present1>
+/ file = "inst_7_ZEE_intro_present1.html"
+</htmlpage>
+
 <htmlpage inst_8_SLASH_intro_present2>
 / file = "inst_8_SLASH_intro_present2.html"
 </htmlpage>
+
+<htmlpage inst_8_ZEE_intro_present2>
+/ file = "inst_8_ZEE_intro_present2.html"
+</htmlpage>
+
 
 <htmlpage inst_9_intro_absent>
 / file = "inst_9_intro_absent.html"
@@ -219,9 +232,17 @@ values.target_present, response, correct, latency)
 / file = "inst_10_SLASH_practice1.html"
 </htmlpage>
 
+<htmlpage inst_10_ZEE_practice1>
+/ file = "inst_10_ZEE_practice1.html"
+</htmlpage>
+
 // After practice1, before main1: 11
 <htmlpage inst_11_SLASH_main1>
 / file = "inst_11_SLASH_main1.html"
+</htmlpage>
+
+<htmlpage inst_11_ZEE_main1>
+/ file = "inst_11_ZEE_main1.html"
 </htmlpage>
 
 // After main1, before practice 2: interblock break, 12
@@ -234,9 +255,17 @@ values.target_present, response, correct, latency)
 / file = "inst_12_SLASH_practice2.html"
 </htmlpage>
 
+<htmlpage inst_12_ZEE_practice2>
+/ file = "inst_12_ZEE_practice2.html"
+</htmlpage>
+
 // After practice 2, before main 2: 13
 <htmlpage inst_13_SLASH_main2>
 / file = "inst_13_SLASH_main2.html"
+</htmlpage>
+
+<htmlpage inst_13_ZEE_main2>
+/ file = "inst_13_ZEE_main2.html"
 </htmlpage>
 
 // After main 2, before end questions: 14
@@ -268,8 +297,25 @@ inst_10_SLASH_practice1,
 )
 </block>
 
+<block inst_3_10_ZEE>
+/ preinstructions = (
+inst_3_quickpreview, 
+inst_4_intro_fixation, 
+inst_5_ZEE_intro_shapes, 
+inst_6_intro_mask, 
+inst_7_ZEE_intro_present1, 
+inst_8_ZEE_intro_present2,
+inst_9_intro_absent,
+inst_10_ZEE_practice1,
+)
+</block>
+
 <block inst_11_SLASH_main1>
 / preinstructions = (inst_11_SLASH_main1)
+</block>
+
+<block inst_11_ZEE_main1>
+/ preinstructions = (inst_11_ZEE_main1)
 </block>
 
 <block interblock_break>
@@ -280,8 +326,16 @@ inst_10_SLASH_practice1,
 / preinstructions = (inst_12_SLASH_practice2)
 </block>
 
+<block inst_12_ZEE_practice2>
+/ preinstructions = (inst_12_ZEE_practice2)
+</block>
+
 <block inst_13_SLASH_main2>
 / preinstructions = (inst_13_SLASH_main2)
+</block>
+
+<block inst_13_ZEE_main2>
+/ preinstructions = (inst_13_ZEE_main2)
 </block>
 
 <block inst_14_end_questions>
@@ -293,7 +347,7 @@ inst_10_SLASH_practice1,
 </block>
 
 
-<block test_block>
+<block test_block_SLASH>
 / preinstructions = (
 inst_1_welcome, 
 inst_2_demographics,
@@ -309,6 +363,27 @@ inst_11_SLASH_main1,
 interblock_break,
 inst_12_SLASH_practice2,
 inst_13_SLASH_main2,
+inst_14_end_questions,
+inst_15_goodbye,
+)
+</block>
+
+<block test_block_ZEE>
+/ preinstructions = (
+inst_1_welcome, 
+inst_2_demographics,
+inst_3_quickpreview, 
+inst_4_intro_fixation, 
+inst_5_ZEE_intro_shapes, 
+inst_6_intro_mask, 
+inst_7_ZEE_intro_present1, 
+inst_8_ZEE_intro_present2,
+inst_9_intro_absent,
+inst_10_ZEE_practice1,
+inst_11_ZEE_main1,
+interblock_break,
+inst_12_ZEE_practice2,
+inst_13_ZEE_main2,
 inst_14_end_questions,
 inst_15_goodbye,
 )
@@ -604,7 +679,7 @@ inst_15_goodbye,
 // To automatically assign subject ID and group by odd/even, host on inquisit website.
 // https://www.millisecond.com/support/docs/current/html/articles/websubjectnumbers.htm
 / blocks = [
-	1=test_block;
+	1=test_block_ZEE;
 	]
 </expt>
 
