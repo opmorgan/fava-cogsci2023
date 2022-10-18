@@ -25,7 +25,7 @@ library(tidyverse)
 data_dir <- here::here("data", "input")
 input_files <- list.files(path = data_dir, pattern = "*.iqdat",
                           full.names = TRUE)
-data_raw <- read_tsv(input_files[1])
+data_raw <- read_tsv(input_files[5])
 ```
 
 ```{r inspect_raw}
@@ -47,10 +47,15 @@ data_raw %>% group_by(response) %>% count()
 ## TODO: inspect duration, total and by block
 ```
 
-```{r tests}
+```{r tests, echo = T}
 ##TODO
 ## Confirm:
+message("Testing that data file contains what we expect...")
+library(stringr)
 ## When "target present", exactly one of the two stimuli contains "target"
+message("Testing: When 'target present', exactly one of the two stimuli contains 'target'")
+warning("Failed")
+message("Passed")
 ## When "target absent", both stimuli contain "distractor"
 
 ## When "target present" and response is nonzero, marked "correct"
