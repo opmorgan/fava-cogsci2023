@@ -1,0 +1,121 @@
+﻿<expt>
+/ subjects = (1 of 2) // Subjects who will respond with "/" first
+// To automatically assign subject ID and group by odd/even, host on inquisit website.
+// https://www.millisecond.com/support/docs/current/html/articles/websubjectnumbers.htm
+/ blocks = [
+	1=instructions_battery_start;
+	2=instructions_demographics_intro;
+	3=demographics;
+	4=instructions_task_intro;
+	5=practice_slash;
+	6=main_slash;
+	7=interblock_break;
+	8=practice_z;
+	9=main_z;
+	10=instructions_task_outro;
+	11=ehi_short;
+	12=end_questions;
+	13=instructions_battery_end;
+	]
+</expt>
+
+<expt>
+/ subjects = (2 of 2) // Subjects who will respond with "z" first
+/ blocks = [
+	1=instructions_battery_start;
+	2=instructions_demographics_intro;
+	3=demographics;
+	4=instructions_task_intro;
+	5=practice_z;
+	6=main_z;
+	7=interblock_break;
+	8=practice_slash;
+	9=main_slash;
+	10=instructions_task_outro;
+	11=ehi_short;
+	12=end_questions;
+	13=instructions_battery_end;
+	]
+</expt>
+
+<htmlpage instructions_battery_start>
+/ file = "instructions_battery_start.html"
+</htmlpage>
+
+<block instructions_battery_start>
+/ preinstructions = (instructions_battery_start)
+</block>
+
+<htmlpage instructions_demographics_intro>
+/ file = "instructions_demographics_intro.html"
+</htmlpage>
+
+<block instructions_demographics_intro>
+/ preinstructions = (instructions_demographics_intro)
+</block>
+
+<block instructions_task_intro>
+/ preinstructions = (instructions_task_intro_1, instructions_task_intro_2, instructions_task_intro_3, instructions_task_intro_4, instructions_task_intro_5)
+</block>
+
+<htmlpage instructions_task_intro_1>
+/ file = "instructions_task_intro_1.html"
+</htmlpage>
+
+<htmlpage instructions_task_intro_2>
+/ file = "instructions_task_intro_2.html"
+</htmlpage>
+
+<htmlpage instructions_task_intro_3>
+/ file = "instructions_task_intro_3.html"
+</htmlpage>
+
+<htmlpage instructions_task_intro_4>
+/ file = "instructions_task_intro_4.html"
+</htmlpage>
+
+<htmlpage instructions_task_intro_5>
+/ file = "instructions_task_intro_5.html"
+</htmlpage>
+
+<htmlpage instructions_practice_slash>
+/ file = "instructions_practice_slash.html"
+</htmlpage>
+
+<htmlpage instructions_practice_z>
+/ file = "instructions_practice_z.html"
+</htmlpage>
+
+<text incorrect_message>
+/ items = ("      INCORRECT      ")
+/ txcolor = (255, 0, 0)
+</text>
+
+<text correct_message>
+/ items = ("     CORRECT     ")
+/ txcolor = (0, 255, 0)
+</text>
+
+<htmlpage instructions_main_slash>
+/ file = "instructions_main_slash.html"
+</htmlpage>
+
+<htmlpage instructions_main_z>
+/ file = "instructions_main_z.html"
+</htmlpage>
+
+<block instructions_task_outro>
+/ preinstructions = (instructions_task_outro)
+</block>
+
+<htmlpage instructions_task_outro>
+/ file = "instructions_task_outro.html"
+</htmlpage>
+
+<htmlpage instructions_battery_end>
+/ file = "instructions_battery_end.html"
+</htmlpage>
+
+<block instructions_battery_end>
+/ preinstructions = (instructions_battery_end)
+</block>

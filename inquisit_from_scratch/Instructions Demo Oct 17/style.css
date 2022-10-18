@@ -1,0 +1,92 @@
+:root {
+  --gray-color: #bebebe;
+  --example-rect-width: 30vw;
+  --example-gap-size: 3vw;
+}
+
+body {
+  font-family: Avenir Next;
+  font-size: 5vh; //* To match Inquisit's 5% *//
+}
+
+.splash {
+  border-radius: 1em;
+  padding: 1em;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-right: -50%;
+  transform: translate(-50%, -50%);
+}
+
+.instruction-center {
+  text-align: center;
+}
+
+.instruction-left {
+  text-align: left;
+}
+
+.image-pair {
+  display: flex;
+  justify-content: center;
+}
+
+.image-pair .image-left img {
+  height: 40vh;
+  /* Matching inquisit's 40% */
+  padding-right: 10vw;
+  /* For 20% screen width between stimuli */
+}
+
+.image-pair .image-right img {
+  height: 40vh;
+  /* Matching inquisit's 40% */
+}
+
+/* https://stackoverflow.com/questions/47601564/equal-width-columns-in-css-grid */
+.example-grid {
+  display: flex;
+  width: 100vw;
+  justify-content: center;
+  grid-auto-flow: column;
+}
+
+.example-grid .example-fixation {
+  display: flex;
+  justify-content: center;
+  max-width: var(--example-rect-width);
+  border: solid var(--gray-color);
+  margin-right: var(--example-gap-size);
+}
+
+.example-grid .example-shapes {
+  display: flex;
+  justify-content: center;
+  max-width: var(--example-rect-width);
+  border: solid var(--gray-color);
+  margin-right: var(--example-gap-size);
+}
+
+.example-grid .example-shapes__highlighted-green {
+  display: flex;
+  justify-content: center;
+  max-width: var(--example-rect-width);
+  margin-right: var(--example-gap-size);
+  border: solid green .5vw;
+}
+
+.example-grid .example-shapes__highlighted-orange {
+  display: flex;
+  justify-content: center;
+  max-width: var(--example-rect-width);
+  margin-right: var(--example-gap-size);
+  border: solid orange .5vw;
+}
+
+.example-grid .example-mask {
+  display: flex;
+  justify-content: center;
+  max-width: var(--example-rect-width);
+  border: solid var(--gray-color);
+}
