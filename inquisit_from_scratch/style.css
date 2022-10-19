@@ -56,7 +56,7 @@ body {
   display: flex;
   justify-content: center;
   max-width: var(--example-rect-width);
-  border: solid var(--gray-color);
+  /* border: solid var(--gray-color); */
   margin-right: var(--example-gap-size);
 }
 
@@ -64,7 +64,7 @@ body {
   display: flex;
   justify-content: center;
   max-width: var(--example-rect-width);
-  border: solid var(--gray-color);
+  /* border: solid var(--gray-color); */
   margin-right: var(--example-gap-size);
 }
 
@@ -73,7 +73,7 @@ body {
   justify-content: center;
   max-width: var(--example-rect-width);
   margin-right: var(--example-gap-size);
-  border: solid green .5vw;
+  /* border: solid green .5vw; */
 }
 
 .example-grid .example-shapes__highlighted-orange {
@@ -81,12 +81,12 @@ body {
   justify-content: center;
   max-width: var(--example-rect-width);
   margin-right: var(--example-gap-size);
-  border: solid orange .5vw;
+  /* border: solid orange .5vw; */
 }
 
 .example-grid .example-mask {
   display: flex;
   justify-content: center;
   max-width: var(--example-rect-width);
-  border: solid var(--gray-color);
+  /* border: solid var(--gray-color); */
 }

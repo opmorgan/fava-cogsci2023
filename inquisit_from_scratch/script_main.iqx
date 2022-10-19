@@ -730,15 +730,39 @@ inst_15_goodbye,
 // To automatically assign subject ID and group by odd/even, host on inquisit website.
 // https://www.millisecond.com/support/docs/current/html/articles/websubjectnumbers.htm
 / blocks = [
-	1=test_block_SLASH;
+	1=inst_1_2_UNIVERSAL;
+	2=placeholder_demographics;
+	3=inst_3_10_SLASH;
+	4=practice_slash;
+	5=inst_11_SLASH_main1;
+	6=main_slash;
+	7=inst_12_SLASH_practice2;
+	8=practice_z;
+	9=inst_13_SLASH_main2;
+	10=main_z;
+	11=inst_14_end_questions;
+	12=ehi_short;
+	13=end_questions;
+	14=inst_15_goodbye;
 	]
 </expt>
 
 <expt>
 / subjects = (2 of 2) // Subjects who will respond with "z" first
 / blocks = [
-	1=test_block_ZEE;
+	1=inst_1_2_UNIVERSAL;
+	2=demographics;
+	3=inst_3_10_ZEE;
+	4=practice_z;
+	5=inst_11_ZEE_main1;
+	6=main_z;
+	7=inst_12_ZEE_practice2;
+	8=practice_slash;
+	9=inst_13_ZEE_main2;
+	10=main_slash;
+	11=inst_14_end_questions;
+	12=ehi_short;
+	13=end_questions;
+	14=inst_15_goodbye;
 	]
 </expt>
-
-
