@@ -386,7 +386,7 @@ inst_15_goodbye,
 
 
 
-// Make instruction 10 with trials instead of html pages
+// Make trial 
 
 <trial inst_10_SLASH_practice1>
 / ontrialbegin = [
@@ -436,7 +436,7 @@ trial.inst_10_ZEE_practice1.insertstimulustime(text.press_space_to_continue, 0);
 / subjects = (2 of 2) // Subjects who will respond with "z" first
 / blocks = [
 	1=inst_1_2_UNIVERSAL;
-	2=demographics;
+	2=placeholder_demographics;
 	3=inst_3_10_ZEE;
 	4=practice_z;
 	5=inst_11_ZEE_main1;

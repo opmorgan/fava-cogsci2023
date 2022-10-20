@@ -325,3 +325,9 @@ D1+D2  |  D1+D2
 / 39 = "stimuli_distractor_diamondtriangles.svg" 	// D2+D1
 / 40 = "stimuli_distractor_diamondtriangles.svg" 	// D2+D1
 </item>
+
+<text press_space_to_continue_central>
+/ items = ("[Press SPACE to continue]")
+/ fontstyle = (parameters.fontfamily_default, parameters.nav_button_fontsize_default, false, false, false, false, 5, 1)
+/ position = (50%, 50%)
+</text>

@@ -67,7 +67,7 @@ values.target_present, response, correct, latency)
 / blank_duration = 256
 / mask_duration = 134 // Experiment setting: 134. Set to 2000ms for testing
 / time_limit = 2000 // Maximum response time, after stimulus onset
-/ feedback_duration = 500
+/ feedback_duration = 1000
 / interblock_break_duration = 20000 // Experiment setting: 20000. Set to 1000ms for testing
 / stim_size = 11.12% // Stimulus width, in % screen size
 / stim_xposition_left = 44%
@@ -838,6 +838,10 @@ TEST_inst_with_pics;
 
 / posttrialpause = parameters.iti
 / recorddata = true
+
+/ errormessage = (incorrect_message, parameters.feedback_duration)
+/ correctmessage = (correct_message, parameters.feedback_duration)
+
 </trial>
 
 <trial practice_z>
@@ -889,6 +893,10 @@ TEST_inst_with_pics;
 
 / posttrialpause = parameters.iti
 / recorddata = true
+
+/ errormessage = (incorrect_message, parameters.feedback_duration)
+/ correctmessage = (correct_message, parameters.feedback_duration)
+
 </trial>
 
 <trial main_slash>
@@ -986,7 +994,10 @@ TEST_inst_with_pics;
 ]
 </trial>
 
-
+<trial advance_on_keypress>
+/ stimulustimes = [0=press_space_to_continue_central]
+/ validresponse = (" ")
+</trial>
 
 **************************************************************************************************************
 	Blocks
@@ -1002,19 +1013,21 @@ TEST_inst_with_pics;
 	// (a) Select without replacement on list of 12 present; list of 4 absent (does this work?)
 	// 1-16 = noreplace(practice_present_slash, practice_absent_slash) // Make sure this randomly selects from full pool; if not, move logic.
 	// (b) Predefine set of 16 stim, in one trial type. Randomly present those 16.
-	1-16 = noreplace(practice_slash)
-    // It might be harder to handle responses in (b).
+    // It might be harder to handle responses in (b). So, we will use (a).
+	//1-16 = noreplace(practice_slash)
+	// To let participant advance trials, interleave "advance with spacebar"trials. You have to specify each trial number manually.
+	// https://www.millisecond.com/support/docs/current/html/language/attributes/trials.htm
+	1, 3, 5, 7,  9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31 = noreplace(practice_slash);
+	2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 = advance_on_keypress;
 	]
-/ errormessage = (incorrect_message, parameters.feedback_duration)
-/ correctmessage = (correct_message, parameters.feedback_duration)
+
 </block>
 
 <block practice_z>
 / trials = [
-	1-16 = noreplace(practice_z)
+	1, 3, 5, 7,  9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31 = noreplace(practice_z);
+	2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 = advance_on_keypress;
 	]
-/ errormessage = (incorrect_message, parameters.feedback_duration)
-/ correctmessage = (correct_message, parameters.feedback_duration)
 </block>
 
 <block main_slash>
@@ -1060,36 +1073,38 @@ TEST_inst_with_pics;
 / blocks = [
 	1=inst_1_2_UNIVERSAL;
 	2=placeholder_demographics;
-	3=inst_3_10_ZEE;
-	4=placeholder_practice;
-	5=inst_11_ZEE_main1;
-	6=placeholder_main;
-	7=inst_12_ZEE_practice2;
-	8=placeholder_practice;
-	9=inst_13_ZEE_main2;
-	10=placeholder_main;
+	3=inst_3_10_SLASH;
+	4=practice_slash;
+	5=inst_11_SLASH_main1;
+	6=main_slash;
+	7=inst_12_SLASH_practice2;
+	8=practice_z;
+	9=inst_13_SLASH_main2;
+	10=main_z;
 	11=inst_14_end_questions;
-	12=placeholder_ehi_taskexperience_feedback;
-	13=inst_15_goodbye;
+	12=ehi_short;
+	13=end_questions;
+	14=inst_15_goodbye;
 	]
 </expt>
 
 <expt>
-/ subjects = (2 of 2) // Subjects who will respond with "Z" first
+/ subjects = (2 of 2) // Subjects who will respond with "z" first
 / blocks = [
 	1=inst_1_2_UNIVERSAL;
 	2=placeholder_demographics;
-	3=inst_3_10_SLASH;
-	4=placeholder_practice;
-	5=inst_11_SLASH_main1;
-	6=placeholder_main;
-	7=inst_12_SLASH_practice2;
-	8=placeholder_practice;
-	9=inst_13_SLASH_main2;
-	10=placeholder_main;
+	3=inst_3_10_ZEE;
+	4=practice_z;
+	5=inst_11_ZEE_main1;
+	6=main_z;
+	7=inst_12_ZEE_practice2;
+	8=practice_slash;
+	9=inst_13_ZEE_main2;
+	10=main_slash;
 	11=inst_14_end_questions;
-	12=placeholder_ehi_taskexperience_feedback;
-	13=inst_15_goodbye;
+	12=ehi_short;
+	13=end_questions;
+	14=inst_15_goodbye;
 	]
 </expt>
 
