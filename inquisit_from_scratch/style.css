@@ -1,9 +1,10 @@
 :root {
   --gray-color: #bebebe;
-  --example-rect-width: 30vw;
-  --example-gap-size: 3vw;
+  --example-rect-width: 30%;
+  --example-gap-size: 3%;
 }
 
+/* https://stackoverflow.com/questions/31039979/css-units-what-is-the-difference-between-vh-vw-and */
 body {
   font-family: Avenir Next;
   font-size: 5vh; //* To match Inquisit's 5% *//
@@ -47,7 +48,7 @@ body {
 /* https://stackoverflow.com/questions/47601564/equal-width-columns-in-css-grid */
 .example-grid {
   display: flex;
-  width: 100vw;
+  width: 100%;
   justify-content: center;
   grid-auto-flow: column;
 }

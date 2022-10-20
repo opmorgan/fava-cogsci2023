@@ -56,6 +56,7 @@ values.target_present, response, correct, latency)
 / foreground_color = black
 / fontfamily_default = "Avenir Next"
 / fontsize_default = 5% // Change to 14pt?
+/ fontsize_default_small = 3%
 / nav_button_fontsize_default = 3% // Change to 14pt?
 / fontsize_fixation = 8% // Change to make smaller (e.g., 5%) if using visual fixation cue
 / fontsize_survey = 2% // Change to make smaller (e.g., 5%) if using visual fixation cue
@@ -171,12 +172,6 @@ values.target_present, response, correct, latency)
 / prevlabel = "Press BACKSPACE to go back"
 </instruct>
 
-	1=inst_1_welcome;
-	2=inst_2_demographics;
-	3=inst_3_intro_quickpreview;
-	4=inst_4_intro_fixation;
-
-**************************************************************************************************************
 <text incorrect_message>
 / items = ("      INCORRECT      ")
 / txcolor = (255, 0, 0)
@@ -187,57 +182,479 @@ values.target_present, response, correct, latency)
 / txcolor = (0, 255, 0)
 </text>
 
+**************************************************************************************************************
+
+// Define placeholder blocks, for testing
+<htmlpage placeholder_consent>
+/ file = "placeholder_consent.html"
+</htmlpage>
+<block placeholder_consent>
+/ preinstructions = (placeholder_consent)
+</block>
+
+<htmlpage placeholder_demographics>
+/ file = "placeholder_demographics.html"
+</htmlpage>
+<block placeholder_demographics>
+/ preinstructions = (placeholder_demographics)
+</block>
+
+<htmlpage placeholder_ehi_taskexperience_feedback>
+/ file = "placeholder_ehi_taskexperience_feedback.html"
+</htmlpage>
+<block placeholder_ehi_taskexperience_feedback>
+/ preinstructions = (placeholder_ehi_taskexperience_feedback)
+</block>
+
+<htmlpage placeholder_practice>
+/ file = "placeholder_practice.html"
+</htmlpage>
+<block placeholder_practice>
+/ preinstructions = (placeholder_practice)
+</block>
+
+<htmlpage placeholder_main>
+/ file = "placeholder_main.html"
+</htmlpage>
+<block placeholder_main>
+/ preinstructions = (placeholder_main)
+</block>
+
+
+**************************************************************************************************************
+	Instructions 1-10 defined as Trials (to present images without css glitches: https://forums.millisecond.com/Topic1838.aspx)
+**************************************************************************************************************
 
 // At the beginning, before demographics: 1-2
-<htmlpage inst_1_welcome>
-/ file = "inst_1_welcome.html"
-</htmlpage>
+<text inst_1_welcome>
+/ items = ("Welcome!
 
-<htmlpage inst_2_demographics>
-/ file = "inst_2_demographics.html"
-</htmlpage>
+This program will take over your screen for the duration of the experiment. If you need to quit the program without completing the experiment, you can press 'CTRL-Q' to permanently end the program. If you have to quit the experiment early, please return this submission on Prolific by selecting the 'stop without completing' option.")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default, false, false, false, false, 5, 1)
+/ position = (2%, 10%)
+/ halign = left
+/ valign = top
+/ hjustify = left 
+/ size = (92%, 20%)
+</text>
 
-// After demographics, before practice1: 3-10
-<htmlpage inst_3_quickpreview>
-/ file = "inst_3_quickpreview.html"
-</htmlpage>
+<trial inst_1_welcome>
+/ ontrialbegin = [
+trial.inst_1_welcome.insertstimulustime(text.inst_1_welcome, 0);
+trial.inst_1_welcome.insertstimulustime(text.press_space_to_continue, 0);
+]
+/ validresponse = (" ")
+/ recorddata = false
+</trial>
 
-<htmlpage inst_4_intro_fixation>
-/ file = "inst_4_intro_fixation.html"
-</htmlpage>
+<text inst_2_demographics>
+/ items = ("Thanks for signing up! We rely on participants like you to do fundamental research on how the mind works. Just a few minutes of your time will help advance science.
 
-<htmlpage inst_5_SLASH_intro_shapes>
-/ file = "inst_5_SLASH_intro_shapes.html"
-</htmlpage>
+First, please answer a few questions about yourself.")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default, false, false, false, false, 5, 1)
+/ position = (2%, 10%)
+/ halign = left
+/ valign = top
+/ hjustify = left 
+/ size = (96%, 20%)
+</text>
 
-<htmlpage inst_5_ZEE_intro_shapes>
-/ file = "inst_5_ZEE_intro_shapes.html"
-</htmlpage>
+<trial inst_2_demographics>
+/ ontrialbegin = [
+trial.inst_2_demographics.insertstimulustime(text.inst_2_demographics, 0);
+trial.inst_2_demographics.insertstimulustime(text.press_space_to_continue, 0);
+]
+/ validresponse = (" ")
+/ recorddata = false
+</trial>
 
-<htmlpage inst_6_intro_mask>
-/ file = "inst_6_intro_mask.html"
-</htmlpage>
 
-<htmlpage inst_7_SLASH_intro_present1>
-/ file = "inst_7_SLASH_intro_present1.html"
-</htmlpage>
+**************************************************************************************************************
+	Define quick preview stimuli & instruction (trial)
+**************************************************************************************************************
 
-<htmlpage inst_7_ZEE_intro_present1>
-/ file = "inst_7_ZEE_intro_present1.html"
-</htmlpage>
+<parameters>
+/ inst_qp_width = parameters.stim_size // Stimulus width, in % screen size
+/ inst_qp_xpos_left = parameters.stim_xposition_left
+/ inst_qp_xpos_right = parameters.stim_xposition_right
+/ inst_qp_ypos = parameters.stim_yposition
+</parameters>
+<item qp_shape_left>
+/ 1 = "stimuli_target_trianglesquares.svg"
+</item>
 
-<htmlpage inst_8_SLASH_intro_present2>
-/ file = "inst_8_SLASH_intro_present2.html"
-</htmlpage>
+<item qp_shape_right>
+/ 1 = "stimuli_distractor_diamondtriangles.svg"
+</item>
 
-<htmlpage inst_8_ZEE_intro_present2>
-/ file = "inst_8_ZEE_intro_present2.html"
-</htmlpage>
+<picture qp_shape_left>
+/ items = qp_shape_left
+/ position = (parameters.inst_qp_xpos_left, parameters.inst_qp_ypos)
+/ size = (parameters.inst_qp_width, null)
+</picture>
 
-<htmlpage inst_9_intro_absent>
-/ file = "inst_9_intro_absent.html"
-</htmlpage>
+<picture qp_shape_right>
+/ items = qp_shape_right
+/ position = (parameters.inst_qp_xpos_right, parameters.inst_qp_ypos)
+/ size = (parameters.inst_qp_width, null)
+</picture>
 
+<text qp_fixation>
+/ items = ("+")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_fixation, false, false, false, false, 5, 1)
+/ position = (50%, 50%)
+</text>
+
+<text qp_instruction>
+/ items = ("In this experiment, you will see big shapes made of little shapes, presented like this:")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default, false, false, false, false, 5, 1)
+/ position = (2%, 2%)
+/ halign = left
+/ valign = top
+/ size = (96%, 20%)
+</text>
+
+<trial inst_3_quickpreview>
+/ ontrialbegin = [
+trial.inst_3_quickpreview.insertstimulustime(picture.qp_shape_left, 0);
+trial.inst_3_quickpreview.insertstimulustime(text.qp_fixation, 0);
+trial.inst_3_quickpreview.insertstimulustime(picture.qp_shape_right, 0);
+trial.inst_3_quickpreview.insertstimulustime(text.qp_instruction, 0);
+trial.inst_3_quickpreview.insertstimulustime(text.press_space_to_continue, 0);
+]
+/ validresponse = (" ")
+/ recorddata = false
+</trial>
+
+**************************************************************************************************************
+	Define example stimuli & instructions (trials)
+**************************************************************************************************************
+<parameters>
+/ inst_example_width = 28% // Stimulus width, in % screen size
+/ inst_example_xpos_left = 18%
+/ inst_example_xpos_center = 50%
+/ inst_example_xpos_right = 82%
+/ inst_example_ypos = 5%
+</parameters>
+<item example_0_blank>
+/ 1 = "resources_example_0_blank.svg"
+</item>
+
+<item example_1_fixation>
+/ 1 = "resources_example_1_fixation.svg"
+</item>
+
+<item example_2a_shapes_present1>
+/ 1 = "resources_example_2a_shapes_present1.svg"
+</item>
+
+<item example_2b_shapes_present1_highlight>
+/ 1 = "resources_example_2b_shapes_present1_highlight.svg"
+</item>
+
+<item example_2c_shapes_present2_highlight>
+/ 1 = "resources_example_2c_shapes_present2_highlight.svg"
+</item>
+
+<item example_2d_shapes_absent_highlight>
+/ 1 = "resources_example_2d_shapes_absent_highlight.svg"
+</item>
+
+<item example_resources_example_3_mask>
+/ 1 = "resources_example_3_mask.svg"
+</item>
+
+<text press_space_to_continue>
+/ items = ("[Press SPACE to continue]")
+/ fontstyle = (parameters.fontfamily_default, parameters.nav_button_fontsize_default, false, false, false, false, 5, 1)
+/ position = (50%, 95%)
+</text>
+
+<picture example_fixation_left>
+/ items = example_1_fixation
+/ position = (parameters.inst_example_xpos_left, parameters.inst_example_ypos)
+/ size = (parameters.inst_example_width, null) // TODO: make height explicit
+/ valign = top
+</picture>
+
+<picture example_blank_center>
+/ items = example_0_blank
+/ position = (parameters.inst_example_xpos_center, parameters.inst_example_ypos)
+/ size = (parameters.inst_example_width, null)
+/ valign = top
+</picture>
+
+<picture example_2a_shapes_present1>
+/ items = example_2a_shapes_present1
+/ position = (parameters.inst_example_xpos_center, parameters.inst_example_ypos)
+/ size = (parameters.inst_example_width, null)
+/ valign = top
+</picture>
+
+<picture example_2b_shapes_present1_highlight>
+/ items = example_2b_shapes_present1_highlight
+/ position = (parameters.inst_example_xpos_center, parameters.inst_example_ypos)
+/ size = (parameters.inst_example_width, null)
+/ valign = top
+</picture>
+
+<picture example_2c_shapes_present2_highlight>
+/ items = example_2c_shapes_present2_highlight
+/ position = (parameters.inst_example_xpos_center, parameters.inst_example_ypos)
+/ size = (parameters.inst_example_width, null)
+/ valign = top
+</picture>
+
+<picture example_2d_shapes_absent_highlight>
+/ items = example_2d_shapes_absent_highlight
+/ position = (parameters.inst_example_xpos_center, parameters.inst_example_ypos)
+/ size = (parameters.inst_example_width, null)
+/ valign = top
+</picture>
+
+<picture example_blank_right>
+/ items = example_0_blank
+/ position = (parameters.inst_example_xpos_right, parameters.inst_example_ypos)
+/ size = (parameters.inst_example_width, null)
+/ valign = top
+</picture>
+
+<picture example_mask_right>
+/ items = example_resources_example_3_mask
+/ position = (parameters.inst_example_xpos_right, parameters.inst_example_ypos)
+/ size = (parameters.inst_example_width, null)
+/ valign = top
+</picture>
+	  
+	  
+<text inst_4_intro_fixation>
+/ items = ("Before each set of shapes, you will see a cross in the center of the screen. Be sure to focus your eyes on the cross.")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default_small, false, false, false, false, 5, 1)
+/ position = (50%, 45%)
+/ halign = center
+/ valign = top
+/ hjustify = left 
+/ size = (92%, 20%)
+</text>
+
+<trial inst_4_intro_fixation>
+/ ontrialbegin = [
+trial.inst_4_intro_fixation.insertstimulustime(picture.example_fixation_left, 0);
+trial.inst_4_intro_fixation.insertstimulustime(picture.example_blank_center, 0);
+trial.inst_4_intro_fixation.insertstimulustime(picture.example_blank_right, 0);
+trial.inst_4_intro_fixation.insertstimulustime(text.inst_4_intro_fixation, 0);
+trial.inst_4_intro_fixation.insertstimulustime(text.press_space_to_continue, 0);
+]
+/ validresponse = (" ")
+/ recorddata = false
+</trial>
+
+<text inst_5_SLASH_intro_shapes>
+/ items = ("When the shapes appear, your job will be to press the '/' (SLASH) key with your RIGHT INDEX FINGER, as quickly as possible, if you see either a circle or a square. The circles and squares could be either in the little shapes or the big shapes. 
+If you don't see any circles or squares on the screen, don't press anything.")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default_small, false, false, false, false, 5, 1)
+/ position = (50%, 45%)
+/ halign = center
+/ valign = top
+/ hjustify = left 
+/ size = (92%, 20%)
+</text>
+
+<text inst_5_ZEE_intro_shapes>
+/ items = ("When the shapes appear, your job will be to press the 'Z' key with your LEFT INDEX FINGER, as quickly as possible, if you see either a circle or a square. The circles and squares could be either in the little shapes or the big shapes. 
+If you don't see any circles or squares on the screen, don't press anything.")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default_small, false, false, false, false, 5, 1)
+/ position = (50%, 45%)
+/ halign = center
+/ valign = top
+/ hjustify = left 
+/ size = (92%, 20%)
+</text>
+
+<trial inst_5_SLASH_intro_shapes>
+/ ontrialbegin = [
+trial.inst_5_SLASH_intro_shapes.insertstimulustime(picture.example_fixation_left, 0);
+trial.inst_5_SLASH_intro_shapes.insertstimulustime(picture.example_2a_shapes_present1, 0);
+trial.inst_5_SLASH_intro_shapes.insertstimulustime(picture.example_blank_right, 0);
+trial.inst_5_SLASH_intro_shapes.insertstimulustime(text.inst_5_SLASH_intro_shapes, 0);
+trial.inst_5_SLASH_intro_shapes.insertstimulustime(text.press_space_to_continue, 0);
+]
+/ validresponse = (" ")
+/ recorddata = false
+</trial>
+
+<trial inst_5_ZEE_intro_shapes>
+/ ontrialbegin = [
+trial.inst_5_ZEE_intro_shapes.insertstimulustime(picture.example_fixation_left, 0);
+trial.inst_5_ZEE_intro_shapes.insertstimulustime(picture.example_2a_shapes_present1, 0);
+trial.inst_5_ZEE_intro_shapes.insertstimulustime(picture.example_blank_right, 0);
+trial.inst_5_ZEE_intro_shapes.insertstimulustime(text.inst_5_ZEE_intro_shapes, 0);
+trial.inst_5_ZEE_intro_shapes.insertstimulustime(text.press_space_to_continue, 0);
+]
+/ validresponse = (" ")
+/ recorddata = false
+</trial>
+
+<text inst_6_intro_mask>
+/ items = ("After you see the shapes, they will be replaced by rectangles made out of hashtags—you can ignore these rectangles.")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default_small, false, false, false, false, 5, 1)
+/ position = (50%, 45%)
+/ halign = center
+/ valign = top
+/ hjustify = left 
+/ size = (92%, 20%)
+</text>
+
+<trial inst_6_intro_mask>
+/ ontrialbegin = [
+trial.inst_6_intro_mask.insertstimulustime(picture.example_fixation_left, 0);
+trial.inst_6_intro_mask.insertstimulustime(picture.example_2a_shapes_present1, 0);
+trial.inst_6_intro_mask.insertstimulustime(picture.example_mask_right, 0);
+trial.inst_6_intro_mask.insertstimulustime(text.inst_6_intro_mask, 0);
+trial.inst_6_intro_mask.insertstimulustime(text.press_space_to_continue, 0);
+]
+/ validresponse = (" ")
+/ recorddata = false
+</trial>
+
+<text inst_7_SLASH_intro_present1>
+/ items = ("For example, if you see these shapes, you should press the '/' (SLASH) key, because there is a square (in the little shapes).")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default_small, false, false, false, false, 5, 1)
+/ position = (50%, 45%)
+/ halign = center
+/ valign = top
+/ hjustify = left 
+/ size = (92%, 20%)
+</text>
+
+<text inst_7_ZEE_intro_present1>
+/ items = ("For example, if you see these shapes, you should press the 'Z' key, because there is a square (in the little shapes).")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default_small, false, false, false, false, 5, 1)
+/ position = (50%, 45%)
+/ halign = center
+/ valign = top
+/ hjustify = left 
+/ size = (92%, 20%)
+</text>
+
+<trial inst_7_SLASH_intro_present1>
+/ ontrialbegin = [
+trial.inst_7_SLASH_intro_present1.insertstimulustime(picture.example_fixation_left, 0);
+trial.inst_7_SLASH_intro_present1.insertstimulustime(picture.example_2b_shapes_present1_highlight, 0);
+trial.inst_7_SLASH_intro_present1.insertstimulustime(picture.example_mask_right, 0);
+trial.inst_7_SLASH_intro_present1.insertstimulustime(text.inst_7_SLASH_intro_present1, 0);
+trial.inst_7_SLASH_intro_present1.insertstimulustime(text.press_space_to_continue, 0);
+]
+/ validresponse = (" ")
+/ recorddata = false
+</trial>
+
+<trial inst_7_ZEE_intro_present1>
+/ ontrialbegin = [
+trial.inst_7_ZEE_intro_present1.insertstimulustime(picture.example_fixation_left, 0);
+trial.inst_7_ZEE_intro_present1.insertstimulustime(picture.example_2b_shapes_present1_highlight, 0);
+trial.inst_7_ZEE_intro_present1.insertstimulustime(picture.example_mask_right, 0);
+trial.inst_7_ZEE_intro_present1.insertstimulustime(text.inst_7_ZEE_intro_present1, 0);
+trial.inst_7_ZEE_intro_present1.insertstimulustime(text.press_space_to_continue, 0);
+]
+/ validresponse = (" ")
+/ recorddata = false
+</trial>
+
+<text inst_8_SLASH_intro_present2>
+/ items = ("If you see these shapes, you should press the '/' (SLASH) key, because there is a circle (in the big shapes).")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default_small, false, false, false, false, 5, 1)
+/ position = (50%, 45%)
+/ halign = center
+/ valign = top
+/ hjustify = left 
+/ size = (92%, 20%)
+</text>
+
+<text inst_8_ZEE_intro_present2>
+/ items = ("If you see these shapes, you should press the 'Z' key, because there is a circle (in the big shapes).")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default_small, false, false, false, false, 5, 1)
+/ position = (50%, 45%)
+/ halign = center
+/ valign = top
+/ hjustify = left 
+/ size = (92%, 20%)
+</text>
+
+<trial inst_8_SLASH_intro_present2>
+/ ontrialbegin = [
+trial.inst_8_SLASH_intro_present2.insertstimulustime(picture.example_fixation_left, 0);
+trial.inst_8_SLASH_intro_present2.insertstimulustime(picture.example_2c_shapes_present2_highlight, 0);
+trial.inst_8_SLASH_intro_present2.insertstimulustime(picture.example_mask_right, 0);
+trial.inst_8_SLASH_intro_present2.insertstimulustime(text.inst_8_SLASH_intro_present2, 0);
+trial.inst_8_SLASH_intro_present2.insertstimulustime(text.press_space_to_continue, 0);
+]
+/ validresponse = (" ")
+/ recorddata = false
+</trial>
+
+<trial inst_8_ZEE_intro_present2>
+/ ontrialbegin = [
+trial.inst_8_ZEE_intro_present2.insertstimulustime(picture.example_fixation_left, 0);
+trial.inst_8_ZEE_intro_present2.insertstimulustime(picture.example_2c_shapes_present2_highlight, 0);
+trial.inst_8_ZEE_intro_present2.insertstimulustime(picture.example_mask_right, 0);
+trial.inst_8_ZEE_intro_present2.insertstimulustime(text.inst_8_ZEE_intro_present2, 0);
+trial.inst_8_ZEE_intro_present2.insertstimulustime(text.press_space_to_continue, 0);
+]
+/ validresponse = (" ")
+/ recorddata = false
+</trial>
+
+<text inst_9_absent>
+/ items = ("If you see these shapes on the screen, you should NOT press any key, because there is no circle or square.")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default_small, false, false, false, false, 5, 1)
+/ position = (50%, 45%)
+/ halign = center
+/ valign = top
+/ hjustify = left 
+/ size = (92%, 20%)
+</text>
+
+<trial inst_9_absent>
+/ ontrialbegin = [
+trial.inst_9_absent.insertstimulustime(picture.example_fixation_left, 0);
+trial.inst_9_absent.insertstimulustime(picture.example_2d_shapes_absent_highlight, 0);
+trial.inst_9_absent.insertstimulustime(picture.example_mask_right, 0);
+trial.inst_9_absent.insertstimulustime(text.inst_9_absent, 0);
+trial.inst_9_absent.insertstimulustime(text.press_space_to_continue, 0);
+]
+/ validresponse = (" ")
+/ recorddata = false
+</trial>
+
+<text inst_10_SLASH_practice1>
+/ items = ("Let's get started! Remember, press the '/' (SLASH) key with your RIGHT INDEX FINGER whenever you see either a circle or a square. Please keep your eyes focused on the center of the screen.
+
+Press the spacebar to begin a practice run. We'll let you know whether you've responded correctly. Be sure to respond as quickly as possible—if you take longer than 2 seconds to respond to a circle or a square, your response will be counted as incorrect (too slow).")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default_small, false, false, false, false, 5, 1)
+/ position = (50%, 8%)
+/ halign = center
+/ valign = top
+/ hjustify = left 
+/ size = (92%, 20%)
+</text>
+
+<text inst_10_ZEE_practice1>
+/ items = ("Let's get started! Remember, press the 'Z' key with your LEFT INDEX FINGER whenever you see either a circle or a square. Please keep your eyes focused on the center of the screen.
+
+Press the spacebar to begin a practice run. We'll let you know whether you've responded correctly. Be sure to respond as quickly as possible—if you take longer than 2 seconds to respond to a circle or a square, your response will be counted as incorrect (too slow).")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default_small, false, false, false, false, 5, 1)
+/ position = (50%, 8%)
+/ halign = center
+/ valign = top
+/ hjustify = left 
+/ size = (92%, 20%)
+</text>
+
+
+**************************************************************************************************************
+	Instructions 11-15 (html pages)
+**************************************************************************************************************
 <htmlpage inst_10_SLASH_practice1>
 / file = "inst_10_SLASH_practice1.html"
 </htmlpage>
@@ -289,35 +706,39 @@ values.target_present, response, correct, latency)
 </htmlpage>
 
 **************************************************************************************************************
-// Define instruction blocks
+	Define instruction blocks
+**************************************************************************************************************
 <block inst_1_2_UNIVERSAL>
-/ preinstructions = (inst_1_welcome, inst_2_demographics)
+/ trials = [
+	1 = inst_1_welcome;
+	2 = inst_2_demographics;
+]
 </block>
 
 <block inst_3_10_SLASH>
-/ preinstructions = (
-inst_3_quickpreview, 
-inst_4_intro_fixation, 
-inst_5_SLASH_intro_shapes, 
-inst_6_intro_mask, 
-inst_7_SLASH_intro_present1, 
-inst_8_SLASH_intro_present2,
-inst_9_intro_absent,
-inst_10_SLASH_practice1,
-)
+/ trials = [
+	1 = inst_3_quickpreview;
+	2 = inst_4_intro_fixation;
+	3 = inst_5_SLASH_intro_shapes;
+	4 = inst_6_intro_mask;
+	5 = inst_7_SLASH_intro_present1;
+	6 = inst_8_SLASH_intro_present2;
+	7 = inst_9_absent;
+	]
+/ postinstructions = (inst_10_SLASH_practice1)
 </block>
 
 <block inst_3_10_ZEE>
-/ preinstructions = (
-inst_3_quickpreview, 
-inst_4_intro_fixation, 
-inst_5_ZEE_intro_shapes, 
-inst_6_intro_mask, 
-inst_7_ZEE_intro_present1, 
-inst_8_ZEE_intro_present2,
-inst_9_intro_absent,
-inst_10_ZEE_practice1,
-)
+/ trials = [
+	1 = inst_3_quickpreview;
+	2 = inst_4_intro_fixation;
+	3 = inst_5_ZEE_intro_shapes;
+	4 = inst_6_intro_mask;
+	5 = inst_7_ZEE_intro_present1;
+	6 = inst_8_ZEE_intro_present2;
+	7 = inst_9_absent;
+	]
+/ postinstructions = (inst_10_ZEE_practice1)
 </block>
 
 <block inst_11_SLASH_main1>
@@ -356,104 +777,10 @@ inst_10_ZEE_practice1,
 / preinstructions = (inst_15_goodbye)
 </block>
 
-// Define placeholder blocks, for testing
-<htmlpage placeholder_consent>
-/ file = "placeholder_consent.html"
-</htmlpage>
-<block placeholder_consent>
-/ preinstructions = (placeholder_consent)
-</block>
-
-<htmlpage placeholder_demographics>
-/ file = "placeholder_demographics.html"
-</htmlpage>
-<block placeholder_demographics>
-/ preinstructions = (placeholder_demographics)
-</block>
-
-<htmlpage placeholder_ehi_taskexperience_feedback>
-/ file = "placeholder_ehi_taskexperience_feedback.html"
-</htmlpage>
-<block placeholder_ehi_taskexperience_feedback>
-/ preinstructions = (placeholder_ehi_taskexperience_feedback)
-</block>
-
-<htmlpage placeholder_practice>
-/ file = "placeholder_practice.html"
-</htmlpage>
-<block placeholder_practice>
-/ preinstructions = (placeholder_practice)
-</block>
-
-<htmlpage placeholder_main>
-/ file = "placeholder_main.html"
-</htmlpage>
-<block placeholder_main>
-/ preinstructions = (placeholder_main)
-</block>
-
-
-<block test_block_SLASH>
-/ preinstructions = (
-inst_1_welcome, 
-placeholder_consent,
-inst_2_demographics,
-placeholder_demographics,
-inst_3_quickpreview, 
-inst_4_intro_fixation, 
-inst_5_SLASH_intro_shapes, 
-inst_6_intro_mask, 
-inst_7_SLASH_intro_present1, 
-inst_8_SLASH_intro_present2,
-inst_9_intro_absent,
-inst_10_SLASH_practice1,
-placeholder_practice,
-inst_11_SLASH_main1,
-placeholder_main,
-interblock_break,
-inst_12_SLASH_practice2,
-placeholder_practice,
-inst_13_SLASH_main2,
-placeholder_main,
-inst_14_end_questions,
-placeholder_ehi_taskexperience_feedback,
-inst_15_goodbye,
-)
-</block>
-
-<block test_block_ZEE>
-/ preinstructions = (
-inst_1_welcome, 
-placeholder_consent,
-inst_2_demographics,
-placeholder_demographics,
-inst_3_quickpreview, 
-inst_4_intro_fixation, 
-inst_5_ZEE_intro_shapes, 
-inst_6_intro_mask, 
-inst_7_ZEE_intro_present1, 
-inst_8_ZEE_intro_present2,
-inst_9_intro_absent,
-inst_10_ZEE_practice1,
-placeholder_practice,
-inst_11_ZEE_main1,
-placeholder_main,
-interblock_break,
-inst_12_ZEE_practice2,
-placeholder_practice,
-inst_13_ZEE_main2,
-placeholder_main,
-inst_14_end_questions,
-placeholder_ehi_taskexperience_feedback,
-inst_15_goodbye,
-)
-</block>
-
-
 
 
 **************************************************************************************************************
-	Trials
+	Experiment Trials
 **************************************************************************************************************
 // Define trial types (what stim are presented? Which responses are valid/correct?)
 //	  instructions (keys for next, previous)
@@ -461,6 +788,7 @@ inst_15_goodbye,
 //	  main      ("/") 32 target-present, 8 target-absent [40 trials total]
 //    practice  ("z") 12 target-present, 4 target-absent [16 trials total]
 //	  main      ("z") 32 target-present, 8 target-absent [40 trials total]
+TEST_inst_with_pics;
 
 <trial practice_slash>
 / ontrialbegin = [
@@ -732,37 +1060,37 @@ inst_15_goodbye,
 / blocks = [
 	1=inst_1_2_UNIVERSAL;
 	2=placeholder_demographics;
-	3=inst_3_10_SLASH;
-	4=practice_slash;
-	5=inst_11_SLASH_main1;
-	6=main_slash;
-	7=inst_12_SLASH_practice2;
-	8=practice_z;
-	9=inst_13_SLASH_main2;
-	10=main_z;
+	3=inst_3_10_ZEE;
+	4=placeholder_practice;
+	5=inst_11_ZEE_main1;
+	6=placeholder_main;
+	7=inst_12_ZEE_practice2;
+	8=placeholder_practice;
+	9=inst_13_ZEE_main2;
+	10=placeholder_main;
 	11=inst_14_end_questions;
-	12=ehi_short;
-	13=end_questions;
-	14=inst_15_goodbye;
+	12=placeholder_ehi_taskexperience_feedback;
+	13=inst_15_goodbye;
 	]
 </expt>
 
 <expt>
-/ subjects = (2 of 2) // Subjects who will respond with "z" first
+/ subjects = (2 of 2) // Subjects who will respond with "Z" first
 / blocks = [
 	1=inst_1_2_UNIVERSAL;
-	2=demographics;
-	3=inst_3_10_ZEE;
-	4=practice_z;
-	5=inst_11_ZEE_main1;
-	6=main_z;
-	7=inst_12_ZEE_practice2;
-	8=practice_slash;
-	9=inst_13_ZEE_main2;
-	10=main_slash;
+	2=placeholder_demographics;
+	3=inst_3_10_SLASH;
+	4=placeholder_practice;
+	5=inst_11_SLASH_main1;
+	6=placeholder_main;
+	7=inst_12_SLASH_practice2;
+	8=placeholder_practice;
+	9=inst_13_SLASH_main2;
+	10=placeholder_main;
 	11=inst_14_end_questions;
-	12=ehi_short;
-	13=end_questions;
-	14=inst_15_goodbye;
+	12=placeholder_ehi_taskexperience_feedback;
+	13=inst_15_goodbye;
 	]
 </expt>
+
+
