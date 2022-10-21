@@ -1108,7 +1108,7 @@ TEST_inst_with_pics;
 / subjects = (2 of 2) // Subjects who will respond with "z" first
 / blocks = [
 	1=inst_1_2_UNIVERSAL;
-	2=placeholder_demographics;
+	2=demographics;
 	3=inst_3_10_ZEE;
 	4=practice_z;
 	5=inst_11_ZEE_main1;
