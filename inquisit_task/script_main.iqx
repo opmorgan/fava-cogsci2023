@@ -1101,15 +1101,15 @@ TEST_inst_with_pics;
 // https://www.millisecond.com/support/docs/current/html/articles/websubjectnumbers.htm
 / blocks = [
 	1=inst_1_2_UNIVERSAL;
-	2=placeholder_demographics;
+	2=demographics;
 	3=inst_3_10_SLASH;
-	4=placeholder_practice_slash;
+	4=practice_slash;
 	5=inst_11_SLASH_main1;
-	6=placeholder_main_slash;
+	6=main_slash;
 	7=inst_12_SLASH_practice2;
-	8=placeholder_practice_z;
+	8=practice_z;
 	9=inst_13_SLASH_main2;
-	10=placeholder_main_z;
+	10=main_z;
 	11=inst_14_end_questions;
 	12=ehi_short;
 	13=end_questions;
