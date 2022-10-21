@@ -331,3 +331,15 @@ D1+D2  |  D1+D2
 / fontstyle = (parameters.fontfamily_default, parameters.nav_button_fontsize_default, false, false, false, false, 5, 1)
 / position = (50%, 50%)
 </text>
+
+<text response_reminder_SLASH>
+/ items = ("Remember: press '/' (SLASH) whenever you see a square or circle")
+/ fontstyle = (parameters.fontfamily_default, parameters.nav_button_fontsize_default, false, false, false, false, 5, 1)
+/ position = (50%, 95%)
+</text>
+
+<text response_reminder_ZEE>
+/ items = ("Remember: press 'Z' whenever you see a circle or square")
+/ fontstyle = (parameters.fontfamily_default, parameters.nav_button_fontsize_default, false, false, false, false, 5, 1)
+/ position = (50%, 95%)
+</text>

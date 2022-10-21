@@ -1,6 +1,27 @@
 ﻿**************************************************************************************************************
 	Consent form
 **************************************************************************************************************
+//TODO: use html consent form, redirect to page with instructions for returning study on prolific.
+<block consentblock>
+/ trials = [1=consentpage]
+</block>
+
+<surveypage consentpage>
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
+/ responsefontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
+/ ontrialend = [if (radiobuttons.consent_yesno.response == "No, I do not consent to participate") script.abort(); ]
+/ caption = "Do you consent to participate?"
+/ questions = [1=consent_yesno]
+</surveypage>
+
+<radiobuttons consent_yesno>
+/ caption = ""
+/ orientation = horizontal
+/ options = (
+    "Yes, I consent to participate", 
+    "No, I do not consent to participate")
+/ required = true
+</radiobuttons>
 
 
 **************************************************************************************************************
@@ -16,7 +37,7 @@
 / navigationbuttonfontstyle = (parameters.fontfamily_default, parameters.nav_button_fontsize_default)
 / finishlabel = "Click here to continue"
 / nextlabel = "Click here to continue"
-/ backlabel = "Back"
+/ showbackbutton = false
 </survey>
 
 <surveypage ehi_short_page>
@@ -30,11 +51,11 @@
 / caption = "Writing"
 / orientation = horizontal
 / options = (
-    "Always right", 
-    "Usually right", 
-    "Both equally", 
+    "Always left", 
     "Usually left", 
-    "Always left")
+    "Both equally", 
+    "Usually right", 
+    "Always right")
 / required = true
 </radiobuttons>
 
@@ -42,11 +63,11 @@
 / caption = "Throwing"
 / orientation = horizontal
 / options = (
-    "Always right", 
-    "Usually right", 
-    "Both equally", 
+    "Always left", 
     "Usually left", 
-    "Always left")
+    "Both equally", 
+    "Usually right", 
+    "Always right")
 / required = true
 </radiobuttons>
 
@@ -54,11 +75,11 @@
 / caption = "Toothbrush"
 / orientation = horizontal
 / options = (
-    "Always right", 
-    "Usually right", 
-    "Both equally", 
+    "Always left", 
     "Usually left", 
-    "Always left")
+    "Both equally", 
+    "Usually right", 
+    "Always right")
 / required = true
 </radiobuttons>
 
@@ -66,11 +87,11 @@
 / caption = "Spoon"
 / orientation = horizontal
 / options = (
-    "Always right", 
-    "Usually right", 
-    "Both equally", 
+    "Always left", 
     "Usually left", 
-    "Always left")
+    "Both equally", 
+    "Usually right", 
+    "Always right")
 / required = true
 </radiobuttons>
 
@@ -78,14 +99,14 @@
 	End-of-task questions
 **************************************************************************************************************
 <survey end_questions>
-/pages = [1=task_experience; 2=open_ended_feedback]
+/ pages = [1=task_experience; 2=open_ended_feedback]
 / showpagenumbers = false
 / showquestionnumbers = false
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
 / navigationbuttonfontstyle = (parameters.fontfamily_default, parameters.nav_button_fontsize_default)
 / finishlabel = "Click here to continue"
 / nextlabel = "Click here to continue"
-/ backlabel = "Back"
+/ showbackbutton = false
 </survey>
 
 // Open-ended feedback
@@ -121,7 +142,6 @@
 </textbox>
 
 
-
 **************************************************************************************************************
 	Demographics
 **************************************************************************************************************
@@ -136,7 +156,7 @@
 / navigationbuttonfontstyle = (parameters.fontfamily_default, parameters.nav_button_fontsize_default)
 / finishlabel = "Click here to continue"
 / nextlabel = "Click here to continue"
-/ backlabel = "Back"
+/ showbackbutton = false
 </survey>
 
 
@@ -206,7 +226,7 @@
 
 
 // Age
-<dropdown age>
+<dropdown UNUSED_age>
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
 / responsefontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
 /caption = "How old are you?"
@@ -222,6 +242,12 @@
 "75 years or older")
 /required = true
 </dropdown>
+
+<textbox age>
+/ caption="How old are you? (If you are under 18, please exit the experiment with Ctrl-Q, and return this submission on Prolific by selecting the 'stop without completing' option.)"
+/ mask=positiveinteger
+/ range = (18, 120)
+</textbox>
 
 // Country of residence
 <dropdown country>

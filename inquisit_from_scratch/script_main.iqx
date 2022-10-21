@@ -166,10 +166,10 @@ values.target_present, response, correct, latency)
 <instruct>
 / navigationbuttonfontstyle = (parameters.fontfamily_default, parameters.nav_button_fontsize_default)
 / nextkey = (" ")
-/ prevkey = (14) // 14=Backspace
+/ prevkey = (noresponse) // 14=Backspace
 / finishlabel = "Press SPACE to continue"
 / nextlabel = "Press SPACE to continue"
-/ prevlabel = "Press BACKSPACE to go back"
+// prevlabel = "Press BACKSPACE to go back"
 </instruct>
 
 <text incorrect_message>
@@ -808,14 +808,19 @@ TEST_inst_with_pics;
 	//trial.practice_slash.insertstimulustime(clearscreen, expressions.shape_onset); // 600ms: refresh screen
 	trial.practice_slash.insertstimulustime(picture.stim_practice_left, expressions.shape_onset); // 600ms: show stimulus
 	trial.practice_slash.insertstimulustime(picture.stim_practice_right, expressions.shape_onset); // 600ms: show stimulus
+	//trial.practice_slash.insertstimulustime(text.response_reminder_SLASH, expressions.shape_onset); // 600ms: show stimulus
 
 	
 	trial.practice_slash.insertstimulustime(clearscreen, expressions.blank_onset); // 600+134ms: show blank
+	//trial.practice_slash.insertstimulustime(text.response_reminder_SLASH, expressions.blank_onset); // 600+134ms: show blank
+
 	
 	trial.practice_slash.insertstimulustime(picture.stim_mask_left, expressions.mask_onset); // 600+134ms+256ms: show mask
 	trial.practice_slash.insertstimulustime(picture.stim_mask_right, expressions.mask_onset); // 600+134ms+256ms: show mask
+	//trial.practice_slash.insertstimulustime(text.response_reminder_SLASH, expressions.mask_onset); // 600+134ms+256ms: show mask
 
     trial.practice_slash.insertstimulustime(clearscreen, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
+	//trial.practice_slash.insertstimulustime(text.response_reminder_SLASH, expressions.iti_onset); // 600+134ms+256ms: show blank (iti)
 ]
 
 // stimulustimes = [0 = stim_fixation_big]
@@ -994,8 +999,13 @@ TEST_inst_with_pics;
 ]
 </trial>
 
-<trial advance_on_keypress>
-/ stimulustimes = [0=press_space_to_continue_central]
+<trial advance_on_keypress_SLASH>
+/ stimulustimes = [0=press_space_to_continue_central, response_reminder_SLASH]
+/ validresponse = (" ")
+</trial>
+
+<trial advance_on_keypress_ZEE>
+/ stimulustimes = [0=press_space_to_continue_central, response_reminder_ZEE]
 / validresponse = (" ")
 </trial>
 
@@ -1018,7 +1028,7 @@ TEST_inst_with_pics;
 	// To let participant advance trials, interleave "advance with spacebar"trials. You have to specify each trial number manually.
 	// https://www.millisecond.com/support/docs/current/html/language/attributes/trials.htm
 	1, 3, 5, 7,  9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31 = noreplace(practice_slash);
-	2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 = advance_on_keypress;
+	2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 = advance_on_keypress_SLASH;
 	]
 
 </block>
@@ -1026,7 +1036,7 @@ TEST_inst_with_pics;
 <block practice_z>
 / trials = [
 	1, 3, 5, 7,  9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31 = noreplace(practice_z);
-	2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 = advance_on_keypress;
+	2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 = advance_on_keypress_ZEE;
 	]
 </block>
 
@@ -1038,15 +1048,21 @@ TEST_inst_with_pics;
 	// 41-80 = noreplace(main_present_slash, main_absent_slash) 
 	// (b) Predefine set of 40 stim, in one trial type. Randomly present those 40.
 	// It might be harder to handle responses in (b).
-	 1-40 = noreplace(main_slash);
-	41-80 = noreplace(main_slash);
+	// 1-40 = noreplace(main_slash);
+	//41-80 = noreplace(main_slash);
+	1, 3, 5, 7,  9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63, 65, 67, 69, 71, 73, 75, 77, 79 = noreplace(main_slash);
+	2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80 = advance_on_keypress_SLASH;
+	81, 83, 85, 87, 89, 91, 93, 95, 97,  99, 101, 103, 105, 107, 109, 111, 113, 115, 117, 119, 121, 123, 125, 127, 129, 131, 133, 135, 137, 139, 141, 143, 145, 147, 149, 151, 153, 155, 157, 159 = noreplace(main_slash);
+	82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104, 106, 108, 110, 112, 114, 116, 118, 120, 122, 124, 126, 128, 130, 132, 134, 136, 138, 140, 142, 144, 146, 148, 150, 152, 154, 156, 158, 160 = advance_on_keypress_SLASH;
 	]
 </block>
 
 <block main_z>
 / trials = [
-	 1-40 = noreplace(main_z);
-	41-80 = noreplace(main_z);
+	1, 3, 5, 7,  9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 45, 47, 49, 51, 53, 55, 57, 59, 61, 63, 65, 67, 69, 71, 73, 75, 77, 79 = noreplace(main_z);
+	2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80 = advance_on_keypress_ZEE;
+	81, 83, 85, 87, 89, 91, 93, 95, 97,  99, 101, 103, 105, 107, 109, 111, 113, 115, 117, 119, 121, 123, 125, 127, 129, 131, 133, 135, 137, 139, 141, 143, 145, 147, 149, 151, 153, 155, 157, 159 = noreplace(main_z);
+	82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 104, 106, 108, 110, 112, 114, 116, 118, 120, 122, 124, 126, 128, 130, 132, 134, 136, 138, 140, 142, 144, 146, 148, 150, 152, 154, 156, 158, 160 = advance_on_keypress_ZEE;
 	]
 </block>
 
@@ -1072,7 +1088,7 @@ TEST_inst_with_pics;
 // https://www.millisecond.com/support/docs/current/html/articles/websubjectnumbers.htm
 / blocks = [
 	1=inst_1_2_UNIVERSAL;
-	2=placeholder_demographics;
+	2=demographics;
 	3=inst_3_10_SLASH;
 	4=practice_slash;
 	5=inst_11_SLASH_main1;
