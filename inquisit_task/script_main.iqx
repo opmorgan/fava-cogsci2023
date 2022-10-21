@@ -206,18 +206,32 @@ values.target_present, response, correct, latency)
 / preinstructions = (placeholder_ehi_taskexperience_feedback)
 </block>
 
-<htmlpage placeholder_practice>
-/ file = "placeholder_practice.html"
+<htmlpage placeholder_practice_slash>
+/ file = "placeholder_practice_SLASH.html"
 </htmlpage>
-<block placeholder_practice>
-/ preinstructions = (placeholder_practice)
+<block placeholder_practice_slash>
+/ preinstructions = (placeholder_practice_slash)
 </block>
 
-<htmlpage placeholder_main>
-/ file = "placeholder_main.html"
+<htmlpage placeholder_practice_z>
+/ file = "placeholder_practice_ZEE.html"
 </htmlpage>
-<block placeholder_main>
-/ preinstructions = (placeholder_main)
+<block placeholder_practice_z>
+/ preinstructions = (placeholder_practice_z)
+</block>
+
+<htmlpage placeholder_main_slash>
+/ file = "placeholder_main_SLASH.html"
+</htmlpage>
+<block placeholder_main_slash>
+/ preinstructions = (placeholder_main_slash)
+</block>
+
+<htmlpage placeholder_main_z>
+/ file = "placeholder_main_ZEE.html"
+</htmlpage>
+<block placeholder_main_z>
+/ preinstructions = (placeholder_main_z)
 </block>
 
 
@@ -672,11 +686,10 @@ Press the spacebar to begin a practice run. We'll let you know whether you've re
 / file = "inst_11_ZEE_main1.html"
 </htmlpage>
 
-// After main1, before practice 2: interblock break, 12
+// After main1, before practice 2: interblock break, 12 // No longer used -- put break instructions in "practice2" instead (Oct 21)
 <page interblock_break>
 ^^Nice job! You are halfway done—feel free to take a break. Press the spacebar when you are ready to continue.
 </page>
-
 
 <htmlpage inst_12_SLASH_practice2>
 / file = "inst_12_SLASH_practice2.html"
@@ -1088,15 +1101,15 @@ TEST_inst_with_pics;
 // https://www.millisecond.com/support/docs/current/html/articles/websubjectnumbers.htm
 / blocks = [
 	1=inst_1_2_UNIVERSAL;
-	2=demographics;
+	2=placeholder_demographics;
 	3=inst_3_10_SLASH;
-	4=practice_slash;
+	4=placeholder_practice_slash;
 	5=inst_11_SLASH_main1;
-	6=main_slash;
+	6=placeholder_main_slash;
 	7=inst_12_SLASH_practice2;
-	8=practice_z;
+	8=placeholder_practice_z;
 	9=inst_13_SLASH_main2;
-	10=main_z;
+	10=placeholder_main_z;
 	11=inst_14_end_questions;
 	12=ehi_short;
 	13=end_questions;
