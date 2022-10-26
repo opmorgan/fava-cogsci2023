@@ -1,5 +1,8 @@
 library(readr)
+requireNamespace("here")
 requireNamespace("cli")
+
+source(here::here("lib", "util.R"))
 
 
 ## Given an input folder, load and process all task data
@@ -19,11 +22,37 @@ load_and_process <- function(input_dir, proc_dir, data_type) {
                          msg_done = "Loaded {j}/{n_input_files} {data_type} data files from input directory.")
 }
 
+summarize_proc <- function(input_dir, output_dir, data_type) {
+  summary_proc <- tibble(subject = as.character(),
+                         acc_slash = as.numeric(),
+                         acc_z = as.numeric())
+  input_files <- get_input_paths(input_dir, data_type = "task",
+                                 pattern = "*.tsv")
+  
+  n_input_files <- length(input_files)
+  for (j in (c(1:n_input_files))) {
+    cli::cli_text("{.strong {j}/{n_input_files} ({data_type} data)...}")
+    input_path <- input_files[j]
+    input_path
+    data_proc <- load_proc(input_path, data_type = "task")
+    ind_summary <- summarize_ind(data_proc)
+    summary_proc <- summary_proc %>% add_row(ind_summary)
+  }
+  summary_proc
+  file_name <- str_c("summary.tsv")
+  save_path <- here::here(output_dir, file_name)
+  cli::cli_alert_info(glue("Saving summary {data_type} data to:"))
+  cli::cli_bullets(c(" " = glue("{save_path}")))
+  write_tsv(summary_proc, save_path)
+}
+
 ## First, get a list of all input files.
 ## (All files in the data type's input directory with extension .iqdat)
-get_input_paths <- function(input_dir, data_type) {
+get_input_paths <- function(input_dir, data_type, pattern = "*.iqdat") {
   if (data_type == "task") {
-    data_subdir <- here(input_dir, "raw")
+    data_subdir <- here(input_dir, "task")
+  } else if (data_type == "ehi") {
+    data_subdir <- here(input_dir, "survey", "ehi_short")
   }
   cli::cli_alert_info(glue("Getting {data_type} data filepaths from input directory:"))
   cli::cli_bullets(c(" " = glue("{data_subdir}")))
@@ -32,7 +61,7 @@ get_input_paths <- function(input_dir, data_type) {
     msg_done = "Got {n_input_files} {data_type} data filepaths from input directory."
   )
   input_files <- list.files(path = data_subdir,
-                            pattern = "*.iqdat",
+                            pattern = pattern,
                             full.names = TRUE)
   
   if (rlang::is_empty(input_files)) {
@@ -56,9 +85,10 @@ load_raw <- function(input_path, data_type) {
       "x" = str_c("No valid .iqdat file path was provided")
     ))
   } else {
+    subject_id <- "?"
+    cli::cli_alert_info(glue("Loading input file: {input_path}"))
+    
     if (data_type == "task") {
-      subject_id <- "?"
-      cli::cli_alert_info(glue("Loading input file: {input_path}"))
       data_raw <- readr::read_tsv(
         input_path,
         col_types = cols(
@@ -84,15 +114,36 @@ load_raw <- function(input_path, data_type) {
           latency = col_double()
         )
       )
-      subject_id <- data_raw$subject %>% first() %>% as.character()
-      ## Status message is down here so it can display subject ID on finish
-      cli::cli_progress_step(
-        msg = glue("Loading input file..."),
-        msg_done = glue("Loaded input file (subject {subject_id}).")
-      )
       
+    } else if (data_type == "ehi") {
+      data_raw <- readr::read_tsv(
+        input_path,
+        col_types = cols(
+          date = col_date(format = ""),
+          time = col_time(format = ""),
+          group = col_double(),
+          subject = col_character(),
+          session = col_double(),
+          build = col_character(),
+          ehi_i1_writing_response = col_character(),
+          ehi_i1_writing_latency = col_double(),
+          ehi_i2_throwing_response = col_character(),
+          ehi_i2_throwing_latency = col_double(),
+          ehi_i3_toothbrush_response = col_character(),
+          ehi_i3_toothbrush_latency = col_double(),
+          ehi_i4_spoon_response = col_character(),
+          ehi_i4_spoon_latency = col_double(),
+        ),
+      )
     }
     
+    subject_id <-
+      data_raw$subject %>% first() %>% as.character()
+    ## Status message is down here so it can display subject ID on finish
+    cli::cli_progress_step(
+      msg = glue("Loading input file..."),
+      msg_done = glue("Loaded input file (subject {subject_id}).")
+    )
     return(data_raw)
   }
 }
@@ -157,7 +208,24 @@ recode_raw <- function(data_raw, data_type) {
     
     ## Recode reaction time
     data_proc <- data_proc %>% rename(rt = latency)
+    
+  } else if (data_type == "ehi") {
+    data_proc <- data_raw %>%
+      select(-ends_with("latency"),-date, -time, -group, -session, -build) %>%
+      rename_with(trim_end, ends_with("response")) %>%
+      mutate(across(
+        starts_with("ehi"),
+        ~ recode(
+          .,
+          `Always right` = 25,
+          `Usually right` = 12.5,
+          `Both equally` = 0,
+          `Usually left` = -12.5,
+          `Always left` = -25,
+        )
+      ))
   }
+  
   return(data_proc)
 }
 
@@ -199,7 +267,11 @@ clean_recoded <- function(data_recoded, data_type) {
       str_detect(block, "practice") ~ "practice"
     ))
     
+  } else if (data_type == "ehi") {
+    data_cleaned <- data_recoded %>% 
+      mutate(ehi_total = sum(across(starts_with("ehi"))))
   }
+  
   return(data_cleaned)
 }
 
@@ -210,10 +282,111 @@ save_cleaned <- function(data_cleaned, proc_dir, data_type) {
     msg_done = glue("Saved processed data (subject {subject_id}).")
   )
   if (data_type == "task") {
-    file_name <- str_c(subject_id, "_task.csv")
-    save_path <- here::here(proc_dir, "individual", "task", file_name)
+    file_name <- str_c(subject_id, "_task.tsv")
+    save_path <- here::here(proc_dir, "individual",
+                            "task", file_name)
+  } else if (data_type == "ehi") {
+    file_name <- str_c(subject_id, "_ehi.tsv")
+    save_path <- here::here(proc_dir, "individual",
+                            "survey", "ehi_short", file_name)
   }
   cli::cli_alert_info(glue("Saving processed {data_type} data to:"))
   cli::cli_bullets(c(" " = glue("{save_path}")))
-  write_csv(data_cleaned, save_path)
+  write_tsv(data_cleaned, save_path)
+}
+
+
+## Load an individual's processed data
+load_proc <- function(input_path, data_type) {
+  if (is.na(input_path)) {
+    cli::cli_alert_danger("Input path is empty (NA)")
+    cli::cli_abort(c(
+      "{.var input_path} is NA",
+      "x" = str_c("No valid .iqdat file path was provided")
+    ))
+  } else {
+    subject_id <- "?"
+    cli::cli_alert_info(glue("Loading input file: {input_path}"))
+    
+    if (data_type == "task") {
+      data_raw <- readr::read_tsv(
+        input_path,
+        col_types = cols(
+          subject = col_character(),
+          time_elapsed_ms = col_double(),
+          blocknum = col_double(),
+          block = col_character(),
+          trialnum = col_double(),
+          target_present = col_character(),
+          response = col_character(),
+          response_log = col_double(),
+          correct = col_double(),
+          rt = col_double(),
+          block_type = col_character()
+        )
+      )
+      
+    } else if (data_type == "ehi") {
+      data_raw <- readr::read_tsv(
+        input_path
+        )
+    }
+    
+    subject_id <-
+      data_raw$subject %>% first() %>% as.character()
+    ## Status message is down here so it can display subject ID on finish
+    cli::cli_progress_step(
+      msg = glue("Loading input file..."),
+      msg_done = glue("Loaded input file (subject {subject_id}).")
+    )
+    return(data_raw)
+  }
+}
+
+## Summarize an individual's processed data
+summarize_ind <- function(data_proc, data_type = "task") {
+  ## calculate percent correct for each block, 
+  ## separating present and absent trials
+  response_counts_block_pa <- data_proc %>%
+    group_by(block, block_type, target_present, subject) %>%
+    summarize(
+      total_responses = n(),
+      n_present_resp = sum(response_log),
+      n_absent_resp = total_responses - n_present_resp,
+      n_correct = sum(correct),
+      percent_correct = 100 * (n_correct / total_responses)
+    )
+  ## inspect accuracy by block, present/absent
+  #response_counts_block_pa
+  
+  ## calculate percent correct for each block,
+  ## collapsing present and absent trials
+  response_counts_by_block <- data_proc %>%
+    group_by(block, block_type, subject) %>%
+    summarize(
+      total_responses = n(),
+      n_present_resp = sum(response_log),
+      n_absent_resp = total_responses - n_present_resp,
+      n_correct = sum(correct),
+      percent_correct = 100 * (n_correct / total_responses)
+    )
+  ## inspect accuracy by block, present/absent
+  #response_counts_by_block
+  
+  proc_summary <- response_counts_by_block %>%
+    ungroup() %>% 
+    filter(block_type == "main") %>%
+    mutate(block = recode(block, main_z = "z", 
+                          main_slash = "slash")) %>% 
+    select(subject, block, percent_correct) %>%
+    pivot_wider(names_from = block,
+                names_prefix = "acc_",
+                values_from = percent_correct)
+  
+  return(proc_summary)
+  
+  ## todo. calculate median rt by condition, for target-present trials
+  ## to do this, need to code global and local target present!!
+  ## this should be calculated for the processed, individual-level data.
+  #data_proc
 }
