@@ -10,113 +10,95 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE,
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
                       fig.align = "center", fig.width = 9,
                       fig.height = 6, results = "asis")
 options(knitr.kable.NA = "")
+
+cli.progress_show_after <- 0
 ```
 
 ```{r lib}
 library(here)
-library(tidyverse)
-```
-
-```{r load}
-data_dir <- here::here("data", "input")
-input_files <- list.files(path = data_dir, pattern = "*.iqdat",
-                          full.names = TRUE)
-data_raw <- read_tsv(input_files[5])
-```
-
-```{r inspect_raw}
-## Inspect data
-data_raw %>% colnames()
-data_raw %>% head()
-data_raw
-
-## Check that blocks have the right trials
-data_raw %>% group_by(blockcode) %>% count()
-data_raw %>% group_by(trialcode) %>% count()
-data_raw %>% group_by(blockcode, trialcode) %>% count()
-
-data_raw %>% group_by(trialcode) %>% summarize()
-
-## Check that response counts look right
-data_raw %>% group_by(response) %>% count()
-
-## TODO: inspect duration, total and by block
-```
-
-```{r tests, echo = T}
-##TODO
-## Confirm:
-message("Testing that data file contains what we expect...")
+# library(tidyverse)
+library(readr)
+library(dplyr)
 library(stringr)
-## When "target present", exactly one of the two stimuli contains "target"
-message("Testing: When 'target present', exactly one of the two stimuli contains 'target'")
-warning("Failed")
-message("Passed")
-## When "target absent", both stimuli contain "distractor"
+library(cli) # For printing error messages
+library(glue) # To make writing error message strings easier
 
-## When "target present" and response is nonzero, marked "correct"
-## When "target present" and response is zero, marked "incorrect"
-## When "target absent" and response is nonzero, marked "incorrect"
-## When "target absent" and response is zero, marked "correct"
+source(here::here("lib", "load_process_task.R"))
 ```
 
-```{r recode}
-## Recode responses
-data_int <- data_raw %>%
-  rename(response_raw = response)
+## Load and check quality of individual-level data
+### Task data
+```{r load_process_task}
+data_dir <- here::here("data")
+input_dir <- here::here(data_dir, "input_0pt5")
+proc_dir <- here::here(data_dir, "proc_0pt5")
 
-data_int <- data_int %>% mutate(response_chr = case_when(
-                                         response_raw == 0 ~ "",
-                                         response_raw == 44 ~ "z",
-                                         response_raw == 53 ~ "slash"
-                                         ),
-                response = case_when(
-                                     response_raw == 0 ~ "absent",
-                                     response_raw %in% c(44, 53) ~ "present"
-                                     ),
-                response_log = case_when(
-                  response == "absent" ~ 0,
-                  response == "present" ~ 1
-                )
-)
-
-## Inspect recoded responses
-data_int %>% group_by(response) %>% count()
-data_int %>% group_by(response, correct) %>% count()
-
-## Recode blocks
-data_int <- data_int %>% rename(block = blockcode)
-
-## Recode reaction time
-data_int <- data_int %>% rename(rt = latency)
+## If data have been processed already, set to FALSE
+reprocess_individual_data <- FALSE
+if (reprocess_individual_data == TRUE) {
+  load_and_process(input_dir, proc_dir, data_type = "task")
+}
 ```
 
-```{r clean}
-## Remove unused columns
-data_int %>% select(
-  subject, block, blocknum, trialnum, target_present, response, correct, rt
-)
-
-## Remove non-trial rows
-data_int <- data_int %>% filter(block != "interblock_break")
-data_int %>% group_by(block) %>%  summarize()
-
-## Add field for phase (main or practice)
-data_int <- data_int %>% mutate(phase = case_when(
-  str_detect(block, "main") ~ "main",
-  str_detect(block, "practice") ~ "practice"
-))
+```{r test_load, include = F}
+## For testing: step through load_and_process for an individual input file
+data_type <- "task"
+input_files <- get_input_paths(input_dir, data_type)
+input_files
+n_input_files <- length(input_files)
+n_input_files
+input_path <- input_files[3] ## todo: make this a loop
+input_path
+data_raw <- load_raw(input_path, data_type)
+data_raw
+subject_id <- data_raw$subject %>% first() %>% as.character()
+data_tests(data_raw, data_type)
+data_recoded <- recode_raw(data_raw, data_type)
+data_recoded
+data_cleaned <- clean_recoded(data_recoded, data_type)
+data_cleaned
+save_cleaned(data_cleaned, proc_dir, data_type)
 ```
 
+## Load and process demographics & Survey data
+```{r, load_survey}
+# Load TSV input files with extension .iqdat
+data_dir <- here::here("data")
+input_dir <- here::here(data_dir, "input_0pt4")
+proc_dir <- here::here(data_dir, "proc_0pt4")
+
+## Load demographic_data
+data_subdir <- here(input_dir, "survey", "demographics")
+input_files <- list.files(path = data_subdir, pattern = "*.iqdat",
+                          full.names = TRUE)
+data_demo <- read_tsv(input_files[1])
+
+## Load EHI data
+data_subdir <- here(input_dir, "survey", "ehi_short")
+input_files <- list.files(path = data_subdir, pattern = "*.iqdat",
+                          full.names = TRUE)
+data_ehi <- read_tsv(input_files[1])
+
+## Load end question data
+data_subdir <- here(input_dir, "survey", "end_questions")
+input_files <- list.files(path = data_subdir, pattern = "*.iqdat",
+                          full.names = TRUE)
+data_end <- read_tsv(input_files[1])
+```
+
+## Find calculated variables, save summary data
+```{r}
+## Load processed data
+```
 
 ```{r calculate_percent_correct}
 ## Calculate percent correct for each block, separating present and absent trials
-response_counts_block_pa <- data_int %>% 
-  group_by(block, phase, target_present) %>% 
+response_counts_block_pa <- data_proc %>% 
+  group_by(block, block_type, target_present) %>% 
   summarize(total_responses = n(),
             n_present_resp = sum(response_log),
             n_absent_resp = total_responses - n_present_resp,
@@ -126,8 +108,8 @@ response_counts_block_pa <- data_int %>%
 response_counts_block_pa
 
 ## Calculate percent correct for each block, collapsing present and absent trials
-response_counts_by_block <- data_int %>% 
-  group_by(block, phase) %>% 
+response_counts_by_block <- data_proc %>% 
+  group_by(block, block_type) %>% 
   summarize(total_responses = n(),
             n_present_resp = sum(response_log),
             n_absent_resp = total_responses - n_present_resp,
@@ -137,13 +119,9 @@ response_counts_by_block <- data_int %>%
 response_counts_by_block
 ```
 
-```{r}
-## Add accuracy data to main spreadsheet?
-```
-
-
-```{r}
-## Exclusions
+## Analyze data and report results
+```{r exclusions}
+## TODO: Exclusions
 
 ## Responded "go" almost every time?
 exclude_all_gos = 0
@@ -164,16 +142,58 @@ go_counts
 
 ## Accuracy below 60% on any main block?
 exclude_low_acc = 0
-```
 
-```{r}
-## Accuracy analyses
+#### Accuracy analyses
 
 ## Check for 60% or lower accuracy on either trial block
 ```
 
-```{r}
+```{r inspect_proc}
+## Inspect data
+data_proc %>% colnames()
+data_proc %>% head()
+
+## Check that blocks have the right trials
+data_proc %>% group_by(block) %>% count()
+
+## Check that response counts look about right
+data_proc %>% group_by(response) %>% count()
+
+## Inspect responses
+data_proc %>% group_by(response) %>% count()
+data_proc %>% group_by(response, correct) %>% count()
+
+## TODO: inspect duration, total and by block
+
+## TODO: inspect demographics, EHI, duration
+```
+
+```{r analyze_rt}
 ## Reaction time analyses
+```
+
+```{r report_rt}
+## Visualize per-trial RT data (make absent one color, present another)
+
+## Report RT data by condition
+```
+
+```{r report_acc}
+## Report accuracy data by condition
+```
+
+```{r report_duration}
+## Report experiment duration
+```
+
+```{r report_demographics}
+## Summarize demographic data
+## And "end question" responses
+```
+
+```{r}
+## Create individual summary data
+## Add to a summary spreadsheet
 ```
 
 
