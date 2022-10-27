@@ -4,12 +4,13 @@ requireNamespace("cli")
 
 source(here::here("lib", "util.R"))
 
-
-## Given an input folder, load and process all task data
+####***********************************************************************####
+#### PROCESS INDIVIDUAL-LEVEL DATA
+## Given an input folder, load and process all task data (main loop)
 load_and_process <- function(input_dir, proc_dir, data_type) {
   input_files <- get_input_paths(input_dir, data_type)
   n_input_files <- length(input_files)
-  for (j in (c(1: n_input_files))) {
+  for (j in (c(1:n_input_files))) {
     cli::cli_text("{.strong {j}/{n_input_files} ({data_type} data)...}")
     input_path <- input_files[j]
     data_raw <- load_raw(input_path, data_type)
@@ -22,58 +23,34 @@ load_and_process <- function(input_dir, proc_dir, data_type) {
                          msg_done = "Loaded {j}/{n_input_files} {data_type} data files from input directory.")
 }
 
-summarize_proc <- function(input_dir, output_dir, data_type) {
-  summary_proc <- tibble(subject = as.character(),
-                         acc_slash = as.numeric(),
-                         acc_z = as.numeric())
-  input_files <- get_input_paths(input_dir, data_type = "task",
-                                 pattern = "*.tsv")
-  
-  n_input_files <- length(input_files)
-  for (j in (c(1:n_input_files))) {
-    cli::cli_text("{.strong {j}/{n_input_files} ({data_type} data)...}")
-    input_path <- input_files[j]
-    input_path
-    data_proc <- load_proc(input_path, data_type = "task")
-    ind_summary <- summarize_ind(data_proc)
-    summary_proc <- summary_proc %>% add_row(ind_summary)
-  }
-  summary_proc
-  file_name <- str_c("summary.tsv")
-  save_path <- here::here(output_dir, file_name)
-  cli::cli_alert_info(glue("Saving summary {data_type} data to:"))
-  cli::cli_bullets(c(" " = glue("{save_path}")))
-  write_tsv(summary_proc, save_path)
-}
-
 ## First, get a list of all input files.
 ## (All files in the data type's input directory with extension .iqdat)
 get_input_paths <- function(input_dir, data_type, pattern = "*.iqdat") {
-  if (data_type == "task") {
-    data_subdir <- here(input_dir, "task")
-  } else if (data_type == "ehi") {
-    data_subdir <- here(input_dir, "survey", "ehi_short")
+    if (data_type == "task") {
+      data_subdir <- here(input_dir, "task")
+    } else if (data_type == "ehi") {
+      data_subdir <- here(input_dir, "survey", "ehi_short")
+    }
+    cli::cli_alert_info(glue("Getting {data_type} data filepaths from input directory:"))
+    cli::cli_bullets(c(" " = glue("{data_subdir}")))
+    cli::cli_progress_step(
+      msg = glue("Getting {data_type} data filepaths from input directory..."),
+      msg_done = "Got {n_input_files} {data_type} data filepaths from input directory."
+    )
+    input_files <- list.files(path = data_subdir,
+                              pattern = pattern,
+                              full.names = TRUE)
+    
+    if (rlang::is_empty(input_files)) {
+      cli::cli_abort(c(
+        "{.var input_files} is empty",
+        "x" = str_c("No input .iqdat files found at: ", data_subdir)
+      ))
+    } else {
+      n_input_files <- length(input_files)
+      return(input_files)
+    }
   }
-  cli::cli_alert_info(glue("Getting {data_type} data filepaths from input directory:"))
-  cli::cli_bullets(c(" " = glue("{data_subdir}")))
-  cli::cli_progress_step(
-    msg = glue("Getting {data_type} data filepaths from input directory..."),
-    msg_done = "Got {n_input_files} {data_type} data filepaths from input directory."
-  )
-  input_files <- list.files(path = data_subdir,
-                            pattern = pattern,
-                            full.names = TRUE)
-  
-  if (rlang::is_empty(input_files)) {
-    cli::cli_abort(c(
-      "{.var input_files} is empty",
-      "x" = str_c("No input .iqdat files found at: ", data_subdir)
-    ))
-  } else {
-    n_input_files <- length(input_files)
-    return(input_files)
-  }
-}
 
 ## Then, loop through these files.
 ## For each file: load, recode, clean, and save.
@@ -148,48 +125,17 @@ load_raw <- function(input_path, data_type) {
   }
 }
 
-data_tests <- function(data_raw, data_type) {
-  # cli::cli_alert_warning("No data quality tests have been written")
-  if (data_type == "task") {
-    return()
-  }
-  #### Tests for raw task data file
-  #TODO
-  #message("Testing that data file contains what we expect...")
-  
-  ## Confirm:
-  ## When "target present", exactly one of the two stimuli contains "target"
-  
-  #message("Testing: When 'target present', exactly one of the two stimuli #contains 'target'")
-  #warning("Failed")
-  #message("Passed")
-  
-  
-  ## When "target absent", both stimuli contain "distractor"
-  
-  ## When "target present" and response is nonzero, marked "correct"
-  ## When "target present" and response is zero, marked "incorrect"
-  ## When "target absent" and response is nonzero, marked "incorrect"
-  ## When "target absent" and response is zero, marked "correct"
-  
-  #### Test for demographics
-  #TODO
-  
-  #### Tests for EHI
-  #TODO
-  
-  #### Tests for end questions
-  #TODO
-  #message("No data integrity tests")
-}
-
 recode_raw <- function(data_raw, data_type) {
   cli::cli_progress_step(msg = glue("Recoding data..."),
                          msg_done = glue("Recoded data."))
   
   if (data_type == "task") {
+    ## TODO: rename output of this function "data_recoded", instead of "data_proc"
+    ## Code target, level, field
+    data_proc <- data_raw %>% code_target_level_field()
+    
     ## Recode responses
-    data_proc <- data_raw %>%
+    data_proc <- data_proc %>%
       rename(response_raw = response)
     
     data_proc <- data_proc %>% mutate(
@@ -206,12 +152,19 @@ recode_raw <- function(data_raw, data_type) {
                                response == "present" ~ 1)
     )
     
+    
+    
     ## Recode reaction time
     data_proc <- data_proc %>% rename(rt = latency)
     
   } else if (data_type == "ehi") {
     data_proc <- data_raw %>%
-      select(-ends_with("latency"),-date, -time, -group, -session, -build) %>%
+      select(-ends_with("latency"),
+             -date,
+             -time,
+             -group,
+             -session,
+             -build) %>%
       rename_with(trim_end, ends_with("response")) %>%
       mutate(across(
         starts_with("ehi"),
@@ -242,12 +195,17 @@ clean_recoded <- function(data_recoded, data_type) {
         blocknum,
         trialcode,
         trialnum,
+        target,
+        level,
+        field,
         target_present,
         response,
         response_log,
         correct,
         rt
       ) %>%
+      ## Make subject a string, instead of  a number
+      mutate(subject = as.character(subject)) %>%
       ## Remove non-trial rows (leaving only experiment rows)
       filter(trialcode %in% c("practice_slash", "practice_z", "main_slash", "main_z"))
     
@@ -259,20 +217,45 @@ clean_recoded <- function(data_recoded, data_type) {
       mutate(trialnum = (trialnum / 2) + .5) %>%
       ## Recode blocknum (because instructions count as blocks)
       mutate(blocknum = (blocknum / 2) - 1) %>%
-      mutate(subject = as.character(subject))
-    
-    ## Add field for block type (main or practice)
-    data_cleaned <- data_cleaned %>% mutate(block_type = case_when(
-      str_detect(block, "main") ~ "main",
-      str_detect(block, "practice") ~ "practice"
-    ))
+      
+      ## Add field for block type (main or practice)
+      mutate(block_type = case_when(
+        str_detect(block, "main") ~ "main",
+        str_detect(block, "practice") ~ "practice"
+      )) %>%
+      
+      ## Add field for block response (z or slash)
+      mutate(
+        block_response = recode(
+          block,
+          main_z = "z",
+          main_slash = "slash",
+          practice_z = "z",
+          practice_slash = "slash"
+        )
+      )
     
   } else if (data_type == "ehi") {
-    data_cleaned <- data_recoded %>% 
+    data_cleaned <- data_recoded %>%
       mutate(ehi_total = sum(across(starts_with("ehi"))))
   }
   
   return(data_cleaned)
+}
+
+data_tests <- function(data_raw, data_type) {
+  cli::cli_alert_warning("No data quality tests have been written")
+  if (data_type == "task") {
+    return()
+  }
+  #### Tests for raw task data file
+  
+  
+  #### TODO: Test for demographics
+  
+  #### TODO: Tests for EHI
+  
+  #### TODO: Tests for end questions
 }
 
 save_cleaned <- function(data_cleaned, proc_dir, data_type) {
@@ -295,6 +278,33 @@ save_cleaned <- function(data_cleaned, proc_dir, data_type) {
   write_tsv(data_cleaned, save_path)
 }
 
+
+####***********************************************************************####
+#### LOAD AND SUMMARIZE PROCESSED INDIVIDUAL DATA
+## Load and summarize an individual's processed data (main loop)
+summarize_proc <- function(input_dir, output_dir, data_type) {
+  summary_proc <- tibble(subject = as.character(),
+                         acc_slash = as.numeric(),
+                         acc_z = as.numeric())
+  input_files <- get_input_paths(input_dir, data_type = "task",
+                                 pattern = "*.tsv")
+  
+  n_input_files <- length(input_files)
+  for (j in (c(1:n_input_files))) {
+    cli::cli_text("{.strong {j}/{n_input_files} ({data_type} data)...}")
+    input_path <- input_files[j]
+    input_path
+    data_proc <- load_proc(input_path, data_type = "task")
+    ind_summary <- summarize_ind(data_proc)
+    summary_proc <- summary_proc %>% add_row(ind_summary)
+  }
+  summary_proc
+  file_name <- str_c("summary.tsv")
+  save_path <- here::here(output_dir, file_name)
+  cli::cli_alert_info(glue("Saving summary {data_type} data to:"))
+  cli::cli_bullets(c(" " = glue("{save_path}")))
+  write_tsv(summary_proc, save_path)
+}
 
 ## Load an individual's processed data
 load_proc <- function(input_path, data_type) {
@@ -327,9 +337,7 @@ load_proc <- function(input_path, data_type) {
       )
       
     } else if (data_type == "ehi") {
-      data_raw <- readr::read_tsv(
-        input_path
-        )
+      data_raw <- readr::read_tsv(input_path)
     }
     
     subject_id <-
@@ -345,7 +353,7 @@ load_proc <- function(input_path, data_type) {
 
 ## Summarize an individual's processed data
 summarize_ind <- function(data_proc, data_type = "task") {
-  ## calculate percent correct for each block, 
+  ## calculate percent correct for each block,
   ## separating present and absent trials
   response_counts_block_pa <- data_proc %>%
     group_by(block, block_type, target_present, subject) %>%
@@ -374,14 +382,16 @@ summarize_ind <- function(data_proc, data_type = "task") {
   #response_counts_by_block
   
   proc_summary <- response_counts_by_block %>%
-    ungroup() %>% 
+    ungroup() %>%
     filter(block_type == "main") %>%
-    mutate(block = recode(block, main_z = "z", 
-                          main_slash = "slash")) %>% 
+    mutate(block = recode(block, main_z = "z",
+                          main_slash = "slash")) %>%
     select(subject, block, percent_correct) %>%
-    pivot_wider(names_from = block,
-                names_prefix = "acc_",
-                values_from = percent_correct)
+    pivot_wider(
+      names_from = block,
+      names_prefix = "acc_",
+      values_from = percent_correct
+    )
   
   return(proc_summary)
   
