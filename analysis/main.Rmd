@@ -125,6 +125,7 @@ summary_output_dir <- here(proc_dir, "summary")
 ## Create summary row for each subject
 ## TODO: join survey data
 ## TODO (URGENT) fix exclusions code (currently, not excluding anyone)
+## TODO: Add overall median RT to summary spreadsheet
 load_and_summarize_proc(ind_input_dir, summary_output_dir, data_type = "task")
 ```
 
