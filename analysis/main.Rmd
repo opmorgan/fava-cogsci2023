@@ -16,6 +16,9 @@ knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
 options(knitr.kable.NA = "")
 
 cli.progress_show_after <- 0
+
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
 ```
 
 ```{r lib}
@@ -45,9 +48,10 @@ if (reprocess_task_data == TRUE) {
 }
 ```
 
-```{r temp_dev}
+```{r debug_load}
 # data_type <- "task"
-# input_files <- get_input_paths(input_dir, data_type)
+# pattern <- "*.iqdat"
+# input_files <- get_input_paths(input_dir, data_type, pattern)
 # input_files
 # n_input_files <- length(input_files)
 # n_input_files
@@ -71,7 +75,6 @@ if (reprocess_task_data == TRUE) {
 # data_cleaned %>% data_tests(data_type)
 ```
 
-
 ## Load and process survey data
 ```{r load_process_surveys}
 reprocess_ehi_data <- FALSE
@@ -91,7 +94,7 @@ if (reprocess_end_data == TRUE) {
 }
 ```
 
-```{r temp_load_process, include = F}
+```{r debug_survey, include = F}
 # ## For testing: step through load_and_process for an individual input file
 # data_type <- "demographics"
 # input_files <- get_input_paths(input_dir, data_type)
@@ -120,59 +123,24 @@ ind_input_dir <- here(proc_dir, "individual")
 summary_output_dir <- here(proc_dir, "summary")
 
 ## Create summary row for each subject
-
+## TODO: join survey data
 load_and_summarize_proc(ind_input_dir, summary_output_dir, data_type = "task")
 ```
 
-```{r exclusions}
-## TODO: exclusions (These should be calculated and added to each subject's summary data)
+```{r debug_summary}
+input_files <- get_input_paths(ind_input_dir, data_type = "task",
+                               pattern = "*.tsv")
 
-## responded "go" almost every time?
-exclude_all_gos = 0
-
-response_counts_block_main <- response_counts_by_block %>%
-filter(phase == "main")
-
-for (block in response_counts_block_main$block) {
-print(block)
-print(str_c("number of 'go' responses: ",))
-}
-
-go_counts <- response_counts_by_block %>%
-filter(phase == "main") %>%
-.[["n_present_resp"]]
-
-go_counts
-
-## accuracy at 80% or lower on any main block?
-exclude_low_acc = 0
-
-#### accuracy analyses
+input_path <- input_files[2]
+input_path
+data_proc <- load_proc(input_path, data_type = "task")
+data_proc
+proc_summary <- summarize_ind(data_proc)
+proc_summary
+proc_summary %>% colnames
 ```
 
-## Analyze data and report results
-
-
-```{r inspect_proc}
-## Inspect data
-data_proc %>% colnames()
-data_proc %>% head()
-
-## Check that blocks have the right trials
-data_proc %>% group_by(block) %>% count()
-
-## Check that response counts look about right
-data_proc %>% group_by(response) %>% count()
-
-## Inspect responses
-data_proc %>% group_by(response) %>% count()
-data_proc %>% group_by(response, correct) %>% count()
-
-## TODO: inspect duration, total and by block
-
-## TODO: inspect demographics, EHI, duration
-```
-
+## Analyze data and report results, for each individual
 ```{r analyze_rt}
 ## Reaction time analyses
 ```
@@ -201,5 +169,5 @@ data_proc %>% group_by(response, correct) %>% count()
 ## Add to a summary spreadsheet
 ```
 
-
+## Analyze group data and report results
 

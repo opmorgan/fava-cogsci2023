@@ -43,6 +43,7 @@ get_input_paths <- function(input_dir, data_type, pattern = "*.iqdat") {
                               pattern = pattern,
                               full.names = TRUE)
     
+    input_files
     if (rlang::is_empty(input_files)) {
       cli::cli_abort(c(
         "{.var input_files} is empty",
@@ -272,9 +273,27 @@ save_cleaned <- function(data_cleaned, proc_dir, data_type) {
 ## Load and summarize an individual's processed data (main loop)
 load_and_summarize_proc <- function(input_dir, output_dir, data_type) {
   summary_proc <- tibble(subject = as.character(),
+                         first_block = as.character(),
                          acc_slash = as.numeric(),
-                         acc_z = as.numeric())
-  input_files <- get_input_paths(input_dir, data_type = "task",
+                         acc_z = as.numeric(),
+                         acc_absent_slash = as.numeric(),
+                         acc_present_slash = as.numeric(),
+                         acc_absent_z = as.numeric(),
+                         acc_present_z = as.numeric(),
+                         acc_global_LVF = as.numeric(),
+                         acc_global_RVF = as.numeric(),
+                         acc_local_LVF = as.numeric(),
+                         acc_local_RVF = as.numeric(),
+                         rt_global_LVF = as.numeric(),
+                         rt_global_RVF = as.numeric(),
+                         rt_local_LVF = as.numeric(),
+                         rt_local_RVF = as.numeric(),
+                         exclude_many_gos = as.logical(),
+                         exclude_low_acc = as.logical(),
+                         exclude_low_rt = as.logical(),
+                         exclude_high_rt = as.logical()
+                         )
+  input_files <- get_input_paths(input_dir, data_type = data_type,
                                  pattern = "*.tsv")
   
   n_input_files <- length(input_files)
@@ -335,7 +354,7 @@ load_proc <- function(input_path, data_type) {
     ## Status message is down here so it can display subject ID on finish
     cli::cli_progress_step(
       msg = glue("Loading input file..."),
-      msg_done = glue("Loaded input file (subject {subject_id}).")
+      msg_done = glue("Loaded input file (Subject {subject_id}).")
     )
     return(data_raw)
   }
@@ -343,15 +362,23 @@ load_proc <- function(input_path, data_type) {
 
 ## Summarize an individual's processed data
 summarize_ind <- function(data_proc, data_type = "task") {
+  subject_id <-
+    data_proc$subject %>% first() %>% as.character()
+  cli::cli_progress_step(
+    msg = glue("Summarizing individual data..."),
+    msg_done = glue("Summarized individual data (Subject {subject_id}).")
+  )
+  
   ## Calculate percent correct for each block,
   ## separating present and absent trials
   data_proc <- data_proc %>% 
       mutate(response_log = case_when(response == "absent" ~ 0,
                                response == "present" ~ 1)
-      )
+      ) %>% 
+    filter(block_type == "main")
   
   response_counts_block_pa <- data_proc %>%
-    group_by(block_response, block_type, target_present, subject) %>%
+    group_by(block_response, target_present, subject) %>%
     summarize(
       total_responses = n(),
       n_present_resp = sum(response_log),
@@ -359,11 +386,24 @@ summarize_ind <- function(data_proc, data_type = "task") {
       n_correct = sum(correct),
       percent_correct = 100 * (n_correct / total_responses)
     )
+  
+  acc_pa <- response_counts_block_pa %>%
+    ungroup() %>%
+    mutate(target_present = target_present %>% recode(
+      "no" = "absent", yes = "present")) %>% 
+    select(subject, block_response, target_present, percent_correct) %>%
+    pivot_wider(
+      names_from = c(target_present, block_response),
+      names_prefix = "acc_",
+      values_from = percent_correct
+    )
+  
+  proc_summary <- acc_pa
   
   ## Calculate percent correct for each block,
   ## collapsing present and absent trials
-  response_counts_by_block <- data_proc %>%
-    group_by(block_response, block_type, subject) %>%
+  response_counts_block <- data_proc %>%
+    group_by(block_response, subject) %>%
     summarize(
       total_responses = n(),
       n_present_resp = sum(response_log),
@@ -372,9 +412,8 @@ summarize_ind <- function(data_proc, data_type = "task") {
       percent_correct = 100 * (n_correct / total_responses)
     )
   
-  proc_summary <- response_counts_by_block %>%
+  acc_all <- response_counts_block %>%
     ungroup() %>%
-    filter(block_type == "main") %>%
     select(subject, block_response, percent_correct) %>%
     pivot_wider(
       names_from = block_response,
@@ -382,16 +421,88 @@ summarize_ind <- function(data_proc, data_type = "task") {
       values_from = percent_correct
     )
   
-  return(proc_summary)
+  proc_summary <- left_join(acc_all, proc_summary)
   
-  ## TODO. calculate 
-  ## (1) median rt by condition (level x field), for target-present trials
-  ##     to do this, need to code global and local target present!!
-  ##     this should be calculated for the processed, 
-  ##     individual-level data.
-  ## (1) accuracy by condition (level x field), for target-present trials
-  ## (1) accuracy by condition (level x field), for target-absent trials
-  ## (1) accuracy by condition (level x field), for all trials
-  ## (1) which block came first (add a column "first_block" (z, slash))
-  #data_proc
+  first_block_var <- data_proc %>%
+    filter(blocknum == 2) %>%
+    .[["block_response"]] %>% 
+    first()
+  
+  ## Record which block was first (z or slash)
+  proc_summary <- proc_summary %>%
+    mutate(first_block = first_block_var) %>% 
+    select(subject, first_block, everything())
+  
+  ## Calculate accuracy by condition (level x field)
+    response_counts_condition <- data_proc %>%
+      filter(target_present == "yes") %>% 
+    group_by(level, field, subject) %>%
+    summarize(
+      total_responses = n(),
+      n_present_resp = sum(response_log),
+      n_absent_resp = total_responses - n_present_resp,
+      n_correct = sum(correct),
+      percent_correct = 100 * (n_correct / total_responses)
+    )
+    
+    acc_condition <- response_counts_condition %>%
+      ungroup() %>%
+      select(subject, level, field, percent_correct) %>%
+      pivot_wider(
+        names_from = c(level, field),
+        names_prefix = "acc_",
+        values_from = percent_correct
+      )
+    
+    proc_summary <- left_join(proc_summary, acc_condition)
+    
+    rt_condition <- data_proc %>% 
+      filter(target_present == "yes") %>% 
+      group_by(level, field, subject) %>%
+      summarize(rt = median(rt)) %>% 
+      pivot_wider(
+        names_from = c(level, field),
+        names_prefix = "rt_",
+        values_from = rt
+      )
+    
+    proc_summary <- left_join(proc_summary, rt_condition)
+    
+    #### Exclusions
+    ## Responded "go" almost every time?
+    too_many_gos <- 0
+    for (block_response_var in response_counts_block$block_response) {
+      n_gos <- response_counts_block %>%
+        filter(block_response == block_response_var) %>% 
+        .[["n_present_resp"]]
+      if (n_gos >=78) {
+        exclude_all_gos <- 1
+      }
+    }
+    
+    proc_summary <- proc_summary %>%
+      mutate(exclude_many_gos = too_many_gos)
+    
+    ## Accuracy at 60% or lower on any main block?
+    low_acc <- 0
+    if ((acc_all$acc_slash < 60) | (acc_all$acc_z < 60)) {
+      low_acc <- 1
+    }
+    
+    proc_summary <- proc_summary %>%
+      mutate(exclude_low_acc = low_acc)
+    
+    ## Median RT over 1500 or under 200?
+    rt_overall <- median(data_proc$rt)
+    low_rt <- 0
+    high_rt <- 0
+    if (rt_overall < 200) {low_rt <- 1}
+    if (rt_overall > 1500) {high_rt <- 1}
+    
+    proc_summary <- proc_summary %>%
+      mutate(exclude_low_rt = low_rt,
+             exclude_high_rt = high_rt)
+    
+    return(proc_summary)
+    
 }
