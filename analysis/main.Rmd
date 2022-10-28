@@ -128,16 +128,16 @@ load_and_summarize_proc(ind_input_dir, summary_output_dir, data_type = "task")
 ```
 
 ```{r debug_summary}
-input_files <- get_input_paths(ind_input_dir, data_type = "task",
-                               pattern = "*.tsv")
-
-input_path <- input_files[2]
-input_path
-data_proc <- load_proc(input_path, data_type = "task")
-data_proc
-proc_summary <- summarize_ind(data_proc)
-proc_summary
-proc_summary %>% colnames
+# input_files <- get_input_paths(ind_input_dir, data_type = "task",
+#                                pattern = "*.tsv")
+# 
+# input_path <- input_files[2]
+# input_path
+# data_proc <- load_proc(input_path, data_type = "task")
+# data_proc
+# proc_summary <- summarize_ind(data_proc)
+# proc_summary
+# proc_summary %>% colnames
 ```
 
 ## Analyze data and report results, for each individual
