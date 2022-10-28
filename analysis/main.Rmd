@@ -25,7 +25,6 @@ library(readr)
 library(dplyr)
 library(tidyr)
 library(stringr)
-library(testthat) # For writing tests
 library(cli) # For printing error messages
 library(glue) # To make writing error message strings easier
 
@@ -47,72 +46,42 @@ if (reprocess_task_data == TRUE) {
 ```
 
 ```{r temp_dev}
-data_type <- "task"
-input_files <- get_input_paths(input_dir, data_type)
-input_files
-n_input_files <- length(input_files)
-n_input_files
-input_path <- input_files[1] ## this will be in a loop
-input_path
-data_raw <- load_raw(input_path, data_type)
-data_raw
-subject_id <- data_raw$subject %>% first() %>% as.character()
-subject_id
-data_tests(data_raw, data_type)
-
-data_recoded <- recode_raw(data_raw, data_type)
-data_recoded
-
-data_recoded %>% 
-  select(stimulus_left, stimulus_right, target, level, field)
-
-data_cleaned <- clean_recoded(data_recoded, data_type)
-data_cleaned
-data_cleaned %>% select(block_type, block_response, block, blocknum, target, level, field)
-
-
-## TEST that:
-## (1) There are 160 trials  where block_type = "main"
-main_trials <- data_cleaned %>% filter(block_type == "main")
-n_main_trials <- main_trials %>%  dim() %>% .[[1]]
-if (n_main_trials != 160) {
-  cli::cli_abort(c(
-    "{.var n_main_trials} is equal to {n_main_trials}",
-    "x" = str_c("The number of main trials is not equal to 160")
-  ))
-}
-## (1) Of these 160 trials, 80 have block = "main_z"; 80, "main_slash"
-for (block_response_var in c("z", "slash")) {
-  print(block_response_var)
-  block_response_var <- "z"
-  main_block_trials <- main_trials %>% filter(block_response == "z")
-  n_main_block_trials <- main_block_trials %>% dim() %>% .[[1]]
-  if (n_main_block_trials != 80) {
-  cli::cli_abort(c(
-    "{.var n_main_block_trials} is equal to {n_main_block_trials}",
-    "x" = str_c("The number of main block trials ({block_response_var}) is not equal to 160")
-  ))
-}
-  n_main_block_trials
-}
-
-## (1) In each block of 80 trials, 80% (64/80) of trials are target-present (they contain a circle or a square), and 20% (16/80) of trials are target-absent
-## (1) In each block of 80 trials, 32 have global targets; 32, local.
-## (1) Of the 32 global targets, 16 are LVF and 16 RVF; of the 32 local, 16 are LVF/RVF.
-## (1) When "target" is anything other than absent, the column "target_present" has a "1"; if not, a "0"
+# data_type <- "task"
+# input_files <- get_input_paths(input_dir, data_type)
+# input_files
+# n_input_files <- length(input_files)
+# n_input_files
+# input_path <- input_files[5] ## this will be in a loop
+# input_path
+# data_raw <- load_raw(input_path, data_type)
+# data_raw
+# subject_id <- data_raw$subject %>% first() %>% as.character()
+# subject_id
+# 
+# data_recoded <- recode_raw(data_raw, data_type)
+# data_recoded
+# 
+# data_recoded %>%
+#   select(stimulus_left, stimulus_right, target, level, field)
+# 
+# data_cleaned <- clean_recoded(data_recoded, data_type)
+# data_cleaned
+# data_cleaned %>% select(block_type, block_response, blocknum, target, level, field)
+# 
+# data_cleaned %>% data_tests(data_type)
 ```
 
 
 ## Load and process survey data
 ```{r load_process_surveys}
-reprocess_ehi_data <- TRUE
+reprocess_ehi_data <- FALSE
 if (reprocess_ehi_data == TRUE) {
   load_and_process(input_dir, proc_dir, data_type = "ehi")
 }
 
 #TODO: Process demographic, end question data
 reprocess_demographics_data <- FALSE
-if (reprocess_ehi_data == TRUE) {
+if (reprocess_demographics_data == TRUE) {
   load_and_process(input_dir, proc_dir, data_type = "demographics")
 }
 
@@ -123,25 +92,25 @@ if (reprocess_end_data == TRUE) {
 ```
 
 ```{r temp_load_process, include = F}
-## For testing: step through load_and_process for an individual input file
-data_type <- "demographics"
-input_files <- get_input_paths(input_dir, data_type)
-input_files
-n_input_files <- length(input_files)
-n_input_files
-input_path <- input_files[1] ## todo: make this a loop
-input_path
-data_raw <- load_raw(input_path, data_type)
-data_raw
-subject_id <- data_raw$subject %>% first() %>% as.character()
-subject_id
-data_tests(data_raw, data_type)
-data_recoded <- recode_raw(data_raw, data_type)
-data_recoded
-data_cleaned <- clean_recoded(data_recoded, data_type)
-data_cleaned
-data_cleaned$ehi_total
-save_cleaned(data_cleaned, proc_dir, data_type)
+# ## For testing: step through load_and_process for an individual input file
+# data_type <- "demographics"
+# input_files <- get_input_paths(input_dir, data_type)
+# input_files
+# n_input_files <- length(input_files)
+# n_input_files
+# input_path <- input_files[1] ## todo: make this a loop
+# input_path
+# data_raw <- load_raw(input_path, data_type)
+# data_raw
+# subject_id <- data_raw$subject %>% first() %>% as.character()
+# subject_id
+# data_recoded <- recode_raw(data_raw, data_type)
+# data_recoded
+# data_cleaned <- clean_recoded(data_recoded, data_type)
+# data_cleaned
+# data_cleaned$ehi_total
+# data_tests(data_cleaned, data_type)
+# save_cleaned(data_cleaned, proc_dir, data_type)
 ```
 
 ## Find calculated variables, save summary data
@@ -151,8 +120,8 @@ ind_input_dir <- here(proc_dir, "individual")
 summary_output_dir <- here(proc_dir, "summary")
 
 ## Create summary row for each subject
-## TODO: add a column "first_block" (z, slash)
-summarize_proc(ind_input_dir, summary_output_dir, data_type = "task")
+
+load_and_summarize_proc(ind_input_dir, summary_output_dir, data_type = "task")
 ```
 
 ```{r exclusions}

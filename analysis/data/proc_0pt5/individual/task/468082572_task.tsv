@@ -1,193 +1,193 @@
-subject	time_elapsed_ms	blocknum	block	trialnum	target_present	response	response_log	correct	rt	block_type
-468082572	142303	1	practice_z	1	yes	absent	0	0	2000	practice
-468082572	149017	1	practice_z	2	yes	present	1	1	911	practice
-468082572	153777	1	practice_z	3	yes	present	1	1	1001	practice
-468082572	157680	1	practice_z	4	yes	present	1	1	988	practice
-468082572	162739	1	practice_z	5	yes	absent	0	0	2000	practice
-468082572	166658	1	practice_z	6	yes	present	1	1	1065	practice
-468082572	171724	1	practice_z	7	no	absent	0	1	2000	practice
-468082572	176435	1	practice_z	8	yes	present	1	1	1006	practice
-468082572	180891	1	practice_z	9	yes	present	1	1	1311	practice
-468082572	185743	1	practice_z	10	yes	absent	0	0	2000	practice
-468082572	189407	1	practice_z	11	yes	present	1	1	1077	practice
-468082572	194029	1	practice_z	12	no	absent	0	1	2000	practice
-468082572	198495	1	practice_z	13	no	absent	0	1	2000	practice
-468082572	203056	1	practice_z	14	yes	absent	0	0	2000	practice
-468082572	208229	1	practice_z	15	yes	present	1	1	844	practice
-468082572	212782	1	practice_z	16	no	absent	0	1	2000	practice
-468082572	232636	2	main_z	1	no	absent	0	1	2000	main
-468082572	234916	2	main_z	2	yes	present	1	1	894	main
-468082572	240721	2	main_z	3	yes	absent	0	0	2000	main
-468082572	244471	2	main_z	4	yes	absent	0	0	2000	main
-468082572	247872	2	main_z	5	no	absent	0	1	2000	main
-468082572	250823	2	main_z	6	no	absent	0	1	2000	main
-468082572	253457	2	main_z	7	yes	present	1	1	1298	main
-468082572	257328	2	main_z	8	yes	present	1	1	1100	main
-468082572	262891	2	main_z	9	no	absent	0	1	2000	main
-468082572	265558	2	main_z	10	yes	absent	0	0	2000	main
-468082572	268354	2	main_z	11	yes	present	1	1	958	main
-468082572	271987	2	main_z	12	yes	present	1	1	874	main
-468082572	275160	2	main_z	13	yes	present	1	1	963	main
-468082572	279512	2	main_z	14	no	absent	0	1	2000	main
-468082572	281764	2	main_z	15	yes	present	1	1	900	main
-468082572	284993	2	main_z	16	yes	present	1	1	1010	main
-468082572	287627	2	main_z	17	yes	present	1	1	994	main
-468082572	291507	2	main_z	18	yes	present	1	1	1673	main
-468082572	294196	2	main_z	19	yes	present	1	1	979	main
-468082572	297648	2	main_z	20	no	absent	0	1	2000	main
-468082572	300417	2	main_z	21	yes	present	1	1	1416	main
-468082572	303995	2	main_z	22	yes	present	1	1	1160	main
-468082572	307134	2	main_z	23	yes	present	1	1	947	main
-468082572	309981	2	main_z	24	yes	present	1	1	977	main
-468082572	312658	2	main_z	25	yes	present	1	1	953	main
-468082572	315145	2	main_z	26	yes	present	1	1	924	main
-468082572	317721	2	main_z	27	yes	present	1	1	1100	main
-468082572	320207	2	main_z	28	yes	present	1	1	1018	main
-468082572	323603	2	main_z	29	no	absent	0	1	2000	main
-468082572	326954	2	main_z	30	no	absent	0	1	2000	main
-468082572	329275	2	main_z	31	yes	present	1	1	851	main
-468082572	331876	2	main_z	32	yes	present	1	1	966	main
-468082572	334349	2	main_z	33	yes	present	1	1	1058	main
-468082572	336757	2	main_z	34	yes	present	1	1	1015	main
-468082572	339074	2	main_z	35	yes	present	1	1	999	main
-468082572	341403	2	main_z	36	yes	present	1	1	1043	main
-468082572	343777	2	main_z	37	yes	present	1	1	1100	main
-468082572	347057	2	main_z	38	yes	absent	0	0	2000	main
-468082572	349290	2	main_z	39	yes	present	1	1	863	main
-468082572	351607	2	main_z	40	yes	present	1	1	1063	main
-468082572	353891	2	main_z	41	yes	present	1	1	981	main
-468082572	356100	2	main_z	42	yes	present	1	1	1018	main
-468082572	358313	2	main_z	43	yes	present	1	1	1066	main
-468082572	361594	2	main_z	44	no	absent	0	1	2000	main
-468082572	363949	2	main_z	45	yes	present	1	1	920	main
-468082572	366278	2	main_z	46	yes	present	1	1	1032	main
-468082572	369478	2	main_z	47	no	absent	0	1	2000	main
-468082572	372813	2	main_z	48	no	absent	0	1	2000	main
-468082572	374401	2	main_z	49	yes	present	1	1	935	main
-468082572	376696	2	main_z	50	yes	present	1	1	981	main
-468082572	379352	2	main_z	51	yes	present	1	1	1385	main
-468082572	381955	2	main_z	52	yes	present	1	1	861	main
-468082572	384145	2	main_z	53	yes	present	1	1	966	main
-468082572	386540	2	main_z	54	yes	present	1	1	873	main
-468082572	388723	2	main_z	55	yes	present	1	1	988	main
-468082572	391982	2	main_z	56	yes	absent	0	0	2000	main
-468082572	394101	2	main_z	57	yes	present	1	1	865	main
-468082572	396419	2	main_z	58	yes	present	1	1	999	main
-468082572	398837	2	main_z	59	yes	present	1	1	1101	main
-468082572	401099	2	main_z	60	no	present	1	0	1078	main
-468082572	403236	2	main_z	61	yes	present	1	1	949	main
-468082572	406402	2	main_z	62	yes	absent	0	0	2000	main
-468082572	408423	2	main_z	63	yes	present	1	1	834	main
-468082572	410482	2	main_z	64	yes	present	1	1	944	main
-468082572	412698	2	main_z	65	yes	present	1	1	1042	main
-468082572	414869	2	main_z	66	yes	present	1	1	1031	main
-468082572	417075	2	main_z	67	yes	present	1	1	968	main
-468082572	419270	2	main_z	68	no	present	1	0	1028	main
-468082572	422537	2	main_z	69	yes	absent	0	0	2000	main
-468082572	424185	2	main_z	70	yes	present	1	1	894	main
-468082572	426345	2	main_z	71	yes	present	1	1	1037	main
-468082572	428539	2	main_z	72	yes	present	1	1	996	main
-468082572	430654	2	main_z	73	yes	present	1	1	978	main
-468082572	432814	2	main_z	74	no	present	1	0	1021	main
-468082572	435057	2	main_z	75	yes	present	1	1	1076	main
-468082572	438291	2	main_z	76	no	absent	0	1	2000	main
-468082572	440150	2	main_z	77	yes	present	1	1	1023	main
-468082572	442524	2	main_z	78	yes	present	1	1	1012	main
-468082572	444650	2	main_z	79	yes	present	1	1	922	main
-468082572	446967	2	main_z	80	no	present	1	0	1155	main
-468082572	468939	3	practice_slash	1	no	present	1	0	1089	practice
-468082572	472405	3	practice_slash	2	yes	present	1	1	753	practice
-468082572	475700	3	practice_slash	3	yes	present	1	1	899	practice
-468082572	478772	3	practice_slash	4	no	present	1	0	938	practice
-468082572	481843	3	practice_slash	5	yes	present	1	1	808	practice
-468082572	484758	3	practice_slash	6	yes	present	1	1	837	practice
-468082572	488885	3	practice_slash	7	no	absent	0	1	2000	practice
-468082572	492497	3	practice_slash	8	yes	present	1	1	961	practice
-468082572	495636	3	practice_slash	9	yes	present	1	1	865	practice
-468082572	498854	3	practice_slash	10	yes	present	1	1	866	practice
-468082572	501971	3	practice_slash	11	yes	present	1	1	932	practice
-468082572	505199	3	practice_slash	12	yes	present	1	1	1021	practice
-468082572	509405	3	practice_slash	13	no	absent	0	1	2000	practice
-468082572	512794	3	practice_slash	14	yes	present	1	1	952	practice
-468082572	515922	3	practice_slash	15	yes	present	1	1	946	practice
-468082572	520156	3	practice_slash	16	yes	absent	0	0	2000	practice
-468082572	527510	4	main_slash	1	yes	present	1	1	833	main
-468082572	529974	4	main_slash	2	yes	present	1	1	863	main
-468082572	532764	4	main_slash	3	yes	present	1	1	953	main
-468082572	535600	4	main_slash	4	yes	present	1	1	905	main
-468082572	538728	4	main_slash	5	yes	present	1	1	948	main
-468082572	542594	4	main_slash	6	no	absent	0	1	2000	main
-468082572	544589	4	main_slash	7	yes	present	1	1	875	main
-468082572	547379	4	main_slash	8	yes	present	1	1	931	main
-468082572	549944	4	main_slash	9	yes	present	1	1	913	main
-468082572	553730	4	main_slash	10	no	absent	0	1	2000	main
-468082572	555930	4	main_slash	11	yes	present	1	1	913	main
-468082572	558573	4	main_slash	12	yes	present	1	1	958	main
-468082572	561363	4	main_slash	13	yes	present	1	1	1080	main
-468082572	564948	4	main_slash	14	yes	absent	0	0	2000	main
-468082572	567091	4	main_slash	15	yes	present	1	1	888	main
-468082572	569633	4	main_slash	16	yes	present	1	1	1031	main
-468082572	572355	4	main_slash	17	yes	present	1	1	986	main
-468082572	574887	4	main_slash	18	yes	present	1	1	1001	main
-468082572	577418	4	main_slash	19	yes	present	1	1	998	main
-468082572	580051	4	main_slash	20	yes	present	1	1	1047	main
-468082572	583010	4	main_slash	21	no	present	1	0	1506	main
-468082572	586302	4	main_slash	22	no	absent	0	1	2000	main
-468082572	588264	4	main_slash	23	yes	present	1	1	909	main
-468082572	590570	4	main_slash	24	yes	present	1	1	1064	main
-468082572	592831	4	main_slash	25	yes	present	1	1	1026	main
-468082572	595205	4	main_slash	26	yes	present	1	1	999	main
-468082572	598029	4	main_slash	27	yes	present	1	1	988	main
-468082572	600843	4	main_slash	28	yes	present	1	1	1035	main
-468082572	603411	4	main_slash	29	yes	present	1	1	920	main
-468082572	605691	4	main_slash	30	yes	present	1	1	966	main
-468082572	607974	4	main_slash	31	yes	present	1	1	999	main
-468082572	613095	4	main_slash	32	no	present	1	0	1133	main
-468082572	615732	4	main_slash	33	no	present	1	0	1003	main
-468082572	618271	4	main_slash	34	yes	present	1	1	1024	main
-468082572	620609	4	main_slash	35	yes	present	1	1	926	main
-468082572	623197	4	main_slash	36	no	present	1	0	1168	main
-468082572	625582	4	main_slash	37	yes	present	1	1	1019	main
-468082572	627934	4	main_slash	38	yes	present	1	1	987	main
-468082572	630341	4	main_slash	39	yes	present	1	1	927	main
-468082572	632660	4	main_slash	40	no	present	1	0	1046	main
-468082572	635089	4	main_slash	41	yes	present	1	1	1058	main
-468082572	637316	4	main_slash	42	yes	present	1	1	968	main
-468082572	640845	4	main_slash	43	no	absent	0	1	2000	main
-468082572	642998	4	main_slash	44	yes	present	1	1	883	main
-468082572	645339	4	main_slash	45	yes	present	1	1	938	main
-468082572	647655	4	main_slash	46	yes	present	1	1	1040	main
-468082572	650007	4	main_slash	47	yes	present	1	1	1024	main
-468082572	652381	4	main_slash	48	yes	present	1	1	981	main
-468082572	654811	4	main_slash	49	yes	present	1	1	1076	main
-468082572	657061	4	main_slash	50	yes	present	1	1	943	main
-468082572	659390	4	main_slash	51	yes	present	1	1	987	main
-468082572	661933	4	main_slash	52	yes	present	1	1	1063	main
-468082572	664250	4	main_slash	53	yes	present	1	1	1013	main
-468082572	667600	4	main_slash	54	no	absent	0	1	2000	main
-468082572	669414	4	main_slash	55	yes	present	1	1	1110	main
-468082572	672852	4	main_slash	56	no	absent	0	1	2000	main
-468082572	674713	4	main_slash	57	yes	present	1	1	841	main
-468082572	677064	4	main_slash	58	yes	present	1	1	1009	main
-468082572	679472	4	main_slash	59	yes	present	1	1	1132	main
-468082572	682274	4	main_slash	60	yes	present	1	1	1551	main
-468082572	685838	4	main_slash	61	no	absent	0	1	2000	main
-468082572	691027	4	main_slash	62	yes	present	1	1	752	main
-468082572	694822	4	main_slash	63	no	absent	0	1	2000	main
-468082572	696449	4	main_slash	64	yes	present	1	1	575	main
-468082572	699923	4	main_slash	65	no	absent	0	1	2000	main
-468082572	701883	4	main_slash	66	yes	present	1	1	891	main
-468082572	704201	4	main_slash	67	yes	present	1	1	973	main
-468082572	706755	4	main_slash	68	yes	present	1	1	1035	main
-468082572	709050	4	main_slash	69	yes	present	1	1	922	main
-468082572	711379	4	main_slash	70	yes	present	1	1	967	main
-468082572	713561	4	main_slash	71	yes	present	1	1	934	main
-468082572	715823	4	main_slash	72	yes	present	1	1	960	main
-468082572	718208	4	main_slash	73	yes	present	1	1	1112	main
-468082572	720267	4	main_slash	74	yes	present	1	1	904	main
-468082572	723478	4	main_slash	75	no	absent	0	1	2000	main
-468082572	725206	4	main_slash	76	yes	present	1	1	892	main
-468082572	728396	4	main_slash	77	no	absent	0	1	2000	main
-468082572	731844	4	main_slash	78	yes	present	1	1	795	main
-468082572	734004	4	main_slash	79	yes	present	1	1	954	main
-468082572	736107	4	main_slash	80	yes	present	1	1	958	main
+subject	time_elapsed_ms	blocknum	block_type	block_response	trialnum	target	level	field	target_present	response	correct	rt
+468082572	142303	1	practice	z	1	square	local	LVF	yes	absent	0	2000
+468082572	149017	1	practice	z	2	square	global	RVF	yes	present	1	911
+468082572	153777	1	practice	z	3	circle	global	RVF	yes	present	1	1001
+468082572	157680	1	practice	z	4	square	global	LVF	yes	present	1	988
+468082572	162739	1	practice	z	5	circle	local	RVF	yes	absent	0	2000
+468082572	166658	1	practice	z	6	circle	global	LVF	yes	present	1	1065
+468082572	171724	1	practice	z	7	absent	absent	absent	no	absent	1	2000
+468082572	176435	1	practice	z	8	circle	global	LVF	yes	present	1	1006
+468082572	180891	1	practice	z	9	square	local	LVF	yes	present	1	1311
+468082572	185743	1	practice	z	10	circle	local	RVF	yes	absent	0	2000
+468082572	189407	1	practice	z	11	square	global	LVF	yes	present	1	1077
+468082572	194029	1	practice	z	12	absent	absent	absent	no	absent	1	2000
+468082572	198495	1	practice	z	13	absent	absent	absent	no	absent	1	2000
+468082572	203056	1	practice	z	14	circle	local	RVF	yes	absent	0	2000
+468082572	208229	1	practice	z	15	circle	global	RVF	yes	present	1	844
+468082572	212782	1	practice	z	16	absent	absent	absent	no	absent	1	2000
+468082572	232636	2	main	z	1	absent	absent	absent	no	absent	1	2000
+468082572	234916	2	main	z	2	circle	local	LVF	yes	present	1	894
+468082572	240721	2	main	z	3	square	global	RVF	yes	absent	0	2000
+468082572	244471	2	main	z	4	circle	local	LVF	yes	absent	0	2000
+468082572	247872	2	main	z	5	absent	absent	absent	no	absent	1	2000
+468082572	250823	2	main	z	6	absent	absent	absent	no	absent	1	2000
+468082572	253457	2	main	z	7	square	local	LVF	yes	present	1	1298
+468082572	257328	2	main	z	8	circle	global	RVF	yes	present	1	1100
+468082572	262891	2	main	z	9	absent	absent	absent	no	absent	1	2000
+468082572	265558	2	main	z	10	square	global	LVF	yes	absent	0	2000
+468082572	268354	2	main	z	11	square	global	LVF	yes	present	1	958
+468082572	271987	2	main	z	12	square	global	LVF	yes	present	1	874
+468082572	275160	2	main	z	13	square	local	RVF	yes	present	1	963
+468082572	279512	2	main	z	14	absent	absent	absent	no	absent	1	2000
+468082572	281764	2	main	z	15	square	local	RVF	yes	present	1	900
+468082572	284993	2	main	z	16	square	local	RVF	yes	present	1	1010
+468082572	287627	2	main	z	17	circle	local	RVF	yes	present	1	994
+468082572	291507	2	main	z	18	square	local	LVF	yes	present	1	1673
+468082572	294196	2	main	z	19	circle	local	LVF	yes	present	1	979
+468082572	297648	2	main	z	20	absent	absent	absent	no	absent	1	2000
+468082572	300417	2	main	z	21	circle	global	RVF	yes	present	1	1416
+468082572	303995	2	main	z	22	square	local	RVF	yes	present	1	1160
+468082572	307134	2	main	z	23	circle	global	LVF	yes	present	1	947
+468082572	309981	2	main	z	24	circle	global	LVF	yes	present	1	977
+468082572	312658	2	main	z	25	square	global	LVF	yes	present	1	953
+468082572	315145	2	main	z	26	square	global	RVF	yes	present	1	924
+468082572	317721	2	main	z	27	circle	global	LVF	yes	present	1	1100
+468082572	320207	2	main	z	28	circle	global	RVF	yes	present	1	1018
+468082572	323603	2	main	z	29	absent	absent	absent	no	absent	1	2000
+468082572	326954	2	main	z	30	absent	absent	absent	no	absent	1	2000
+468082572	329275	2	main	z	31	square	global	RVF	yes	present	1	851
+468082572	331876	2	main	z	32	circle	local	LVF	yes	present	1	966
+468082572	334349	2	main	z	33	circle	local	RVF	yes	present	1	1058
+468082572	336757	2	main	z	34	circle	local	RVF	yes	present	1	1015
+468082572	339074	2	main	z	35	square	local	LVF	yes	present	1	999
+468082572	341403	2	main	z	36	circle	local	RVF	yes	present	1	1043
+468082572	343777	2	main	z	37	square	local	LVF	yes	present	1	1100
+468082572	347057	2	main	z	38	circle	global	LVF	yes	absent	0	2000
+468082572	349290	2	main	z	39	circle	global	RVF	yes	present	1	863
+468082572	351607	2	main	z	40	square	global	RVF	yes	present	1	1063
+468082572	353891	2	main	z	41	square	local	RVF	yes	present	1	981
+468082572	356100	2	main	z	42	circle	local	RVF	yes	present	1	1018
+468082572	358313	2	main	z	43	circle	local	LVF	yes	present	1	1066
+468082572	361594	2	main	z	44	absent	absent	absent	no	absent	1	2000
+468082572	363949	2	main	z	45	square	local	LVF	yes	present	1	920
+468082572	366278	2	main	z	46	circle	local	RVF	yes	present	1	1032
+468082572	369478	2	main	z	47	absent	absent	absent	no	absent	1	2000
+468082572	372813	2	main	z	48	absent	absent	absent	no	absent	1	2000
+468082572	374401	2	main	z	49	circle	local	LVF	yes	present	1	935
+468082572	376696	2	main	z	50	square	global	LVF	yes	present	1	981
+468082572	379352	2	main	z	51	circle	local	LVF	yes	present	1	1385
+468082572	381955	2	main	z	52	square	local	LVF	yes	present	1	861
+468082572	384145	2	main	z	53	square	global	LVF	yes	present	1	966
+468082572	386540	2	main	z	54	circle	global	RVF	yes	present	1	873
+468082572	388723	2	main	z	55	square	local	LVF	yes	present	1	988
+468082572	391982	2	main	z	56	circle	global	RVF	yes	absent	0	2000
+468082572	394101	2	main	z	57	circle	global	LVF	yes	present	1	865
+468082572	396419	2	main	z	58	circle	local	RVF	yes	present	1	999
+468082572	398837	2	main	z	59	circle	global	LVF	yes	present	1	1101
+468082572	401099	2	main	z	60	absent	absent	absent	no	present	0	1078
+468082572	403236	2	main	z	61	circle	local	RVF	yes	present	1	949
+468082572	406402	2	main	z	62	square	global	RVF	yes	absent	0	2000
+468082572	408423	2	main	z	63	square	global	RVF	yes	present	1	834
+468082572	410482	2	main	z	64	square	local	RVF	yes	present	1	944
+468082572	412698	2	main	z	65	square	local	LVF	yes	present	1	1042
+468082572	414869	2	main	z	66	square	global	RVF	yes	present	1	1031
+468082572	417075	2	main	z	67	circle	global	RVF	yes	present	1	968
+468082572	419270	2	main	z	68	absent	absent	absent	no	present	0	1028
+468082572	422537	2	main	z	69	square	global	LVF	yes	absent	0	2000
+468082572	424185	2	main	z	70	circle	global	RVF	yes	present	1	894
+468082572	426345	2	main	z	71	square	local	RVF	yes	present	1	1037
+468082572	428539	2	main	z	72	circle	local	LVF	yes	present	1	996
+468082572	430654	2	main	z	73	square	local	RVF	yes	present	1	978
+468082572	432814	2	main	z	74	absent	absent	absent	no	present	0	1021
+468082572	435057	2	main	z	75	square	global	RVF	yes	present	1	1076
+468082572	438291	2	main	z	76	absent	absent	absent	no	absent	1	2000
+468082572	440150	2	main	z	77	circle	global	LVF	yes	present	1	1023
+468082572	442524	2	main	z	78	circle	global	LVF	yes	present	1	1012
+468082572	444650	2	main	z	79	square	global	LVF	yes	present	1	922
+468082572	446967	2	main	z	80	absent	absent	absent	no	present	0	1155
+468082572	468939	3	practice	slash	1	absent	absent	absent	no	present	0	1089
+468082572	472405	3	practice	slash	2	square	global	RVF	yes	present	1	753
+468082572	475700	3	practice	slash	3	square	local	LVF	yes	present	1	899
+468082572	478772	3	practice	slash	4	absent	absent	absent	no	present	0	938
+468082572	481843	3	practice	slash	5	square	global	LVF	yes	present	1	808
+468082572	484758	3	practice	slash	6	circle	global	LVF	yes	present	1	837
+468082572	488885	3	practice	slash	7	absent	absent	absent	no	absent	1	2000
+468082572	492497	3	practice	slash	8	circle	local	RVF	yes	present	1	961
+468082572	495636	3	practice	slash	9	circle	global	RVF	yes	present	1	865
+468082572	498854	3	practice	slash	10	circle	local	RVF	yes	present	1	866
+468082572	501971	3	practice	slash	11	square	global	LVF	yes	present	1	932
+468082572	505199	3	practice	slash	12	circle	local	RVF	yes	present	1	1021
+468082572	509405	3	practice	slash	13	absent	absent	absent	no	absent	1	2000
+468082572	512794	3	practice	slash	14	square	local	LVF	yes	present	1	952
+468082572	515922	3	practice	slash	15	circle	global	LVF	yes	present	1	946
+468082572	520156	3	practice	slash	16	circle	global	RVF	yes	absent	0	2000
+468082572	527510	4	main	slash	1	circle	local	RVF	yes	present	1	833
+468082572	529974	4	main	slash	2	square	local	LVF	yes	present	1	863
+468082572	532764	4	main	slash	3	circle	local	LVF	yes	present	1	953
+468082572	535600	4	main	slash	4	circle	global	RVF	yes	present	1	905
+468082572	538728	4	main	slash	5	square	local	RVF	yes	present	1	948
+468082572	542594	4	main	slash	6	absent	absent	absent	no	absent	1	2000
+468082572	544589	4	main	slash	7	square	local	RVF	yes	present	1	875
+468082572	547379	4	main	slash	8	square	global	RVF	yes	present	1	931
+468082572	549944	4	main	slash	9	square	global	LVF	yes	present	1	913
+468082572	553730	4	main	slash	10	absent	absent	absent	no	absent	1	2000
+468082572	555930	4	main	slash	11	circle	local	RVF	yes	present	1	913
+468082572	558573	4	main	slash	12	square	local	LVF	yes	present	1	958
+468082572	561363	4	main	slash	13	circle	local	LVF	yes	present	1	1080
+468082572	564948	4	main	slash	14	square	global	RVF	yes	absent	0	2000
+468082572	567091	4	main	slash	15	square	local	LVF	yes	present	1	888
+468082572	569633	4	main	slash	16	square	local	LVF	yes	present	1	1031
+468082572	572355	4	main	slash	17	circle	global	LVF	yes	present	1	986
+468082572	574887	4	main	slash	18	square	global	LVF	yes	present	1	1001
+468082572	577418	4	main	slash	19	square	local	RVF	yes	present	1	998
+468082572	580051	4	main	slash	20	square	local	RVF	yes	present	1	1047
+468082572	583010	4	main	slash	21	absent	absent	absent	no	present	0	1506
+468082572	586302	4	main	slash	22	absent	absent	absent	no	absent	1	2000
+468082572	588264	4	main	slash	23	circle	local	RVF	yes	present	1	909
+468082572	590570	4	main	slash	24	square	global	LVF	yes	present	1	1064
+468082572	592831	4	main	slash	25	circle	global	LVF	yes	present	1	1026
+468082572	595205	4	main	slash	26	square	global	LVF	yes	present	1	999
+468082572	598029	4	main	slash	27	circle	global	LVF	yes	present	1	988
+468082572	600843	4	main	slash	28	circle	global	LVF	yes	present	1	1035
+468082572	603411	4	main	slash	29	square	global	RVF	yes	present	1	920
+468082572	605691	4	main	slash	30	circle	local	LVF	yes	present	1	966
+468082572	607974	4	main	slash	31	circle	local	RVF	yes	present	1	999
+468082572	613095	4	main	slash	32	absent	absent	absent	no	present	0	1133
+468082572	615732	4	main	slash	33	absent	absent	absent	no	present	0	1003
+468082572	618271	4	main	slash	34	square	global	RVF	yes	present	1	1024
+468082572	620609	4	main	slash	35	circle	global	RVF	yes	present	1	926
+468082572	623197	4	main	slash	36	absent	absent	absent	no	present	0	1168
+468082572	625582	4	main	slash	37	circle	global	RVF	yes	present	1	1019
+468082572	627934	4	main	slash	38	circle	local	LVF	yes	present	1	987
+468082572	630341	4	main	slash	39	circle	global	RVF	yes	present	1	927
+468082572	632660	4	main	slash	40	absent	absent	absent	no	present	0	1046
+468082572	635089	4	main	slash	41	square	global	LVF	yes	present	1	1058
+468082572	637316	4	main	slash	42	circle	local	RVF	yes	present	1	968
+468082572	640845	4	main	slash	43	absent	absent	absent	no	absent	1	2000
+468082572	642998	4	main	slash	44	square	global	LVF	yes	present	1	883
+468082572	645339	4	main	slash	45	circle	global	LVF	yes	present	1	938
+468082572	647655	4	main	slash	46	square	local	RVF	yes	present	1	1040
+468082572	650007	4	main	slash	47	square	local	LVF	yes	present	1	1024
+468082572	652381	4	main	slash	48	circle	local	LVF	yes	present	1	981
+468082572	654811	4	main	slash	49	circle	global	LVF	yes	present	1	1076
+468082572	657061	4	main	slash	50	circle	global	RVF	yes	present	1	943
+468082572	659390	4	main	slash	51	square	local	RVF	yes	present	1	987
+468082572	661933	4	main	slash	52	circle	local	RVF	yes	present	1	1063
+468082572	664250	4	main	slash	53	square	local	RVF	yes	present	1	1013
+468082572	667600	4	main	slash	54	absent	absent	absent	no	absent	1	2000
+468082572	669414	4	main	slash	55	square	global	RVF	yes	present	1	1110
+468082572	672852	4	main	slash	56	absent	absent	absent	no	absent	1	2000
+468082572	674713	4	main	slash	57	circle	global	RVF	yes	present	1	841
+468082572	677064	4	main	slash	58	circle	global	LVF	yes	present	1	1009
+468082572	679472	4	main	slash	59	square	local	RVF	yes	present	1	1132
+468082572	682274	4	main	slash	60	square	global	RVF	yes	present	1	1551
+468082572	685838	4	main	slash	61	absent	absent	absent	no	absent	1	2000
+468082572	691027	4	main	slash	62	square	local	LVF	yes	present	1	752
+468082572	694822	4	main	slash	63	absent	absent	absent	no	absent	1	2000
+468082572	696449	4	main	slash	64	circle	local	RVF	yes	present	1	575
+468082572	699923	4	main	slash	65	absent	absent	absent	no	absent	1	2000
+468082572	701883	4	main	slash	66	circle	global	RVF	yes	present	1	891
+468082572	704201	4	main	slash	67	circle	local	LVF	yes	present	1	973
+468082572	706755	4	main	slash	68	circle	global	RVF	yes	present	1	1035
+468082572	709050	4	main	slash	69	square	global	LVF	yes	present	1	922
+468082572	711379	4	main	slash	70	circle	local	RVF	yes	present	1	967
+468082572	713561	4	main	slash	71	square	local	LVF	yes	present	1	934
+468082572	715823	4	main	slash	72	square	global	LVF	yes	present	1	960
+468082572	718208	4	main	slash	73	square	global	RVF	yes	present	1	1112
+468082572	720267	4	main	slash	74	square	local	LVF	yes	present	1	904
+468082572	723478	4	main	slash	75	absent	absent	absent	no	absent	1	2000
+468082572	725206	4	main	slash	76	circle	local	LVF	yes	present	1	892
+468082572	728396	4	main	slash	77	absent	absent	absent	no	absent	1	2000
+468082572	731844	4	main	slash	78	circle	local	LVF	yes	present	1	795
+468082572	734004	4	main	slash	79	square	global	RVF	yes	present	1	954
+468082572	736107	4	main	slash	80	circle	global	LVF	yes	present	1	958

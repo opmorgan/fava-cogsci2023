@@ -1,193 +1,193 @@
-subject	time_elapsed_ms	blocknum	block	trialnum	target_present	response	response_log	correct	rt	block_type
-732422175	39186	1	practice_slash	1	yes	present	1	1	474	practice
-732422175	41834	1	practice_slash	2	yes	present	1	1	341	practice
-732422175	44545	1	practice_slash	3	no	present	1	0	386	practice
-732422175	46926	1	practice_slash	4	yes	present	1	1	436	practice
-732422175	51038	1	practice_slash	5	no	absent	0	1	2000	practice
-732422175	53554	1	practice_slash	6	yes	present	1	1	484	practice
-732422175	57364	1	practice_slash	7	yes	present	1	1	1562	practice
-732422175	59903	1	practice_slash	8	yes	present	1	1	535	practice
-732422175	63899	1	practice_slash	9	no	absent	0	1	2000	practice
-732422175	67865	1	practice_slash	10	no	absent	0	1	2000	practice
-732422175	70238	1	practice_slash	11	yes	present	1	1	359	practice
-732422175	72700	1	practice_slash	12	yes	present	1	1	455	practice
-732422175	75278	1	practice_slash	13	yes	present	1	1	518	practice
-732422175	77654	1	practice_slash	14	yes	present	1	1	312	practice
-732422175	79965	1	practice_slash	15	yes	present	1	1	275	practice
-732422175	82143	1	practice_slash	16	yes	present	1	1	221	practice
-732422175	85114	2	main_slash	1	yes	present	1	1	347	main
-732422175	86520	2	main_slash	2	no	present	1	0	319	main
-732422175	88324	2	main_slash	3	yes	present	1	1	457	main
-732422175	90071	2	main_slash	4	yes	present	1	1	672	main
-732422175	91594	2	main_slash	5	yes	present	1	1	395	main
-732422175	93255	2	main_slash	6	yes	present	1	1	357	main
-732422175	94670	2	main_slash	7	yes	present	1	1	356	main
-732422175	96076	2	main_slash	8	yes	present	1	1	379	main
-732422175	97323	2	main_slash	9	yes	present	1	1	294	main
-732422175	98606	2	main_slash	10	yes	present	1	1	344	main
-732422175	99709	2	main_slash	11	yes	present	1	1	249	main
-732422175	100988	2	main_slash	12	yes	present	1	1	362	main
-732422175	102111	2	main_slash	13	yes	present	1	1	251	main
-732422175	105126	2	main_slash	14	no	absent	0	1	2000	main
-732422175	108091	2	main_slash	15	no	absent	0	1	2000	main
-732422175	109506	2	main_slash	16	yes	present	1	1	417	main
-732422175	110851	2	main_slash	17	yes	present	1	1	329	main
-732422175	113821	2	main_slash	18	no	absent	0	1	2000	main
-732422175	116770	2	main_slash	19	no	absent	0	1	2000	main
-732422175	118073	2	main_slash	20	yes	present	1	1	388	main
-732422175	119399	2	main_slash	21	yes	present	1	1	378	main
-732422175	120807	2	main_slash	22	yes	present	1	1	456	main
-732422175	122081	2	main_slash	23	yes	present	1	1	348	main
-732422175	123317	2	main_slash	24	yes	present	1	1	318	main
-732422175	124525	2	main_slash	25	yes	present	1	1	327	main
-732422175	125747	2	main_slash	26	yes	present	1	1	333	main
-732422175	127130	2	main_slash	27	yes	present	1	1	399	main
-732422175	128361	2	main_slash	28	yes	present	1	1	331	main
-732422175	129576	2	main_slash	29	yes	present	1	1	374	main
-732422175	130731	2	main_slash	30	yes	present	1	1	236	main
-732422175	131832	2	main_slash	31	no	present	1	0	237	main
-732422175	133605	2	main_slash	32	yes	present	1	1	412	main
-732422175	134911	2	main_slash	33	yes	present	1	1	434	main
-732422175	136273	2	main_slash	34	yes	present	1	1	366	main
-732422175	137538	2	main_slash	35	yes	present	1	1	313	main
-732422175	138768	2	main_slash	36	yes	present	1	1	326	main
-732422175	139933	2	main_slash	37	yes	present	1	1	275	main
-732422175	141042	2	main_slash	38	no	present	1	0	251	main
-732422175	142631	2	main_slash	39	yes	present	1	1	291	main
-732422175	144063	2	main_slash	40	no	present	1	0	259	main
-732422175	145599	2	main_slash	41	yes	present	1	1	344	main
-732422175	147101	2	main_slash	42	yes	present	1	1	614	main
-732422175	148299	2	main_slash	43	yes	present	1	1	313	main
-732422175	149631	2	main_slash	44	yes	present	1	1	462	main
-732422175	150956	2	main_slash	45	yes	present	1	1	320	main
-732422175	152428	2	main_slash	46	yes	present	1	1	493	main
-732422175	153714	2	main_slash	47	yes	present	1	1	331	main
-732422175	155191	2	main_slash	48	yes	present	1	1	525	main
-732422175	156428	2	main_slash	49	yes	present	1	1	312	main
-732422175	157775	2	main_slash	50	yes	present	1	1	409	main
-732422175	159135	2	main_slash	51	yes	present	1	1	304	main
-732422175	160608	2	main_slash	52	yes	present	1	1	461	main
-732422175	161944	2	main_slash	53	yes	present	1	1	371	main
-732422175	163317	2	main_slash	54	yes	present	1	1	338	main
-732422175	164684	2	main_slash	55	no	present	1	0	272	main
-732422175	166574	2	main_slash	56	yes	present	1	1	546	main
-732422175	169960	2	main_slash	57	no	absent	0	1	2000	main
-732422175	172926	2	main_slash	58	no	absent	0	1	2000	main
-732422175	174310	2	main_slash	59	yes	present	1	1	386	main
-732422175	176236	2	main_slash	60	yes	present	1	1	647	main
-732422175	177925	2	main_slash	61	yes	present	1	1	337	main
-732422175	179406	2	main_slash	62	yes	present	1	1	383	main
-732422175	182470	2	main_slash	63	no	absent	0	1	2000	main
-732422175	184569	2	main_slash	64	no	present	1	0	284	main
-732422175	185990	2	main_slash	65	yes	present	1	1	355	main
-732422175	189001	2	main_slash	66	no	absent	0	1	2000	main
-732422175	190308	2	main_slash	67	yes	present	1	1	359	main
-732422175	191614	2	main_slash	68	yes	present	1	1	449	main
-732422175	192913	2	main_slash	69	yes	present	1	1	378	main
-732422175	194281	2	main_slash	70	yes	present	1	1	450	main
-732422175	195860	2	main_slash	71	yes	present	1	1	597	main
-732422175	197472	2	main_slash	72	no	present	1	0	427	main
-732422175	200578	2	main_slash	73	no	absent	0	1	2000	main
-732422175	201947	2	main_slash	74	yes	present	1	1	387	main
-732422175	203235	2	main_slash	75	yes	present	1	1	342	main
-732422175	204689	2	main_slash	76	yes	present	1	1	504	main
-732422175	205986	2	main_slash	77	yes	present	1	1	296	main
-732422175	207230	2	main_slash	78	yes	present	1	1	239	main
-732422175	208582	2	main_slash	79	yes	present	1	1	392	main
-732422175	209941	2	main_slash	80	yes	present	1	1	451	main
-732422175	215885	3	practice_z	1	yes	present	1	1	462	practice
-732422175	218403	3	practice_z	2	yes	present	1	1	371	practice
-732422175	220768	3	practice_z	3	yes	present	1	1	348	practice
-732422175	223137	3	practice_z	4	yes	present	1	1	351	practice
-732422175	225364	3	practice_z	5	yes	present	1	1	213	practice
-732422175	228780	3	practice_z	6	yes	present	1	1	347	practice
-732422175	231133	3	practice_z	7	yes	present	1	1	352	practice
-732422175	233708	3	practice_z	8	yes	present	1	1	361	practice
-732422175	236293	3	practice_z	9	no	present	1	0	348	practice
-732422175	238695	3	practice_z	10	yes	present	1	1	418	practice
-732422175	241076	3	practice_z	11	yes	present	1	1	400	practice
-732422175	243516	3	practice_z	12	yes	present	1	1	408	practice
-732422175	245966	3	practice_z	13	yes	present	1	1	341	practice
-732422175	248269	3	practice_z	14	no	present	1	0	279	practice
-732422175	252388	3	practice_z	15	no	absent	0	1	2000	practice
-732422175	271363	3	practice_z	16	no	absent	0	1	2000	practice
-732422175	275696	4	main_z	1	yes	present	1	1	1056	main
-732422175	277099	4	main_z	2	yes	present	1	1	344	main
-732422175	280089	4	main_z	3	no	absent	0	1	2000	main
-732422175	281570	4	main_z	4	yes	present	1	1	433	main
-732422175	284920	4	main_z	5	no	absent	0	1	2000	main
-732422175	286489	4	main_z	6	yes	present	1	1	471	main
-732422175	288128	4	main_z	7	yes	present	1	1	344	main
-732422175	289487	4	main_z	8	yes	present	1	1	388	main
-732422175	290979	4	main_z	9	yes	present	1	1	280	main
-732422175	292310	4	main_z	10	yes	present	1	1	262	main
-732422175	293614	4	main_z	11	yes	present	1	1	233	main
-732422175	294912	4	main_z	12	yes	present	1	1	281	main
-732422175	296256	4	main_z	13	yes	present	1	1	360	main
-732422175	299245	4	main_z	14	no	absent	0	1	2000	main
-732422175	300928	4	main_z	15	yes	present	1	1	402	main
-732422175	303165	4	main_z	16	yes	present	1	1	406	main
-732422175	304663	4	main_z	17	yes	present	1	1	355	main
-732422175	307758	4	main_z	18	no	absent	0	1	2000	main
-732422175	309204	4	main_z	19	yes	present	1	1	464	main
-732422175	310772	4	main_z	20	yes	present	1	1	451	main
-732422175	312203	4	main_z	21	yes	present	1	1	373	main
-732422175	313578	4	main_z	22	yes	present	1	1	407	main
-732422175	316453	4	main_z	23	no	absent	0	1	2000	main
-732422175	317742	4	main_z	24	yes	present	1	1	356	main
-732422175	318994	4	main_z	25	yes	present	1	1	326	main
-732422175	320421	4	main_z	26	yes	present	1	1	254	main
-732422175	322085	4	main_z	27	yes	present	1	1	468	main
-732422175	323392	4	main_z	28	no	present	1	0	327	main
-732422175	324819	4	main_z	29	yes	present	1	1	387	main
-732422175	326222	4	main_z	30	yes	present	1	1	574	main
-732422175	327535	4	main_z	31	yes	present	1	1	387	main
-732422175	329151	4	main_z	32	yes	present	1	1	522	main
-732422175	330584	4	main_z	33	yes	present	1	1	472	main
-732422175	333445	4	main_z	34	no	absent	0	1	2000	main
-732422175	334791	4	main_z	35	yes	present	1	1	374	main
-732422175	336190	4	main_z	36	yes	present	1	1	547	main
-732422175	337502	4	main_z	37	yes	present	1	1	527	main
-732422175	340308	4	main_z	38	no	absent	0	1	2000	main
-732422175	341649	4	main_z	39	yes	present	1	1	410	main
-732422175	343141	4	main_z	40	yes	present	1	1	735	main
-732422175	345939	4	main_z	41	no	absent	0	1	2000	main
-732422175	347644	4	main_z	42	yes	present	1	1	391	main
-732422175	348957	4	main_z	43	yes	present	1	1	587	main
-732422175	351685	4	main_z	44	no	absent	0	1	2000	main
-732422175	353351	4	main_z	45	yes	present	1	1	450	main
-732422175	354657	4	main_z	46	yes	present	1	1	556	main
-732422175	355831	4	main_z	47	yes	present	1	1	431	main
-732422175	356912	4	main_z	48	no	present	1	0	346	main
-732422175	358850	4	main_z	49	yes	present	1	1	635	main
-732422175	360178	4	main_z	50	yes	present	1	1	613	main
-732422175	361301	4	main_z	51	yes	present	1	1	438	main
-732422175	362345	4	main_z	52	yes	present	1	1	349	main
-732422175	363538	4	main_z	53	yes	present	1	1	459	main
-732422175	364759	4	main_z	54	yes	present	1	1	464	main
-732422175	365876	4	main_z	55	yes	present	1	1	371	main
-732422175	366977	4	main_z	56	yes	present	1	1	349	main
-732422175	368495	4	main_z	57	yes	present	1	1	785	main
-732422175	369760	4	main_z	58	yes	present	1	1	551	main
-732422175	370880	4	main_z	59	yes	present	1	1	354	main
-732422175	373675	4	main_z	60	no	absent	0	1	2000	main
-732422175	375892	4	main_z	61	yes	present	1	1	553	main
-732422175	377116	4	main_z	62	yes	present	1	1	493	main
-732422175	378416	4	main_z	63	yes	present	1	1	527	main
-732422175	379595	4	main_z	64	yes	present	1	1	407	main
-732422175	380703	4	main_z	65	yes	present	1	1	400	main
-732422175	381850	4	main_z	66	no	present	1	0	448	main
-732422175	383605	4	main_z	67	yes	present	1	1	386	main
-732422175	384759	4	main_z	68	yes	present	1	1	457	main
-732422175	385856	4	main_z	69	yes	present	1	1	388	main
-732422175	386960	4	main_z	70	yes	present	1	1	343	main
-732422175	387982	4	main_z	71	yes	present	1	1	298	main
-732422175	390749	4	main_z	72	no	absent	0	1	2000	main
-732422175	392274	4	main_z	73	yes	present	1	1	392	main
-732422175	393410	4	main_z	74	yes	present	1	1	413	main
-732422175	394595	4	main_z	75	no	present	1	0	416	main
-732422175	396757	4	main_z	76	yes	present	1	1	478	main
-732422175	398026	4	main_z	77	yes	present	1	1	415	main
-732422175	400745	4	main_z	78	no	absent	0	1	2000	main
-732422175	402193	4	main_z	79	yes	present	1	1	399	main
-732422175	403554	4	main_z	80	yes	present	1	1	644	main
+subject	time_elapsed_ms	blocknum	block_type	block_response	trialnum	target	level	field	target_present	response	correct	rt
+732422175	39186	1	practice	slash	1	circle	global	RVF	yes	present	1	474
+732422175	41834	1	practice	slash	2	circle	global	LVF	yes	present	1	341
+732422175	44545	1	practice	slash	3	absent	absent	absent	no	present	0	386
+732422175	46926	1	practice	slash	4	circle	local	RVF	yes	present	1	436
+732422175	51038	1	practice	slash	5	absent	absent	absent	no	absent	1	2000
+732422175	53554	1	practice	slash	6	circle	global	LVF	yes	present	1	484
+732422175	57364	1	practice	slash	7	square	local	LVF	yes	present	1	1562
+732422175	59903	1	practice	slash	8	square	global	RVF	yes	present	1	535
+732422175	63899	1	practice	slash	9	absent	absent	absent	no	absent	1	2000
+732422175	67865	1	practice	slash	10	absent	absent	absent	no	absent	1	2000
+732422175	70238	1	practice	slash	11	square	global	LVF	yes	present	1	359
+732422175	72700	1	practice	slash	12	square	local	LVF	yes	present	1	455
+732422175	75278	1	practice	slash	13	square	global	LVF	yes	present	1	518
+732422175	77654	1	practice	slash	14	circle	local	RVF	yes	present	1	312
+732422175	79965	1	practice	slash	15	circle	local	RVF	yes	present	1	275
+732422175	82143	1	practice	slash	16	circle	global	RVF	yes	present	1	221
+732422175	85114	2	main	slash	1	square	global	LVF	yes	present	1	347
+732422175	86520	2	main	slash	2	absent	absent	absent	no	present	0	319
+732422175	88324	2	main	slash	3	square	global	LVF	yes	present	1	457
+732422175	90071	2	main	slash	4	circle	global	RVF	yes	present	1	672
+732422175	91594	2	main	slash	5	square	global	RVF	yes	present	1	395
+732422175	93255	2	main	slash	6	circle	global	RVF	yes	present	1	357
+732422175	94670	2	main	slash	7	circle	local	RVF	yes	present	1	356
+732422175	96076	2	main	slash	8	circle	global	LVF	yes	present	1	379
+732422175	97323	2	main	slash	9	circle	local	RVF	yes	present	1	294
+732422175	98606	2	main	slash	10	circle	local	RVF	yes	present	1	344
+732422175	99709	2	main	slash	11	circle	local	RVF	yes	present	1	249
+732422175	100988	2	main	slash	12	circle	global	LVF	yes	present	1	362
+732422175	102111	2	main	slash	13	square	local	LVF	yes	present	1	251
+732422175	105126	2	main	slash	14	absent	absent	absent	no	absent	1	2000
+732422175	108091	2	main	slash	15	absent	absent	absent	no	absent	1	2000
+732422175	109506	2	main	slash	16	square	local	LVF	yes	present	1	417
+732422175	110851	2	main	slash	17	circle	local	LVF	yes	present	1	329
+732422175	113821	2	main	slash	18	absent	absent	absent	no	absent	1	2000
+732422175	116770	2	main	slash	19	absent	absent	absent	no	absent	1	2000
+732422175	118073	2	main	slash	20	square	global	RVF	yes	present	1	388
+732422175	119399	2	main	slash	21	circle	local	LVF	yes	present	1	378
+732422175	120807	2	main	slash	22	square	local	LVF	yes	present	1	456
+732422175	122081	2	main	slash	23	circle	local	LVF	yes	present	1	348
+732422175	123317	2	main	slash	24	circle	global	RVF	yes	present	1	318
+732422175	124525	2	main	slash	25	circle	global	LVF	yes	present	1	327
+732422175	125747	2	main	slash	26	square	local	RVF	yes	present	1	333
+732422175	127130	2	main	slash	27	square	global	RVF	yes	present	1	399
+732422175	128361	2	main	slash	28	square	local	RVF	yes	present	1	331
+732422175	129576	2	main	slash	29	circle	local	LVF	yes	present	1	374
+732422175	130731	2	main	slash	30	square	local	RVF	yes	present	1	236
+732422175	131832	2	main	slash	31	absent	absent	absent	no	present	0	237
+732422175	133605	2	main	slash	32	square	local	LVF	yes	present	1	412
+732422175	134911	2	main	slash	33	square	local	RVF	yes	present	1	434
+732422175	136273	2	main	slash	34	square	global	LVF	yes	present	1	366
+732422175	137538	2	main	slash	35	square	global	RVF	yes	present	1	313
+732422175	138768	2	main	slash	36	square	global	LVF	yes	present	1	326
+732422175	139933	2	main	slash	37	circle	global	LVF	yes	present	1	275
+732422175	141042	2	main	slash	38	absent	absent	absent	no	present	0	251
+732422175	142631	2	main	slash	39	circle	global	RVF	yes	present	1	291
+732422175	144063	2	main	slash	40	absent	absent	absent	no	present	0	259
+732422175	145599	2	main	slash	41	circle	global	LVF	yes	present	1	344
+732422175	147101	2	main	slash	42	circle	global	LVF	yes	present	1	614
+732422175	148299	2	main	slash	43	circle	local	RVF	yes	present	1	313
+732422175	149631	2	main	slash	44	circle	global	RVF	yes	present	1	462
+732422175	150956	2	main	slash	45	square	local	RVF	yes	present	1	320
+732422175	152428	2	main	slash	46	circle	local	LVF	yes	present	1	493
+732422175	153714	2	main	slash	47	circle	local	RVF	yes	present	1	331
+732422175	155191	2	main	slash	48	circle	global	RVF	yes	present	1	525
+732422175	156428	2	main	slash	49	square	local	RVF	yes	present	1	312
+732422175	157775	2	main	slash	50	square	global	RVF	yes	present	1	409
+732422175	159135	2	main	slash	51	square	global	LVF	yes	present	1	304
+732422175	160608	2	main	slash	52	square	local	LVF	yes	present	1	461
+732422175	161944	2	main	slash	53	circle	local	RVF	yes	present	1	371
+732422175	163317	2	main	slash	54	square	global	RVF	yes	present	1	338
+732422175	164684	2	main	slash	55	absent	absent	absent	no	present	0	272
+732422175	166574	2	main	slash	56	square	global	LVF	yes	present	1	546
+732422175	169960	2	main	slash	57	absent	absent	absent	no	absent	1	2000
+732422175	172926	2	main	slash	58	absent	absent	absent	no	absent	1	2000
+732422175	174310	2	main	slash	59	circle	local	LVF	yes	present	1	386
+732422175	176236	2	main	slash	60	square	local	LVF	yes	present	1	647
+732422175	177925	2	main	slash	61	square	global	RVF	yes	present	1	337
+732422175	179406	2	main	slash	62	circle	global	LVF	yes	present	1	383
+732422175	182470	2	main	slash	63	absent	absent	absent	no	absent	1	2000
+732422175	184569	2	main	slash	64	absent	absent	absent	no	present	0	284
+732422175	185990	2	main	slash	65	square	global	RVF	yes	present	1	355
+732422175	189001	2	main	slash	66	absent	absent	absent	no	absent	1	2000
+732422175	190308	2	main	slash	67	circle	local	LVF	yes	present	1	359
+732422175	191614	2	main	slash	68	circle	global	LVF	yes	present	1	449
+732422175	192913	2	main	slash	69	circle	global	RVF	yes	present	1	378
+732422175	194281	2	main	slash	70	square	local	RVF	yes	present	1	450
+732422175	195860	2	main	slash	71	square	local	LVF	yes	present	1	597
+732422175	197472	2	main	slash	72	absent	absent	absent	no	present	0	427
+732422175	200578	2	main	slash	73	absent	absent	absent	no	absent	1	2000
+732422175	201947	2	main	slash	74	square	local	LVF	yes	present	1	387
+732422175	203235	2	main	slash	75	circle	local	RVF	yes	present	1	342
+732422175	204689	2	main	slash	76	square	global	LVF	yes	present	1	504
+732422175	205986	2	main	slash	77	circle	global	RVF	yes	present	1	296
+732422175	207230	2	main	slash	78	square	local	RVF	yes	present	1	239
+732422175	208582	2	main	slash	79	circle	local	LVF	yes	present	1	392
+732422175	209941	2	main	slash	80	square	global	LVF	yes	present	1	451
+732422175	215885	3	practice	z	1	square	global	LVF	yes	present	1	462
+732422175	218403	3	practice	z	2	square	global	RVF	yes	present	1	371
+732422175	220768	3	practice	z	3	circle	global	LVF	yes	present	1	348
+732422175	223137	3	practice	z	4	circle	global	RVF	yes	present	1	351
+732422175	225364	3	practice	z	5	circle	global	RVF	yes	present	1	213
+732422175	228780	3	practice	z	6	circle	global	LVF	yes	present	1	347
+732422175	231133	3	practice	z	7	circle	local	RVF	yes	present	1	352
+732422175	233708	3	practice	z	8	square	global	LVF	yes	present	1	361
+732422175	236293	3	practice	z	9	absent	absent	absent	no	present	0	348
+732422175	238695	3	practice	z	10	square	local	LVF	yes	present	1	418
+732422175	241076	3	practice	z	11	square	local	LVF	yes	present	1	400
+732422175	243516	3	practice	z	12	circle	local	RVF	yes	present	1	408
+732422175	245966	3	practice	z	13	circle	local	RVF	yes	present	1	341
+732422175	248269	3	practice	z	14	absent	absent	absent	no	present	0	279
+732422175	252388	3	practice	z	15	absent	absent	absent	no	absent	1	2000
+732422175	271363	3	practice	z	16	absent	absent	absent	no	absent	1	2000
+732422175	275696	4	main	z	1	square	local	LVF	yes	present	1	1056
+732422175	277099	4	main	z	2	square	local	RVF	yes	present	1	344
+732422175	280089	4	main	z	3	absent	absent	absent	no	absent	1	2000
+732422175	281570	4	main	z	4	circle	local	LVF	yes	present	1	433
+732422175	284920	4	main	z	5	absent	absent	absent	no	absent	1	2000
+732422175	286489	4	main	z	6	circle	local	LVF	yes	present	1	471
+732422175	288128	4	main	z	7	circle	local	LVF	yes	present	1	344
+732422175	289487	4	main	z	8	square	local	LVF	yes	present	1	388
+732422175	290979	4	main	z	9	circle	local	LVF	yes	present	1	280
+732422175	292310	4	main	z	10	square	local	RVF	yes	present	1	262
+732422175	293614	4	main	z	11	circle	global	LVF	yes	present	1	233
+732422175	294912	4	main	z	12	circle	local	RVF	yes	present	1	281
+732422175	296256	4	main	z	13	square	global	LVF	yes	present	1	360
+732422175	299245	4	main	z	14	absent	absent	absent	no	absent	1	2000
+732422175	300928	4	main	z	15	square	local	RVF	yes	present	1	402
+732422175	303165	4	main	z	16	square	global	LVF	yes	present	1	406
+732422175	304663	4	main	z	17	square	global	LVF	yes	present	1	355
+732422175	307758	4	main	z	18	absent	absent	absent	no	absent	1	2000
+732422175	309204	4	main	z	19	circle	local	RVF	yes	present	1	464
+732422175	310772	4	main	z	20	circle	global	RVF	yes	present	1	451
+732422175	312203	4	main	z	21	circle	global	LVF	yes	present	1	373
+732422175	313578	4	main	z	22	circle	local	RVF	yes	present	1	407
+732422175	316453	4	main	z	23	absent	absent	absent	no	absent	1	2000
+732422175	317742	4	main	z	24	square	global	RVF	yes	present	1	356
+732422175	318994	4	main	z	25	circle	local	RVF	yes	present	1	326
+732422175	320421	4	main	z	26	square	local	LVF	yes	present	1	254
+732422175	322085	4	main	z	27	circle	global	RVF	yes	present	1	468
+732422175	323392	4	main	z	28	absent	absent	absent	no	present	0	327
+732422175	324819	4	main	z	29	square	global	RVF	yes	present	1	387
+732422175	326222	4	main	z	30	square	global	LVF	yes	present	1	574
+732422175	327535	4	main	z	31	circle	global	RVF	yes	present	1	387
+732422175	329151	4	main	z	32	circle	global	LVF	yes	present	1	522
+732422175	330584	4	main	z	33	square	local	LVF	yes	present	1	472
+732422175	333445	4	main	z	34	absent	absent	absent	no	absent	1	2000
+732422175	334791	4	main	z	35	square	global	RVF	yes	present	1	374
+732422175	336190	4	main	z	36	square	global	RVF	yes	present	1	547
+732422175	337502	4	main	z	37	circle	global	RVF	yes	present	1	527
+732422175	340308	4	main	z	38	absent	absent	absent	no	absent	1	2000
+732422175	341649	4	main	z	39	square	local	RVF	yes	present	1	410
+732422175	343141	4	main	z	40	circle	global	LVF	yes	present	1	735
+732422175	345939	4	main	z	41	absent	absent	absent	no	absent	1	2000
+732422175	347644	4	main	z	42	square	local	LVF	yes	present	1	391
+732422175	348957	4	main	z	43	square	local	RVF	yes	present	1	587
+732422175	351685	4	main	z	44	absent	absent	absent	no	absent	1	2000
+732422175	353351	4	main	z	45	square	global	RVF	yes	present	1	450
+732422175	354657	4	main	z	46	circle	local	LVF	yes	present	1	556
+732422175	355831	4	main	z	47	circle	global	LVF	yes	present	1	431
+732422175	356912	4	main	z	48	absent	absent	absent	no	present	0	346
+732422175	358850	4	main	z	49	square	local	RVF	yes	present	1	635
+732422175	360178	4	main	z	50	square	local	RVF	yes	present	1	613
+732422175	361301	4	main	z	51	square	local	LVF	yes	present	1	438
+732422175	362345	4	main	z	52	square	local	RVF	yes	present	1	349
+732422175	363538	4	main	z	53	circle	local	RVF	yes	present	1	459
+732422175	364759	4	main	z	54	square	global	LVF	yes	present	1	464
+732422175	365876	4	main	z	55	circle	global	LVF	yes	present	1	371
+732422175	366977	4	main	z	56	circle	local	RVF	yes	present	1	349
+732422175	368495	4	main	z	57	square	global	LVF	yes	present	1	785
+732422175	369760	4	main	z	58	square	local	LVF	yes	present	1	551
+732422175	370880	4	main	z	59	circle	local	LVF	yes	present	1	354
+732422175	373675	4	main	z	60	absent	absent	absent	no	absent	1	2000
+732422175	375892	4	main	z	61	circle	global	LVF	yes	present	1	553
+732422175	377116	4	main	z	62	circle	local	RVF	yes	present	1	493
+732422175	378416	4	main	z	63	circle	global	RVF	yes	present	1	527
+732422175	379595	4	main	z	64	square	global	LVF	yes	present	1	407
+732422175	380703	4	main	z	65	square	global	RVF	yes	present	1	400
+732422175	381850	4	main	z	66	absent	absent	absent	no	present	0	448
+732422175	383605	4	main	z	67	square	global	RVF	yes	present	1	386
+732422175	384759	4	main	z	68	circle	local	LVF	yes	present	1	457
+732422175	385856	4	main	z	69	circle	local	RVF	yes	present	1	388
+732422175	386960	4	main	z	70	square	global	RVF	yes	present	1	343
+732422175	387982	4	main	z	71	square	global	LVF	yes	present	1	298
+732422175	390749	4	main	z	72	absent	absent	absent	no	absent	1	2000
+732422175	392274	4	main	z	73	circle	global	LVF	yes	present	1	392
+732422175	393410	4	main	z	74	circle	global	RVF	yes	present	1	413
+732422175	394595	4	main	z	75	absent	absent	absent	no	present	0	416
+732422175	396757	4	main	z	76	square	local	LVF	yes	present	1	478
+732422175	398026	4	main	z	77	circle	global	RVF	yes	present	1	415
+732422175	400745	4	main	z	78	absent	absent	absent	no	absent	1	2000
+732422175	402193	4	main	z	79	circle	local	LVF	yes	present	1	399
+732422175	403554	4	main	z	80	circle	global	RVF	yes	present	1	644

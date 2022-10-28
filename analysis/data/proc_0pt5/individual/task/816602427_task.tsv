@@ -1,193 +1,193 @@
-subject	time_elapsed_ms	blocknum	block	trialnum	target_present	response	response_log	correct	rt	block_type
-816602427	172732	1	practice_slash	1	yes	absent	0	0	2000	practice
-816602427	180840	1	practice_slash	2	yes	present	1	1	362	practice
-816602427	184902	1	practice_slash	3	yes	present	1	1	955	practice
-816602427	188608	1	practice_slash	4	yes	present	1	1	482	practice
-816602427	191529	1	practice_slash	5	yes	present	1	1	453	practice
-816602427	194019	1	practice_slash	6	yes	present	1	1	426	practice
-816602427	196903	1	practice_slash	7	yes	present	1	1	676	practice
-816602427	199264	1	practice_slash	8	no	present	1	0	321	practice
-816602427	201806	1	practice_slash	9	yes	present	1	1	363	practice
-816602427	204220	1	practice_slash	10	yes	present	1	1	327	practice
-816602427	206469	1	practice_slash	11	yes	present	1	1	329	practice
-816602427	208761	1	practice_slash	12	no	present	1	0	401	practice
-816602427	211771	1	practice_slash	13	no	present	1	0	925	practice
-816602427	214207	1	practice_slash	14	yes	present	1	1	549	practice
-816602427	217556	1	practice_slash	15	yes	present	1	1	597	practice
-816602427	221627	1	practice_slash	16	no	absent	0	1	2000	practice
-816602427	228038	2	main_slash	1	yes	present	1	1	498	main
-816602427	232873	2	main_slash	2	no	absent	0	1	2000	main
-816602427	234673	2	main_slash	3	yes	present	1	1	681	main
-816602427	238056	2	main_slash	4	no	absent	0	1	2000	main
-816602427	239980	2	main_slash	5	yes	present	1	1	558	main
-816602427	242589	2	main_slash	6	yes	present	1	1	364	main
-816602427	244678	2	main_slash	7	yes	present	1	1	671	main
-816602427	246857	2	main_slash	8	yes	present	1	1	484	main
-816602427	259688	2	main_slash	9	yes	present	1	1	400	main
-816602427	262228	2	main_slash	10	yes	present	1	1	489	main
-816602427	263941	2	main_slash	11	yes	present	1	1	333	main
-816602427	265408	2	main_slash	12	yes	present	1	1	351	main
-816602427	268406	2	main_slash	13	no	absent	0	1	2000	main
-816602427	269841	2	main_slash	14	yes	present	1	1	454	main
-816602427	271503	2	main_slash	15	yes	present	1	1	511	main
-816602427	272952	2	main_slash	16	yes	present	1	1	389	main
-816602427	274376	2	main_slash	17	yes	present	1	1	422	main
-816602427	275869	2	main_slash	18	yes	present	1	1	412	main
-816602427	277298	2	main_slash	19	yes	present	1	1	412	main
-816602427	289065	2	main_slash	20	yes	present	1	1	358	main
-816602427	292643	2	main_slash	21	no	absent	0	1	2000	main
-816602427	294704	2	main_slash	22	yes	present	1	1	863	main
-816602427	298057	2	main_slash	23	no	absent	0	1	2000	main
-816602427	302907	2	main_slash	24	yes	present	1	1	402	main
-816602427	305350	2	main_slash	25	yes	present	1	1	992	main
-816602427	308115	2	main_slash	26	yes	present	1	1	809	main
-816602427	311821	2	main_slash	27	no	absent	0	1	2000	main
-816602427	315503	2	main_slash	28	yes	present	1	1	566	main
-816602427	319104	2	main_slash	29	yes	present	1	1	400	main
-816602427	322291	2	main_slash	30	yes	present	1	1	350	main
-816602427	325423	2	main_slash	31	no	absent	0	1	2000	main
-816602427	329434	2	main_slash	32	yes	present	1	1	428	main
-816602427	331469	2	main_slash	33	yes	present	1	1	415	main
-816602427	334366	2	main_slash	34	yes	present	1	1	578	main
-816602427	336219	2	main_slash	35	yes	present	1	1	761	main
-816602427	337862	2	main_slash	36	yes	present	1	1	541	main
-816602427	339354	2	main_slash	37	no	present	1	0	450	main
-816602427	340880	2	main_slash	38	yes	present	1	1	425	main
-816602427	342270	2	main_slash	39	yes	present	1	1	380	main
-816602427	344694	2	main_slash	40	yes	present	1	1	1168	main
-816602427	346465	2	main_slash	41	yes	present	1	1	543	main
-816602427	353175	2	main_slash	42	no	absent	0	1	2000	main
-816602427	356172	2	main_slash	43	yes	absent	0	0	2000	main
-816602427	359056	2	main_slash	44	no	absent	0	1	2000	main
-816602427	360383	2	main_slash	45	yes	present	1	1	476	main
-816602427	362338	2	main_slash	46	yes	present	1	1	533	main
-816602427	363885	2	main_slash	47	yes	present	1	1	428	main
-816602427	366938	2	main_slash	48	no	absent	0	1	2000	main
-816602427	368392	2	main_slash	49	yes	present	1	1	538	main
-816602427	370487	2	main_slash	50	no	present	1	0	1012	main
-816602427	371925	2	main_slash	51	yes	present	1	1	385	main
-816602427	373503	2	main_slash	52	yes	present	1	1	416	main
-816602427	374878	2	main_slash	53	yes	present	1	1	355	main
-816602427	376266	2	main_slash	54	yes	present	1	1	342	main
-816602427	379258	2	main_slash	55	no	absent	0	1	2000	main
-816602427	380716	2	main_slash	56	yes	present	1	1	610	main
-816602427	382274	2	main_slash	57	yes	present	1	1	419	main
-816602427	383680	2	main_slash	58	yes	present	1	1	375	main
-816602427	385137	2	main_slash	59	yes	present	1	1	398	main
-816602427	386526	2	main_slash	60	yes	present	1	1	352	main
-816602427	388193	2	main_slash	61	yes	present	1	1	353	main
-816602427	389580	2	main_slash	62	yes	present	1	1	324	main
-816602427	391202	2	main_slash	63	yes	present	1	1	529	main
-816602427	394222	2	main_slash	64	no	absent	0	1	2000	main
-816602427	397306	2	main_slash	65	yes	absent	0	0	2000	main
-816602427	400255	2	main_slash	66	no	absent	0	1	2000	main
-816602427	403177	2	main_slash	67	yes	present	1	1	1202	main
-816602427	404857	2	main_slash	68	yes	present	1	1	534	main
-816602427	406305	2	main_slash	69	yes	present	1	1	382	main
-816602427	407764	2	main_slash	70	yes	present	1	1	409	main
-816602427	410806	2	main_slash	71	yes	absent	0	0	2000	main
-816602427	417286	2	main_slash	72	yes	present	1	1	1061	main
-816602427	420277	2	main_slash	73	yes	present	1	1	352	main
-816602427	422196	2	main_slash	74	yes	present	1	1	690	main
-816602427	425206	2	main_slash	75	no	absent	0	1	2000	main
-816602427	426504	2	main_slash	76	yes	present	1	1	414	main
-816602427	427849	2	main_slash	77	yes	present	1	1	343	main
-816602427	429192	2	main_slash	78	yes	present	1	1	405	main
-816602427	430577	2	main_slash	79	yes	present	1	1	269	main
-816602427	431832	2	main_slash	80	yes	present	1	1	276	main
-816602427	506957	3	practice_z	1	yes	present	1	1	398	practice
-816602427	509369	3	practice_z	2	yes	present	1	1	325	practice
-816602427	511574	3	practice_z	3	yes	present	1	1	281	practice
-816602427	513955	3	practice_z	4	yes	present	1	1	531	practice
-816602427	516587	3	practice_z	5	yes	present	1	1	379	practice
-816602427	519230	3	practice_z	6	yes	present	1	1	640	practice
-816602427	521686	3	practice_z	7	yes	present	1	1	478	practice
-816602427	524054	3	practice_z	8	yes	present	1	1	479	practice
-816602427	527990	3	practice_z	9	no	absent	0	1	2000	practice
-816602427	530896	3	practice_z	10	yes	present	1	1	502	practice
-816602427	533139	3	practice_z	11	yes	present	1	1	381	practice
-816602427	537057	3	practice_z	12	no	absent	0	1	2000	practice
-816602427	541178	3	practice_z	13	no	absent	0	1	2000	practice
-816602427	543661	3	practice_z	14	no	present	1	0	590	practice
-816602427	546153	3	practice_z	15	yes	present	1	1	448	practice
-816602427	548486	3	practice_z	16	yes	present	1	1	377	practice
-816602427	562792	4	main_z	1	yes	present	1	1	387	main
-816602427	564377	4	main_z	2	yes	present	1	1	337	main
-816602427	565913	4	main_z	3	no	present	1	0	356	main
-816602427	567452	4	main_z	4	yes	present	1	1	495	main
-816602427	568882	4	main_z	5	yes	present	1	1	389	main
-816602427	570347	4	main_z	6	yes	present	1	1	476	main
-816602427	572004	4	main_z	7	yes	present	1	1	381	main
-816602427	573657	4	main_z	8	yes	present	1	1	469	main
-816602427	575214	4	main_z	9	yes	present	1	1	475	main
-816602427	576737	4	main_z	10	yes	present	1	1	381	main
-816602427	578258	4	main_z	11	yes	present	1	1	469	main
-816602427	579681	4	main_z	12	yes	present	1	1	358	main
-816602427	581217	4	main_z	13	yes	present	1	1	327	main
-816602427	582789	4	main_z	14	yes	present	1	1	533	main
-816602427	584224	4	main_z	15	yes	present	1	1	320	main
-816602427	585689	4	main_z	16	no	present	1	0	282	main
-816602427	587467	4	main_z	17	yes	present	1	1	493	main
-816602427	589045	4	main_z	18	yes	present	1	1	489	main
-816602427	592173	4	main_z	19	no	absent	0	1	2000	main
-816602427	593786	4	main_z	20	yes	present	1	1	449	main
-816602427	595462	4	main_z	21	yes	present	1	1	473	main
-816602427	598573	4	main_z	22	no	absent	0	1	2000	main
-816602427	599837	4	main_z	23	yes	present	1	1	400	main
-816602427	601192	4	main_z	24	yes	present	1	1	318	main
-816602427	602459	4	main_z	25	yes	present	1	1	301	main
-816602427	603781	4	main_z	26	yes	present	1	1	324	main
-816602427	606889	4	main_z	27	no	absent	0	1	2000	main
-816602427	608559	4	main_z	28	yes	present	1	1	651	main
-816602427	611622	4	main_z	29	no	absent	0	1	2000	main
-816602427	613300	4	main_z	30	yes	present	1	1	396	main
-816602427	614628	4	main_z	31	yes	present	1	1	320	main
-816602427	615879	4	main_z	32	yes	present	1	1	289	main
-816602427	617203	4	main_z	33	yes	present	1	1	399	main
-816602427	618685	4	main_z	34	yes	present	1	1	347	main
-816602427	620066	4	main_z	35	yes	present	1	1	342	main
-816602427	621472	4	main_z	36	yes	present	1	1	383	main
-816602427	622828	4	main_z	37	yes	present	1	1	304	main
-816602427	624617	4	main_z	38	yes	present	1	1	761	main
-816602427	625970	4	main_z	39	no	present	1	0	316	main
-816602427	629006	4	main_z	40	no	absent	0	1	2000	main
-816602427	630312	4	main_z	41	yes	present	1	1	388	main
-816602427	631993	4	main_z	42	yes	present	1	1	618	main
-816602427	633375	4	main_z	43	yes	present	1	1	369	main
-816602427	636422	4	main_z	44	no	absent	0	1	2000	main
-816602427	638099	4	main_z	45	yes	present	1	1	358	main
-816602427	639428	4	main_z	46	yes	present	1	1	354	main
-816602427	640694	4	main_z	47	yes	present	1	1	271	main
-816602427	641929	4	main_z	48	yes	present	1	1	257	main
-816602427	643268	4	main_z	49	yes	present	1	1	296	main
-816602427	644587	4	main_z	50	yes	present	1	1	281	main
-816602427	645844	4	main_z	51	no	present	1	0	238	main
-816602427	647199	4	main_z	52	yes	present	1	1	309	main
-816602427	648778	4	main_z	53	no	present	1	0	573	main
-816602427	650128	4	main_z	54	no	present	1	0	321	main
-816602427	651748	4	main_z	55	yes	present	1	1	541	main
-816602427	653128	4	main_z	56	yes	present	1	1	371	main
-816602427	654584	4	main_z	57	yes	present	1	1	343	main
-816602427	655868	4	main_z	58	yes	present	1	1	328	main
-816602427	657303	4	main_z	59	no	present	1	0	298	main
-816602427	658796	4	main_z	60	yes	present	1	1	324	main
-816602427	660099	4	main_z	61	yes	present	1	1	307	main
-816602427	661547	4	main_z	62	yes	present	1	1	357	main
-816602427	663301	4	main_z	63	yes	present	1	1	693	main
-816602427	664767	4	main_z	64	yes	present	1	1	413	main
-816602427	666357	4	main_z	65	yes	present	1	1	517	main
-816602427	667653	4	main_z	66	yes	present	1	1	317	main
-816602427	668860	4	main_z	67	no	present	1	0	220	main
-816602427	670276	4	main_z	68	yes	present	1	1	422	main
-816602427	671622	4	main_z	69	no	present	1	0	333	main
-816602427	673546	4	main_z	70	yes	present	1	1	822	main
-816602427	674992	4	main_z	71	yes	present	1	1	404	main
-816602427	676746	4	main_z	72	yes	present	1	1	408	main
-816602427	683481	4	main_z	73	yes	present	1	1	357	main
-816602427	684978	4	main_z	74	no	present	1	0	491	main
-816602427	686276	4	main_z	75	yes	present	1	1	320	main
-816602427	687654	4	main_z	76	yes	present	1	1	432	main
-816602427	688942	4	main_z	77	yes	present	1	1	335	main
-816602427	690346	4	main_z	78	yes	present	1	1	339	main
-816602427	691782	4	main_z	79	yes	present	1	1	292	main
-816602427	693221	4	main_z	80	yes	present	1	1	329	main
+subject	time_elapsed_ms	blocknum	block_type	block_response	trialnum	target	level	field	target_present	response	correct	rt
+816602427	172732	1	practice	slash	1	circle	global	LVF	yes	absent	0	2000
+816602427	180840	1	practice	slash	2	circle	global	RVF	yes	present	1	362
+816602427	184902	1	practice	slash	3	square	local	LVF	yes	present	1	955
+816602427	188608	1	practice	slash	4	circle	local	RVF	yes	present	1	482
+816602427	191529	1	practice	slash	5	square	global	LVF	yes	present	1	453
+816602427	194019	1	practice	slash	6	circle	local	RVF	yes	present	1	426
+816602427	196903	1	practice	slash	7	square	local	LVF	yes	present	1	676
+816602427	199264	1	practice	slash	8	absent	absent	absent	no	present	0	321
+816602427	201806	1	practice	slash	9	square	global	LVF	yes	present	1	363
+816602427	204220	1	practice	slash	10	circle	global	RVF	yes	present	1	327
+816602427	206469	1	practice	slash	11	square	global	RVF	yes	present	1	329
+816602427	208761	1	practice	slash	12	absent	absent	absent	no	present	0	401
+816602427	211771	1	practice	slash	13	absent	absent	absent	no	present	0	925
+816602427	214207	1	practice	slash	14	circle	global	LVF	yes	present	1	549
+816602427	217556	1	practice	slash	15	circle	local	RVF	yes	present	1	597
+816602427	221627	1	practice	slash	16	absent	absent	absent	no	absent	1	2000
+816602427	228038	2	main	slash	1	circle	local	LVF	yes	present	1	498
+816602427	232873	2	main	slash	2	absent	absent	absent	no	absent	1	2000
+816602427	234673	2	main	slash	3	square	global	RVF	yes	present	1	681
+816602427	238056	2	main	slash	4	absent	absent	absent	no	absent	1	2000
+816602427	239980	2	main	slash	5	circle	global	RVF	yes	present	1	558
+816602427	242589	2	main	slash	6	square	global	LVF	yes	present	1	364
+816602427	244678	2	main	slash	7	square	local	RVF	yes	present	1	671
+816602427	246857	2	main	slash	8	square	global	LVF	yes	present	1	484
+816602427	259688	2	main	slash	9	circle	local	RVF	yes	present	1	400
+816602427	262228	2	main	slash	10	circle	local	RVF	yes	present	1	489
+816602427	263941	2	main	slash	11	circle	global	LVF	yes	present	1	333
+816602427	265408	2	main	slash	12	circle	global	RVF	yes	present	1	351
+816602427	268406	2	main	slash	13	absent	absent	absent	no	absent	1	2000
+816602427	269841	2	main	slash	14	square	global	LVF	yes	present	1	454
+816602427	271503	2	main	slash	15	circle	local	LVF	yes	present	1	511
+816602427	272952	2	main	slash	16	circle	global	LVF	yes	present	1	389
+816602427	274376	2	main	slash	17	circle	global	RVF	yes	present	1	422
+816602427	275869	2	main	slash	18	square	local	LVF	yes	present	1	412
+816602427	277298	2	main	slash	19	circle	global	LVF	yes	present	1	412
+816602427	289065	2	main	slash	20	square	global	RVF	yes	present	1	358
+816602427	292643	2	main	slash	21	absent	absent	absent	no	absent	1	2000
+816602427	294704	2	main	slash	22	square	local	RVF	yes	present	1	863
+816602427	298057	2	main	slash	23	absent	absent	absent	no	absent	1	2000
+816602427	302907	2	main	slash	24	square	global	RVF	yes	present	1	402
+816602427	305350	2	main	slash	25	circle	local	RVF	yes	present	1	992
+816602427	308115	2	main	slash	26	square	local	RVF	yes	present	1	809
+816602427	311821	2	main	slash	27	absent	absent	absent	no	absent	1	2000
+816602427	315503	2	main	slash	28	square	local	LVF	yes	present	1	566
+816602427	319104	2	main	slash	29	circle	local	LVF	yes	present	1	400
+816602427	322291	2	main	slash	30	circle	global	RVF	yes	present	1	350
+816602427	325423	2	main	slash	31	absent	absent	absent	no	absent	1	2000
+816602427	329434	2	main	slash	32	square	global	LVF	yes	present	1	428
+816602427	331469	2	main	slash	33	circle	local	LVF	yes	present	1	415
+816602427	334366	2	main	slash	34	square	global	RVF	yes	present	1	578
+816602427	336219	2	main	slash	35	square	local	LVF	yes	present	1	761
+816602427	337862	2	main	slash	36	square	local	RVF	yes	present	1	541
+816602427	339354	2	main	slash	37	absent	absent	absent	no	present	0	450
+816602427	340880	2	main	slash	38	circle	global	LVF	yes	present	1	425
+816602427	342270	2	main	slash	39	circle	local	RVF	yes	present	1	380
+816602427	344694	2	main	slash	40	square	local	LVF	yes	present	1	1168
+816602427	346465	2	main	slash	41	circle	local	RVF	yes	present	1	543
+816602427	353175	2	main	slash	42	absent	absent	absent	no	absent	1	2000
+816602427	356172	2	main	slash	43	square	local	RVF	yes	absent	0	2000
+816602427	359056	2	main	slash	44	absent	absent	absent	no	absent	1	2000
+816602427	360383	2	main	slash	45	square	global	LVF	yes	present	1	476
+816602427	362338	2	main	slash	46	circle	global	LVF	yes	present	1	533
+816602427	363885	2	main	slash	47	circle	global	LVF	yes	present	1	428
+816602427	366938	2	main	slash	48	absent	absent	absent	no	absent	1	2000
+816602427	368392	2	main	slash	49	circle	local	LVF	yes	present	1	538
+816602427	370487	2	main	slash	50	absent	absent	absent	no	present	0	1012
+816602427	371925	2	main	slash	51	square	local	LVF	yes	present	1	385
+816602427	373503	2	main	slash	52	circle	local	RVF	yes	present	1	416
+816602427	374878	2	main	slash	53	circle	global	LVF	yes	present	1	355
+816602427	376266	2	main	slash	54	circle	global	LVF	yes	present	1	342
+816602427	379258	2	main	slash	55	absent	absent	absent	no	absent	1	2000
+816602427	380716	2	main	slash	56	square	global	RVF	yes	present	1	610
+816602427	382274	2	main	slash	57	circle	local	LVF	yes	present	1	419
+816602427	383680	2	main	slash	58	square	local	RVF	yes	present	1	375
+816602427	385137	2	main	slash	59	circle	local	RVF	yes	present	1	398
+816602427	386526	2	main	slash	60	square	global	LVF	yes	present	1	352
+816602427	388193	2	main	slash	61	circle	global	RVF	yes	present	1	353
+816602427	389580	2	main	slash	62	square	local	LVF	yes	present	1	324
+816602427	391202	2	main	slash	63	square	global	RVF	yes	present	1	529
+816602427	394222	2	main	slash	64	absent	absent	absent	no	absent	1	2000
+816602427	397306	2	main	slash	65	square	local	RVF	yes	absent	0	2000
+816602427	400255	2	main	slash	66	absent	absent	absent	no	absent	1	2000
+816602427	403177	2	main	slash	67	circle	local	RVF	yes	present	1	1202
+816602427	404857	2	main	slash	68	square	global	LVF	yes	present	1	534
+816602427	406305	2	main	slash	69	circle	global	RVF	yes	present	1	382
+816602427	407764	2	main	slash	70	circle	local	LVF	yes	present	1	409
+816602427	410806	2	main	slash	71	square	local	LVF	yes	absent	0	2000
+816602427	417286	2	main	slash	72	circle	local	LVF	yes	present	1	1061
+816602427	420277	2	main	slash	73	square	global	RVF	yes	present	1	352
+816602427	422196	2	main	slash	74	square	local	LVF	yes	present	1	690
+816602427	425206	2	main	slash	75	absent	absent	absent	no	absent	1	2000
+816602427	426504	2	main	slash	76	square	local	RVF	yes	present	1	414
+816602427	427849	2	main	slash	77	square	global	LVF	yes	present	1	343
+816602427	429192	2	main	slash	78	square	global	RVF	yes	present	1	405
+816602427	430577	2	main	slash	79	circle	global	RVF	yes	present	1	269
+816602427	431832	2	main	slash	80	circle	global	RVF	yes	present	1	276
+816602427	506957	3	practice	z	1	circle	local	RVF	yes	present	1	398
+816602427	509369	3	practice	z	2	circle	global	RVF	yes	present	1	325
+816602427	511574	3	practice	z	3	circle	global	RVF	yes	present	1	281
+816602427	513955	3	practice	z	4	square	local	LVF	yes	present	1	531
+816602427	516587	3	practice	z	5	circle	global	LVF	yes	present	1	379
+816602427	519230	3	practice	z	6	square	local	LVF	yes	present	1	640
+816602427	521686	3	practice	z	7	square	global	RVF	yes	present	1	478
+816602427	524054	3	practice	z	8	square	global	LVF	yes	present	1	479
+816602427	527990	3	practice	z	9	absent	absent	absent	no	absent	1	2000
+816602427	530896	3	practice	z	10	circle	local	RVF	yes	present	1	502
+816602427	533139	3	practice	z	11	circle	global	LVF	yes	present	1	381
+816602427	537057	3	practice	z	12	absent	absent	absent	no	absent	1	2000
+816602427	541178	3	practice	z	13	absent	absent	absent	no	absent	1	2000
+816602427	543661	3	practice	z	14	absent	absent	absent	no	present	0	590
+816602427	546153	3	practice	z	15	square	global	LVF	yes	present	1	448
+816602427	548486	3	practice	z	16	circle	local	RVF	yes	present	1	377
+816602427	562792	4	main	z	1	circle	global	LVF	yes	present	1	387
+816602427	564377	4	main	z	2	circle	global	RVF	yes	present	1	337
+816602427	565913	4	main	z	3	absent	absent	absent	no	present	0	356
+816602427	567452	4	main	z	4	square	global	RVF	yes	present	1	495
+816602427	568882	4	main	z	5	circle	local	LVF	yes	present	1	389
+816602427	570347	4	main	z	6	square	global	LVF	yes	present	1	476
+816602427	572004	4	main	z	7	circle	local	RVF	yes	present	1	381
+816602427	573657	4	main	z	8	square	global	RVF	yes	present	1	469
+816602427	575214	4	main	z	9	square	local	RVF	yes	present	1	475
+816602427	576737	4	main	z	10	square	local	LVF	yes	present	1	381
+816602427	578258	4	main	z	11	square	global	LVF	yes	present	1	469
+816602427	579681	4	main	z	12	circle	global	LVF	yes	present	1	358
+816602427	581217	4	main	z	13	square	global	RVF	yes	present	1	327
+816602427	582789	4	main	z	14	circle	local	LVF	yes	present	1	533
+816602427	584224	4	main	z	15	square	local	RVF	yes	present	1	320
+816602427	585689	4	main	z	16	absent	absent	absent	no	present	0	282
+816602427	587467	4	main	z	17	circle	local	LVF	yes	present	1	493
+816602427	589045	4	main	z	18	square	local	RVF	yes	present	1	489
+816602427	592173	4	main	z	19	absent	absent	absent	no	absent	1	2000
+816602427	593786	4	main	z	20	circle	local	RVF	yes	present	1	449
+816602427	595462	4	main	z	21	circle	local	LVF	yes	present	1	473
+816602427	598573	4	main	z	22	absent	absent	absent	no	absent	1	2000
+816602427	599837	4	main	z	23	circle	global	LVF	yes	present	1	400
+816602427	601192	4	main	z	24	circle	global	LVF	yes	present	1	318
+816602427	602459	4	main	z	25	square	global	LVF	yes	present	1	301
+816602427	603781	4	main	z	26	square	local	RVF	yes	present	1	324
+816602427	606889	4	main	z	27	absent	absent	absent	no	absent	1	2000
+816602427	608559	4	main	z	28	square	local	LVF	yes	present	1	651
+816602427	611622	4	main	z	29	absent	absent	absent	no	absent	1	2000
+816602427	613300	4	main	z	30	circle	local	RVF	yes	present	1	396
+816602427	614628	4	main	z	31	circle	global	RVF	yes	present	1	320
+816602427	615879	4	main	z	32	circle	global	RVF	yes	present	1	289
+816602427	617203	4	main	z	33	square	global	RVF	yes	present	1	399
+816602427	618685	4	main	z	34	square	global	LVF	yes	present	1	347
+816602427	620066	4	main	z	35	square	local	LVF	yes	present	1	342
+816602427	621472	4	main	z	36	circle	local	RVF	yes	present	1	383
+816602427	622828	4	main	z	37	circle	global	RVF	yes	present	1	304
+816602427	624617	4	main	z	38	square	local	LVF	yes	present	1	761
+816602427	625970	4	main	z	39	absent	absent	absent	no	present	0	316
+816602427	629006	4	main	z	40	absent	absent	absent	no	absent	1	2000
+816602427	630312	4	main	z	41	square	local	LVF	yes	present	1	388
+816602427	631993	4	main	z	42	square	local	LVF	yes	present	1	618
+816602427	633375	4	main	z	43	square	global	RVF	yes	present	1	369
+816602427	636422	4	main	z	44	absent	absent	absent	no	absent	1	2000
+816602427	638099	4	main	z	45	circle	local	RVF	yes	present	1	358
+816602427	639428	4	main	z	46	square	global	RVF	yes	present	1	354
+816602427	640694	4	main	z	47	circle	global	RVF	yes	present	1	271
+816602427	641929	4	main	z	48	square	global	LVF	yes	present	1	257
+816602427	643268	4	main	z	49	square	local	RVF	yes	present	1	296
+816602427	644587	4	main	z	50	square	global	LVF	yes	present	1	281
+816602427	645844	4	main	z	51	absent	absent	absent	no	present	0	238
+816602427	647199	4	main	z	52	circle	local	RVF	yes	present	1	309
+816602427	648778	4	main	z	53	absent	absent	absent	no	present	0	573
+816602427	650128	4	main	z	54	absent	absent	absent	no	present	0	321
+816602427	651748	4	main	z	55	circle	local	LVF	yes	present	1	541
+816602427	653128	4	main	z	56	circle	local	RVF	yes	present	1	371
+816602427	654584	4	main	z	57	square	global	LVF	yes	present	1	343
+816602427	655868	4	main	z	58	circle	local	LVF	yes	present	1	328
+816602427	657303	4	main	z	59	absent	absent	absent	no	present	0	298
+816602427	658796	4	main	z	60	circle	global	LVF	yes	present	1	324
+816602427	660099	4	main	z	61	square	global	RVF	yes	present	1	307
+816602427	661547	4	main	z	62	circle	global	LVF	yes	present	1	357
+816602427	663301	4	main	z	63	square	local	RVF	yes	present	1	693
+816602427	664767	4	main	z	64	circle	local	RVF	yes	present	1	413
+816602427	666357	4	main	z	65	square	global	RVF	yes	present	1	517
+816602427	667653	4	main	z	66	circle	global	LVF	yes	present	1	317
+816602427	668860	4	main	z	67	absent	absent	absent	no	present	0	220
+816602427	670276	4	main	z	68	circle	global	RVF	yes	present	1	422
+816602427	671622	4	main	z	69	absent	absent	absent	no	present	0	333
+816602427	673546	4	main	z	70	square	local	RVF	yes	present	1	822
+816602427	674992	4	main	z	71	circle	local	LVF	yes	present	1	404
+816602427	676746	4	main	z	72	square	local	LVF	yes	present	1	408
+816602427	683481	4	main	z	73	square	global	LVF	yes	present	1	357
+816602427	684978	4	main	z	74	absent	absent	absent	no	present	0	491
+816602427	686276	4	main	z	75	circle	global	RVF	yes	present	1	320
+816602427	687654	4	main	z	76	square	local	LVF	yes	present	1	432
+816602427	688942	4	main	z	77	circle	global	RVF	yes	present	1	335
+816602427	690346	4	main	z	78	square	local	RVF	yes	present	1	339
+816602427	691782	4	main	z	79	circle	global	LVF	yes	present	1	292
+816602427	693221	4	main	z	80	circle	local	LVF	yes	present	1	329

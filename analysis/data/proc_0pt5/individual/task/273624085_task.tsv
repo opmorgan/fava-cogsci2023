@@ -1,193 +1,193 @@
-subject	time_elapsed_ms	blocknum	block	trialnum	target_present	response	response_log	correct	rt	block_type
-273624085	3513955	1	practice_slash	1	yes	absent	0	0	2000	practice
-273624085	3516627	1	practice_slash	2	yes	present	1	1	438	practice
-273624085	3624998	1	practice_slash	3	no	absent	0	1	2000	practice
-273624085	3627608	1	practice_slash	4	yes	present	1	1	362	practice
-273624085	3631628	1	practice_slash	5	no	absent	0	1	2000	practice
-273624085	3634120	1	practice_slash	6	yes	present	1	1	358	practice
-273624085	3651295	1	practice_slash	7	yes	present	1	1	393	practice
-273624085	3653875	1	practice_slash	8	yes	present	1	1	326	practice
-273624085	3657899	1	practice_slash	9	no	absent	0	1	2000	practice
-273624085	3660506	1	practice_slash	10	yes	present	1	1	360	practice
-273624085	3663211	1	practice_slash	11	yes	present	1	1	400	practice
-273624085	3665663	1	practice_slash	12	yes	present	1	1	453	practice
-273624085	3667765	1	practice_slash	13	no	present	1	0	339	practice
-273624085	3670258	1	practice_slash	14	yes	present	1	1	450	practice
-273624085	3672819	1	practice_slash	15	yes	present	1	1	411	practice
-273624085	3675623	1	practice_slash	16	yes	present	1	1	817	practice
-273624085	3690694	2	main_slash	1	yes	present	1	1	500	main
-273624085	3692314	2	main_slash	2	yes	present	1	1	404	main
-273624085	3693705	2	main_slash	3	yes	present	1	1	411	main
-273624085	3695055	2	main_slash	4	no	present	1	0	345	main
-273624085	3696530	2	main_slash	5	yes	present	1	1	355	main
-273624085	3698132	2	main_slash	6	yes	present	1	1	573	main
-273624085	3699447	2	main_slash	7	yes	present	1	1	273	main
-273624085	3700898	2	main_slash	8	yes	present	1	1	409	main
-273624085	3702231	2	main_slash	9	yes	present	1	1	359	main
-273624085	3703445	2	main_slash	10	no	present	1	0	274	main
-273624085	3706537	2	main_slash	11	no	absent	0	1	2000	main
-273624085	3707919	2	main_slash	12	yes	present	1	1	375	main
-273624085	3709320	2	main_slash	13	yes	present	1	1	418	main
-273624085	3712268	2	main_slash	14	no	absent	0	1	2000	main
-273624085	3713986	2	main_slash	15	yes	present	1	1	753	main
-273624085	3715368	2	main_slash	16	yes	present	1	1	382	main
-273624085	3716697	2	main_slash	17	yes	present	1	1	377	main
-273624085	3718324	2	main_slash	18	yes	present	1	1	525	main
-273624085	3719601	2	main_slash	19	yes	present	1	1	336	main
-273624085	3720981	2	main_slash	20	yes	present	1	1	435	main
-273624085	3723929	2	main_slash	21	no	absent	0	1	2000	main
-273624085	3725168	2	main_slash	22	yes	present	1	1	391	main
-273624085	3726841	2	main_slash	23	yes	present	1	1	372	main
-273624085	3728379	2	main_slash	24	yes	present	1	1	554	main
-273624085	3729855	2	main_slash	25	yes	present	1	1	429	main
-273624085	3731339	2	main_slash	26	yes	present	1	1	376	main
-273624085	3732634	2	main_slash	27	yes	present	1	1	311	main
-273624085	3733889	2	main_slash	28	yes	present	1	1	332	main
-273624085	3735194	2	main_slash	29	yes	present	1	1	388	main
-273624085	3736576	2	main_slash	30	yes	present	1	1	354	main
-273624085	3737908	2	main_slash	31	no	present	1	0	287	main
-273624085	3739451	2	main_slash	32	yes	present	1	1	431	main
-273624085	3740702	2	main_slash	33	yes	present	1	1	365	main
-273624085	3743569	2	main_slash	34	no	absent	0	1	2000	main
-273624085	3745106	2	main_slash	35	yes	present	1	1	471	main
-273624085	3746404	2	main_slash	36	yes	present	1	1	403	main
-273624085	3748066	2	main_slash	37	yes	present	1	1	716	main
-273624085	3751315	2	main_slash	38	no	absent	0	1	2000	main
-273624085	3752658	2	main_slash	39	yes	present	1	1	361	main
-273624085	3754122	2	main_slash	40	yes	present	1	1	526	main
-273624085	3755564	2	main_slash	41	yes	present	1	1	402	main
-273624085	3756778	2	main_slash	42	yes	present	1	1	350	main
-273624085	3759644	2	main_slash	43	no	absent	0	1	2000	main
-273624085	3761902	2	main_slash	44	yes	present	1	1	343	main
-273624085	3764071	2	main_slash	45	yes	present	1	1	395	main
-273624085	3765379	2	main_slash	46	yes	present	1	1	322	main
-273624085	3766711	2	main_slash	47	yes	present	1	1	388	main
-273624085	3769639	2	main_slash	48	no	absent	0	1	2000	main
-273624085	3770989	2	main_slash	49	yes	present	1	1	335	main
-273624085	3772431	2	main_slash	50	yes	present	1	1	361	main
-273624085	3775370	2	main_slash	51	no	absent	0	1	2000	main
-273624085	3776750	2	main_slash	52	yes	present	1	1	348	main
-273624085	3779901	2	main_slash	53	no	absent	0	1	2000	main
-273624085	3781297	2	main_slash	54	yes	present	1	1	430	main
-273624085	3782650	2	main_slash	55	yes	present	1	1	435	main
-273624085	3783920	2	main_slash	56	yes	present	1	1	405	main
-273624085	3785225	2	main_slash	57	yes	present	1	1	411	main
-273624085	3786994	2	main_slash	58	yes	present	1	1	379	main
-273624085	3788443	2	main_slash	59	yes	present	1	1	430	main
-273624085	3791429	2	main_slash	60	no	absent	0	1	2000	main
-273624085	3792994	2	main_slash	61	yes	present	1	1	533	main
-273624085	3794527	2	main_slash	62	yes	present	1	1	383	main
-273624085	3795891	2	main_slash	63	yes	present	1	1	448	main
-273624085	3797216	2	main_slash	64	yes	present	1	1	391	main
-273624085	3798685	2	main_slash	65	yes	present	1	1	428	main
-273624085	3799998	2	main_slash	66	no	present	1	0	391	main
-273624085	3801489	2	main_slash	67	yes	present	1	1	466	main
-273624085	3802798	2	main_slash	68	yes	present	1	1	393	main
-273624085	3804215	2	main_slash	69	yes	present	1	1	544	main
-273624085	3805503	2	main_slash	70	yes	present	1	1	371	main
-273624085	3808437	2	main_slash	71	no	absent	0	1	2000	main
-273624085	3809865	2	main_slash	72	yes	present	1	1	462	main
-273624085	3811296	2	main_slash	73	yes	present	1	1	544	main
-273624085	3812717	2	main_slash	74	yes	present	1	1	400	main
-273624085	3814183	2	main_slash	75	yes	present	1	1	499	main
-273624085	3815789	2	main_slash	76	yes	present	1	1	323	main
-273624085	3817194	2	main_slash	77	yes	present	1	1	463	main
-273624085	3818723	2	main_slash	78	yes	present	1	1	525	main
-273624085	3821714	2	main_slash	79	no	absent	0	1	2000	main
-273624085	3823096	2	main_slash	80	yes	present	1	1	433	main
-273624085	3830046	3	practice_z	1	no	absent	0	1	2000	practice
-273624085	3832708	3	practice_z	2	yes	present	1	1	509	practice
-273624085	3835186	3	practice_z	3	yes	present	1	1	443	practice
-273624085	3839142	3	practice_z	4	no	absent	0	1	2000	practice
-273624085	3841587	3	practice_z	5	yes	present	1	1	446	practice
-273624085	3844089	3	practice_z	6	yes	present	1	1	467	practice
-273624085	3846534	3	practice_z	7	yes	present	1	1	380	practice
-273624085	3848900	3	practice_z	8	yes	present	1	1	377	practice
-273624085	3852934	3	practice_z	9	no	absent	0	1	2000	practice
-273624085	3855413	3	practice_z	10	yes	present	1	1	498	practice
-273624085	3857547	3	practice_z	11	yes	present	1	1	376	practice
-273624085	3859855	3	practice_z	12	yes	present	1	1	341	practice
-273624085	3863863	3	practice_z	13	no	absent	0	1	2000	practice
-273624085	3866326	3	practice_z	14	yes	present	1	1	376	practice
-273624085	3868756	3	practice_z	15	yes	present	1	1	378	practice
-273624085	3871237	3	practice_z	16	yes	present	1	1	445	practice
-273624085	3875102	4	main_z	1	yes	present	1	1	466	main
-273624085	3878102	4	main_z	2	no	absent	0	1	2000	main
-273624085	3879424	4	main_z	3	yes	present	1	1	407	main
-273624085	3882483	4	main_z	4	no	absent	0	1	2000	main
-273624085	3883830	4	main_z	5	yes	present	1	1	398	main
-273624085	3885315	4	main_z	6	yes	present	1	1	399	main
-273624085	3886686	4	main_z	7	yes	present	1	1	406	main
-273624085	3888127	4	main_z	8	yes	present	1	1	497	main
-273624085	3889504	4	main_z	9	yes	present	1	1	391	main
-273624085	3890821	4	main_z	10	yes	present	1	1	392	main
-273624085	3892137	4	main_z	11	yes	present	1	1	343	main
-273624085	3893466	4	main_z	12	no	present	1	0	422	main
-273624085	3895019	4	main_z	13	yes	present	1	1	493	main
-273624085	3896488	4	main_z	14	yes	present	1	1	530	main
-273624085	3897864	4	main_z	15	yes	present	1	1	440	main
-273624085	3899356	4	main_z	16	yes	present	1	1	511	main
-273624085	3902424	4	main_z	17	no	absent	0	1	2000	main
-273624085	3903786	4	main_z	18	yes	present	1	1	380	main
-273624085	3905169	4	main_z	19	yes	present	1	1	414	main
-273624085	3906715	4	main_z	20	yes	present	1	1	577	main
-273624085	3908012	4	main_z	21	no	present	1	0	360	main
-273624085	3909511	4	main_z	22	yes	present	1	1	425	main
-273624085	3912535	4	main_z	23	no	absent	0	1	2000	main
-273624085	3913902	4	main_z	24	yes	present	1	1	436	main
-273624085	3915341	4	main_z	25	yes	present	1	1	426	main
-273624085	3918432	4	main_z	26	no	absent	0	1	2000	main
-273624085	3919860	4	main_z	27	yes	present	1	1	429	main
-273624085	3921292	4	main_z	28	yes	present	1	1	428	main
-273624085	3922930	4	main_z	29	yes	present	1	1	602	main
-273624085	3924354	4	main_z	30	yes	present	1	1	393	main
-273624085	3925775	4	main_z	31	yes	present	1	1	376	main
-273624085	3927109	4	main_z	32	yes	present	1	1	375	main
-273624085	3928431	4	main_z	33	yes	present	1	1	338	main
-273624085	3929927	4	main_z	34	yes	present	1	1	318	main
-273624085	3931359	4	main_z	35	yes	present	1	1	434	main
-273624085	3932739	4	main_z	36	yes	present	1	1	375	main
-273624085	3934148	4	main_z	37	yes	present	1	1	342	main
-273624085	3937189	4	main_z	38	no	absent	0	1	2000	main
-273624085	3938886	4	main_z	39	yes	present	1	1	699	main
-273624085	3974840	4	main_z	40	yes	present	1	1	1054	main
-273624085	3978052	4	main_z	41	no	absent	0	1	2000	main
-273624085	3980348	4	main_z	42	yes	present	1	1	367	main
-273624085	3981650	4	main_z	43	yes	present	1	1	417	main
-273624085	3983134	4	main_z	44	no	present	1	0	568	main
-273624085	3986048	4	main_z	45	no	absent	0	1	2000	main
-273624085	3987374	4	main_z	46	yes	present	1	1	444	main
-273624085	3988671	4	main_z	47	yes	present	1	1	341	main
-273624085	3989951	4	main_z	48	yes	present	1	1	323	main
-273624085	3991176	4	main_z	49	yes	present	1	1	332	main
-273624085	3992438	4	main_z	50	yes	present	1	1	310	main
-273624085	3993791	4	main_z	51	yes	present	1	1	363	main
-273624085	3995299	4	main_z	52	no	present	1	0	407	main
-273624085	3996716	4	main_z	53	yes	present	1	1	357	main
-273624085	3998266	4	main_z	54	yes	present	1	1	541	main
-273624085	4012144	4	main_z	55	yes	present	1	1	360	main
-273624085	4013548	4	main_z	56	yes	present	1	1	314	main
-273624085	4014832	4	main_z	57	yes	present	1	1	332	main
-273624085	4016181	4	main_z	58	yes	present	1	1	365	main
-273624085	4017633	4	main_z	59	yes	present	1	1	568	main
-273624085	4018849	4	main_z	60	yes	present	1	1	318	main
-273624085	4020004	4	main_z	61	yes	present	1	1	223	main
-273624085	4021259	4	main_z	62	yes	present	1	1	345	main
-273624085	4022392	4	main_z	63	yes	present	1	1	230	main
-273624085	4023718	4	main_z	64	no	present	1	0	422	main
-273624085	4025110	4	main_z	65	yes	present	1	1	376	main
-273624085	4026442	4	main_z	66	yes	present	1	1	376	main
-273624085	4027840	4	main_z	67	yes	present	1	1	372	main
-273624085	4029213	4	main_z	68	yes	present	1	1	303	main
-273624085	4030696	4	main_z	69	yes	present	1	1	488	main
-273624085	4031990	4	main_z	70	no	present	1	0	316	main
-273624085	4035057	4	main_z	71	no	absent	0	1	2000	main
-273624085	4038089	4	main_z	72	no	absent	0	1	2000	main
-273624085	4039481	4	main_z	73	yes	present	1	1	427	main
-273624085	4040833	4	main_z	74	yes	present	1	1	397	main
-273624085	4042451	4	main_z	75	yes	present	1	1	507	main
-273624085	4043657	4	main_z	76	yes	present	1	1	339	main
-273624085	4044951	4	main_z	77	yes	present	1	1	382	main
-273624085	4046162	4	main_z	78	yes	present	1	1	312	main
-273624085	4047464	4	main_z	79	yes	present	1	1	376	main
-273624085	4048728	4	main_z	80	yes	present	1	1	329	main
+subject	time_elapsed_ms	blocknum	block_type	block_response	trialnum	target	level	field	target_present	response	correct	rt
+273624085	3513955	1	practice	slash	1	square	global	RVF	yes	absent	0	2000
+273624085	3516627	1	practice	slash	2	circle	global	RVF	yes	present	1	438
+273624085	3624998	1	practice	slash	3	absent	absent	absent	no	absent	1	2000
+273624085	3627608	1	practice	slash	4	circle	local	RVF	yes	present	1	362
+273624085	3631628	1	practice	slash	5	absent	absent	absent	no	absent	1	2000
+273624085	3634120	1	practice	slash	6	square	local	LVF	yes	present	1	358
+273624085	3651295	1	practice	slash	7	circle	global	RVF	yes	present	1	393
+273624085	3653875	1	practice	slash	8	square	global	LVF	yes	present	1	326
+273624085	3657899	1	practice	slash	9	absent	absent	absent	no	absent	1	2000
+273624085	3660506	1	practice	slash	10	circle	local	RVF	yes	present	1	360
+273624085	3663211	1	practice	slash	11	square	global	LVF	yes	present	1	400
+273624085	3665663	1	practice	slash	12	square	local	LVF	yes	present	1	453
+273624085	3667765	1	practice	slash	13	absent	absent	absent	no	present	0	339
+273624085	3670258	1	practice	slash	14	circle	local	RVF	yes	present	1	450
+273624085	3672819	1	practice	slash	15	circle	global	LVF	yes	present	1	411
+273624085	3675623	1	practice	slash	16	circle	global	LVF	yes	present	1	817
+273624085	3690694	2	main	slash	1	square	local	RVF	yes	present	1	500
+273624085	3692314	2	main	slash	2	square	local	LVF	yes	present	1	404
+273624085	3693705	2	main	slash	3	circle	local	LVF	yes	present	1	411
+273624085	3695055	2	main	slash	4	absent	absent	absent	no	present	0	345
+273624085	3696530	2	main	slash	5	square	global	LVF	yes	present	1	355
+273624085	3698132	2	main	slash	6	square	global	RVF	yes	present	1	573
+273624085	3699447	2	main	slash	7	circle	global	RVF	yes	present	1	273
+273624085	3700898	2	main	slash	8	circle	local	LVF	yes	present	1	409
+273624085	3702231	2	main	slash	9	circle	global	LVF	yes	present	1	359
+273624085	3703445	2	main	slash	10	absent	absent	absent	no	present	0	274
+273624085	3706537	2	main	slash	11	absent	absent	absent	no	absent	1	2000
+273624085	3707919	2	main	slash	12	square	global	LVF	yes	present	1	375
+273624085	3709320	2	main	slash	13	circle	global	RVF	yes	present	1	418
+273624085	3712268	2	main	slash	14	absent	absent	absent	no	absent	1	2000
+273624085	3713986	2	main	slash	15	circle	global	RVF	yes	present	1	753
+273624085	3715368	2	main	slash	16	square	local	RVF	yes	present	1	382
+273624085	3716697	2	main	slash	17	square	global	LVF	yes	present	1	377
+273624085	3718324	2	main	slash	18	circle	global	RVF	yes	present	1	525
+273624085	3719601	2	main	slash	19	circle	local	LVF	yes	present	1	336
+273624085	3720981	2	main	slash	20	circle	local	LVF	yes	present	1	435
+273624085	3723929	2	main	slash	21	absent	absent	absent	no	absent	1	2000
+273624085	3725168	2	main	slash	22	circle	local	RVF	yes	present	1	391
+273624085	3726841	2	main	slash	23	square	global	RVF	yes	present	1	372
+273624085	3728379	2	main	slash	24	square	local	LVF	yes	present	1	554
+273624085	3729855	2	main	slash	25	circle	local	RVF	yes	present	1	429
+273624085	3731339	2	main	slash	26	square	local	LVF	yes	present	1	376
+273624085	3732634	2	main	slash	27	square	global	RVF	yes	present	1	311
+273624085	3733889	2	main	slash	28	circle	global	LVF	yes	present	1	332
+273624085	3735194	2	main	slash	29	circle	global	LVF	yes	present	1	388
+273624085	3736576	2	main	slash	30	square	global	LVF	yes	present	1	354
+273624085	3737908	2	main	slash	31	absent	absent	absent	no	present	0	287
+273624085	3739451	2	main	slash	32	circle	local	RVF	yes	present	1	431
+273624085	3740702	2	main	slash	33	square	local	RVF	yes	present	1	365
+273624085	3743569	2	main	slash	34	absent	absent	absent	no	absent	1	2000
+273624085	3745106	2	main	slash	35	square	local	LVF	yes	present	1	471
+273624085	3746404	2	main	slash	36	circle	global	LVF	yes	present	1	403
+273624085	3748066	2	main	slash	37	square	local	RVF	yes	present	1	716
+273624085	3751315	2	main	slash	38	absent	absent	absent	no	absent	1	2000
+273624085	3752658	2	main	slash	39	circle	local	RVF	yes	present	1	361
+273624085	3754122	2	main	slash	40	square	global	RVF	yes	present	1	526
+273624085	3755564	2	main	slash	41	circle	local	LVF	yes	present	1	402
+273624085	3756778	2	main	slash	42	circle	local	RVF	yes	present	1	350
+273624085	3759644	2	main	slash	43	absent	absent	absent	no	absent	1	2000
+273624085	3761902	2	main	slash	44	circle	global	RVF	yes	present	1	343
+273624085	3764071	2	main	slash	45	square	global	RVF	yes	present	1	395
+273624085	3765379	2	main	slash	46	square	local	LVF	yes	present	1	322
+273624085	3766711	2	main	slash	47	square	global	RVF	yes	present	1	388
+273624085	3769639	2	main	slash	48	absent	absent	absent	no	absent	1	2000
+273624085	3770989	2	main	slash	49	circle	local	RVF	yes	present	1	335
+273624085	3772431	2	main	slash	50	square	global	RVF	yes	present	1	361
+273624085	3775370	2	main	slash	51	absent	absent	absent	no	absent	1	2000
+273624085	3776750	2	main	slash	52	square	local	RVF	yes	present	1	348
+273624085	3779901	2	main	slash	53	absent	absent	absent	no	absent	1	2000
+273624085	3781297	2	main	slash	54	circle	local	LVF	yes	present	1	430
+273624085	3782650	2	main	slash	55	square	global	LVF	yes	present	1	435
+273624085	3783920	2	main	slash	56	square	global	RVF	yes	present	1	405
+273624085	3785225	2	main	slash	57	circle	local	LVF	yes	present	1	411
+273624085	3786994	2	main	slash	58	square	local	RVF	yes	present	1	379
+273624085	3788443	2	main	slash	59	circle	global	RVF	yes	present	1	430
+273624085	3791429	2	main	slash	60	absent	absent	absent	no	absent	1	2000
+273624085	3792994	2	main	slash	61	circle	global	LVF	yes	present	1	533
+273624085	3794527	2	main	slash	62	circle	global	RVF	yes	present	1	383
+273624085	3795891	2	main	slash	63	square	local	RVF	yes	present	1	448
+273624085	3797216	2	main	slash	64	square	global	LVF	yes	present	1	391
+273624085	3798685	2	main	slash	65	circle	global	LVF	yes	present	1	428
+273624085	3799998	2	main	slash	66	absent	absent	absent	no	present	0	391
+273624085	3801489	2	main	slash	67	square	local	LVF	yes	present	1	466
+273624085	3802798	2	main	slash	68	circle	global	RVF	yes	present	1	393
+273624085	3804215	2	main	slash	69	square	global	LVF	yes	present	1	544
+273624085	3805503	2	main	slash	70	circle	global	LVF	yes	present	1	371
+273624085	3808437	2	main	slash	71	absent	absent	absent	no	absent	1	2000
+273624085	3809865	2	main	slash	72	square	local	RVF	yes	present	1	462
+273624085	3811296	2	main	slash	73	square	local	LVF	yes	present	1	544
+273624085	3812717	2	main	slash	74	circle	local	RVF	yes	present	1	400
+273624085	3814183	2	main	slash	75	square	global	LVF	yes	present	1	499
+273624085	3815789	2	main	slash	76	circle	global	LVF	yes	present	1	323
+273624085	3817194	2	main	slash	77	circle	local	LVF	yes	present	1	463
+273624085	3818723	2	main	slash	78	circle	local	RVF	yes	present	1	525
+273624085	3821714	2	main	slash	79	absent	absent	absent	no	absent	1	2000
+273624085	3823096	2	main	slash	80	square	local	LVF	yes	present	1	433
+273624085	3830046	3	practice	z	1	absent	absent	absent	no	absent	1	2000
+273624085	3832708	3	practice	z	2	circle	global	RVF	yes	present	1	509
+273624085	3835186	3	practice	z	3	square	local	LVF	yes	present	1	443
+273624085	3839142	3	practice	z	4	absent	absent	absent	no	absent	1	2000
+273624085	3841587	3	practice	z	5	square	global	LVF	yes	present	1	446
+273624085	3844089	3	practice	z	6	square	global	LVF	yes	present	1	467
+273624085	3846534	3	practice	z	7	square	local	LVF	yes	present	1	380
+273624085	3848900	3	practice	z	8	circle	global	LVF	yes	present	1	377
+273624085	3852934	3	practice	z	9	absent	absent	absent	no	absent	1	2000
+273624085	3855413	3	practice	z	10	square	global	RVF	yes	present	1	498
+273624085	3857547	3	practice	z	11	circle	local	RVF	yes	present	1	376
+273624085	3859855	3	practice	z	12	circle	local	RVF	yes	present	1	341
+273624085	3863863	3	practice	z	13	absent	absent	absent	no	absent	1	2000
+273624085	3866326	3	practice	z	14	circle	local	RVF	yes	present	1	376
+273624085	3868756	3	practice	z	15	circle	global	LVF	yes	present	1	378
+273624085	3871237	3	practice	z	16	circle	global	RVF	yes	present	1	445
+273624085	3875102	4	main	z	1	circle	global	LVF	yes	present	1	466
+273624085	3878102	4	main	z	2	absent	absent	absent	no	absent	1	2000
+273624085	3879424	4	main	z	3	circle	local	RVF	yes	present	1	407
+273624085	3882483	4	main	z	4	absent	absent	absent	no	absent	1	2000
+273624085	3883830	4	main	z	5	square	global	LVF	yes	present	1	398
+273624085	3885315	4	main	z	6	square	local	RVF	yes	present	1	399
+273624085	3886686	4	main	z	7	square	local	RVF	yes	present	1	406
+273624085	3888127	4	main	z	8	square	global	LVF	yes	present	1	497
+273624085	3889504	4	main	z	9	circle	global	RVF	yes	present	1	391
+273624085	3890821	4	main	z	10	circle	local	LVF	yes	present	1	392
+273624085	3892137	4	main	z	11	circle	local	RVF	yes	present	1	343
+273624085	3893466	4	main	z	12	absent	absent	absent	no	present	0	422
+273624085	3895019	4	main	z	13	square	local	LVF	yes	present	1	493
+273624085	3896488	4	main	z	14	square	local	RVF	yes	present	1	530
+273624085	3897864	4	main	z	15	circle	local	LVF	yes	present	1	440
+273624085	3899356	4	main	z	16	square	local	LVF	yes	present	1	511
+273624085	3902424	4	main	z	17	absent	absent	absent	no	absent	1	2000
+273624085	3903786	4	main	z	18	square	global	RVF	yes	present	1	380
+273624085	3905169	4	main	z	19	circle	local	LVF	yes	present	1	414
+273624085	3906715	4	main	z	20	square	global	RVF	yes	present	1	577
+273624085	3908012	4	main	z	21	absent	absent	absent	no	present	0	360
+273624085	3909511	4	main	z	22	circle	global	LVF	yes	present	1	425
+273624085	3912535	4	main	z	23	absent	absent	absent	no	absent	1	2000
+273624085	3913902	4	main	z	24	circle	local	LVF	yes	present	1	436
+273624085	3915341	4	main	z	25	square	global	RVF	yes	present	1	426
+273624085	3918432	4	main	z	26	absent	absent	absent	no	absent	1	2000
+273624085	3919860	4	main	z	27	circle	global	RVF	yes	present	1	429
+273624085	3921292	4	main	z	28	circle	local	RVF	yes	present	1	428
+273624085	3922930	4	main	z	29	square	local	LVF	yes	present	1	602
+273624085	3924354	4	main	z	30	square	local	RVF	yes	present	1	393
+273624085	3925775	4	main	z	31	circle	global	RVF	yes	present	1	376
+273624085	3927109	4	main	z	32	circle	global	LVF	yes	present	1	375
+273624085	3928431	4	main	z	33	square	global	LVF	yes	present	1	338
+273624085	3929927	4	main	z	34	square	global	LVF	yes	present	1	318
+273624085	3931359	4	main	z	35	square	global	RVF	yes	present	1	434
+273624085	3932739	4	main	z	36	circle	global	RVF	yes	present	1	375
+273624085	3934148	4	main	z	37	circle	local	RVF	yes	present	1	342
+273624085	3937189	4	main	z	38	absent	absent	absent	no	absent	1	2000
+273624085	3938886	4	main	z	39	circle	global	LVF	yes	present	1	699
+273624085	3974840	4	main	z	40	square	local	LVF	yes	present	1	1054
+273624085	3978052	4	main	z	41	absent	absent	absent	no	absent	1	2000
+273624085	3980348	4	main	z	42	square	local	LVF	yes	present	1	367
+273624085	3981650	4	main	z	43	circle	global	RVF	yes	present	1	417
+273624085	3983134	4	main	z	44	absent	absent	absent	no	present	0	568
+273624085	3986048	4	main	z	45	absent	absent	absent	no	absent	1	2000
+273624085	3987374	4	main	z	46	circle	global	RVF	yes	present	1	444
+273624085	3988671	4	main	z	47	square	local	RVF	yes	present	1	341
+273624085	3989951	4	main	z	48	circle	global	LVF	yes	present	1	323
+273624085	3991176	4	main	z	49	circle	global	LVF	yes	present	1	332
+273624085	3992438	4	main	z	50	square	global	RVF	yes	present	1	310
+273624085	3993791	4	main	z	51	square	global	LVF	yes	present	1	363
+273624085	3995299	4	main	z	52	absent	absent	absent	no	present	0	407
+273624085	3996716	4	main	z	53	circle	local	LVF	yes	present	1	357
+273624085	3998266	4	main	z	54	square	global	RVF	yes	present	1	541
+273624085	4012144	4	main	z	55	square	local	LVF	yes	present	1	360
+273624085	4013548	4	main	z	56	square	local	LVF	yes	present	1	314
+273624085	4014832	4	main	z	57	circle	local	LVF	yes	present	1	332
+273624085	4016181	4	main	z	58	circle	local	LVF	yes	present	1	365
+273624085	4017633	4	main	z	59	circle	global	RVF	yes	present	1	568
+273624085	4018849	4	main	z	60	circle	local	RVF	yes	present	1	318
+273624085	4020004	4	main	z	61	square	local	RVF	yes	present	1	223
+273624085	4021259	4	main	z	62	square	global	LVF	yes	present	1	345
+273624085	4022392	4	main	z	63	circle	local	RVF	yes	present	1	230
+273624085	4023718	4	main	z	64	absent	absent	absent	no	present	0	422
+273624085	4025110	4	main	z	65	square	local	LVF	yes	present	1	376
+273624085	4026442	4	main	z	66	square	global	RVF	yes	present	1	376
+273624085	4027840	4	main	z	67	square	local	RVF	yes	present	1	372
+273624085	4029213	4	main	z	68	circle	local	LVF	yes	present	1	303
+273624085	4030696	4	main	z	69	square	global	LVF	yes	present	1	488
+273624085	4031990	4	main	z	70	absent	absent	absent	no	present	0	316
+273624085	4035057	4	main	z	71	absent	absent	absent	no	absent	1	2000
+273624085	4038089	4	main	z	72	absent	absent	absent	no	absent	1	2000
+273624085	4039481	4	main	z	73	circle	global	RVF	yes	present	1	427
+273624085	4040833	4	main	z	74	circle	global	LVF	yes	present	1	397
+273624085	4042451	4	main	z	75	square	global	LVF	yes	present	1	507
+273624085	4043657	4	main	z	76	square	global	RVF	yes	present	1	339
+273624085	4044951	4	main	z	77	square	local	RVF	yes	present	1	382
+273624085	4046162	4	main	z	78	circle	local	RVF	yes	present	1	312
+273624085	4047464	4	main	z	79	circle	global	LVF	yes	present	1	376
+273624085	4048728	4	main	z	80	circle	local	RVF	yes	present	1	329

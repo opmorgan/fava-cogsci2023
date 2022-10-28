@@ -3,6 +3,8 @@ requireNamespace("here")
 requireNamespace("cli")
 
 source(here::here("lib", "util.R"))
+source(here::here("lib", "load_process", "code_target_level_field.R"))
+source(here::here("lib", "load_process", "data_tests.R"))
 
 ####***********************************************************************####
 #### PROCESS INDIVIDUAL-LEVEL DATA
@@ -14,9 +16,9 @@ load_and_process <- function(input_dir, proc_dir, data_type) {
     cli::cli_text("{.strong {j}/{n_input_files} ({data_type} data)...}")
     input_path <- input_files[j]
     data_raw <- load_raw(input_path, data_type)
-    data_tests(data_raw, data_type)
     data_recoded <- recode_raw(data_raw, data_type)
     data_cleaned <- clean_recoded(data_recoded, data_type)
+    data_tests(data_cleaned, data_type)
     save_cleaned(data_cleaned, proc_dir, data_type)
   }
   cli::cli_progress_step(msg = glue("Loading input file {j}/{n_input_files}..."),
@@ -147,9 +149,7 @@ recode_raw <- function(data_raw, data_type) {
       response = case_when(
         response_raw == 0 ~ "absent",
         response_raw %in% c(44, 53) ~ "present"
-      ),
-      response_log = case_when(response == "absent" ~ 0,
-                               response == "present" ~ 1)
+      )
     )
     
     
@@ -189,21 +189,7 @@ clean_recoded <- function(data_recoded, data_type) {
   if (data_type == "task") {
     ## Remove unused columns
     data_cleaned <- data_recoded %>%
-      select(
-        subject,
-        time_elapsed_ms,
-        blocknum,
-        trialcode,
-        trialnum,
-        target,
-        level,
-        field,
-        target_present,
-        response,
-        response_log,
-        correct,
-        rt
-      ) %>%
+
       ## Make subject a string, instead of  a number
       mutate(subject = as.character(subject)) %>%
       ## Remove non-trial rows (leaving only experiment rows)
@@ -233,6 +219,21 @@ clean_recoded <- function(data_recoded, data_type) {
           practice_z = "z",
           practice_slash = "slash"
         )
+      ) %>% 
+      select(
+        subject,
+        time_elapsed_ms,
+        blocknum,
+        block_type,
+        block_response,
+        trialnum,
+        target,
+        level,
+        field,
+        target_present,
+        response,
+        correct,
+        rt
       )
     
   } else if (data_type == "ehi") {
@@ -240,22 +241,9 @@ clean_recoded <- function(data_recoded, data_type) {
       mutate(ehi_total = sum(across(starts_with("ehi"))))
   }
   
+  
+  
   return(data_cleaned)
-}
-
-data_tests <- function(data_raw, data_type) {
-  cli::cli_alert_warning("No data quality tests have been written")
-  if (data_type == "task") {
-    return()
-  }
-  #### Tests for raw task data file
-  
-  
-  #### TODO: Test for demographics
-  
-  #### TODO: Tests for EHI
-  
-  #### TODO: Tests for end questions
 }
 
 save_cleaned <- function(data_cleaned, proc_dir, data_type) {
@@ -282,7 +270,7 @@ save_cleaned <- function(data_cleaned, proc_dir, data_type) {
 ####***********************************************************************####
 #### LOAD AND SUMMARIZE PROCESSED INDIVIDUAL DATA
 ## Load and summarize an individual's processed data (main loop)
-summarize_proc <- function(input_dir, output_dir, data_type) {
+load_and_summarize_proc <- function(input_dir, output_dir, data_type) {
   summary_proc <- tibble(subject = as.character(),
                          acc_slash = as.numeric(),
                          acc_z = as.numeric())
@@ -325,14 +313,16 @@ load_proc <- function(input_path, data_type) {
           subject = col_character(),
           time_elapsed_ms = col_double(),
           blocknum = col_double(),
-          block = col_character(),
+          block_type = col_character(),
+          block_response = col_character(),
           trialnum = col_double(),
+          target = col_character(),
+          level = col_character(),
+          field = col_character(),
           target_present = col_character(),
           response = col_character(),
-          response_log = col_double(),
           correct = col_double(),
           rt = col_double(),
-          block_type = col_character()
         )
       )
       
@@ -353,10 +343,15 @@ load_proc <- function(input_path, data_type) {
 
 ## Summarize an individual's processed data
 summarize_ind <- function(data_proc, data_type = "task") {
-  ## calculate percent correct for each block,
+  ## Calculate percent correct for each block,
   ## separating present and absent trials
+  data_proc <- data_proc %>% 
+      mutate(response_log = case_when(response == "absent" ~ 0,
+                               response == "present" ~ 1)
+      )
+  
   response_counts_block_pa <- data_proc %>%
-    group_by(block, block_type, target_present, subject) %>%
+    group_by(block_response, block_type, target_present, subject) %>%
     summarize(
       total_responses = n(),
       n_present_resp = sum(response_log),
@@ -364,13 +359,11 @@ summarize_ind <- function(data_proc, data_type = "task") {
       n_correct = sum(correct),
       percent_correct = 100 * (n_correct / total_responses)
     )
-  ## inspect accuracy by block, present/absent
-  #response_counts_block_pa
   
-  ## calculate percent correct for each block,
+  ## Calculate percent correct for each block,
   ## collapsing present and absent trials
   response_counts_by_block <- data_proc %>%
-    group_by(block, block_type, subject) %>%
+    group_by(block_response, block_type, subject) %>%
     summarize(
       total_responses = n(),
       n_present_resp = sum(response_log),
@@ -378,25 +371,27 @@ summarize_ind <- function(data_proc, data_type = "task") {
       n_correct = sum(correct),
       percent_correct = 100 * (n_correct / total_responses)
     )
-  ## inspect accuracy by block, present/absent
-  #response_counts_by_block
   
   proc_summary <- response_counts_by_block %>%
     ungroup() %>%
     filter(block_type == "main") %>%
-    mutate(block = recode(block, main_z = "z",
-                          main_slash = "slash")) %>%
-    select(subject, block, percent_correct) %>%
+    select(subject, block_response, percent_correct) %>%
     pivot_wider(
-      names_from = block,
+      names_from = block_response,
       names_prefix = "acc_",
       values_from = percent_correct
     )
   
   return(proc_summary)
   
-  ## todo. calculate median rt by condition, for target-present trials
-  ## to do this, need to code global and local target present!!
-  ## this should be calculated for the processed, individual-level data.
+  ## TODO. calculate 
+  ## (1) median rt by condition (level x field), for target-present trials
+  ##     to do this, need to code global and local target present!!
+  ##     this should be calculated for the processed, 
+  ##     individual-level data.
+  ## (1) accuracy by condition (level x field), for target-present trials
+  ## (1) accuracy by condition (level x field), for target-absent trials
+  ## (1) accuracy by condition (level x field), for all trials
+  ## (1) which block came first (add a column "first_block" (z, slash))
   #data_proc
 }

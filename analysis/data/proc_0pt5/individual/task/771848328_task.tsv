@@ -1,193 +1,193 @@
-subject	time_elapsed_ms	blocknum	block	trialnum	target_present	response	response_log	correct	rt	block_type
-771848328	30318	1	practice_z	1	yes	present	1	1	450	practice
-771848328	32702	1	practice_z	2	yes	present	1	1	352	practice
-771848328	35201	1	practice_z	3	yes	present	1	1	518	practice
-771848328	37628	1	practice_z	4	no	present	1	0	414	practice
-771848328	39951	1	practice_z	5	yes	present	1	1	339	practice
-771848328	43929	1	practice_z	6	no	absent	0	1	2000	practice
-771848328	48009	1	practice_z	7	no	absent	0	1	2000	practice
-771848328	50055	1	practice_z	8	yes	present	1	1	380	practice
-771848328	53262	1	practice_z	9	yes	present	1	1	556	practice
-771848328	56017	1	practice_z	10	yes	present	1	1	444	practice
-771848328	58507	1	practice_z	11	yes	present	1	1	385	practice
-771848328	60894	1	practice_z	12	yes	present	1	1	326	practice
-771848328	64919	1	practice_z	13	no	absent	0	1	2000	practice
-771848328	67344	1	practice_z	14	yes	present	1	1	428	practice
-771848328	69983	1	practice_z	15	yes	present	1	1	536	practice
-771848328	72474	1	practice_z	16	yes	present	1	1	344	practice
-771848328	75534	2	main_z	1	yes	present	1	1	359	main
-771848328	77210	2	main_z	2	yes	present	1	1	351	main
-771848328	78659	2	main_z	3	yes	present	1	1	383	main
-771848328	80022	2	main_z	4	yes	present	1	1	376	main
-771848328	81351	2	main_z	5	yes	present	1	1	313	main
-771848328	82642	2	main_z	6	no	present	1	0	322	main
-771848328	84085	2	main_z	7	yes	present	1	1	348	main
-771848328	85431	2	main_z	8	yes	present	1	1	394	main
-771848328	88353	2	main_z	9	no	absent	0	1	2000	main
-771848328	89893	2	main_z	10	yes	present	1	1	593	main
-771848328	91404	2	main_z	11	yes	present	1	1	487	main
-771848328	92764	2	main_z	12	yes	present	1	1	414	main
-771848328	94115	2	main_z	13	yes	present	1	1	367	main
-771848328	97215	2	main_z	14	no	absent	0	1	2000	main
-771848328	100164	2	main_z	15	no	absent	0	1	2000	main
-771848328	101672	2	main_z	16	yes	present	1	1	527	main
-771848328	103142	2	main_z	17	yes	present	1	1	347	main
-771848328	106144	2	main_z	18	no	absent	0	1	2000	main
-771848328	107551	2	main_z	19	yes	present	1	1	392	main
-771848328	108939	2	main_z	20	yes	present	1	1	396	main
-771848328	110328	2	main_z	21	yes	present	1	1	403	main
-771848328	111716	2	main_z	22	yes	present	1	1	408	main
-771848328	113064	2	main_z	23	yes	present	1	1	392	main
-771848328	114484	2	main_z	24	yes	present	1	1	412	main
-771848328	115821	2	main_z	25	yes	present	1	1	349	main
-771848328	117289	2	main_z	26	yes	present	1	1	451	main
-771848328	118624	2	main_z	27	yes	present	1	1	387	main
-771848328	121686	2	main_z	28	no	absent	0	1	2000	main
-771848328	124601	2	main_z	29	no	absent	0	1	2000	main
-771848328	125916	2	main_z	30	yes	present	1	1	365	main
-771848328	127178	2	main_z	31	yes	present	1	1	295	main
-771848328	128365	2	main_z	32	yes	present	1	1	284	main
-771848328	129624	2	main_z	33	yes	present	1	1	342	main
-771848328	132631	2	main_z	34	no	absent	0	1	2000	main
-771848328	133992	2	main_z	35	yes	present	1	1	412	main
-771848328	135372	2	main_z	36	yes	present	1	1	426	main
-771848328	136726	2	main_z	37	yes	present	1	1	380	main
-771848328	138279	2	main_z	38	yes	present	1	1	517	main
-771848328	139697	2	main_z	39	yes	present	1	1	321	main
-771848328	141089	2	main_z	40	yes	present	1	1	380	main
-771848328	142381	2	main_z	41	yes	present	1	1	290	main
-771848328	143690	2	main_z	42	yes	present	1	1	331	main
-771848328	146740	2	main_z	43	no	absent	0	1	2000	main
-771848328	149706	2	main_z	44	no	absent	0	1	2000	main
-771848328	151061	2	main_z	45	yes	present	1	1	390	main
-771848328	154137	2	main_z	46	no	absent	0	1	2000	main
-771848328	155512	2	main_z	47	yes	present	1	1	343	main
-771848328	158502	2	main_z	48	no	absent	0	1	2000	main
-771848328	160048	2	main_z	49	yes	present	1	1	465	main
-771848328	161358	2	main_z	50	yes	present	1	1	327	main
-771848328	162689	2	main_z	51	yes	present	1	1	307	main
-771848328	164199	2	main_z	52	yes	present	1	1	467	main
-771848328	167214	2	main_z	53	no	absent	0	1	2000	main
-771848328	168670	2	main_z	54	yes	present	1	1	393	main
-771848328	170348	2	main_z	55	yes	present	1	1	420	main
-771848328	171829	2	main_z	56	yes	present	1	1	382	main
-771848328	173214	2	main_z	57	yes	present	1	1	353	main
-771848328	174483	2	main_z	58	yes	present	1	1	240	main
-771848328	175926	2	main_z	59	yes	present	1	1	417	main
-771848328	177385	2	main_z	60	yes	present	1	1	327	main
-771848328	178738	2	main_z	61	yes	present	1	1	377	main
-771848328	181723	2	main_z	62	no	absent	0	1	2000	main
-771848328	183121	2	main_z	63	yes	present	1	1	381	main
-771848328	184426	2	main_z	64	yes	present	1	1	306	main
-771848328	187404	2	main_z	65	no	absent	0	1	2000	main
-771848328	188733	2	main_z	66	yes	present	1	1	348	main
-771848328	190083	2	main_z	67	yes	present	1	1	376	main
-771848328	191347	2	main_z	68	yes	present	1	1	314	main
-771848328	192605	2	main_z	69	yes	present	1	1	273	main
-771848328	193935	2	main_z	70	yes	present	1	1	336	main
-771848328	195233	2	main_z	71	yes	present	1	1	301	main
-771848328	196496	2	main_z	72	yes	present	1	1	280	main
-771848328	197865	2	main_z	73	yes	present	1	1	400	main
-771848328	199179	2	main_z	74	yes	present	1	1	331	main
-771848328	200493	2	main_z	75	yes	present	1	1	330	main
-771848328	201877	2	main_z	76	yes	present	1	1	377	main
-771848328	203166	2	main_z	77	yes	present	1	1	305	main
-771848328	206127	2	main_z	78	no	absent	0	1	2000	main
-771848328	207577	2	main_z	79	yes	present	1	1	351	main
-771848328	208936	2	main_z	80	yes	present	1	1	429	main
-771848328	216159	3	practice_slash	1	no	absent	0	1	2000	practice
-771848328	218720	3	practice_slash	2	yes	present	1	1	376	practice
-771848328	221199	3	practice_slash	3	yes	present	1	1	425	practice
-771848328	225271	3	practice_slash	4	no	absent	0	1	2000	practice
-771848328	227811	3	practice_slash	5	yes	present	1	1	309	practice
-771848328	231818	3	practice_slash	6	no	absent	0	1	2000	practice
-771848328	234333	3	practice_slash	7	yes	present	1	1	383	practice
-771848328	237095	3	practice_slash	8	yes	present	1	1	430	practice
-771848328	239447	3	practice_slash	9	yes	present	1	1	334	practice
-771848328	241832	3	practice_slash	10	yes	present	1	1	387	practice
-771848328	244246	3	practice_slash	11	yes	present	1	1	336	practice
-771848328	248226	3	practice_slash	12	no	absent	0	1	2000	practice
-771848328	250495	3	practice_slash	13	yes	present	1	1	288	practice
-771848328	252806	3	practice_slash	14	yes	present	1	1	367	practice
-771848328	255146	3	practice_slash	15	yes	present	1	1	342	practice
-771848328	257469	3	practice_slash	16	yes	present	1	1	298	practice
-771848328	260873	4	main_slash	1	yes	present	1	1	357	main
-771848328	262752	4	main_slash	2	yes	present	1	1	270	main
-771848328	264452	4	main_slash	3	yes	present	1	1	288	main
-771848328	265916	4	main_slash	4	yes	present	1	1	403	main
-771848328	267230	4	main_slash	5	yes	present	1	1	317	main
-771848328	268517	4	main_slash	6	yes	present	1	1	288	main
-771848328	269807	4	main_slash	7	yes	present	1	1	330	main
-771848328	271143	4	main_slash	8	yes	present	1	1	332	main
-771848328	272714	4	main_slash	9	yes	present	1	1	488	main
-771848328	274045	4	main_slash	10	no	present	1	0	302	main
-771848328	275604	4	main_slash	11	yes	present	1	1	363	main
-771848328	278518	4	main_slash	12	no	present	1	0	1960	main
-771848328	279828	4	main_slash	13	yes	present	1	1	323	main
-771848328	281283	4	main_slash	14	yes	present	1	1	412	main
-771848328	284271	4	main_slash	15	no	absent	0	1	2000	main
-771848328	285994	4	main_slash	16	yes	present	1	1	657	main
-771848328	287517	4	main_slash	17	yes	present	1	1	448	main
-771848328	288844	4	main_slash	18	yes	present	1	1	342	main
-771848328	290222	4	main_slash	19	yes	present	1	1	386	main
-771848328	293118	4	main_slash	20	no	absent	0	1	2000	main
-771848328	294777	4	main_slash	21	yes	present	1	1	644	main
-771848328	299134	4	main_slash	22	yes	present	1	1	388	main
-771848328	300459	4	main_slash	23	no	present	1	0	414	main
-771848328	303446	4	main_slash	24	no	absent	0	1	2000	main
-771848328	304940	4	main_slash	25	yes	present	1	1	397	main
-771848328	306472	4	main_slash	26	yes	present	1	1	497	main
-771848328	307793	4	main_slash	27	yes	present	1	1	383	main
-771848328	309243	4	main_slash	28	yes	present	1	1	436	main
-771848328	312274	4	main_slash	29	yes	absent	0	0	2000	main
-771848328	313708	4	main_slash	30	yes	present	1	1	519	main
-771848328	315023	4	main_slash	31	yes	present	1	1	383	main
-771848328	316581	4	main_slash	32	yes	present	1	1	609	main
-771848328	318161	4	main_slash	33	yes	present	1	1	457	main
-771848328	319577	4	main_slash	34	yes	present	1	1	423	main
-771848328	321236	4	main_slash	35	yes	present	1	1	534	main
-771848328	322509	4	main_slash	36	yes	present	1	1	258	main
-771848328	325601	4	main_slash	37	no	absent	0	1	2000	main
-771848328	328500	4	main_slash	38	no	absent	0	1	2000	main
-771848328	329933	4	main_slash	39	yes	present	1	1	353	main
-771848328	331508	4	main_slash	40	yes	present	1	1	477	main
-771848328	332804	4	main_slash	41	yes	present	1	1	358	main
-771848328	334052	4	main_slash	42	yes	present	1	1	306	main
-771848328	335260	4	main_slash	43	yes	present	1	1	298	main
-771848328	336542	4	main_slash	44	yes	present	1	1	372	main
-771848328	337814	4	main_slash	45	yes	present	1	1	403	main
-771848328	339088	4	main_slash	46	yes	present	1	1	362	main
-771848328	340434	4	main_slash	47	yes	present	1	1	406	main
-771848328	341679	4	main_slash	48	yes	present	1	1	337	main
-771848328	342853	4	main_slash	49	yes	present	1	1	263	main
-771848328	344077	4	main_slash	50	no	present	1	0	287	main
-771848328	345348	4	main_slash	51	yes	present	1	1	274	main
-771848328	346758	4	main_slash	52	yes	present	1	1	468	main
-771848328	348197	4	main_slash	53	yes	present	1	1	525	main
-771848328	349599	4	main_slash	54	no	present	1	0	427	main
-771848328	352588	4	main_slash	55	no	absent	0	1	2000	main
-771848328	355636	4	main_slash	56	no	absent	0	1	2000	main
-771848328	357074	4	main_slash	57	yes	present	1	1	474	main
-771848328	358422	4	main_slash	58	yes	present	1	1	406	main
-771848328	359703	4	main_slash	59	yes	present	1	1	387	main
-771848328	361102	4	main_slash	60	yes	present	1	1	520	main
-771848328	362556	4	main_slash	61	yes	present	1	1	390	main
-771848328	365581	4	main_slash	62	no	absent	0	1	2000	main
-771848328	367928	4	main_slash	63	yes	present	1	1	381	main
-771848328	369228	4	main_slash	64	yes	present	1	1	417	main
-771848328	370653	4	main_slash	65	yes	present	1	1	408	main
-771848328	372911	4	main_slash	66	yes	present	1	1	352	main
-771848328	374225	4	main_slash	67	yes	present	1	1	400	main
-771848328	375528	4	main_slash	68	yes	present	1	1	420	main
-771848328	377075	4	main_slash	69	yes	present	1	1	450	main
-771848328	380240	4	main_slash	70	no	absent	0	1	2000	main
-771848328	383523	4	main_slash	71	no	absent	0	1	2000	main
-771848328	386524	4	main_slash	72	no	absent	0	1	2000	main
-771848328	387902	4	main_slash	73	yes	present	1	1	365	main
-771848328	389451	4	main_slash	74	yes	present	1	1	548	main
-771848328	390877	4	main_slash	75	yes	present	1	1	443	main
-771848328	392182	4	main_slash	76	yes	present	1	1	374	main
-771848328	393811	4	main_slash	77	yes	present	1	1	477	main
-771848328	395194	4	main_slash	78	yes	present	1	1	495	main
-771848328	396484	4	main_slash	79	yes	present	1	1	352	main
-771848328	397746	4	main_slash	80	yes	present	1	1	282	main
+subject	time_elapsed_ms	blocknum	block_type	block_response	trialnum	target	level	field	target_present	response	correct	rt
+771848328	30318	1	practice	z	1	circle	global	RVF	yes	present	1	450
+771848328	32702	1	practice	z	2	circle	global	LVF	yes	present	1	352
+771848328	35201	1	practice	z	3	square	global	LVF	yes	present	1	518
+771848328	37628	1	practice	z	4	absent	absent	absent	no	present	0	414
+771848328	39951	1	practice	z	5	circle	global	RVF	yes	present	1	339
+771848328	43929	1	practice	z	6	absent	absent	absent	no	absent	1	2000
+771848328	48009	1	practice	z	7	absent	absent	absent	no	absent	1	2000
+771848328	50055	1	practice	z	8	circle	local	RVF	yes	present	1	380
+771848328	53262	1	practice	z	9	square	global	LVF	yes	present	1	556
+771848328	56017	1	practice	z	10	circle	local	RVF	yes	present	1	444
+771848328	58507	1	practice	z	11	square	global	RVF	yes	present	1	385
+771848328	60894	1	practice	z	12	square	local	LVF	yes	present	1	326
+771848328	64919	1	practice	z	13	absent	absent	absent	no	absent	1	2000
+771848328	67344	1	practice	z	14	circle	global	LVF	yes	present	1	428
+771848328	69983	1	practice	z	15	square	local	LVF	yes	present	1	536
+771848328	72474	1	practice	z	16	circle	local	RVF	yes	present	1	344
+771848328	75534	2	main	z	1	square	local	RVF	yes	present	1	359
+771848328	77210	2	main	z	2	circle	local	RVF	yes	present	1	351
+771848328	78659	2	main	z	3	square	local	LVF	yes	present	1	383
+771848328	80022	2	main	z	4	square	global	RVF	yes	present	1	376
+771848328	81351	2	main	z	5	square	global	LVF	yes	present	1	313
+771848328	82642	2	main	z	6	absent	absent	absent	no	present	0	322
+771848328	84085	2	main	z	7	circle	local	RVF	yes	present	1	348
+771848328	85431	2	main	z	8	circle	local	LVF	yes	present	1	394
+771848328	88353	2	main	z	9	absent	absent	absent	no	absent	1	2000
+771848328	89893	2	main	z	10	circle	global	LVF	yes	present	1	593
+771848328	91404	2	main	z	11	square	global	RVF	yes	present	1	487
+771848328	92764	2	main	z	12	square	global	LVF	yes	present	1	414
+771848328	94115	2	main	z	13	circle	local	LVF	yes	present	1	367
+771848328	97215	2	main	z	14	absent	absent	absent	no	absent	1	2000
+771848328	100164	2	main	z	15	absent	absent	absent	no	absent	1	2000
+771848328	101672	2	main	z	16	circle	global	LVF	yes	present	1	527
+771848328	103142	2	main	z	17	circle	local	RVF	yes	present	1	347
+771848328	106144	2	main	z	18	absent	absent	absent	no	absent	1	2000
+771848328	107551	2	main	z	19	circle	global	LVF	yes	present	1	392
+771848328	108939	2	main	z	20	circle	global	RVF	yes	present	1	396
+771848328	110328	2	main	z	21	circle	global	LVF	yes	present	1	403
+771848328	111716	2	main	z	22	square	local	LVF	yes	present	1	408
+771848328	113064	2	main	z	23	circle	local	LVF	yes	present	1	392
+771848328	114484	2	main	z	24	square	global	RVF	yes	present	1	412
+771848328	115821	2	main	z	25	square	global	RVF	yes	present	1	349
+771848328	117289	2	main	z	26	square	local	LVF	yes	present	1	451
+771848328	118624	2	main	z	27	circle	local	LVF	yes	present	1	387
+771848328	121686	2	main	z	28	absent	absent	absent	no	absent	1	2000
+771848328	124601	2	main	z	29	absent	absent	absent	no	absent	1	2000
+771848328	125916	2	main	z	30	square	local	RVF	yes	present	1	365
+771848328	127178	2	main	z	31	square	local	RVF	yes	present	1	295
+771848328	128365	2	main	z	32	square	global	LVF	yes	present	1	284
+771848328	129624	2	main	z	33	square	global	LVF	yes	present	1	342
+771848328	132631	2	main	z	34	absent	absent	absent	no	absent	1	2000
+771848328	133992	2	main	z	35	circle	global	RVF	yes	present	1	412
+771848328	135372	2	main	z	36	circle	global	RVF	yes	present	1	426
+771848328	136726	2	main	z	37	square	local	LVF	yes	present	1	380
+771848328	138279	2	main	z	38	circle	global	RVF	yes	present	1	517
+771848328	139697	2	main	z	39	circle	local	RVF	yes	present	1	321
+771848328	141089	2	main	z	40	square	local	RVF	yes	present	1	380
+771848328	142381	2	main	z	41	square	local	RVF	yes	present	1	290
+771848328	143690	2	main	z	42	circle	local	LVF	yes	present	1	331
+771848328	146740	2	main	z	43	absent	absent	absent	no	absent	1	2000
+771848328	149706	2	main	z	44	absent	absent	absent	no	absent	1	2000
+771848328	151061	2	main	z	45	circle	local	RVF	yes	present	1	390
+771848328	154137	2	main	z	46	absent	absent	absent	no	absent	1	2000
+771848328	155512	2	main	z	47	square	local	RVF	yes	present	1	343
+771848328	158502	2	main	z	48	absent	absent	absent	no	absent	1	2000
+771848328	160048	2	main	z	49	square	global	RVF	yes	present	1	465
+771848328	161358	2	main	z	50	square	global	LVF	yes	present	1	327
+771848328	162689	2	main	z	51	circle	local	RVF	yes	present	1	307
+771848328	164199	2	main	z	52	square	global	RVF	yes	present	1	467
+771848328	167214	2	main	z	53	absent	absent	absent	no	absent	1	2000
+771848328	168670	2	main	z	54	square	global	LVF	yes	present	1	393
+771848328	170348	2	main	z	55	square	global	LVF	yes	present	1	420
+771848328	171829	2	main	z	56	square	local	RVF	yes	present	1	382
+771848328	173214	2	main	z	57	square	global	RVF	yes	present	1	353
+771848328	174483	2	main	z	58	circle	local	RVF	yes	present	1	240
+771848328	175926	2	main	z	59	circle	global	RVF	yes	present	1	417
+771848328	177385	2	main	z	60	circle	local	LVF	yes	present	1	327
+771848328	178738	2	main	z	61	square	local	LVF	yes	present	1	377
+771848328	181723	2	main	z	62	absent	absent	absent	no	absent	1	2000
+771848328	183121	2	main	z	63	circle	global	RVF	yes	present	1	381
+771848328	184426	2	main	z	64	circle	local	RVF	yes	present	1	306
+771848328	187404	2	main	z	65	absent	absent	absent	no	absent	1	2000
+771848328	188733	2	main	z	66	circle	local	LVF	yes	present	1	348
+771848328	190083	2	main	z	67	circle	global	RVF	yes	present	1	376
+771848328	191347	2	main	z	68	square	local	LVF	yes	present	1	314
+771848328	192605	2	main	z	69	square	local	LVF	yes	present	1	273
+771848328	193935	2	main	z	70	circle	local	LVF	yes	present	1	336
+771848328	195233	2	main	z	71	square	global	LVF	yes	present	1	301
+771848328	196496	2	main	z	72	square	local	LVF	yes	present	1	280
+771848328	197865	2	main	z	73	circle	global	RVF	yes	present	1	400
+771848328	199179	2	main	z	74	square	global	RVF	yes	present	1	331
+771848328	200493	2	main	z	75	circle	global	LVF	yes	present	1	330
+771848328	201877	2	main	z	76	square	local	RVF	yes	present	1	377
+771848328	203166	2	main	z	77	circle	global	LVF	yes	present	1	305
+771848328	206127	2	main	z	78	absent	absent	absent	no	absent	1	2000
+771848328	207577	2	main	z	79	circle	global	LVF	yes	present	1	351
+771848328	208936	2	main	z	80	circle	global	LVF	yes	present	1	429
+771848328	216159	3	practice	slash	1	absent	absent	absent	no	absent	1	2000
+771848328	218720	3	practice	slash	2	square	local	LVF	yes	present	1	376
+771848328	221199	3	practice	slash	3	circle	global	RVF	yes	present	1	425
+771848328	225271	3	practice	slash	4	absent	absent	absent	no	absent	1	2000
+771848328	227811	3	practice	slash	5	square	local	LVF	yes	present	1	309
+771848328	231818	3	practice	slash	6	absent	absent	absent	no	absent	1	2000
+771848328	234333	3	practice	slash	7	circle	global	LVF	yes	present	1	383
+771848328	237095	3	practice	slash	8	square	global	LVF	yes	present	1	430
+771848328	239447	3	practice	slash	9	circle	local	RVF	yes	present	1	334
+771848328	241832	3	practice	slash	10	circle	local	RVF	yes	present	1	387
+771848328	244246	3	practice	slash	11	square	global	LVF	yes	present	1	336
+771848328	248226	3	practice	slash	12	absent	absent	absent	no	absent	1	2000
+771848328	250495	3	practice	slash	13	circle	local	RVF	yes	present	1	288
+771848328	252806	3	practice	slash	14	square	global	RVF	yes	present	1	367
+771848328	255146	3	practice	slash	15	circle	global	LVF	yes	present	1	342
+771848328	257469	3	practice	slash	16	circle	global	RVF	yes	present	1	298
+771848328	260873	4	main	slash	1	circle	global	LVF	yes	present	1	357
+771848328	262752	4	main	slash	2	square	local	RVF	yes	present	1	270
+771848328	264452	4	main	slash	3	circle	local	RVF	yes	present	1	288
+771848328	265916	4	main	slash	4	circle	global	LVF	yes	present	1	403
+771848328	267230	4	main	slash	5	square	global	LVF	yes	present	1	317
+771848328	268517	4	main	slash	6	circle	local	RVF	yes	present	1	288
+771848328	269807	4	main	slash	7	square	global	RVF	yes	present	1	330
+771848328	271143	4	main	slash	8	circle	global	LVF	yes	present	1	332
+771848328	272714	4	main	slash	9	square	local	LVF	yes	present	1	488
+771848328	274045	4	main	slash	10	absent	absent	absent	no	present	0	302
+771848328	275604	4	main	slash	11	circle	global	RVF	yes	present	1	363
+771848328	278518	4	main	slash	12	absent	absent	absent	no	present	0	1960
+771848328	279828	4	main	slash	13	square	local	RVF	yes	present	1	323
+771848328	281283	4	main	slash	14	square	local	RVF	yes	present	1	412
+771848328	284271	4	main	slash	15	absent	absent	absent	no	absent	1	2000
+771848328	285994	4	main	slash	16	circle	global	RVF	yes	present	1	657
+771848328	287517	4	main	slash	17	square	local	LVF	yes	present	1	448
+771848328	288844	4	main	slash	18	circle	global	RVF	yes	present	1	342
+771848328	290222	4	main	slash	19	circle	local	LVF	yes	present	1	386
+771848328	293118	4	main	slash	20	absent	absent	absent	no	absent	1	2000
+771848328	294777	4	main	slash	21	circle	global	RVF	yes	present	1	644
+771848328	299134	4	main	slash	22	circle	global	LVF	yes	present	1	388
+771848328	300459	4	main	slash	23	absent	absent	absent	no	present	0	414
+771848328	303446	4	main	slash	24	absent	absent	absent	no	absent	1	2000
+771848328	304940	4	main	slash	25	circle	local	RVF	yes	present	1	397
+771848328	306472	4	main	slash	26	circle	local	LVF	yes	present	1	497
+771848328	307793	4	main	slash	27	square	global	RVF	yes	present	1	383
+771848328	309243	4	main	slash	28	circle	local	RVF	yes	present	1	436
+771848328	312274	4	main	slash	29	square	global	LVF	yes	absent	0	2000
+771848328	313708	4	main	slash	30	square	local	LVF	yes	present	1	519
+771848328	315023	4	main	slash	31	square	global	RVF	yes	present	1	383
+771848328	316581	4	main	slash	32	square	local	RVF	yes	present	1	609
+771848328	318161	4	main	slash	33	square	local	LVF	yes	present	1	457
+771848328	319577	4	main	slash	34	square	global	LVF	yes	present	1	423
+771848328	321236	4	main	slash	35	circle	local	LVF	yes	present	1	534
+771848328	322509	4	main	slash	36	square	global	RVF	yes	present	1	258
+771848328	325601	4	main	slash	37	absent	absent	absent	no	absent	1	2000
+771848328	328500	4	main	slash	38	absent	absent	absent	no	absent	1	2000
+771848328	329933	4	main	slash	39	square	global	LVF	yes	present	1	353
+771848328	331508	4	main	slash	40	circle	local	LVF	yes	present	1	477
+771848328	332804	4	main	slash	41	circle	global	LVF	yes	present	1	358
+771848328	334052	4	main	slash	42	square	global	LVF	yes	present	1	306
+771848328	335260	4	main	slash	43	square	global	RVF	yes	present	1	298
+771848328	336542	4	main	slash	44	square	local	LVF	yes	present	1	372
+771848328	337814	4	main	slash	45	circle	local	RVF	yes	present	1	403
+771848328	339088	4	main	slash	46	square	local	RVF	yes	present	1	362
+771848328	340434	4	main	slash	47	square	global	LVF	yes	present	1	406
+771848328	341679	4	main	slash	48	circle	local	RVF	yes	present	1	337
+771848328	342853	4	main	slash	49	circle	global	RVF	yes	present	1	263
+771848328	344077	4	main	slash	50	absent	absent	absent	no	present	0	287
+771848328	345348	4	main	slash	51	square	global	RVF	yes	present	1	274
+771848328	346758	4	main	slash	52	circle	local	LVF	yes	present	1	468
+771848328	348197	4	main	slash	53	square	local	LVF	yes	present	1	525
+771848328	349599	4	main	slash	54	absent	absent	absent	no	present	0	427
+771848328	352588	4	main	slash	55	absent	absent	absent	no	absent	1	2000
+771848328	355636	4	main	slash	56	absent	absent	absent	no	absent	1	2000
+771848328	357074	4	main	slash	57	circle	local	LVF	yes	present	1	474
+771848328	358422	4	main	slash	58	square	global	RVF	yes	present	1	406
+771848328	359703	4	main	slash	59	square	local	RVF	yes	present	1	387
+771848328	361102	4	main	slash	60	square	global	LVF	yes	present	1	520
+771848328	362556	4	main	slash	61	circle	global	RVF	yes	present	1	390
+771848328	365581	4	main	slash	62	absent	absent	absent	no	absent	1	2000
+771848328	367928	4	main	slash	63	circle	global	LVF	yes	present	1	381
+771848328	369228	4	main	slash	64	square	local	LVF	yes	present	1	417
+771848328	370653	4	main	slash	65	circle	local	LVF	yes	present	1	408
+771848328	372911	4	main	slash	66	circle	local	RVF	yes	present	1	352
+771848328	374225	4	main	slash	67	square	global	RVF	yes	present	1	400
+771848328	375528	4	main	slash	68	circle	global	RVF	yes	present	1	420
+771848328	377075	4	main	slash	69	square	local	RVF	yes	present	1	450
+771848328	380240	4	main	slash	70	absent	absent	absent	no	absent	1	2000
+771848328	383523	4	main	slash	71	absent	absent	absent	no	absent	1	2000
+771848328	386524	4	main	slash	72	absent	absent	absent	no	absent	1	2000
+771848328	387902	4	main	slash	73	circle	local	RVF	yes	present	1	365
+771848328	389451	4	main	slash	74	circle	global	LVF	yes	present	1	548
+771848328	390877	4	main	slash	75	circle	local	LVF	yes	present	1	443
+771848328	392182	4	main	slash	76	square	local	RVF	yes	present	1	374
+771848328	393811	4	main	slash	77	square	global	LVF	yes	present	1	477
+771848328	395194	4	main	slash	78	circle	global	LVF	yes	present	1	495
+771848328	396484	4	main	slash	79	circle	global	RVF	yes	present	1	352
+771848328	397746	4	main	slash	80	square	local	LVF	yes	present	1	282
