@@ -1,10 +1,13 @@
 data_tests <- function(data_cleaned, data_type) {
-  
-  cli::cli_progress_step(msg = glue("Testing that data file includes the expected number of each trial type..."),
-                         msg_done = "Tested that data file includes the expected number of each trial type.")
-  
   if (data_type == "task") {
-    subject_id <- data_cleaned$subject %>% first() %>% as.character()
+    cli::cli_progress_step(
+      msg = glue(
+        "Testing that data file includes the expected number of each trial type..."
+      ),
+      msg_done = "Tested that data file includes the expected number of each trial type."
+    )
+    subject_id <-
+      data_cleaned$subject %>% first() %>% as.character()
     ## Test that:
     ## (1) There are 160 trials  where block_type = "main"
     main_trials <- data_cleaned %>% filter(block_type == "main")
@@ -26,14 +29,12 @@ data_tests <- function(data_cleaned, data_type) {
       n_main_block_trials <- main_block_trials %>% dim() %>% .[[1]]
       expected_n <- 80
       if (n_main_block_trials != expected_n) {
-        cli::cli_abort(
-          c(
-            "{.var n_main_block_trials} is equal to {n_main_block_trials}",
-            "x" = str_c(
-              "The number of main block trials ({block_response_var}) is not equal to {expected_n} (Subject: {subject_id})"
-            )
+        cli::cli_abort(c(
+          "{.var n_main_block_trials} is equal to {n_main_block_trials}",
+          "x" = str_c(
+            "The number of main block trials ({block_response_var}) is not equal to {expected_n} (Subject: {subject_id})"
           )
-        )
+        ))
       }
     }
     
@@ -115,9 +116,13 @@ data_tests <- function(data_cleaned, data_type) {
       }
     }
     
-  cli::cli_progress_step(msg = glue("Testing that correct/incorrect responses are coded as expected..."),
-                         msg_done = "Tested that correct/incorrect responses are coded as expected.")
-  
+    cli::cli_progress_step(
+      msg = glue(
+        "Testing that correct/incorrect responses are coded as expected..."
+      ),
+      msg_done = "Tested that correct/incorrect responses are coded as expected."
+    )
+    
     ## (1) When "target" is anything other than absent, the column "target_present" has a "yes"; if not, a "no"
     test_vector <- data_cleaned %>%
       mutate(
@@ -231,7 +236,8 @@ data_tests <- function(data_cleaned, data_type) {
     return()
   } else if (data_type == "end") {
     return()
-  } else return()
+  } else
+    return()
   
   #### TODO: Test for demographics
   

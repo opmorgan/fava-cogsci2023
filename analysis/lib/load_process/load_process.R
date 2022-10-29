@@ -32,13 +32,18 @@ get_input_paths <- function(input_dir, data_type, pattern = "*.iqdat") {
       data_subdir <- here(input_dir, "task")
     } else if (data_type == "ehi") {
       data_subdir <- here(input_dir, "survey", "ehi_short")
+    } else if (data_type == "demographics") {
+      data_subdir <- here(input_dir, "survey", "demographics")
+    } else if (data_type == "end") {
+      data_subdir <- here(input_dir, "survey", "end_questions")
     }
     cli::cli_alert_info(glue("Getting {data_type} data filepaths from input directory:"))
     cli::cli_bullets(c(" " = glue("{data_subdir}")))
     cli::cli_progress_step(
       msg = glue("Getting {data_type} data filepaths from input directory..."),
       msg_done = "Got {n_input_files} {data_type} data filepaths from input directory."
-    )
+    ) 
+
     input_files <- list.files(path = data_subdir,
                               pattern = pattern,
                               full.names = TRUE)
@@ -53,7 +58,7 @@ get_input_paths <- function(input_dir, data_type, pattern = "*.iqdat") {
       n_input_files <- length(input_files)
       return(input_files)
     }
-  }
+  } 
 
 ## Then, loop through these files.
 ## For each file: load, recode, clean, and save.
@@ -115,6 +120,50 @@ load_raw <- function(input_path, data_type) {
           ehi_i4_spoon_latency = col_double(),
         ),
       )
+    } else if (data_type == "demographics") {
+      data_raw <- readr::read_tsv(
+        input_path,
+        col_types = cols(
+          date = col_date(format = ""),
+          time = col_time(format = ""),
+          group = col_double(),
+          subject = col_double(),
+          session = col_double(),
+          build = col_character(),
+          age_response = col_double(),
+          age_latency = col_double(),
+          country_response = col_character(),
+          country_latency = col_double(),
+          sex_response = col_character(),
+          sex_latency = col_double(),
+          sex_other_response = col_character(),
+          sex_other_latency = col_double(),
+          education_response = col_character(),
+          education_latency = col_double(),
+          educationother_response = col_character(),
+          educationother_latency = col_double(),
+          raceoption1_response = col_character(),
+          raceoption1_latency = col_double(),
+          raceoption2_response = col_character(),
+          raceoption2_latency = col_double(),
+          raceoption3_response = col_character(),
+          raceoption3_latency = col_double(),
+          raceoption4_response = col_character(),
+          raceoption4_latency = col_double(),
+          raceoption5_response = col_character(),
+          raceoption5_latency = col_double(),
+          raceoption6_response = col_character(),
+          raceoption6_latency = col_double(),
+          raceother_response = col_character(),
+          raceother_latency = col_double(),
+          race_other_response = col_character(),
+          race_other_latency = col_double(),
+          ethnicity_response = col_character(),
+          ethnicity_latency = col_double()
+        )
+      )
+    } else if (data_type == "end") {
+      data_raw <- readr::read_tsv(input_file)
     }
     
     subject_id <-
@@ -163,9 +212,7 @@ recode_raw <- function(data_raw, data_type) {
       select(-ends_with("latency"),
              -date,
              -time,
-             -group,
-             -session,
-             -build) %>%
+             -group,-session,-build) %>%
       rename_with(trim_end, ends_with("response")) %>%
       mutate(across(
         starts_with("ehi"),
@@ -178,6 +225,35 @@ recode_raw <- function(data_raw, data_type) {
           `Always left` = -25,
         )
       ))
+  } else if (data_type == "demographics") {
+    data_proc <- data_raw %>%
+      ## remove all latency measures, and trim columns
+      select(-ends_with("latency"),-date,-time,-group,-session,-build) %>%
+      ## remove "response" suffix
+      rename_with(trim_end, ends_with("response"))
+    
+    ## Put all race responses in a vector
+    race_answers <-
+      data_raw %>% select(starts_with("race")) %>% as.character()
+    ## If there is only one, code race as that race
+    ## If there is more than one, code as "multiple races"
+    answer_indices <- which(race_answers != "NA")
+    if (length(answer_indices) == 1) {
+      race_recoded <- race_answers[[answer_indices]]
+    } else if (length(answer_indices > 1)) {
+      race_recoded <- "Multiple"
+    }
+    
+    data_proc <- data_proc %>%
+      select(-starts_with("race")) %>%
+      mutate(race = race_recoded) %>%
+      select(subject, age, country, sex, education, race, ethnicity) %>% 
+      rename(hispanic_ethnicity = ethnicity)
+    
+    ##TODO: code education as number of years
+    
+  } else if (data_type == "end_questions") {
+    
   }
   
   return(data_proc)
@@ -190,7 +266,7 @@ clean_recoded <- function(data_recoded, data_type) {
   if (data_type == "task") {
     ## Remove unused columns
     data_cleaned <- data_recoded %>%
-
+      
       ## Make subject a string, instead of  a number
       mutate(subject = as.character(subject)) %>%
       ## Remove non-trial rows (leaving only experiment rows)
@@ -220,7 +296,7 @@ clean_recoded <- function(data_recoded, data_type) {
           practice_z = "z",
           practice_slash = "slash"
         )
-      ) %>% 
+      ) %>%
       select(
         subject,
         time_elapsed_ms,
@@ -240,9 +316,11 @@ clean_recoded <- function(data_recoded, data_type) {
   } else if (data_type == "ehi") {
     data_cleaned <- data_recoded %>%
       mutate(ehi_total = sum(across(starts_with("ehi"))))
+  } else if (data_type == "demographics") {
+    data_cleaned <- data_recoded
+  } else if (data_type == "end") {
+    data_cleaned <- data_recoded
   }
-  
-  
   
   return(data_cleaned)
 }
@@ -261,7 +339,16 @@ save_cleaned <- function(data_cleaned, proc_dir, data_type) {
     file_name <- str_c(subject_id, "_ehi.tsv")
     save_path <- here::here(proc_dir, "individual",
                             "survey", "ehi_short", file_name)
+  } else if (data_type == "demographics") {
+    file_name <- str_c(subject_id, "_demographics.tsv")
+    save_path <- here::here(proc_dir, "individual",
+                            "survey", "demographics", file_name)
+  } else if (data_type == "end") {
+    file_name <- str_c(subject_id, "_end.tsv")
+    save_path <- here::here(proc_dir, "individual",
+                            "survey", "end_questions", file_name)
   }
+  
   cli::cli_alert_info(glue("Saving processed {data_type} data to:"))
   cli::cli_bullets(c(" " = glue("{save_path}")))
   write_tsv(data_cleaned, save_path)
