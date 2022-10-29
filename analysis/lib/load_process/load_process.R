@@ -163,7 +163,7 @@ load_raw <- function(input_path, data_type) {
         )
       )
     } else if (data_type == "end") {
-      data_raw <- readr::read_tsv(input_file)
+      data_raw <- readr::read_tsv(input_path)
     }
     
     subject_id <-
@@ -252,8 +252,8 @@ recode_raw <- function(data_raw, data_type) {
     
     ##TODO: code education as number of years
     
-  } else if (data_type == "end_questions") {
-    
+  } else if (data_type == "end") {
+    data_proc <- data_raw
   }
   
   return(data_proc)
@@ -319,7 +319,13 @@ clean_recoded <- function(data_recoded, data_type) {
   } else if (data_type == "demographics") {
     data_cleaned <- data_recoded
   } else if (data_type == "end") {
-    data_cleaned <- data_recoded
+    data_cleaned <-
+      data_recoded %>% select(
+        subject,
+        task_experience_response,
+        task_experience_other_response,
+        open_ended_feedback_response
+      )
   }
   
   return(data_cleaned)
