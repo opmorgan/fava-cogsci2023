@@ -131,7 +131,7 @@ if (resummarize_ehi_data == TRUE) {
                             data_type = "ehi")
 }
 
-## TODO: fix logic for race variable -- always shows "multiple"
+## TODO: (URGENT) fix logic for race variable -- always shows "multiple"
 if (resummarize_demographics_data == TRUE) {
   ## Create summarized demographics data (saves to tsv as a side effect)
   demo_summary <-

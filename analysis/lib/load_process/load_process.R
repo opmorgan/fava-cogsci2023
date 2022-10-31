@@ -414,6 +414,7 @@ load_and_summarize_proc <-
         rt_global_RVF = as.numeric(),
         rt_local_LVF = as.numeric(),
         rt_local_RVF = as.numeric(),
+        rt_overall = as.numeric(),
         exclude_many_gos = as.logical(),
         exclude_low_acc = as.logical(),
         exclude_low_rt = as.logical(),
@@ -560,6 +561,8 @@ summarize_ind <- function(ind_proc, data_type = "task") {
   )
   
   if (data_type == "task") {
+    
+  #### Accuracy
   ## Calculate percent correct for each block,
   ## separating present and absent trials
   ind_proc <- ind_proc %>%
@@ -645,6 +648,8 @@ summarize_ind <- function(ind_proc, data_type = "task") {
   
   ind_summary <- left_join(ind_summary, acc_condition)
   
+  #### Reaction time
+  ## Calculate median RT by condition
   rt_condition <- ind_proc %>%
     filter(target_present == "yes") %>%
     group_by(level, field, subject) %>%
@@ -656,6 +661,14 @@ summarize_ind <- function(ind_proc, data_type = "task") {
     )
   
   ind_summary <- left_join(ind_summary, rt_condition)
+  
+  ## Calculate overall median RT
+  rt_overall <- ind_proc %>% 
+    filter(target_present == "yes") %>% 
+    group_by(subject) %>% 
+    summarize(rt_overall = median(rt))
+  
+  ind_summary <- left_join(ind_summary, rt_overall)
   
   #### Exclusions
   ## Responded "go" almost every time?
