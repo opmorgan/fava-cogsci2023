@@ -695,13 +695,12 @@ summarize_ind <- function(ind_proc, data_type = "task") {
     mutate(exclude_low_acc = low_acc)
   
   ## Median RT over 1500 or under 200?
-  rt_overall <- median(data_proc$rt)
   low_rt <- 0
   high_rt <- 0
-  if (rt_overall < 200) {
+  if (ind_summary$rt_overall < 200) {
     low_rt <- 1
   }
-  if (rt_overall > 1500) {
+  if (ind_summary$rt_overall > 1500) {
     high_rt <- 1
   }
   
