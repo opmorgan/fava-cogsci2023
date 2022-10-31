@@ -459,7 +459,7 @@ load_and_summarize_proc <-
       ind_summary <- summarize_ind(ind_proc, data_type = data_type)
       group_summary <- group_summary %>% add_row(ind_summary)
     }
-    file_name <- str_c("summary.tsv")
+    file_name <- str_c("summary_", data_type, ".tsv")
     save_path <- here::here(output_dir, file_name)
     cli::cli_alert_info(glue("Saving summary {data_type} data to:"))
     cli::cli_bullets(c(" " = glue("{save_path}")))

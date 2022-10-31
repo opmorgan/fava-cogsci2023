@@ -1,0 +1,12 @@
+subject	age	country	sex	education	race	hispanic_ethnicity
+149924463	19	AI	Male	Some college, no degree (~12-16 years)	Multiple	No
+273624085	19	US	Female	Some college, no degree (~12-16 years)	Multiple	No
+359876208	24	AI	Male	Master's degree (~18 years)	Multiple	No
+426897814	26	US	Female	Bachelor's degree (~16 years)	Multiple	No
+468082572	68	US	Male	Master's degree (~18 years)	Multiple	No
+509432989	28	US	Female	Master's degree (~18 years)	Multiple	No
+598136635	67	US	Female	Doctoral or professional degree (~21+ years of education)	Multiple	No
+732422175	19	US	Female	Some college, no degree (~12-16 years)	Multiple	No
+771848328	19	US	Female	Some college, no degree (~12-16 years)	Multiple	Yes
+816602427	29	US	Male	Master's degree (~18 years)	Multiple	No
+967837532	34	US	Male	Bachelor's degree (~16 years)	Multiple	No

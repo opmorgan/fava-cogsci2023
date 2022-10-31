@@ -120,110 +120,111 @@ summary_output_dir <- here(proc_dir, "summary")
 if (resummarize_task_data == TRUE) {
   ## Create summarized task data (saves to tsv as a side effect)
   task_summary <-
-    load_and_summarize_proc(ind_input_dir, summary_output_dir, data_type = "task")
+    load_and_summarize_proc(ind_input_dir, summary_output_dir,
+                            data_type = "task")
 }
-```
 
-```{r}
-## TODO: join survey data
-##          Create "load_and_summarize_proc arms for ehi, demographics, end.
-##          Then, join task and survey tables together, save.
 if (resummarize_ehi_data == TRUE) {
   ## Create summarized task data (saves to tsv as a side effect)
   ehi_summary <-
-    load_and_summarize_proc(ind_input_dir, summary_output_dir, data_type = "ehi")
+    load_and_summarize_proc(ind_input_dir, summary_output_dir,
+                            data_type = "ehi")
 }
 
+## TODO: fix logic for race variable -- always shows "multiple"
 if (resummarize_demographics_data == TRUE) {
   ## Create summarized demographics data (saves to tsv as a side effect)
   demo_summary <-
-    load_and_summarize_proc(ind_input_dir, summary_output_dir, data_type = "demographics")
+    load_and_summarize_proc(ind_input_dir, summary_output_dir,
+                            data_type = "demographics")
 }
 
 if (resummarize_end_data == TRUE) {
   ## Create summarized end question data (saves to tsv as a side effect)
   end_summary <-
-    load_and_summarize_proc(ind_input_dir, summary_output_dir, data_type = "end")
+    load_and_summarize_proc(ind_input_dir, summary_output_dir,
+                            data_type = "end")
 }
-
-task_summary
-ehi_summary
-demo_summary
-end_summary
 ```
 
-```{r debug_summary}
-group_summary <- tibble(
-  subject = as.character(),
-  ehi_i1_writing = as.numeric(),
-  ehi_i2_throwing = as.numeric(),
-  ehi_i3_toothbrush = as.numeric(),
-  ehi_i4_spoon = as.numeric(),
-  ehi_total = as.numeric()
-)
-
-
-group_summary <- tibble(
-  subject = as.character(),
-  age = as.numeric(),
-  country = as.character(),
-  sex = as.character(),
-  education = as.character(),
-  race = as.character(),
-  hispanic_ethnicity = as.character()
-)
-
-group_summary <- tibble(
-  subject = as.character(),
-  task_experience_response = as.character(),
-  task_experience_other_response = as.character(),
-  open_ended_feedback_response = as.character()
-)
-
-group_summary <- tibble(
-  subject = as.character(),
-  first_block = as.character(),
-  acc_slash = as.numeric(),
-  acc_z = as.numeric(),
-  acc_absent_slash = as.numeric(),
-  acc_present_slash = as.numeric(),
-  acc_absent_z = as.numeric(),
-  acc_present_z = as.numeric(),
-  acc_global_LVF = as.numeric(),
-  acc_global_RVF = as.numeric(),
-  acc_local_LVF = as.numeric(),
-  acc_local_RVF = as.numeric(),
-  rt_global_LVF = as.numeric(),
-  rt_global_RVF = as.numeric(),
-  rt_local_LVF = as.numeric(),
-  rt_local_RVF = as.numeric(),
-  exclude_many_gos = as.logical(),
-  exclude_low_acc = as.logical(),
-  exclude_low_rt = as.logical(),
-  exclude_high_rt = as.logical(),
-  exclude = as.logical()
-)
-
-data_type = "task"
-input_files <- get_input_paths(ind_input_dir, data_type = data_type,
-                               pattern = "*.tsv")
-
-input_path <- input_files[1]
-input_path
-data_proc <- load_proc(input_path, data_type = data_type)
-data_proc
-ind_summary <- summarize_ind(data_proc, data_type = data_type)
-ind_summary
-
-group_summary <- group_summary %>% add_row(ind_summary)
-group_summary
+```{r debug_summary, include = F}
+# group_summary <- tibble(
+#   subject = as.character(),
+#   ehi_i1_writing = as.numeric(),
+#   ehi_i2_throwing = as.numeric(),
+#   ehi_i3_toothbrush = as.numeric(),
+#   ehi_i4_spoon = as.numeric(),
+#   ehi_total = as.numeric()
+# )
+# 
+# 
+# group_summary <- tibble(
+#   subject = as.character(),
+#   age = as.numeric(),
+#   country = as.character(),
+#   sex = as.character(),
+#   education = as.character(),
+#   race = as.character(),
+#   hispanic_ethnicity = as.character()
+# )
+# 
+# group_summary <- tibble(
+#   subject = as.character(),
+#   task_experience_response = as.character(),
+#   task_experience_other_response = as.character(),
+#   open_ended_feedback_response = as.character()
+# )
+# 
+# group_summary <- tibble(
+#   subject = as.character(),
+#   first_block = as.character(),
+#   acc_slash = as.numeric(),
+#   acc_z = as.numeric(),
+#   acc_absent_slash = as.numeric(),
+#   acc_present_slash = as.numeric(),
+#   acc_absent_z = as.numeric(),
+#   acc_present_z = as.numeric(),
+#   acc_global_LVF = as.numeric(),
+#   acc_global_RVF = as.numeric(),
+#   acc_local_LVF = as.numeric(),
+#   acc_local_RVF = as.numeric(),
+#   rt_global_LVF = as.numeric(),
+#   rt_global_RVF = as.numeric(),
+#   rt_local_LVF = as.numeric(),
+#   rt_local_RVF = as.numeric(),
+#   exclude_many_gos = as.logical(),
+#   exclude_low_acc = as.logical(),
+#   exclude_low_rt = as.logical(),
+#   exclude_high_rt = as.logical(),
+#   exclude = as.logical()
+# )
+# 
+# data_type = "task"
+# input_files <- get_input_paths(ind_input_dir, data_type = data_type,
+#                                pattern = "*.tsv")
+# 
+# input_path <- input_files[1]
+# input_path
+# data_proc <- load_proc(input_path, data_type = data_type)
+# data_proc
+# ind_summary <- summarize_ind(data_proc, data_type = data_type)
+# ind_summary
+# 
+# group_summary <- group_summary %>% add_row(ind_summary)
+# group_summary
 ```
 
 Create combined summary table (with task and survey data)
 ```{r}
-## Load all individual summary files, combine them together.
-## Save as a big summary file, with a wide row for each subject.
+## Combine summaries into one big table, with a wide row for each subject.
+summary <- task_summary %>%
+  left_join(ehi_summary) %>% 
+  left_join(demo_summary) %>%
+  left_join(end_summary)
+
+write_tsv(summary, here::here(summary_output_dir, "summary.tsv"))
 ```
+
 
 
 ## Analyze data and report results, for each individual
