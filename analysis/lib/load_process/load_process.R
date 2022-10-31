@@ -386,7 +386,8 @@ load_and_summarize_proc <- function(input_dir, output_dir, data_type) {
                          exclude_many_gos = as.logical(),
                          exclude_low_acc = as.logical(),
                          exclude_low_rt = as.logical(),
-                         exclude_high_rt = as.logical()
+                         exclude_high_rt = as.logical(),
+                         exclude = as.logical()
                          )
   input_files <- get_input_paths(input_dir, data_type = data_type,
                                  pattern = "*.tsv")
@@ -400,12 +401,12 @@ load_and_summarize_proc <- function(input_dir, output_dir, data_type) {
     ind_summary <- summarize_ind(data_proc)
     summary_proc <- summary_proc %>% add_row(ind_summary)
   }
-  summary_proc
   file_name <- str_c("summary.tsv")
   save_path <- here::here(output_dir, file_name)
   cli::cli_alert_info(glue("Saving summary {data_type} data to:"))
   cli::cli_bullets(c(" " = glue("{save_path}")))
   write_tsv(summary_proc, save_path)
+  return(summary_proc)
 }
 
 ## Load an individual's processed data
@@ -597,6 +598,15 @@ summarize_ind <- function(data_proc, data_type = "task") {
     proc_summary <- proc_summary %>%
       mutate(exclude_low_rt = low_rt,
              exclude_high_rt = high_rt)
+    
+    proc_summary <- proc_summary %>%
+      mutate(exclude = case_when(
+        exclude_many_gos == 1 ~ 1,
+        exclude_low_acc == 1 ~ 1,
+        exclude_low_rt == 1 ~ 1,
+        exclude_high_rt == 1 ~ 1,
+        TRUE ~ 0,
+      ))
     
     return(proc_summary)
     
