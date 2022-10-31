@@ -35,13 +35,34 @@ source(here::here("lib", "load_process", "load_process.R"))
 
 ## Load and check quality of individual-level data
 ### Task data
+```{r config}
+reprocess_task_data <- TRUE
+reprocess_ehi_data <- TRUE
+reprocess_demographics_data <- TRUE
+reprocess_end_data <- TRUE
+
+resummarize_task_data <- TRUE
+resummarize_ehi_data <- TRUE
+resummarize_demographics_data <- TRUE
+resummarize_end_data <- TRUE
+
+reprocess_task_data <- FALSE
+reprocess_ehi_data <- FALSE
+reprocess_demographics_data <- FALSE
+reprocess_end_data <- FALSE
+
+resummarize_task_data <- TRUE
+resummarize_ehi_data <- TRUE
+resummarize_demographics_data <- TRUE
+resummarize_end_data <- TRUE
+```
+
 ```{r load_process_task}
 data_dir <- here::here("data")
 input_dir <- here::here(data_dir, "input_0pt5")
 proc_dir <- here::here(data_dir, "proc_0pt5")
 
 ## If data have been processed already, set to FALSE
-reprocess_task_data <- FALSE
 if (reprocess_task_data == TRUE) {
   load_and_process(input_dir, proc_dir, data_type = "task")
 }
@@ -49,18 +70,15 @@ if (reprocess_task_data == TRUE) {
 
 ## Load and process survey data
 ```{r load_process_surveys}
-reprocess_ehi_data <- FALSE
 if (reprocess_ehi_data == TRUE) {
   load_and_process(input_dir, proc_dir, data_type = "ehi")
 }
 
 #TODO: Process demographic, end question data
-reprocess_demographics_data <- FALSE
 if (reprocess_demographics_data == TRUE) {
   load_and_process(input_dir, proc_dir, data_type = "demographics")
 }
 
-reprocess_end_data <- FALSE
 if (reprocess_end_data == TRUE) {
   load_and_process(input_dir, proc_dir, data_type = "end")
 }
@@ -68,8 +86,8 @@ if (reprocess_end_data == TRUE) {
 
 ```{r debug_survey, include = F}
 # ## For testing: step through load_and_process for an individual input file
-# data_type <- "ehi"
-# input_files <- get_input_paths(input_dir, data_type)
+#  data_type <- "end"
+#  input_files <- get_input_paths(input_dir, data_type)
 # 
 # input_dir
 # 
@@ -82,7 +100,7 @@ if (reprocess_end_data == TRUE) {
 # data_raw
 # subject_id <- data_raw$subject %>% first() %>% as.character()
 # subject_id
-# data_raw  
+# data_raw
 # data_recoded <- recode_raw(data_raw, data_type)
 # data_recoded
 # data_cleaned <- clean_recoded(data_recoded, data_type)
@@ -99,10 +117,10 @@ summary_output_dir <- here(proc_dir, "summary")
 
 ## Create summary row for each subject
 ## TODO: Add overall median RT to summary spreadsheet
-resummarize_task_data <- FALSE
 if (resummarize_task_data == TRUE) {
-## Create summarized task data (saves to tsv as a side effect)
-task_summary <- load_and_summarize_proc(ind_input_dir, summary_output_dir, data_type = "task")
+  ## Create summarized task data (saves to tsv as a side effect)
+  task_summary <-
+    load_and_summarize_proc(ind_input_dir, summary_output_dir, data_type = "task")
 }
 ```
 
@@ -110,36 +128,95 @@ task_summary <- load_and_summarize_proc(ind_input_dir, summary_output_dir, data_
 ## TODO: join survey data
 ##          Create "load_and_summarize_proc arms for ehi, demographics, end.
 ##          Then, join task and survey tables together, save.
-resummarize_ehi_data <- TRUE
 if (resummarize_ehi_data == TRUE) {
-## Create summarized task data (saves to tsv as a side effect)
-ehi_summary <- load_and_summarize_proc(ind_input_dir, summary_output_dir, data_type = "ehi")
+  ## Create summarized task data (saves to tsv as a side effect)
+  ehi_summary <-
+    load_and_summarize_proc(ind_input_dir, summary_output_dir, data_type = "ehi")
 }
 
-resummarize_demographics_data <- FALSE
 if (resummarize_demographics_data == TRUE) {
-## Create summarized demographics data (saves to tsv as a side effect)
-demo_summary <- load_and_summarize_proc(ind_input_dir, summary_output_dir, data_type = "demographics")
+  ## Create summarized demographics data (saves to tsv as a side effect)
+  demo_summary <-
+    load_and_summarize_proc(ind_input_dir, summary_output_dir, data_type = "demographics")
 }
 
-resummarize_end_data <- FALSE
 if (resummarize_end_data == TRUE) {
-## Create summarized end question data (saves to tsv as a side effect)
-end_summary <- load_and_summarize_proc(ind_input_dir, summary_output_dir, data_type = "end")
+  ## Create summarized end question data (saves to tsv as a side effect)
+  end_summary <-
+    load_and_summarize_proc(ind_input_dir, summary_output_dir, data_type = "end")
 }
+
+task_summary
+ehi_summary
+demo_summary
+end_summary
 ```
 
 ```{r debug_summary}
-# input_files <- get_input_paths(ind_input_dir, data_type = "task",
-#                                pattern = "*.tsv")
-# 
-# input_path <- input_files[2]
-# input_path
-# data_proc <- load_proc(input_path, data_type = "task")
-# data_proc
-# proc_summary <- summarize_ind(data_proc)
-# proc_summary
-# proc_summary %>% colnames
+group_summary <- tibble(
+  subject = as.character(),
+  ehi_i1_writing = as.numeric(),
+  ehi_i2_throwing = as.numeric(),
+  ehi_i3_toothbrush = as.numeric(),
+  ehi_i4_spoon = as.numeric(),
+  ehi_total = as.numeric()
+)
+
+
+group_summary <- tibble(
+  subject = as.character(),
+  age = as.numeric(),
+  country = as.character(),
+  sex = as.character(),
+  education = as.character(),
+  race = as.character(),
+  hispanic_ethnicity = as.character()
+)
+
+group_summary <- tibble(
+  subject = as.character(),
+  task_experience_response = as.character(),
+  task_experience_other_response = as.character(),
+  open_ended_feedback_response = as.character()
+)
+
+group_summary <- tibble(
+  subject = as.character(),
+  first_block = as.character(),
+  acc_slash = as.numeric(),
+  acc_z = as.numeric(),
+  acc_absent_slash = as.numeric(),
+  acc_present_slash = as.numeric(),
+  acc_absent_z = as.numeric(),
+  acc_present_z = as.numeric(),
+  acc_global_LVF = as.numeric(),
+  acc_global_RVF = as.numeric(),
+  acc_local_LVF = as.numeric(),
+  acc_local_RVF = as.numeric(),
+  rt_global_LVF = as.numeric(),
+  rt_global_RVF = as.numeric(),
+  rt_local_LVF = as.numeric(),
+  rt_local_RVF = as.numeric(),
+  exclude_many_gos = as.logical(),
+  exclude_low_acc = as.logical(),
+  exclude_low_rt = as.logical(),
+  exclude_high_rt = as.logical(),
+  exclude = as.logical()
+)
+
+data_type = "task"
+input_files <- get_input_paths(ind_input_dir, data_type = data_type,
+                               pattern = "*.tsv")
+
+input_path <- input_files[1]
+input_path
+data_proc <- load_proc(input_path, data_type = data_type)
+data_proc
+ind_summary <- summarize_ind(data_proc, data_type = data_type)
+ind_summary
+
+group_summary <- group_summary %>% add_row(ind_summary)
+group_summary
 ```
 
 Create combined summary table (with task and survey data)
