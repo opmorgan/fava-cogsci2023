@@ -31,12 +31,15 @@ get_input_paths <- function(input_dir, data_type, pattern = "*.iqdat") {
     if (data_type == "task") {
       data_subdir <- here(input_dir, "task")
     } else if (data_type == "ehi") {
+      message("got here!")
       data_subdir <- here(input_dir, "survey", "ehi_short")
     } else if (data_type == "demographics") {
       data_subdir <- here(input_dir, "survey", "demographics")
     } else if (data_type == "end") {
       data_subdir <- here(input_dir, "survey", "end_questions")
     }
+  
+    n_input_files <- "?"
     cli::cli_alert_info(glue("Getting {data_type} data filepaths from input directory:"))
     cli::cli_bullets(c(" " = glue("{data_subdir}")))
     cli::cli_progress_step(
@@ -48,7 +51,6 @@ get_input_paths <- function(input_dir, data_type, pattern = "*.iqdat") {
                               pattern = pattern,
                               full.names = TRUE)
     
-    input_files
     if (rlang::is_empty(input_files)) {
       cli::cli_abort(c(
         "{.var input_files} is empty",
@@ -453,7 +455,7 @@ load_proc <- function(input_path, data_type) {
   }
 }
 
-## Summarize an individual's processed data
+## Summarize an individual's processed data, and record any exclusions
 summarize_ind <- function(data_proc, data_type = "task") {
   subject_id <-
     data_proc$subject %>% first() %>% as.character()
@@ -569,7 +571,7 @@ summarize_ind <- function(data_proc, data_type = "task") {
         filter(block_response == block_response_var) %>% 
         .[["n_present_resp"]]
       if (n_gos >=78) {
-        exclude_all_gos <- 1
+        too_many_gos <- 1
       }
     }
     

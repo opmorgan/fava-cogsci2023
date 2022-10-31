@@ -55,12 +55,12 @@ if (reprocess_ehi_data == TRUE) {
 }
 
 #TODO: Process demographic, end question data
-reprocess_demographics_data <- TRUE
+reprocess_demographics_data <- FALSE
 if (reprocess_demographics_data == TRUE) {
   load_and_process(input_dir, proc_dir, data_type = "demographics")
 }
 
-reprocess_end_data <- TRUE
+reprocess_end_data <- FALSE
 if (reprocess_end_data == TRUE) {
   load_and_process(input_dir, proc_dir, data_type = "end")
 }
@@ -68,8 +68,12 @@ if (reprocess_end_data == TRUE) {
 
 ```{r debug_survey, include = F}
 # ## For testing: step through load_and_process for an individual input file
-data_type <- "end"
+data_type <- "ehi"
 input_files <- get_input_paths(input_dir, data_type)
+
+input_dir
+
+
 input_files
 n_input_files <- length(input_files)
 n_input_files
@@ -87,6 +91,10 @@ data_cleaned
 data_tests(data_cleaned, data_type)
 save_cleaned(data_cleaned, proc_dir, data_type)
 ```
+
+```{r}
+```
+
 
 ## Find calculated variables, save summary data
 ```{r calculate_variables}
@@ -113,6 +121,13 @@ load_and_summarize_proc(ind_input_dir, summary_output_dir, data_type = "task")
 # proc_summary
 # proc_summary %>% colnames
 ```
+
+Create combined summary table (with task and survey data)
+```{r}
+## Load all individual summary files, combine them together.
+## Save as a big summary file, with a wide row for each subject.
+```
+
 
 ## Analyze data and report results, for each individual
 ```{r analyze_rt}
