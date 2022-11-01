@@ -256,7 +256,7 @@ recode_raw <- function(data_raw, data_type) {
     
     ## Put all race responses in a vector
     race_answers <-
-      data_raw %>% select(starts_with("race")) %>% as.character()
+      data_proc %>% select(starts_with("race")) %>% as.character()
     ## If there is only one, code race as that race
     ## If there is more than one, code as "multiple races"
     answer_indices <- which(race_answers != "NA")
@@ -270,9 +270,28 @@ recode_raw <- function(data_raw, data_type) {
       select(-starts_with("race")) %>%
       mutate(race = race_recoded) %>%
       select(subject, age, country, sex, education, race, ethnicity) %>%
-      rename(hispanic_ethnicity = ethnicity)
+      rename(hispanic_ethnicity = ethnicity) %>% 
+      mutate(race = case_when(
+        race == "Some other race (please describe)" ~ "Other",
+        TRUE ~ race
+      ))
     
-    ##TODO: code education as number of years
+    ## Code education as number of years (keep as character type)
+    data_proc <- data_proc %>% 
+      mutate(education = case_when(
+        education == "Doctoral or professional degree (~21+ years of education)" ~ "21",
+        education == "Master's degree (~18 years)" ~ "18",
+        education == "Bachelor's degree (~16 years)" ~ "16",
+        education == "Associate's degree (~14 years)" ~ "14",
+        education == "Postsecondary non-degree award (~14 years)" ~ "14",
+        education == "Some college, no degree (~12-16 years)" ~ "12",
+        education == "High school diploma or equivalent (~12 years)" ~ "12",
+        education == "Some high school, no degree (~8-12 years)" ~ "8",
+        education == "Elementary or Middle school (~5-8 years)" ~ "5",
+        education == "Less than Elementary or Middle school (<5 years)" ~ "0",
+        education == "Something else (please specify):" ~ "Other",
+        TRUE ~ "NA"
+      ))
     
   } else if (data_type == "end") {
     data_proc <- data_raw

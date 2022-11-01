@@ -33,8 +33,6 @@ library(glue) # To make writing error message strings easier
 source(here::here("lib", "load_process", "load_process.R"))
 ```
 
-## Load and check quality of individual-level data
-### Task data
 ```{r config}
 reprocess_task_data <- TRUE
 reprocess_ehi_data <- TRUE
@@ -48,15 +46,17 @@ resummarize_end_data <- TRUE
 
 reprocess_task_data <- FALSE
 reprocess_ehi_data <- FALSE
-reprocess_demographics_data <- FALSE
+# reprocess_demographics_data <-FALSE
 reprocess_end_data <- FALSE
 
-resummarize_task_data <- TRUE
-resummarize_ehi_data <- TRUE
-resummarize_demographics_data <- TRUE
-resummarize_end_data <- TRUE
+resummarize_task_data <- FALSE
+resummarize_ehi_data <- FALSE
+# resummarize_demographics_data <- FALSE
+resummarize_end_data <- FALSE
 ```
 
+## Load and check quality of individual-level data
+### Load and process task data
 ```{r load_process_task}
 data_dir <- here::here("data")
 input_dir <- here::here(data_dir, "input_0pt5")
@@ -85,8 +85,8 @@ if (reprocess_end_data == TRUE) {
 ```
 
 ```{r debug_survey, include = F}
-# ## For testing: step through load_and_process for an individual input file
-#  data_type <- "end"
+## For testing: step through load_and_process for an individual input file
+#  data_type <- "demographics"
 #  input_files <- get_input_paths(input_dir, data_type)
 # 
 # input_dir
@@ -94,7 +94,7 @@ if (reprocess_end_data == TRUE) {
 # input_files
 # n_input_files <- length(input_files)
 # n_input_files
-# input_path <- input_files[2] ## This will be in s a loop
+# input_path <- input_files[7] ## This will be in s a loop
 # input_path
 # data_raw <- load_raw(input_path, data_type)
 # data_raw
@@ -212,6 +212,7 @@ if (resummarize_end_data == TRUE) {
 # 
 # group_summary <- group_summary %>% add_row(ind_summary)
 # group_summary
+
 ```
 
 Create combined summary table (with task and survey data)
