@@ -12,7 +12,7 @@
 
 <survey interactive_instructions_z>
 / onblockbegin=[
-	values.response_key_string = values.response_key_string_z
+	values.response_key_string = values.response_key_string_zee
 	]
 / pages = [ 1=interactive_q1; 2=interactive_q2; 3=interactive_q3; 4=interactive_q4 ]
 / showpagenumbers = false
