@@ -42,7 +42,7 @@
 </survey>
 
 <surveypage ehi_short_page>
-/caption = "Please indicate your preferences in the use of hands in the following activities or objects:"
+/caption = "Which hand do you prefer to use for each of the following actions and tools?"
 / questions=[1=ehi_i1_writing; 2=ehi_i2_throwing; 3=ehi_i3_toothbrush; 4=ehi_i4_spoon]
 / showpagenumbers = false
 / showquestionnumbers = false
