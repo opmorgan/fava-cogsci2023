@@ -578,170 +578,168 @@ summarize_ind <- function(ind_proc, data_type = "task") {
   )
   
   if (data_type == "task") {
+    #### Accuracy
+    ## Calculate percent correct for each block,
+    ## separating present and absent trials
+    ind_proc <- ind_proc %>%
+      mutate(response_log = case_when(response == "absent" ~ 0,
+                                      response == "present" ~ 1)) %>%
+      filter(block_type == "main")
     
-  #### Accuracy
-  ## Calculate percent correct for each block,
-  ## separating present and absent trials
-  ind_proc <- ind_proc %>%
-    mutate(response_log = case_when(response == "absent" ~ 0,
-                                    response == "present" ~ 1)) %>%
-    filter(block_type == "main")
-  
-  response_counts_pa <- ind_proc %>%
-    group_by(target_present, subject) %>%
-    summarize(
-      total_responses = n(),
-      n_present_resp = sum(response_log),
-      n_absent_resp = total_responses - n_present_resp,
-      n_correct = sum(correct),
-      percent_correct = 100 * (n_correct / total_responses)
-    )
-  
-  acc_pa <- response_counts_pa %>%
-    ungroup() %>%
-    mutate(target_present = target_present %>% recode("no" = "absent", yes = "present")) %>%
-    select(subject, target_present, percent_correct) %>%
-    pivot_wider(
-      names_from = c(target_present),
-      names_prefix = "acc_",
-      values_from = percent_correct
-    )
-  
-  ind_summary <- acc_pa
-  
-  ## Calculate percent correct for each block,
-  ## collapsing present and absent trials
-  response_counts_block <- ind_proc %>%
-    group_by(block_response, subject) %>%
-    summarize(
-      total_responses = n(),
-      n_present_resp = sum(response_log),
-      n_absent_resp = total_responses - n_present_resp,
-      n_correct = sum(correct),
-      percent_correct = 100 * (n_correct / total_responses)
-    )
-  
-  acc_all <- response_counts_block %>%
-    ungroup() %>%
-    select(subject, block_response, percent_correct) %>%
-    pivot_wider(
-      names_from = block_response,
-      names_prefix = "acc_",
-      values_from = percent_correct
-    )
-  
-  ind_summary <- left_join(acc_all, ind_summary)
-  
-  first_block_var <- ind_proc %>%
-    filter(blocknum == 2) %>%
-    .[["block_response"]] %>%
-    first()
-  
-  ## Record which block was first (z or slash)
-  ind_summary <- ind_summary %>%
-    mutate(first_block = first_block_var) %>%
-    select(subject, first_block, everything())
-  
-  ## Calculate accuracy by condition (level x field)
-  response_counts_condition <- ind_proc %>%
-    filter(target_present == "yes") %>%
-    group_by(level, field, subject) %>%
-    summarize(
-      total_responses = n(),
-      n_present_resp = sum(response_log),
-      n_absent_resp = total_responses - n_present_resp,
-      n_correct = sum(correct),
-      percent_correct = 100 * (n_correct / total_responses)
-    )
-  
-  acc_condition <- response_counts_condition %>%
-    ungroup() %>%
-    select(subject, level, field, percent_correct) %>%
-    pivot_wider(
-      names_from = c(level, field),
-      names_prefix = "acc_",
-      values_from = percent_correct
-    )
-  
-  ind_summary <- left_join(ind_summary, acc_condition)
-  
-  #### Reaction time
-  ## Calculate median RT by condition
-  rt_condition <- ind_proc %>%
-    filter(target_present == "yes") %>%
-    group_by(level, field, subject) %>%
-    summarize(rt = median(rt)) %>%
-    pivot_wider(
-      names_from = c(level, field),
-      names_prefix = "rt_",
-      values_from = rt
-    )
-  
-  ind_summary <- left_join(ind_summary, rt_condition)
-  
-  ## Calculate overall median RT
-  rt_overall <- ind_proc %>% 
-    filter(target_present == "yes") %>% 
-    group_by(subject) %>% 
-    summarize(rt_overall = median(rt))
-  
-  ind_summary <- left_join(ind_summary, rt_overall)
-  
-  #### Exclusions
-  ## Responded "go" almost every time?
-  too_many_gos <- 0
-  for (block_response_var in response_counts_block$block_response) {
-    n_gos <- response_counts_block %>%
-      filter(block_response == block_response_var) %>%
-      .[["n_present_resp"]]
-    if (n_gos >= 78) {
-      too_many_gos <- 1
-    }
-  }
-  
-  ind_summary <- ind_summary %>%
-    mutate(exclude_many_gos = too_many_gos)
-  
-  ## Accuracy at 60% or lower on any main block?
-  low_acc <- 0
-  if ((acc_all$acc_slash < 60) | (acc_all$acc_z < 60)) {
-    low_acc <- 1
-  }
-  
-  ind_summary <- ind_summary %>%
-    mutate(exclude_low_acc = low_acc)
-  
-  ## Median RT over 1500 or under 200?
-  low_rt <- 0
-  high_rt <- 0
-  if (ind_summary$rt_overall < 200) {
-    low_rt <- 1
-  }
-  if (ind_summary$rt_overall > 1500) {
-    high_rt <- 1
-  }
-  
-  ind_summary <- ind_summary %>%
-    mutate(exclude_low_rt = low_rt,
-           exclude_high_rt = high_rt)
-  
-  ind_summary <- ind_summary %>%
-    mutate(
-      exclude = case_when(
-        exclude_many_gos == 1 ~ 1,
-        exclude_low_acc == 1 ~ 1,
-        exclude_low_rt == 1 ~ 1,
-        exclude_high_rt == 1 ~ 1,
-        TRUE ~ 0,
+    response_counts_pa <- ind_proc %>%
+      group_by(target_present, subject) %>%
+      summarize(
+        total_responses = n(),
+        n_present_resp = sum(response_log),
+        n_absent_resp = total_responses - n_present_resp,
+        n_correct = sum(correct),
+        percent_correct = 100 * (n_correct / total_responses)
       )
-    )
-    } else if (data_type == "ehi") {
-      ind_summary <- ind_proc
-    } else if (data_type == "demographics") {
-      ind_summary <- ind_proc
-    } else if (data_type == "end") {
-      ind_summary <- ind_proc
+    
+    acc_pa <- response_counts_pa %>%
+      ungroup() %>%
+      mutate(target_present = target_present %>% recode("no" = "absent", yes = "present")) %>%
+      select(subject, target_present, percent_correct) %>%
+      pivot_wider(
+        names_from = c(target_present),
+        names_prefix = "acc_",
+        values_from = percent_correct
+      )
+    
+    ind_summary <- acc_pa
+    
+    ## Calculate percent correct for each block,
+    ## collapsing present and absent trials
+    response_counts_block <- ind_proc %>%
+      group_by(block_response, subject) %>%
+      summarize(
+        total_responses = n(),
+        n_present_resp = sum(response_log),
+        n_absent_resp = total_responses - n_present_resp,
+        n_correct = sum(correct),
+        percent_correct = 100 * (n_correct / total_responses)
+      )
+    
+    acc_all <- response_counts_block %>%
+      ungroup() %>%
+      select(subject, block_response, percent_correct) %>%
+      pivot_wider(
+        names_from = block_response,
+        names_prefix = "acc_",
+        values_from = percent_correct
+      )
+    
+    ind_summary <- left_join(acc_all, ind_summary)
+    
+    first_block_var <- ind_proc %>%
+      slice(1) %>%
+      .[["block_response"]]
+    
+    ## Record which block was first (z or slash)
+    ind_summary <- ind_summary %>%
+      mutate(first_block = first_block_var) %>%
+      select(subject, first_block, everything())
+    
+    ## Calculate accuracy by condition (level x field)
+    response_counts_condition <- ind_proc %>%
+      filter(target_present == "yes") %>%
+      group_by(level, field, subject) %>%
+      summarize(
+        total_responses = n(),
+        n_present_resp = sum(response_log),
+        n_absent_resp = total_responses - n_present_resp,
+        n_correct = sum(correct),
+        percent_correct = 100 * (n_correct / total_responses)
+      )
+    
+    acc_condition <- response_counts_condition %>%
+      ungroup() %>%
+      select(subject, level, field, percent_correct) %>%
+      pivot_wider(
+        names_from = c(level, field),
+        names_prefix = "acc_",
+        values_from = percent_correct
+      )
+    
+    ind_summary <- left_join(ind_summary, acc_condition)
+    
+    #### Reaction time
+    ## Calculate median RT by condition
+    rt_condition <- ind_proc %>%
+      filter(target_present == "yes") %>%
+      group_by(level, field, subject) %>%
+      summarize(rt = median(rt)) %>%
+      pivot_wider(
+        names_from = c(level, field),
+        names_prefix = "rt_",
+        values_from = rt
+      )
+    
+    ind_summary <- left_join(ind_summary, rt_condition)
+    
+    ## Calculate overall median RT
+    rt_overall <- ind_proc %>%
+      filter(target_present == "yes") %>%
+      group_by(subject) %>%
+      summarize(rt_overall = median(rt))
+    
+    ind_summary <- left_join(ind_summary, rt_overall)
+    
+    #### Exclusions
+    ## Responded "go" almost every time?
+    too_many_gos <- 0
+    for (block_response_var in response_counts_block$block_response) {
+      n_gos <- response_counts_block %>%
+        filter(block_response == block_response_var) %>%
+        .[["n_present_resp"]]
+      if (n_gos >= 78) {
+        too_many_gos <- 1
+      }
     }
+    
+    ind_summary <- ind_summary %>%
+      mutate(exclude_many_gos = too_many_gos)
+    
+    ## Accuracy at 60% or lower on any main block?
+    low_acc <- 0
+    if ((acc_all$acc_slash < 60) | (acc_all$acc_z < 60)) {
+      low_acc <- 1
+    }
+    
+    ind_summary <- ind_summary %>%
+      mutate(exclude_low_acc = low_acc)
+    
+    ## Median RT over 1500 or under 200?
+    low_rt <- 0
+    high_rt <- 0
+    if (ind_summary$rt_overall < 200) {
+      low_rt <- 1
+    }
+    if (ind_summary$rt_overall > 1500) {
+      high_rt <- 1
+    }
+    
+    ind_summary <- ind_summary %>%
+      mutate(exclude_low_rt = low_rt,
+             exclude_high_rt = high_rt)
+    
+    ind_summary <- ind_summary %>%
+      mutate(
+        exclude = case_when(
+          exclude_many_gos == 1 ~ 1,
+          exclude_low_acc == 1 ~ 1,
+          exclude_low_rt == 1 ~ 1,
+          exclude_high_rt == 1 ~ 1,
+          TRUE ~ 0,
+        )
+      )
+  } else if (data_type == "ehi") {
+    ind_summary <- ind_proc
+  } else if (data_type == "demographics") {
+    ind_summary <- ind_proc
+  } else if (data_type == "end") {
+    ind_summary <- ind_proc
+  }
   
   return(ind_summary)
   

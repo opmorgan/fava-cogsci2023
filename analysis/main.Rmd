@@ -45,22 +45,22 @@ resummarize_demographics_data <- TRUE
 resummarize_end_data <- TRUE
 
 # reprocess_task_data <- FALSE
-reprocess_ehi_data <- FALSE
-reprocess_demographics_data <-FALSE
-reprocess_end_data <- FALSE
-
+# reprocess_ehi_data <- FALSE
+# reprocess_demographics_data <-FALSE
+# reprocess_end_data <- FALSE
+# 
 # resummarize_task_data <- FALSE
-resummarize_ehi_data <- FALSE
-resummarize_demographics_data <- FALSE
-resummarize_end_data <- FALSE
+# resummarize_ehi_data <- FALSE
+# resummarize_demographics_data <- FALSE
+# resummarize_end_data <- FALSE
 ```
 
 ## Load and check quality of individual-level data
 ### Load and process task data
 ```{r load_process_task}
 data_dir <- here::here("data")
-input_dir <- here::here(data_dir, "input_0pt5")
-proc_dir <- here::here(data_dir, "proc_0pt5")
+input_dir <- here::here(data_dir, "input_0pt6")
+proc_dir <- here::here(data_dir, "proc_0pt6")
 
 ## If data have been processed already, set to FALSE
 if (reprocess_task_data == TRUE) {
@@ -86,27 +86,27 @@ if (reprocess_end_data == TRUE) {
 
 ```{r debug_survey, include = F}
 ## For testing: step through load_and_process for an individual input file
-#  data_type <- "demographics"
-#  input_files <- get_input_paths(input_dir, data_type)
-# 
-# input_dir
-# 
-# input_files
-# n_input_files <- length(input_files)
-# n_input_files
-# input_path <- input_files[7] ## This will be in s a loop
-# input_path
-# data_raw <- load_raw(input_path, data_type)
-# data_raw
-# subject_id <- data_raw$subject %>% first() %>% as.character()
-# subject_id
-# data_raw
-# data_recoded <- recode_raw(data_raw, data_type)
-# data_recoded
-# data_cleaned <- clean_recoded(data_recoded, data_type)
-# data_cleaned
-# data_tests(data_cleaned, data_type)
-# save_cleaned(data_cleaned, proc_dir, data_type)
+ data_type <- "task"
+ input_files <- get_input_paths(input_dir, data_type)
+
+input_dir
+
+input_files
+n_input_files <- length(input_files)
+n_input_files
+input_path <- input_files[1] ## This will be in s a loop
+input_path
+data_raw <- load_raw(input_path, data_type)
+data_raw
+subject_id <- data_raw$subject %>% first() %>% as.character()
+subject_id
+data_raw
+data_recoded <- recode_raw(data_raw, data_type)
+data_recoded
+data_cleaned <- clean_recoded(data_recoded, data_type)
+data_cleaned
+data_tests(data_cleaned, data_type)
+save_cleaned(data_cleaned, proc_dir, data_type)
 ```
 
 ## Find calculated variables, save summary data
@@ -180,10 +180,8 @@ if (resummarize_end_data == TRUE) {
 #   first_block = as.character(),
 #   acc_slash = as.numeric(),
 #   acc_z = as.numeric(),
-#   acc_absent_slash = as.numeric(),
-#   acc_present_slash = as.numeric(),
-#   acc_absent_z = as.numeric(),
-#   acc_present_z = as.numeric(),
+#   acc_absent = as.numeric(),
+#   acc_present = as.numeric(),
 #   acc_global_LVF = as.numeric(),
 #   acc_global_RVF = as.numeric(),
 #   acc_local_LVF = as.numeric(),
@@ -205,9 +203,9 @@ if (resummarize_end_data == TRUE) {
 # 
 # input_path <- input_files[1]
 # input_path
-# data_proc <- load_proc(input_path, data_type = data_type)
-# data_proc
-# ind_summary <- summarize_ind(data_proc, data_type = data_type)
+# ind_proc <- load_proc(input_path, data_type = data_type)
+# ind_proc
+# ind_summary <- summarize_ind(ind_proc, data_type = data_type)
 # ind_summary
 # 
 # group_summary <- group_summary %>% add_row(ind_summary)
