@@ -44,14 +44,14 @@ resummarize_ehi_data <- TRUE
 resummarize_demographics_data <- TRUE
 resummarize_end_data <- TRUE
 
-reprocess_task_data <- FALSE
+# reprocess_task_data <- FALSE
 reprocess_ehi_data <- FALSE
-# reprocess_demographics_data <-FALSE
+reprocess_demographics_data <-FALSE
 reprocess_end_data <- FALSE
 
-resummarize_task_data <- FALSE
+# resummarize_task_data <- FALSE
 resummarize_ehi_data <- FALSE
-# resummarize_demographics_data <- FALSE
+resummarize_demographics_data <- FALSE
 resummarize_end_data <- FALSE
 ```
 
@@ -216,7 +216,7 @@ if (resummarize_end_data == TRUE) {
 ```
 
 Create combined summary table (with task and survey data)
-```{r}
+```{r combine}
 ## Combine summaries into one big table, with a wide row for each subject.
 summary <- task_summary %>%
   left_join(ehi_summary) %>% 
@@ -225,8 +225,6 @@ summary <- task_summary %>%
 
 write_tsv(summary, here::here(summary_output_dir, "summary.tsv"))
 ```
-
-
 
 ## Analyze data and report results, for each individual
 ```{r analyze_rt}

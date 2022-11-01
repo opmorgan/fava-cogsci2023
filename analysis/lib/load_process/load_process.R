@@ -421,10 +421,8 @@ load_and_summarize_proc <-
         first_block = as.character(),
         acc_slash = as.numeric(),
         acc_z = as.numeric(),
-        acc_absent_slash = as.numeric(),
-        acc_present_slash = as.numeric(),
-        acc_absent_z = as.numeric(),
-        acc_present_z = as.numeric(),
+        acc_absent = as.numeric(),
+        acc_present = as.numeric(),
         acc_global_LVF = as.numeric(),
         acc_global_RVF = as.numeric(),
         acc_local_LVF = as.numeric(),
@@ -589,8 +587,8 @@ summarize_ind <- function(ind_proc, data_type = "task") {
                                     response == "present" ~ 1)) %>%
     filter(block_type == "main")
   
-  response_counts_block_pa <- ind_proc %>%
-    group_by(block_response, target_present, subject) %>%
+  response_counts_pa <- ind_proc %>%
+    group_by(target_present, subject) %>%
     summarize(
       total_responses = n(),
       n_present_resp = sum(response_log),
@@ -599,12 +597,12 @@ summarize_ind <- function(ind_proc, data_type = "task") {
       percent_correct = 100 * (n_correct / total_responses)
     )
   
-  acc_pa <- response_counts_block_pa %>%
+  acc_pa <- response_counts_pa %>%
     ungroup() %>%
     mutate(target_present = target_present %>% recode("no" = "absent", yes = "present")) %>%
-    select(subject, block_response, target_present, percent_correct) %>%
+    select(subject, target_present, percent_correct) %>%
     pivot_wider(
-      names_from = c(target_present, block_response),
+      names_from = c(target_present),
       names_prefix = "acc_",
       values_from = percent_correct
     )
