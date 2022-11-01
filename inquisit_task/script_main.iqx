@@ -130,6 +130,7 @@ values.target_present, response, correct, latency)
 <include>
 / file = "script_load_stimuli.iqx"
 / file = "script_load_surveys.iqx"
+/ file = "script_load_interactive_instructions.iqx"
 </include>
 
 // Define stimulus selection pools
@@ -728,7 +729,7 @@ Press the spacebar to begin a practice run. We'll let you know whether you've re
 ]
 </block>
 
-<block inst_3_10_SLASH>
+<block inst_3_9_SLASH>
 / trials = [
 	1 = inst_3_quickpreview;
 	2 = inst_4_intro_fixation;
@@ -738,10 +739,9 @@ Press the spacebar to begin a practice run. We'll let you know whether you've re
 	6 = inst_8_SLASH_intro_present2;
 	7 = inst_9_absent;
 	]
-/ postinstructions = (inst_10_SLASH_practice1)
 </block>
 
-<block inst_3_10_ZEE>
+<block inst_3_9_ZEE>
 / trials = [
 	1 = inst_3_quickpreview;
 	2 = inst_4_intro_fixation;
@@ -751,7 +751,6 @@ Press the spacebar to begin a practice run. We'll let you know whether you've re
 	6 = inst_8_ZEE_intro_present2;
 	7 = inst_9_absent;
 	]
-/ postinstructions = (inst_10_ZEE_practice1)
 </block>
 
 <block inst_11_SLASH_main1>
@@ -1043,7 +1042,7 @@ TEST_inst_with_pics;
 	1, 3, 5, 7,  9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31 = noreplace(practice_slash);
 	2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 = advance_on_keypress_SLASH;
 	]
-
+/ preinstructions = (inst_10_SLASH_practice1)
 </block>
 
 <block practice_z>
@@ -1051,6 +1050,7 @@ TEST_inst_with_pics;
 	1, 3, 5, 7,  9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31 = noreplace(practice_z);
 	2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32 = advance_on_keypress_ZEE;
 	]
+/ preinstructions = (inst_10_ZEE_practice1)
 </block>
 
 <block main_slash>
@@ -1102,18 +1102,19 @@ TEST_inst_with_pics;
 / blocks = [
 	1=inst_1_2_UNIVERSAL;
 	2=demographics;
-	3=inst_3_10_SLASH;
-	4=practice_slash;
-	5=inst_11_SLASH_main1;
-	6=main_slash;
-	7=inst_12_SLASH_practice2;
-	8=practice_z;
-	9=inst_13_SLASH_main2;
-	10=main_z;
-	11=inst_14_end_questions;
-	12=ehi_short;
-	13=end_questions;
-	14=inst_15_goodbye;
+	3=inst_3_9_SLASH;
+	4=interactive_instructions_slash;
+	5=practice_slash;
+	6=inst_11_SLASH_main1;
+	7=main_slash;
+	8=inst_12_SLASH_practice2;
+	9=practice_z;
+	10=inst_13_SLASH_main2;
+	11=main_z;
+	12=inst_14_end_questions;
+	13=ehi_short;
+	14=end_questions;
+	15=inst_15_goodbye;
 	]
 </expt>
 
@@ -1122,18 +1123,19 @@ TEST_inst_with_pics;
 / blocks = [
 	1=inst_1_2_UNIVERSAL;
 	2=demographics;
-	3=inst_3_10_ZEE;
-	4=practice_z;
-	5=inst_11_ZEE_main1;
-	6=main_z;
-	7=inst_12_ZEE_practice2;
-	8=practice_slash;
-	9=inst_13_ZEE_main2;
-	10=main_slash;
-	11=inst_14_end_questions;
-	12=ehi_short;
-	13=end_questions;
-	14=inst_15_goodbye;
+	3=inst_3_9_ZEE;
+	4=interactive_instructions_z;
+	5=practice_z;
+	6=inst_11_ZEE_main1;
+	7=main_z;
+	8=inst_12_ZEE_practice2;
+	9=practice_slash;
+	10=inst_13_ZEE_main2;
+	11=main_slash;
+	12=inst_14_end_questions;
+	13=ehi_short;
+	14=end_questions;
+	15=inst_15_goodbye;
 	]
 </expt>
 

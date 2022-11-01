@@ -1,0 +1,166 @@
+﻿// User-specified variables // TODO: move to config
+<parameters>
+/ background_color = white
+/ foreground_color = black
+/ fontfamily_default = "Avenir Next"
+/ fontsize_default = 5% // Change to 14pt?
+/ fontsize_default_small = 3%
+/ nav_button_fontsize_default = 3% // Change to 14pt?
+/ fontsize_fixation = 8% // Change to make smaller (e.g., 5%) if using visual fixation cue
+/ fontsize_survey = 2% // Change to make smaller (e.g., 5%) if using visual fixation cue
+/ fontsize_survey_caption = 3% // Change to make smaller (e.g., 5%) if using visual fixation cue
+/ iti = 0 // Time between response and next fixation, or time after timeout with nonresponse
+/ fixation_duration = 600
+/ shape_duration = 134 // Experiment setting: 134
+/ blank_duration = 256
+/ mask_duration = 134 // Experiment setting: 134. Set to 2000ms for testing
+/ time_limit = 2000 // Maximum response time, after stimulus onset
+/ feedback_duration = 1000
+/ interblock_break_duration = 20000 // Experiment setting: 20000. Set to 1000ms for testing
+/ stim_size = 11.12% // Stimulus width, in % screen size
+/ stim_xposition_left = 44%
+/ stim_xposition_right = 56%
+/ stim_yposition = 50%
+</parameters>
+
+<defaults>
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default)
+/ screencolor = parameters.background_color
+// txcolor = parameters.foreground_color
+/ txbgcolor = parameters.background_color
+</defaults>
+
+<expressions>
+// Define durations using durations set in <parameters>
+/ timeout = parameters.fixation_duration + parameters.time_limit // Maximum response time (stimulus onset + 2000)
+// Define event onset times using durations set in <parameters>
+/ fixation_onset = 0
+/ shape_onset = parameters.fixation_duration
+/ blank_onset = parameters.fixation_duration + parameters.shape_duration
+/ mask_onset = parameters.fixation_duration + parameters.shape_duration + parameters.blank_duration
+/ iti_onset = parameters.fixation_duration + parameters.shape_duration + parameters.blank_duration + parameters.mask_duration
+
+/// Define fixation cue (zoom from big fixation cross)
+// fontsize_fixation_big = (parameters.fontsize_fixation * 6)
+// fixation_duration_big = (parameters.fixation_duration / 6)
+// fixation_onset_big = 0
+// fixation_onset_normal = expressions.fixation_duration_big
+</expressions>
+
+
+<text press_space_to_continue>
+/ items = ("[Press SPACE to continue]")
+/ fontstyle = (parameters.fontfamily_default, parameters.nav_button_fontsize_default, false, false, false, false, 5, 1)
+/ position = (50%, 95%)
+</text>
+
+**************************************************************************************************************
+	Instructions and prompts
+**************************************************************************************************************
+<parameters>
+/ inst_interactive_width = parameters.stim_size // Stimulus width, in % screen size
+/ inst_interactive_xpos_left = parameters.stim_xposition_left
+/ inst_interactive_xpos_right = parameters.stim_xposition_right
+/ inst_interactive_ypos = parameters.stim_yposition
+</parameters>
+
+<item interactive_1_shape_left>
+/ 1 = "stimuli_target_trianglesquares.svg"
+</item>
+
+<item interactive_1_shape_right>
+/ 1 = "stimuli_distractor_diamondtriangles.svg"
+</item>
+
+<picture interactive_1_shape_left>
+/ items = interactive_1_shape_left
+/ position = (parameters.inst_interactive_xpos_left, parameters.inst_interactive_ypos)
+/ size = (parameters.inst_interactive_width, null)
+</picture>
+
+<picture interactive_1_shape_right>
+/ items = interactive_1_shape_right
+/ position = (parameters.inst_interactive_xpos_right, parameters.inst_interactive_ypos)
+/ size = (parameters.inst_interactive_width, null)
+</picture>
+
+<text interactive_fixation>
+/ items = ("+")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_fixation, false, false, false, false, 5, 1)
+/ position = (50%, 50%)
+</text>
+
+<text interactive_1_instruction>
+/ items = ("In this experiment, you will see big shapes made of little shapes, presented like this:")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default, false, false, false, false, 5, 1)
+/ position = (2%, 2%)
+/ halign = left
+/ valign = top
+/ size = (96%, 20%)
+</text>
+
+<text interactive_yesno_instruction>
+/ items = ("For example, If you see these shapes in the experiment, should you press the 'zee' key? (Remember, in the experiment, you should press the 'zee' key whenever you see either a circle or square.)")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default, false, false, false, false, 5, 1)
+/ position = (2%, 2%)
+/ halign = left
+/ valign = top
+/ size = (96%, 20%)
+</text>
+
+
+
+<text interactive_biglittle_instruction>
+/ items = ("Correct! If you see these shapes in the experiment, you should press 'zee', because there is a circle (in this case, in the big shapes). Let's try another one. [Press space to advance]")
+/ fontstyle = (parameters.fontfamily_default, parameters.fontsize_default, false, false, false, false, 5, 1)
+/ position = (2%, 2%)
+/ halign = left
+/ valign = top
+/ size = (96%, 20%)
+</text>
+
+<likert interactive_1_yesno>
+/ stimulusframes = [1 = interactive_yesno_instruction, interactive_fixation, interactive_1_shape_left, interactive_1_shape_right]
+// anchors = [1=""; 2=""]
+/ buttonvalues = [1="yes"; 2="no"]
+/ numpoints = 2
+/ anchorwidth = 5%
+/ position = (50%, 75%)
+</likert>
+
+
+<trial interactive_1_biglittle>
+/ ontrialbegin = [
+trial.interactive_1_biglittle.insertstimulustime(picture.interactive_1_shape_left, 0);
+trial.interactive_1_biglittle.insertstimulustime(text.interactive_fixation, 0);
+trial.interactive_1_biglittle.insertstimulustime(picture.interactive_1_shape_right, 0);
+trial.interactive_1_biglittle.insertstimulustime(text.interactive_biglittle_instruction, 0);
+trial.interactive_1_biglittle.insertstimulustime(text.press_space_to_continue, 0);
+]
+/ validresponse = (" ")
+/ recorddata = false
+</trial>
+
+//TODO: use a surveypage with radiobuttons, and images and text. (Instead of creating trials)
+//https://forums.millisecond.com/Topic17983.aspx
+
+//TODO: set up branching logic
+//https://forums.millisecond.com/Topic20629.aspx
+
+
+
+<block interactive_slash>
+/ trials = [
+	1 = interactive_1_yesno;
+	2 = interactive_1_biglittle; // This trial should include logic for what to display when the first prompt was answered correctly, or incorrectly.
+	]
+</block>
+
+<expt>
+/ subjects = (1 of 2) // Subjects who will respond with "/" first
+// To automatically assign subject ID and group by odd/even, host on inquisit website.
+// https://www.millisecond.com/support/docs/current/html/articles/websubjectnumbers.htm
+/ blocks = [
+	1=interactive_slash
+	]
+</expt>

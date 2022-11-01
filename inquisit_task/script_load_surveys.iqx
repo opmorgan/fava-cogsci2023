@@ -1,7 +1,8 @@
 ﻿**************************************************************************************************************
 	Consent form
 **************************************************************************************************************
-//TODO: use html consent form, redirect to page with instructions for returning study on prolific.
+//NOTE: As of Nov 1, we are using Inquisit web's consent for tool, 
+//      instead of embedding consent in the experiment
 <block consentblock>
 / trials = [1=consentpage]
 </block>
