@@ -381,7 +381,7 @@
 </surveypage>
 
 <radiobuttons interactive_q4a_rb>
-/ caption = "If you see these shapes in the experiment, should you press the '<% values.response_key_string %>' key? (Remember, in the experiment, you should press the '<% values.response_key_string %>' key whenever you see either a circle or square.)"
+/ caption = "One last example. If you see these shapes in the experiment, should you press the '<% values.response_key_string %>' key? (Remember, in the experiment, you should press the '<% values.response_key_string %>' key whenever you see either a circle or square.)"
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
 / responsefontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
 / options = ("Yes", "No")
