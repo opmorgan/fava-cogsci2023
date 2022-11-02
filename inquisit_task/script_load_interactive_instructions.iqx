@@ -71,7 +71,7 @@
 </surveypage>
 
 <radiobuttons interactive_q1b_rb_correct>
-/ caption = "Correct! If you see these shapes in the experiment, you should press the '<% values.response_key_string %>' key, because the shapes include either a circle or a square. In this case, do you see a circle, or a square?"
+/ caption = "Correct! In this case, do you see a circle or a square?"
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
 / responsefontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
 / options = ("Circle", "Square")
@@ -86,7 +86,7 @@
 </surveypage>
 
 <radiobuttons interactive_q1b_rb_incorrect>
-/ caption = "Incorrect! If you see these shapes in the experiment, you should press the '<% values.response_key_string %>' key, because the shapes include either a circle or a square. In this case, do you see a circle, or a square?"
+/ caption = "Incorrect! If you see these shapes in the experiment, you should press the '<% values.response_key_string %>' key, because the shapes include either a circle or a square. In this case, do you see a circle or a square?"
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
 / responsefontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
 / options = ("Circle", "Square")
@@ -102,7 +102,7 @@
 </surveypage>
 
 <radiobuttons interactive_q1c_rb_correct>
-/ caption = "Correct! In this case, is the circle in the big shapes, or the little shapes?"
+/ caption = "Correct! Is the circle in the big shapes or the little shapes?"
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
 / responsefontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
 / options = ("In the big shapes", "In the little shapes")
@@ -117,7 +117,7 @@
 </surveypage>
 
 <radiobuttons interactive_q1c_rb_incorrect>
-/ caption = "Incorrect! The shapes include a circle. In this case, is the circle in the big shapes, or the little shapes?"
+/ caption = "Incorrect! The shapes include a circle. Is the circle in the big shapes or the little shapes?"
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
 / responsefontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
 / options = ("In the big shapes", "In the little shapes")
@@ -131,9 +131,9 @@
 </surveypage>
 
 <caption interactive_q1d_caption_correct>
-/ caption = "Correct! If you see these shapes in the experiment, you should press the '<% values.response_key_string %>' key, because the shapes include either a circle or a square—In this case, there is a circle in the big shapes."
+/ caption = "Correct! There is a circle in the big shapes."
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
-/ position = (10%, 50%)
+/ position = (10%, 70%)
 / size = (80%, null)
 </caption>
 
@@ -144,7 +144,7 @@
 <caption interactive_q1d_caption_incorrect>
 / caption = "Incorrect! The circle is in the big shapes. If you see these shapes in the experiment, you should press the '<% values.response_key_string %>' key, because the shapes include either a circle or a square—In this case, there is a circle in the big shapes."
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
-/ position = (10%, 50%)
+/ position = (10%, 70%)
 / size = (80%, null)
 </caption>
 
@@ -180,7 +180,7 @@
 </surveypage>
 
 <radiobuttons interactive_q2b_rb_correct>
-/ caption = "Correct! If you see these shapes in the experiment, you should press the '<% values.response_key_string %>' key, because the shapes include either a circle or a square. In this case, do you see a circle, or a square?"
+/ caption = "Correct! In this case, do you see a circle or a square?"
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
 / responsefontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
 / options = ("Circle", "Square")
@@ -195,7 +195,7 @@
 </surveypage>
 
 <radiobuttons interactive_q2b_rb_incorrect>
-/ caption = "Incorrect! If you see these shapes in the experiment, you should press the '<% values.response_key_string %>' key, because the shapes include either a circle or a square. In this case, do you see a circle, or a square?"
+/ caption = "Incorrect! If you see these shapes in the experiment, you should press the '<% values.response_key_string %>' key, because the shapes include either a circle or a square. In this case, do you see a circle or a square?"
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
 / responsefontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
 / options = ("Circle", "Square")
@@ -211,7 +211,7 @@
 </surveypage>
 
 <radiobuttons interactive_q2c_rb_correct>
-/ caption = "Correct! In this case, is the circle in the big shapes, or the little shapes?"
+/ caption = "Correct! In this case, is the circle in the big shapes or the little shapes?"
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
 / responsefontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
 / options = ("In the big shapes", "In the little shapes")
@@ -226,7 +226,7 @@
 </surveypage>
 
 <radiobuttons interactive_q2c_rb_incorrect>
-/ caption = "Incorrect! The shapes include a circle. In this case, is the circle in the big shapes, or the little shapes?"
+/ caption = "Incorrect! The shapes include a circle. In this case, is the circle in the big shapes or the little shapes?"
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
 / responsefontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
 / options = ("In the big shapes", "In the little shapes")
@@ -240,9 +240,9 @@
 </surveypage>
 
 <caption interactive_q2d_caption_correct>
-/ caption = "Correct! If you see these shapes in the experiment, you should press the '<% values.response_key_string %>' key, because the shapes include either a circle or a square—In this case, there are circles in the little shapes."
+/ caption = "Correct! There are circles in the little shapes."
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
-/ position = (10%, 50%)
+/ position = (10%, 70%)
 / size = (80%, null)
 </caption>
 
@@ -253,7 +253,7 @@
 <caption interactive_q2d_caption_incorrect>
 / caption = "Incorrect! There are circles in the little shapes. If you see these shapes in the experiment, you should press the '<% values.response_key_string %>' key, because the shapes include either a circle or a square—In this case, there are circles in the little shapes."
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
-/ position = (10%, 50%)
+/ position = (10%, 70%)
 / size = (80%, null)
 </caption>
 
@@ -289,7 +289,7 @@
 </surveypage>
 
 <radiobuttons interactive_q3b_rb_correct>
-/ caption = "Correct! If you see these shapes in the experiment, you should press the '<% values.response_key_string %>' key, because the shapes include either a circle or a square. In this case, do you see a circle, or a square?"
+/ caption = "Correct! In this case, do you see a circle or a square?"
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
 / responsefontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
 / options = ("Circle", "Square")
@@ -304,7 +304,7 @@
 </surveypage>
 
 <radiobuttons interactive_q3b_rb_incorrect>
-/ caption = "Incorrect! If you see these shapes in the experiment, you should press the '<% values.response_key_string %>' key, because the shapes include either a circle or a square. In this case, do you see a circle, or a square?"
+/ caption = "Incorrect! If you see these shapes in the experiment, you should press the '<% values.response_key_string %>' key, because the shapes include either a circle or a square. In this case, do you see a circle or a square?"
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
 / responsefontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
 / options = ("Circle", "Square")
@@ -320,7 +320,7 @@
 </surveypage>
 
 <radiobuttons interactive_q3c_rb_correct>
-/ caption = "Correct! In this case, is the square in the big shapes, or the little shapes?"
+/ caption = "Correct! Is the square in the big shapes or the little shapes?"
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
 / responsefontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
 / options = ("In the big shapes", "In the little shapes")
@@ -335,7 +335,7 @@
 </surveypage>
 
 <radiobuttons interactive_q3c_rb_incorrect>
-/ caption = "Incorrect! The shapes include a square. In this case, is the square in the big shapes, or the little shapes?"
+/ caption = "Incorrect! The shapes include a square. In this case, is the square in the big shapes or the little shapes?"
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
 / responsefontstyle = (parameters.fontfamily_default, parameters.fontsize_survey, false, false, false, false, 5, 1)
 / options = ("In the big shapes", "In the little shapes")
@@ -349,9 +349,9 @@
 </surveypage>
 
 <caption interactive_q3d_caption_correct>
-/ caption = "Correct! If you see these shapes in the experiment, you should press the '<% values.response_key_string %>' key, because the shapes include either a circle or a square—In this case, there is a square in the big shapes."
+/ caption = "Correct! There is a square in the big shapes."
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
-/ position = (10%, 50%)
+/ position = (10%, 70%)
 / size = (80%, null)
 </caption>
 
@@ -362,7 +362,7 @@
 <caption interactive_q3d_caption_incorrect>
 / caption = "Incorrect! The square is in the big shapes. If you see these shapes in the experiment, you should press the '<% values.response_key_string %>' key, because the shapes include either a circle or a square—In this case, there is a square in the big shapes."
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
-/ position = (10%, 50%)
+/ position = (10%, 70%)
 / size = (80%, null)
 </caption>
 
@@ -397,7 +397,7 @@
 <caption interactive_q4b_caption_correct>
 / caption = "Correct! If you see these shapes in the experiment, you should NOT press the '<% values.response_key_string %>' key, because the shapes do not include a circle or square, in the big shapes or the little shapes."
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
-/ position = (10%, 50%)
+/ position = (10%, 70%)
 / size = (80%, null)
 </caption>
 
@@ -408,6 +408,6 @@
 <caption interactive_q4b_caption_incorrect>
 / caption = "Incorrect! If you see these shapes in the experiment, you should NOT press the '<% values.response_key_string %>' key, because the shapes do not include a circle or square, in the big shapes or the little shapes."
 / fontstyle = (parameters.fontfamily_default, parameters.fontsize_survey_caption, false, false, false, false, 5, 1)
-/ position = (10%, 50%)
+/ position = (10%, 70%)
 / size = (80%, null)
 </caption>
