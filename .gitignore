@@ -3,3 +3,4 @@
 *.RData
 *.Rhistory
 inquisit_from_scratch/stimulus_development/
+.Rproj.user
