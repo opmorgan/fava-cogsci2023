@@ -1,5 +1,5 @@
 *.DS_store
-.Rproj.user
-.RData
-.Rhistory
+*.Rproj.user
+*.RData
+*.Rhistory
 inquisit_from_scratch/stimulus_development/
