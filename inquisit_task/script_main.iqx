@@ -1099,6 +1099,7 @@ TEST_inst_with_pics;
 / subjects = (1 of 2) // Subjects who will respond with "/" first
 // To automatically assign subject ID and group by odd/even, host on inquisit website.
 // https://www.millisecond.com/support/docs/current/html/articles/websubjectnumbers.htm
+/ groupassignment = groupnumber
 / blocks = [
 	1=inst_1_2_UNIVERSAL;
 	2=demographics;
@@ -1120,6 +1121,7 @@ TEST_inst_with_pics;
 
 <expt>
 / subjects = (2 of 2) // Subjects who will respond with "z" first
+/ groupassignment = groupnumber
 / blocks = [
 	1=inst_1_2_UNIVERSAL;
 	2=demographics;

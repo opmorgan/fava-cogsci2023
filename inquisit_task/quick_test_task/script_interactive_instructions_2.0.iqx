@@ -265,6 +265,17 @@
 // Test experiment loop
 <expt>
 / subjects = (1 of 2) // Subjects who will respond with "/" first
+/ groupassignment = groupnumber
+// To automatically assign subject ID and group by odd/even, host on inquisit website.
+// https://www.millisecond.com/support/docs/current/html/articles/websubjectnumbers.htm
+/ blocks = [
+	1=interactive_instructions_zee
+	]
+</expt>
+
+<expt>
+/ subjects = (2 of 2) // Subjects who will respond with "/" first
+/ groupassignment = groupnumber
 // To automatically assign subject ID and group by odd/even, host on inquisit website.
 // https://www.millisecond.com/support/docs/current/html/articles/websubjectnumbers.htm
 / blocks = [
