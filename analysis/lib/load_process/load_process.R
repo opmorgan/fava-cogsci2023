@@ -432,6 +432,7 @@ load_and_summarize_proc <-
         rt_local_LVF = as.numeric(),
         rt_local_RVF = as.numeric(),
         rt_overall = as.numeric(),
+        duration_s = as.numeric(),
         exclude_many_gos = as.logical(),
         exclude_low_acc = as.logical(),
         exclude_low_rt = as.logical(),
@@ -684,6 +685,10 @@ summarize_ind <- function(ind_proc, data_type = "task") {
       summarize(rt_overall = median(rt))
     
     ind_summary <- left_join(ind_summary, rt_overall)
+    
+    ## Calculate overall duration
+    ind_summary <- ind_summary %>%
+      mutate(duration_s = last(ind_proc$time_elapsed_ms) / 1000)
     
     #### Exclusions
     ## Responded "go" almost every time?

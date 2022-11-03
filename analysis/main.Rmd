@@ -59,8 +59,8 @@ resummarize_end_data <- TRUE
 ### Load and process task data
 ```{r load_process_task}
 data_dir <- here::here("data")
-input_dir <- here::here(data_dir, "input_prepilot")
-proc_dir <- here::here(data_dir, "proc_prepilot")
+input_dir <- here::here(data_dir, "input_0pt5")
+proc_dir <- here::here(data_dir, "proc_0pt5")
 
 ## If data have been processed already, set to FALSE
 if (reprocess_task_data == TRUE) {
@@ -204,9 +204,14 @@ if (resummarize_end_data == TRUE) {
 # input_path <- input_files[1]
 # input_path
 # ind_proc <- load_proc(input_path, data_type = data_type)
-# ind_proc
+# 
+# duration_s <- last(ind_proc$time_elapsed_ms) / 1000
+# duration_s
+# 
+# 
 # ind_summary <- summarize_ind(ind_proc, data_type = data_type)
 # ind_summary
+# 
 # 
 # group_summary <- group_summary %>% add_row(ind_summary)
 # group_summary
