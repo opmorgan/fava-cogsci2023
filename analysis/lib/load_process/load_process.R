@@ -320,7 +320,7 @@ clean_recoded <- function(data_recoded, data_type) {
       ## "advance" trial, which we don't care about)
       mutate(trialnum = (trialnum / 2) + .5) %>%
       ## Recode blocknum (because instructions count as blocks)
-      mutate(blocknum = (blocknum / 2) - 1) %>%
+      mutate(blocknum = (blocknum / 2) - 1.5) %>%
       
       ## Add field for block type (main or practice)
       mutate(block_type = case_when(
@@ -412,7 +412,7 @@ save_cleaned <- function(data_cleaned, proc_dir, data_type) {
 
 ####***********************************************************************####
 #### LOAD AND SUMMARIZE PROCESSED INDIVIDUAL DATA
-## Load and summarize an individual's processed data (main loop)
+## Load and summarize an individual's processed data (wide) (main loop)
 load_and_summarize_proc <-
   function(input_dir, output_dir, data_type) {
     if (data_type == "task") {
@@ -749,3 +749,72 @@ summarize_ind <- function(ind_proc, data_type = "task") {
   return(ind_summary)
   
 }
+
+## Load and combine individuals' processed data (long)
+load_and_combine_proc <-
+  function(input_dir, output_dir, data_type) {
+    if (data_type == "task") {
+      group_proc <- tibble(
+        subject = as.character(),
+        time_elapsed_ms = as.numeric(),
+        blocknum = as.numeric(),
+        block_type = as.character(),
+        block_response = as.character(),
+        trialnum = as.numeric(),
+        target = as.character(),
+        level = as.character(),
+        field = as.character(),
+        target_present = as.character(),
+        response = as.character(),
+        correct = as.numeric(),
+        rt = as.numeric(),
+      )
+    } else if (data_type == "ehi") {
+      group_proc <- tibble(
+        subject = as.character(),
+        ehi_i1_writing = as.numeric(),
+        ehi_i2_throwing = as.numeric(),
+        ehi_i3_toothbrush = as.numeric(),
+        ehi_i4_spoon = as.numeric(),
+        ehi_total = as.numeric()
+      )
+    } else if (data_type == "demographics") {
+      group_proc <- tibble(
+        subject = as.character(),
+        age = as.numeric(),
+        country = as.character(),
+        sex = as.character(),
+        education = as.character(),
+        race = as.character(),
+        hispanic_ethnicity = as.character()
+      )
+    } else if (data_type == "end") {
+      group_proc <- tibble(
+        subject = as.character(),
+        task_experience_response = as.character(),
+        task_experience_other_response = as.character(),
+        open_ended_feedback_response = as.character()
+      )
+    }
+    
+    input_files <- get_input_paths(
+      input_dir = here(proc_dir, "individual"),
+      data_type = data_type,
+      pattern = "*.tsv"
+    )
+    
+    n_input_files <- length(input_files)
+    for (j in (c(1:n_input_files))) {
+      cli::cli_text("{.strong {j}/{n_input_files} (Loading processed {data_type} data)...}")
+      input_path <-  input_files[j]
+      ind_proc <- load_proc(input_path, data_type)
+      group_proc <- group_proc %>% add_row(ind_proc)
+    }
+    
+    file_name <- str_c("combined_", data_type, ".tsv")
+    save_path <- here::here(output_dir, file_name)
+    cli::cli_alert_info("{.strong Saving combined {data_type} data to:}")
+    cli::cli_bullets(c(" " = glue("{save_path}")))
+    write_tsv(group_proc, save_path)
+    return(group_proc)
+  }
