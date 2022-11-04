@@ -33,7 +33,7 @@ library(glue) # To make writing error message strings easier
 source(here::here("lib", "load_process", "load_process.R"))
 ```
 
-```{r config}
+```{r config, include = F}
 reprocess_task_data <- TRUE
 reprocess_ehi_data <- TRUE
 reprocess_demographics_data <- TRUE
@@ -62,30 +62,36 @@ data_dir <- here::here("data")
 input_dir <- here::here(data_dir, "input_0pt5")
 proc_dir <- here::here(data_dir, "proc_0pt5")
 
+
+# readr::read_tsv(here(proc_dir, "individual", ))
+# input_files <- get_input_paths(
+#   input_dir = here(proc_dir, "individual"),
+#                    data_type = "task", pattern = "*.tsv")
+# input_files
 ## If data have been processed already, set to FALSE
 if (reprocess_task_data == TRUE) {
-  load_and_process(input_dir, proc_dir, data_type = "task")
-}
+  process_raw(input_dir, proc_dir, data_type = "task")
+} else {}
 ```
 
 ## Load and process survey data
 ```{r load_process_surveys}
 if (reprocess_ehi_data == TRUE) {
-  load_and_process(input_dir, proc_dir, data_type = "ehi")
+  process_raw(input_dir, proc_dir, data_type = "ehi")
 }
 
 #TODO: Process demographic, end question data
 if (reprocess_demographics_data == TRUE) {
-  load_and_process(input_dir, proc_dir, data_type = "demographics")
+  process_raw(input_dir, proc_dir, data_type = "demographics")
 }
 
 if (reprocess_end_data == TRUE) {
-  load_and_process(input_dir, proc_dir, data_type = "end")
+  process_raw(input_dir, proc_dir, data_type = "end")
 }
 ```
 
 ```{r debug_survey, include = F}
-## For testing: step through load_and_process for an individual input file
+## For testing: step through process_raw for an individual input file
 #  data_type <- "task"
 #  input_files <- get_input_paths(input_dir, data_type)
 # 
@@ -220,6 +226,10 @@ if (resummarize_end_data == TRUE) {
 
 Create combined summary table (with task and survey data)
 ```{r combine}
+if (resummarize_task_data == TRUE
+    | resummarize_ehi_data == TRUE
+    | resummarize_demographics_data == TRUE
+    | resummarize_end_data == TRUE) {
 ## Combine summaries into one big table, with a wide row for each subject.
 summary <- task_summary %>%
   left_join(ehi_summary) %>% 
@@ -227,6 +237,7 @@ summary <- task_summary %>%
   left_join(end_summary)
 
 write_tsv(summary, here::here(summary_output_dir, "summary.tsv"))
+}
 ```
 
 ## Analyze data and report results, for each individual

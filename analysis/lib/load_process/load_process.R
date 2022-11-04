@@ -9,7 +9,7 @@ source(here::here("lib", "load_process", "data_tests.R"))
 ####***********************************************************************####
 #### PROCESS INDIVIDUAL-LEVEL DATA
 ## Given an input folder, load and process all task data (main loop)
-load_and_process <- function(input_dir, proc_dir, data_type) {
+process_raw <- function(input_dir, proc_dir, data_type) {
   input_files <- get_input_paths(input_dir, data_type)
   n_input_files <- length(input_files)
   for (j in (c(1:n_input_files))) {
