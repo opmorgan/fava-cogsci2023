@@ -30,7 +30,7 @@ code_target_level_field <- function(data_raw) {
   global_stimuli <- c(global_square_stimuli, global_circle_stimuli)
   local_stimuli <- c(local_square_stimuli, local_circle_stimuli)
   
-  data_recoded <- data_raw %>%
+  data_recoded <- data_raw |>
     mutate(
       target = case_when(
         (stimulus_left %in% square_stimuli)

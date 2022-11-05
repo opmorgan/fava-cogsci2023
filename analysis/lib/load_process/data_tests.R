@@ -7,11 +7,11 @@ data_tests <- function(data_cleaned, data_type) {
       msg_done = "Tested that data file includes the expected number of each trial type."
     )
     subject_id <-
-      data_cleaned$subject %>% first() %>% as.character()
+      data_cleaned$subject |> first() |> as.character()
     ## Test that:
     ## (1) There are 160 trials  where block_type = "main"
-    main_trials <- data_cleaned %>% filter(block_type == "main")
-    n_main_trials <- main_trials %>%  dim() %>% .[[1]]
+    main_trials <- data_cleaned |> filter(block_type == "main")
+    n_main_trials <- main_trials |>  dim() |> .[[1]]
     expected_n <- 160
     if (n_main_trials != expected_n) {
       cli::cli_abort(c(
@@ -24,9 +24,9 @@ data_tests <- function(data_cleaned, data_type) {
     
     ## (1) Of these 160 trials, 80 have block = "main_z"; 80, "main_slash"
     for (block_response_var in c("z", "slash")) {
-      main_block_trials <- main_trials %>%
+      main_block_trials <- main_trials |>
         filter(block_response == block_response_var)
-      n_main_block_trials <- main_block_trials %>% dim() %>% .[[1]]
+      n_main_block_trials <- main_block_trials |> dim() |> .[[1]]
       expected_n <- 80
       if (n_main_block_trials != expected_n) {
         cli::cli_abort(c(
@@ -40,12 +40,12 @@ data_tests <- function(data_cleaned, data_type) {
     
     ## (1) In each block of 80 trials, 80% (64/80) of trials are target-present (they contain a circle or a square), and 20% (16/80) of trials are target-absent
     for (block_response_var in c("z", "slash")) {
-      main_block_trials <- main_trials %>%
+      main_block_trials <- main_trials |>
         filter(block_response == block_response_var)
-      main_block_present_trials <- main_block_trials %>%
+      main_block_present_trials <- main_block_trials |>
         filter(target %in% c("square", "circle"))
       n_main_block_present_trials <-
-        main_block_present_trials %>% dim() %>% .[[1]]
+        main_block_present_trials |> dim() |> .[[1]]
       expected_n <- 64
       if (n_main_block_present_trials != expected_n) {
         cli::cli_abort(
@@ -61,13 +61,13 @@ data_tests <- function(data_cleaned, data_type) {
     
     ## (1) In each block of 80 trials, 32 have global targets; 32, local.
     for (block_response_var in c("z", "slash")) {
-      main_block_trials <- main_trials %>%
+      main_block_trials <- main_trials |>
         filter(block_response == block_response_var)
       for (level_var in c("global", "local")) {
-        main_block_level_trials <- main_block_trials %>%
+        main_block_level_trials <- main_block_trials |>
           filter(level == level_var)
         n_main_block_level_trials <-
-          main_block_level_trials %>% dim() %>% .[[1]]
+          main_block_level_trials |> dim() |> .[[1]]
         expected_n <- 32
         if (n_main_block_level_trials != expected_n) {
           cli::cli_abort(
@@ -85,21 +85,21 @@ data_tests <- function(data_cleaned, data_type) {
     
     ## (1) Of the 32 global targets, 16 are LVF and 16 RVF; of the 32 local, 16 are LVF/RVF.
     for (block_response_var in c("z", "slash")) {
-      main_block_trials <- main_trials %>%
+      main_block_trials <- main_trials |>
         filter(block_response == block_response_var)
       for (level_var in c("global", "local")) {
-        main_block_level_trials <- main_block_trials %>%
+        main_block_level_trials <- main_block_trials |>
           filter(level == level_var)
         n_main_block_level_trials <-
-          main_block_level_trials %>% dim() %>% .[[1]]
+          main_block_level_trials |> dim() |> .[[1]]
         
         for (field_var in c("LVF", "RVF")) {
-          main_block_level_field_trials <- main_block_level_trials %>%
+          main_block_level_field_trials <- main_block_level_trials |>
             filter(field == field_var)
           
           n_main_block_level_field_trials <-
-            main_block_level_field_trials %>%
-            dim() %>% .[[1]]
+            main_block_level_field_trials |>
+            dim() |> .[[1]]
           
           expected_n <- 16
           if (n_main_block_level_field_trials != expected_n) {
@@ -124,7 +124,7 @@ data_tests <- function(data_cleaned, data_type) {
     )
     
     ## (1) When "target" is anything other than absent, the column "target_present" has a "yes"; if not, a "no"
-    test_vector <- data_cleaned %>%
+    test_vector <- data_cleaned |>
       mutate(
         correctly_matches = case_when(
           (target %in% c("circle", "square")) & target_present == "yes" ~ 1,
@@ -134,7 +134,7 @@ data_tests <- function(data_cleaned, data_type) {
           (target == "absent") & target_present == "yes" ~ 0,
           TRUE ~ 0
         )
-      ) %>% .[["correctly_matches"]]
+      ) |> .[["correctly_matches"]]
     n_mismatches <- sum(test_vector == 0)
     if (n_mismatches >= 1) {
       cli::cli_abort(
@@ -149,13 +149,13 @@ data_tests <- function(data_cleaned, data_type) {
     
     ## (1)When a target is present and response is "present,"
     ## the trial is marked as correct.
-    test_vector <- data_cleaned %>%
+    test_vector <- data_cleaned |>
       mutate(correctly_matches = case_when(
         (target_present == "yes")
         & (response == "present")
         & (correct) == 0 ~ 0,
         TRUE ~ 1
-      )) %>% .[["correctly_matches"]]
+      )) |> .[["correctly_matches"]]
     n_mismatches <- sum(test_vector == 0)
     if (n_mismatches >= 1) {
       cli::cli_abort(
@@ -170,13 +170,13 @@ data_tests <- function(data_cleaned, data_type) {
     
     ## (1)When a target is present and response is "absent,"
     ## the trial is marked as incorrect.
-    test_vector <- data_cleaned %>%
+    test_vector <- data_cleaned |>
       mutate(correctly_matches = case_when(
         (target_present == "yes")
         & (response == "absent")
         & (correct) == 1 ~ 0,
         TRUE ~ 1
-      )) %>% .[["correctly_matches"]]
+      )) |> .[["correctly_matches"]]
     n_mismatches <- sum(test_vector == 0)
     if (n_mismatches >= 1) {
       cli::cli_abort(
@@ -191,13 +191,13 @@ data_tests <- function(data_cleaned, data_type) {
     
     ## (1)When no target is present and response is "absent,"
     ## the trial is marked as correct.
-    test_vector <- data_cleaned %>%
+    test_vector <- data_cleaned |>
       mutate(correctly_matches = case_when(
         (target_present == "no")
         & (response == "absent")
         & (correct) == 0 ~ 0,
         TRUE ~ 1
-      )) %>% .[["correctly_matches"]]
+      )) |> .[["correctly_matches"]]
     n_mismatches <- sum(test_vector == 0)
     if (n_mismatches >= 1) {
       cli::cli_abort(
@@ -212,13 +212,13 @@ data_tests <- function(data_cleaned, data_type) {
     
     ## (1)When no target is present and response is "present,"
     ## the trial is marked as incorrect.
-    test_vector <- data_cleaned %>%
+    test_vector <- data_cleaned |>
       mutate(correctly_matches = case_when(
         (target_present == "no")
         & (response == "present")
         & (correct) == 1 ~ 0,
         TRUE ~ 1
-      )) %>% .[["correctly_matches"]]
+      )) |> .[["correctly_matches"]]
     n_mismatches <- sum(test_vector == 0)
     if (n_mismatches >= 1) {
       cli::cli_abort(

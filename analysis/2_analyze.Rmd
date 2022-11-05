@@ -21,6 +21,13 @@ options(dplyr.summarise.inform = FALSE)
 library(here)
 library(tidyverse)
 library(cli) # For printing error messages
+
+library(lme4)
+library(emmeans)
+library(broom)
+library(kableExtra)
+
+source(here::here("lib", "load_process", "load_process.R"))
 ```
 
 ```{r config}
@@ -29,13 +36,23 @@ proc_dir <- here::here(data_dir, "proc_prepilot")
 ```
 
 
+```{r}
+#### Define functions for formatting and styling
+
+## Function to make pretty kable that rounds to 2 digits and stays in place
+pretty_kable <- function(table, caption = NULL, digits = 2) {
+  kable(table, "latex", digits = digits, caption = caption,
+        booktabs = T, linesep = "") |>
+  kable_styling(latex_options = c("striped", "HOLD_position"))
+}
+```
+
 ## Analyze data
 ```{r load_combined, include = F}
 ## Load combined trial-per-row data
-## TODO: add duration_s (and other missing calculated variables?) to this table
-## TODO: add task_experience_response, total duration to exclusion criteria.
-aah <- readr::read_tsv(
-  here(proc_dir, "combined", "combined.tsv"),
+## TODO: add task_experience_response, total duration, and country to exclusion criteria.
+aah_task <- readr::read_tsv(
+  here(proc_dir, "combined", "combined_task.tsv"),
   col_types = cols(
     subject = col_character(),
     time_elapsed_ms = col_double(),
@@ -50,61 +67,152 @@ aah <- readr::read_tsv(
     response = col_character(),
     correct = col_double(),
     rt = col_double(),
-    ehi_i1_writing = col_double(),
-    ehi_i2_throwing = col_double(),
-    ehi_i3_toothbrush = col_double(),
-    ehi_i4_spoon = col_double(),
-    ehi_total = col_double(),
-    age = col_double(),
-    country = col_character(),
-    sex = col_character(),
-    education = col_double(),
-    race = col_character(),
-    hispanic_ethnicity = col_character(),
-    task_experience_response = col_character(),
-    task_experience_other_response = col_character(),
-    open_ended_feedback_response = col_character()
   )
-) %>% 
-  filter(block_type == "main" & target_present == "yes") %>%
+) |>
+  filter(block_type == "main" & target_present == "yes") |>
+  select(subject,
+         block_response,
+         target,
+         level,
+         field,
+         correct,
+         rt)
+
+aah_summary <- load_summary() |>
   select(
     subject,
-    block_response,
-    target,
-    level,
-    field,
-    correct,
-    rt,
+    first_block,
     ehi_total,
     age,
     country,
     sex,
     education,
     race,
-    open_ended_feedback_response
+    rt_overall,
+    duration_s,
+    task_experience_other_response,
+    exclude
   )
 
-aah
+aah <- left_join(aah_task, aah_summary) |>
+  filter(exclude == 0)
 ```
 
+### Describe demographics
+```{r}
+## Show one-row table with summary info
+report_mean_sd <- function(numeric_vector) {
+  return(str_c(
+    round(mean(numeric_vector),2),
+    " (", round(sd(numeric_vector), 2), ")"))
+}
+
+report_country <- function(country_char_vector) {
+  n_us <- sum(country_char_vector == "US")
+  n_not_us <- sum(country_char_vector != "US")
+  return(str_c(n_us, "/", n_not_us))
+}
+
+report_sex <- function(sex_char_vector) {
+  n_male <- sum(sex_char_vector == "Male")
+  n_female <- sum(sex_char_vector == "Female")
+  n_other <- sum(sex_char_vector == "Not listed:")
+  if (n_other == 0) {
+    return(str_c(n_male, "/", n_female))
+  } else if (n_other > 1) {
+    return(str_c(n_male, "/", n_female, "/", n_other))
+  }
+}
+
+rt_demo <- aah_summary |>
+  summarize(N = n(),
+            `Age (years)` = report_mean_sd(age),
+            `Edu (years)`= report_mean_sd(education),
+            `Sex (M/F)` = report_sex(sex),
+            EHI = report_mean_sd(ehi_total),
+  )
+
+rt_demo |> pretty_kable()
+```
+
+```{r}
+## Show full data for country, race, task experience, task feedback
+country_tbl <- aah_summary |> group_by(country) |> summarize(n = n()) |> arrange(-n)
+country_tbl |> pretty_kable()
+```
+
+
 ### Pilot analyses: do we see the typical field x level interaction in right handers?
+Report descriptive statistics: median RT by level and field.
+```{r}
+rt_descriptive <- aah |> 
+  group_by(field, level) |> 
+  summarize(median = median(rt),
+            mean = mean(rt),
+            SD = sd(rt))
+
+
+```
+
 ```{r analyze_pilot_rt}
+library(broom)
+## Is there an interaction of field x level?
+## Make a linear model using data from every trial.
+## Fixed effects: field, level (and their interaction)
+## Random effects: subject.
+## rt ~ field + level + field:level
+
+
+rt_model <- lmer(rt ~ field:level + field + level + (1 | subject), data = aah)
+
+## Use anova() to test 2-way interaction effect.
+interaction_stats <-
+  function(model_with_interaction,
+           model_with_no_interaction) {
+    return(anova(model_with_interaction, model_with_no_interaction))
+  }
+
+rt_model_no_interaction <- update(lm1, . ~ . - field:level)
+interaction_stats(rt_model, rt_model_no_interaction) |> tidy()
+
+## Use an emmeans contrast, instead of ANOVA.
+## (1) Create emmeans model object
+rt_emm <- emmeans(rt_model, ~ level*field)
+## (2) Estimate interaction effect
+rt_emm |> contrast(interaction = c("consec")) |> summary(infer = T) |> tidy()
+
+## Consider including variables not-of-interest as covariates:
+## target (circle/square), first block (z or slash), overall median rt (ms).
+```
+```{r analyse_pilot_acc}
+## Make a linear model using correct/incorrect responses from every trial.
+```
+
+```{r}
+warpbreaks
+warp.lm <- lm(breaks ~ wool*tension, data = warpbreaks)
+warp.emm <- emmeans(warp.lm, ~ tension | wool)
+contrast(warp.emm, "poly")    # inherits 'by = "wool"' from warp.emm
+pairs(warp.emm)               # ditto
+contrast(warp.emm, "eff", by = NULL)  # contrasts of the 6 factor combs
+pairs(warp.emm, simple = "wool") # same as pairs(warp.emm, by = "tension")
+```
+
+
+### Main experiment analyses: does global LVF bias differ depending on handedness?
+```{r analyze_main_rt}
 ## Reaction time analyses.
 ## Linear model using data from every trial.
-## (1) Binary handedness. (target + field + level + target:field + target:level + field:level + target:field:level)
-aah
+## (1) Binary handedness. 
+## rt ~ target*field*level*handedness
 
 ## (2) Continuous handedness
 
-## As a check, use summary rt data instead of trial-level data.
+## As a sanity check, do parallel analyses with summary rt data instead of trial-level data.
 ```
 
-
-
-
-
-
-
+```{r analyse_main_acc}
+```
 
 ## Summarize demographics
 ```{r report_demographics}

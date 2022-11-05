@@ -185,7 +185,7 @@ load_raw <- function(input_path, data_type) {
     }
     
     subject_id <-
-      data_raw$subject %>% first() %>% as.character()
+      data_raw$subject |> first() |> as.character()
     ## Status message is down here so it can display subject ID on finish
     cli::cli_progress_step(
       msg = glue("Loading input file..."),
@@ -202,13 +202,13 @@ recode_raw <- function(data_raw, data_type) {
   if (data_type == "task") {
     ## TODO: rename output of this function "data_recoded", instead of "data_proc"
     ## Code target, level, field
-    data_proc <- data_raw %>% code_target_level_field()
+    data_proc <- data_raw |> code_target_level_field()
     
     ## Recode responses
-    data_proc <- data_proc %>%
+    data_proc <- data_proc |>
       rename(response_raw = response)
     
-    data_proc <- data_proc %>% mutate(
+    data_proc <- data_proc |> mutate(
       response_chr = case_when(
         response_raw == 0 ~ "",
         response_raw == 44 ~ "z",
@@ -223,14 +223,14 @@ recode_raw <- function(data_raw, data_type) {
     
     
     ## Recode reaction time
-    data_proc <- data_proc %>% rename(rt = latency)
+    data_proc <- data_proc |> rename(rt = latency)
     
   } else if (data_type == "ehi") {
-    data_proc <- data_raw %>%
+    data_proc <- data_raw |>
       select(-ends_with("latency"),-date,-time,-group,
              -session,
-             -build) %>%
-      rename_with(trim_end, ends_with("response")) %>%
+             -build) |>
+      rename_with(trim_end, ends_with("response")) |>
       mutate(across(
         starts_with("ehi"),
         ~ recode(
@@ -243,20 +243,20 @@ recode_raw <- function(data_raw, data_type) {
         )
       ))
   } else if (data_type == "demographics") {
-    data_proc <- data_raw %>%
+    data_proc <- data_raw |>
       ## remove all latency measures, and trim columns
       select(-ends_with("latency"),
              -date,
              -time,
              -group,
              -session,
-             -build) %>%
+             -build) |>
       ## remove "response" suffix
       rename_with(trim_end, ends_with("response"))
     
     ## Put all race responses in a vector
     race_answers <-
-      data_proc %>% select(starts_with("race")) %>% as.character()
+      data_proc |> select(starts_with("race")) |> as.character()
     ## If there is only one, code race as that race
     ## If there is more than one, code as "multiple races"
     answer_indices <- which(race_answers != "NA")
@@ -266,18 +266,18 @@ recode_raw <- function(data_raw, data_type) {
       race_recoded <- "Multiple"
     }
     
-    data_proc <- data_proc %>%
-      select(-starts_with("race")) %>%
-      mutate(race = race_recoded) %>%
-      select(subject, age, country, sex, education, race, ethnicity) %>%
-      rename(hispanic_ethnicity = ethnicity) %>% 
+    data_proc <- data_proc |>
+      select(-starts_with("race")) |>
+      mutate(race = race_recoded) |>
+      select(subject, age, country, sex, education, race, ethnicity) |>
+      rename(hispanic_ethnicity = ethnicity) |> 
       mutate(race = case_when(
         race == "Some other race (please describe)" ~ "Other",
         TRUE ~ race
       ))
     
     ## Code education as number of years (keep as character type)
-    data_proc <- data_proc %>% 
+    data_proc <- data_proc |> 
       mutate(education = case_when(
         education == "Doctoral or professional degree (~21+ years of education)" ~ "21",
         education == "Master's degree (~18 years)" ~ "18",
@@ -306,27 +306,27 @@ clean_recoded <- function(data_recoded, data_type) {
   
   if (data_type == "task") {
     ## Remove unused columns
-    data_cleaned <- data_recoded %>%
+    data_cleaned <- data_recoded |>
       
       ## Make subject a string, instead of  a number
-      mutate(subject = as.character(subject)) %>%
+      mutate(subject = as.character(subject)) |>
       ## Remove non-trial rows (leaving only experiment rows)
       filter(trialcode %in% c("practice_slash", "practice_z", "main_slash", "main_z"))
     
     ## Recode blocks
-    data_cleaned <- data_cleaned %>%
-      rename(block = trialcode) %>%
+    data_cleaned <- data_cleaned |>
+      rename(block = trialcode) |>
       ## Recode trialnum (because every other trial was an
       ## "advance" trial, which we don't care about)
-      mutate(trialnum = (trialnum / 2) + .5) %>%
+      mutate(trialnum = (trialnum / 2) + .5) |>
       ## Recode blocknum (because instructions count as blocks)
-      mutate(blocknum = (blocknum / 2) - 1.5) %>%
+      mutate(blocknum = (blocknum / 2) - 1.5) |>
       
       ## Add field for block type (main or practice)
       mutate(block_type = case_when(
         str_detect(block, "main") ~ "main",
         str_detect(block, "practice") ~ "practice"
-      )) %>%
+      )) |>
       
       ## Add field for block response (z or slash)
       mutate(
@@ -337,7 +337,7 @@ clean_recoded <- function(data_recoded, data_type) {
           practice_z = "z",
           practice_slash = "slash"
         )
-      ) %>%
+      ) |>
       select(
         subject,
         time_elapsed_ms,
@@ -355,15 +355,15 @@ clean_recoded <- function(data_recoded, data_type) {
       )
     
   } else if (data_type == "ehi") {
-    data_cleaned <- data_recoded %>%
-      mutate(ehi_total = sum(across(starts_with("ehi")))) %>% 
+    data_cleaned <- data_recoded |>
+      mutate(ehi_total = sum(across(starts_with("ehi")))) |> 
       select(subject,
              starts_with("ehi"))
   } else if (data_type == "demographics") {
     data_cleaned <- data_recoded
   } else if (data_type == "end") {
     data_cleaned <-
-      data_recoded %>% select(
+      data_recoded |> select(
         subject,
         task_experience_response,
         task_experience_other_response,
@@ -375,7 +375,7 @@ clean_recoded <- function(data_recoded, data_type) {
 }
 
 save_cleaned <- function(data_cleaned, proc_dir, data_type) {
-  subject_id <- data_cleaned$subject %>% first() %>% as.character()
+  subject_id <- data_cleaned$subject |> first() |> as.character()
   cli::cli_progress_step(
     msg = glue("Saving processed data..."),
     msg_done = glue("Saved processed data (subject {subject_id}).")
@@ -476,7 +476,7 @@ load_and_summarize_proc <-
       input_path
       ind_proc <- load_proc(input_path, data_type = data_type)
       ind_summary <- summarize_ind(ind_proc, data_type = data_type)
-      group_summary <- group_summary %>% add_row(ind_summary)
+      group_summary <- group_summary |> add_row(ind_summary)
     }
     file_name <- str_c("summary_", data_type, ".tsv")
     save_path <- here::here(output_dir, file_name)
@@ -559,7 +559,7 @@ load_proc <- function(input_path, data_type) {
     }
     
     subject_id <-
-      data_raw$subject %>% first() %>% as.character()
+      data_raw$subject |> first() |> as.character()
     ## Status message is down here so it can display subject ID on finish
     cli::cli_progress_step(
       msg = glue("Loading input file..."),
@@ -572,7 +572,7 @@ load_proc <- function(input_path, data_type) {
 ## Summarize an individual's processed data, and record any exclusions
 summarize_ind <- function(ind_proc, data_type = "task") {
   subject_id <-
-    ind_proc$subject %>% first() %>% as.character()
+    ind_proc$subject |> first() |> as.character()
   cli::cli_progress_step(
     msg = glue("Summarizing individual data..."),
     msg_done = glue("Summarized individual data (Subject {subject_id}).")
@@ -582,13 +582,13 @@ summarize_ind <- function(ind_proc, data_type = "task") {
     #### Accuracy
     ## Calculate percent correct for each block,
     ## separating present and absent trials
-    ind_proc <- ind_proc %>%
+    ind_proc <- ind_proc |>
       mutate(response_log = case_when(response == "absent" ~ 0,
-                                      response == "present" ~ 1)) %>%
+                                      response == "present" ~ 1)) |>
       filter(block_type == "main")
     
-    response_counts_pa <- ind_proc %>%
-      group_by(target_present, subject) %>%
+    response_counts_pa <- ind_proc |>
+      group_by(target_present, subject) |>
       summarize(
         total_responses = n(),
         n_present_resp = sum(response_log),
@@ -597,10 +597,10 @@ summarize_ind <- function(ind_proc, data_type = "task") {
         percent_correct = 100 * (n_correct / total_responses)
       )
     
-    acc_pa <- response_counts_pa %>%
-      ungroup() %>%
-      mutate(target_present = target_present %>% recode("no" = "absent", yes = "present")) %>%
-      select(subject, target_present, percent_correct) %>%
+    acc_pa <- response_counts_pa |>
+      ungroup() |>
+      mutate(target_present = target_present |> recode("no" = "absent", yes = "present")) |>
+      select(subject, target_present, percent_correct) |>
       pivot_wider(
         names_from = c(target_present),
         names_prefix = "acc_",
@@ -611,8 +611,8 @@ summarize_ind <- function(ind_proc, data_type = "task") {
     
     ## Calculate percent correct for each block,
     ## collapsing present and absent trials
-    response_counts_block <- ind_proc %>%
-      group_by(block_response, subject) %>%
+    response_counts_block <- ind_proc |>
+      group_by(block_response, subject) |>
       summarize(
         total_responses = n(),
         n_present_resp = sum(response_log),
@@ -621,9 +621,9 @@ summarize_ind <- function(ind_proc, data_type = "task") {
         percent_correct = 100 * (n_correct / total_responses)
       )
     
-    acc_all <- response_counts_block %>%
-      ungroup() %>%
-      select(subject, block_response, percent_correct) %>%
+    acc_all <- response_counts_block |>
+      ungroup() |>
+      select(subject, block_response, percent_correct) |>
       pivot_wider(
         names_from = block_response,
         names_prefix = "acc_",
@@ -632,19 +632,19 @@ summarize_ind <- function(ind_proc, data_type = "task") {
     
     ind_summary <- left_join(acc_all, ind_summary)
     
-    first_block_var <- ind_proc %>%
-      slice(1) %>%
+    first_block_var <- ind_proc |>
+      slice(1) |>
       .[["block_response"]]
     
     ## Record which block was first (z or slash)
-    ind_summary <- ind_summary %>%
-      mutate(first_block = first_block_var) %>%
+    ind_summary <- ind_summary |>
+      mutate(first_block = first_block_var) |>
       select(subject, first_block, everything())
     
     ## Calculate accuracy by condition (level x field)
-    response_counts_condition <- ind_proc %>%
-      filter(target_present == "yes") %>%
-      group_by(level, field, subject) %>%
+    response_counts_condition <- ind_proc |>
+      filter(target_present == "yes") |>
+      group_by(level, field, subject) |>
       summarize(
         total_responses = n(),
         n_present_resp = sum(response_log),
@@ -653,9 +653,9 @@ summarize_ind <- function(ind_proc, data_type = "task") {
         percent_correct = 100 * (n_correct / total_responses)
       )
     
-    acc_condition <- response_counts_condition %>%
-      ungroup() %>%
-      select(subject, level, field, percent_correct) %>%
+    acc_condition <- response_counts_condition |>
+      ungroup() |>
+      select(subject, level, field, percent_correct) |>
       pivot_wider(
         names_from = c(level, field),
         names_prefix = "acc_",
@@ -666,10 +666,10 @@ summarize_ind <- function(ind_proc, data_type = "task") {
     
     #### Reaction time
     ## Calculate median RT by condition
-    rt_condition <- ind_proc %>%
-      filter(target_present == "yes") %>%
-      group_by(level, field, subject) %>%
-      summarize(rt = median(rt)) %>%
+    rt_condition <- ind_proc |>
+      filter(target_present == "yes") |>
+      group_by(level, field, subject) |>
+      summarize(rt = median(rt)) |>
       pivot_wider(
         names_from = c(level, field),
         names_prefix = "rt_",
@@ -679,30 +679,30 @@ summarize_ind <- function(ind_proc, data_type = "task") {
     ind_summary <- left_join(ind_summary, rt_condition)
     
     ## Calculate overall median RT
-    rt_overall <- ind_proc %>%
-      filter(target_present == "yes") %>%
-      group_by(subject) %>%
+    rt_overall <- ind_proc |>
+      filter(target_present == "yes") |>
+      group_by(subject) |>
       summarize(rt_overall = median(rt))
     
     ind_summary <- left_join(ind_summary, rt_overall)
     
     ## Calculate overall duration
-    ind_summary <- ind_summary %>%
+    ind_summary <- ind_summary |>
       mutate(duration_s = last(ind_proc$time_elapsed_ms) / 1000)
     
     #### Exclusions
     ## Responded "go" almost every time?
     too_many_gos <- 0
     for (block_response_var in response_counts_block$block_response) {
-      n_gos <- response_counts_block %>%
-        filter(block_response == block_response_var) %>%
+      n_gos <- response_counts_block |>
+        filter(block_response == block_response_var) |>
         .[["n_present_resp"]]
       if (n_gos >= 78) {
         too_many_gos <- 1
       }
     }
     
-    ind_summary <- ind_summary %>%
+    ind_summary <- ind_summary |>
       mutate(exclude_many_gos = too_many_gos)
     
     ## Accuracy at 60% or lower on any main block?
@@ -711,7 +711,7 @@ summarize_ind <- function(ind_proc, data_type = "task") {
       low_acc <- 1
     }
     
-    ind_summary <- ind_summary %>%
+    ind_summary <- ind_summary |>
       mutate(exclude_low_acc = low_acc)
     
     ## Median RT over 1500 or under 200?
@@ -724,11 +724,11 @@ summarize_ind <- function(ind_proc, data_type = "task") {
       high_rt <- 1
     }
     
-    ind_summary <- ind_summary %>%
+    ind_summary <- ind_summary |>
       mutate(exclude_low_rt = low_rt,
              exclude_high_rt = high_rt)
     
-    ind_summary <- ind_summary %>%
+    ind_summary <- ind_summary |>
       mutate(
         exclude = case_when(
           exclude_many_gos == 1 ~ 1,
@@ -808,7 +808,7 @@ load_and_combine_proc <-
       cli::cli_text("{.strong {j}/{n_input_files} (Loading processed {data_type} data)...}")
       input_path <-  input_files[j]
       ind_proc <- load_proc(input_path, data_type)
-      group_proc <- group_proc %>% add_row(ind_proc)
+      group_proc <- group_proc |> add_row(ind_proc)
     }
     
     file_name <- str_c("combined_", data_type, ".tsv")
@@ -819,7 +819,7 @@ load_and_combine_proc <-
     return(group_proc)
   }
 
-load_summary <- function(input_path) {
+load_summary <- function(input_path = here(proc_dir, "summary", "summary.tsv")) {
   
   cli::cli_alert_info("Loading summary data from:")
   cli::cli_bullets(c(" " = "{input_path}"))

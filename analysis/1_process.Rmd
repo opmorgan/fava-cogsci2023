@@ -105,7 +105,7 @@ if (reprocess_end_data == TRUE) {
 # input_path
 # data_raw <- load_raw(input_path, data_type)
 # data_raw
-# subject_id <- data_raw$subject %>% first() %>% as.character()
+# subject_id <- data_raw$subject |> first() |> as.character()
 # subject_id
 # data_raw
 # data_recoded <- recode_raw(data_raw, data_type)
@@ -220,7 +220,7 @@ if (resummarize_end_data == TRUE) {
 # ind_summary
 # 
 # 
-# group_summary <- group_summary %>% add_row(ind_summary)
+# group_summary <- group_summary |> add_row(ind_summary)
 # group_summary
 
 ```
@@ -232,9 +232,9 @@ if (resummarize_task_data == TRUE
     | resummarize_demographics_data == TRUE
     | resummarize_end_data == TRUE) {
 ## Combine summaries into one big table, with a wide row for each subject.
-summary <- task_summary %>%
-  left_join(ehi_summary) %>% 
-  left_join(demo_summary) %>%
+summary <- task_summary |>
+  left_join(ehi_summary) |> 
+  left_join(demo_summary) |>
   left_join(end_summary)
 
 write_tsv(summary, here::here(summary_output_dir, "summary.tsv"))
@@ -259,7 +259,7 @@ if (recombine_summary_data == TRUE) {
 if (recombine_task_data == TRUE
     | recombine_summary_data == TRUE) {
   ## Combine all processed data into one long table
-  combined <- task_combined %>%
+  combined <- task_combined |>
     left_join(summary)
   save_path <- here::here(combined_output_dir, "combined_all.tsv")
   cli::cli_alert_info("{.strong Saving combined task, survey, and summary data to:}")
