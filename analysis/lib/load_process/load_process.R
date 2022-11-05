@@ -634,7 +634,7 @@ summarize_ind <- function(ind_proc, data_type = "task") {
     
     first_block_var <- ind_proc |>
       slice(1) |>
-      .[["block_response"]]
+      (\(.) .[["block_response"]])()
     
     ## Record which block was first (z or slash)
     ind_summary <- ind_summary |>
@@ -696,7 +696,7 @@ summarize_ind <- function(ind_proc, data_type = "task") {
     for (block_response_var in response_counts_block$block_response) {
       n_gos <- response_counts_block |>
         filter(block_response == block_response_var) |>
-        .[["n_present_resp"]]
+        (\(.) .[["n_present_resp"]])()
       if (n_gos >= 78) {
         too_many_gos <- 1
       }

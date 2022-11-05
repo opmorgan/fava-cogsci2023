@@ -11,7 +11,7 @@ data_tests <- function(data_cleaned, data_type) {
     ## Test that:
     ## (1) There are 160 trials  where block_type = "main"
     main_trials <- data_cleaned |> filter(block_type == "main")
-    n_main_trials <- main_trials |>  dim() |> .[[1]]
+    n_main_trials <- main_trials |>  dim() |> (\(.) .[[1]])()
     expected_n <- 160
     if (n_main_trials != expected_n) {
       cli::cli_abort(c(
@@ -26,7 +26,7 @@ data_tests <- function(data_cleaned, data_type) {
     for (block_response_var in c("z", "slash")) {
       main_block_trials <- main_trials |>
         filter(block_response == block_response_var)
-      n_main_block_trials <- main_block_trials |> dim() |> .[[1]]
+      n_main_block_trials <- main_block_trials |> dim() |> (\(.) .[[1]])()
       expected_n <- 80
       if (n_main_block_trials != expected_n) {
         cli::cli_abort(c(
@@ -45,7 +45,7 @@ data_tests <- function(data_cleaned, data_type) {
       main_block_present_trials <- main_block_trials |>
         filter(target %in% c("square", "circle"))
       n_main_block_present_trials <-
-        main_block_present_trials |> dim() |> .[[1]]
+        main_block_present_trials |> dim() |> (\(.) .[[1]])()
       expected_n <- 64
       if (n_main_block_present_trials != expected_n) {
         cli::cli_abort(
@@ -67,7 +67,7 @@ data_tests <- function(data_cleaned, data_type) {
         main_block_level_trials <- main_block_trials |>
           filter(level == level_var)
         n_main_block_level_trials <-
-          main_block_level_trials |> dim() |> .[[1]]
+          main_block_level_trials |> dim() |> (\(.) .[[1]])()
         expected_n <- 32
         if (n_main_block_level_trials != expected_n) {
           cli::cli_abort(
@@ -91,7 +91,7 @@ data_tests <- function(data_cleaned, data_type) {
         main_block_level_trials <- main_block_trials |>
           filter(level == level_var)
         n_main_block_level_trials <-
-          main_block_level_trials |> dim() |> .[[1]]
+          main_block_level_trials |> dim() |> (\(.) .[[1]])()
         
         for (field_var in c("LVF", "RVF")) {
           main_block_level_field_trials <- main_block_level_trials |>
@@ -99,7 +99,7 @@ data_tests <- function(data_cleaned, data_type) {
           
           n_main_block_level_field_trials <-
             main_block_level_field_trials |>
-            dim() |> .[[1]]
+            dim() |> (\(.) .[[1]])()
           
           expected_n <- 16
           if (n_main_block_level_field_trials != expected_n) {
@@ -134,7 +134,7 @@ data_tests <- function(data_cleaned, data_type) {
           (target == "absent") & target_present == "yes" ~ 0,
           TRUE ~ 0
         )
-      ) |> .[["correctly_matches"]]
+      ) |> (\(.) .[["correctly_matches"]])()
     n_mismatches <- sum(test_vector == 0)
     if (n_mismatches >= 1) {
       cli::cli_abort(
@@ -155,7 +155,7 @@ data_tests <- function(data_cleaned, data_type) {
         & (response == "present")
         & (correct) == 0 ~ 0,
         TRUE ~ 1
-      )) |> .[["correctly_matches"]]
+      )) |> (\(.) .[["correctly_matches"]])()
     n_mismatches <- sum(test_vector == 0)
     if (n_mismatches >= 1) {
       cli::cli_abort(
@@ -176,7 +176,7 @@ data_tests <- function(data_cleaned, data_type) {
         & (response == "absent")
         & (correct) == 1 ~ 0,
         TRUE ~ 1
-      )) |> .[["correctly_matches"]]
+      )) |> (\(.) .[["correctly_matches"]])()
     n_mismatches <- sum(test_vector == 0)
     if (n_mismatches >= 1) {
       cli::cli_abort(
@@ -197,7 +197,7 @@ data_tests <- function(data_cleaned, data_type) {
         & (response == "absent")
         & (correct) == 0 ~ 0,
         TRUE ~ 1
-      )) |> .[["correctly_matches"]]
+      )) |> (\(.) .[["correctly_matches"]])()
     n_mismatches <- sum(test_vector == 0)
     if (n_mismatches >= 1) {
       cli::cli_abort(
@@ -218,7 +218,7 @@ data_tests <- function(data_cleaned, data_type) {
         & (response == "present")
         & (correct) == 1 ~ 0,
         TRUE ~ 1
-      )) |> .[["correctly_matches"]]
+      )) |> (\(.) .[["correctly_matches"]])()
     n_mismatches <- sum(test_vector == 0)
     if (n_mismatches >= 1) {
       cli::cli_abort(

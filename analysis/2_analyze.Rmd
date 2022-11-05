@@ -88,8 +88,10 @@ aah_summary <- load_summary() |>
     sex,
     education,
     race,
+    hispanic_ethnicity,
     rt_overall,
     duration_s,
+    task_experience_response,
     task_experience_other_response,
     exclude
   )
@@ -137,9 +139,17 @@ rt_demo |> pretty_kable()
 
 ```{r}
 ## Show full data for country, race, task experience, task feedback
-country_tbl <- aah_summary |> group_by(country) |> summarize(n = n()) |> arrange(-n)
-country_tbl |> pretty_kable()
+aah_summary |> group_by(country) |> summarize(n = n()) |> arrange(-n) |> pretty_kable()
 ```
+```{r}
+aah_summary |> group_by(race) |> summarize(n = n()) |> arrange(-n) |> pretty_kable()
+```
+```{r}
+aah_summary
+aah_summary |> group_by(country) |> summarize(n = n()) |> arrange(-n) |> pretty_kable()
+```
+
+
 
 
 ### Pilot analyses: do we see the typical field x level interaction in right handers?
