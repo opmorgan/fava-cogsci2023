@@ -26,6 +26,7 @@ library(lme4)
 library(emmeans)
 library(broom)
 library(kableExtra)
+library(gt)
 
 source(here::here("lib", "load_process", "load_process.R"))
 ```
@@ -39,15 +40,20 @@ proc_dir <- here::here(data_dir, "proc_prepilot")
 ```{r}
 #### Define functions for formatting and styling
 
-## Function to make pretty kable that rounds to 2 digits and stays in place
-pretty_kable <- function(table, caption = NULL, digits = 2) {
-  kable(table, "latex", digits = digits, caption = caption,
-        booktabs = T, linesep = "") |>
-  kable_styling(latex_options = c("striped", "HOLD_position"))
+## Function to make pretty table that rounds to 2 digits and stays in place
+pretty_table <- function(table, title = NULL, digits = 3,
+                         groupname_col = NULL
+                         ) {
+    gt(table, groupname_col = groupname_col) %>%
+      tab_header(title = title) %>%
+      fmt_missing(columns = everything(), missing_text = "-") %>%
+      fmt_number(columns = where(is.numeric),
+                 drop_trailing_zeros = T,
+                 decimals = digits)
 }
 ```
 
-## Analyze data
+## Analyze data {.tabset}
 ```{r load_combined, include = F}
 ## Load combined trial-per-row data
 ## TODO: add task_experience_response, total duration, and country to exclusion criteria.
@@ -93,6 +99,7 @@ aah_summary <- load_summary() |>
     duration_s,
     task_experience_response,
     task_experience_other_response,
+    open_ended_feedback_response,
     exclude
   )
 
@@ -100,7 +107,7 @@ aah <- left_join(aah_task, aah_summary) |>
   filter(exclude == 0)
 ```
 
-### Describe demographics
+### Demographics
 ```{r}
 ## Show one-row table with summary info
 report_mean_sd <- function(numeric_vector) {
@@ -134,25 +141,60 @@ rt_demo <- aah_summary |>
             EHI = report_mean_sd(ehi_total),
   )
 
-rt_demo |> pretty_kable()
+rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
 ```
-
+<br>
 ```{r}
 ## Show full data for country, race, task experience, task feedback
-aah_summary |> group_by(country) |> summarize(n = n()) |> arrange(-n) |> pretty_kable()
+aah_summary |>
+  group_by(country) |>
+  summarize(n = n()) |>
+  rename(Country = country) |> 
+  arrange(-n) |>
+  pretty_table()
 ```
+<br>
 ```{r}
-aah_summary |> group_by(race) |> summarize(n = n()) |> arrange(-n) |> pretty_kable()
+aah_summary |>
+  group_by(race) |>
+  summarize(n = n()) |>
+  rename(Race = race) |> 
+  arrange(-n) |>
+  pretty_table()
 ```
+<br>
 ```{r}
-aah_summary
-aah_summary |> group_by(country) |> summarize(n = n()) |> arrange(-n) |> pretty_kable()
+aah_summary |>
+  group_by(hispanic_ethnicity) |>
+  summarize(n = n()) |>
+  rename(`Hispanic Ethnicity` = hispanic_ethnicity) |> 
+  arrange(-n) |>
+  pretty_table()
+```
+<br>
+```{r}
+task_experience <- aah_summary |>
+  group_by(task_experience_response, task_experience_other_response) |>
+  summarize(n = n()) |>
+  rename(`Have you done this task before?` = task_experience_response,
+         Explanation = task_experience_other_response) |> 
+  arrange(-n)
+task_experience |> pretty_table()
+```
+<br>
+```{r}
+feedback <- aah_summary |>
+  filter(open_ended_feedback_response != "NA") |> 
+  group_by(open_ended_feedback_response) |>
+  rename(`Open-ended feedback` = open_ended_feedback_response) |> 
+  summarize()
+feedback |> pretty_table()
 ```
 
+### Pilot analyses: Field x Level interaction
 
+In our pilot sample of right handers, do we see the typical field x level interaction? That is, do participants show a relative bias for global shapes in the left visual field (LVF)?
 
-
-### Pilot analyses: do we see the typical field x level interaction in right handers?
 Report descriptive statistics: median RT by level and field.
 ```{r}
 rt_descriptive <- aah |> 
@@ -161,18 +203,25 @@ rt_descriptive <- aah |>
             mean = mean(rt),
             SD = sd(rt))
 
-
+rt_descriptive |> pretty_table()
 ```
 
+TODO: estimate the effect of level, for each visual field.
+```{r}
+## Effect of level (global vs. local), for LVF
+
+## Effect of level (global vs. local), for RVF
+```
+
+
+<br>
+Test for field x level interaction, using the anova() function.
 ```{r analyze_pilot_rt}
-library(broom)
 ## Is there an interaction of field x level?
 ## Make a linear model using data from every trial.
 ## Fixed effects: field, level (and their interaction)
 ## Random effects: subject.
 ## rt ~ field + level + field:level
-
-
 rt_model <- lmer(rt ~ field:level + field + level + (1 | subject), data = aah)
 
 ## Use anova() to test 2-way interaction effect.
@@ -182,14 +231,19 @@ interaction_stats <-
     return(anova(model_with_interaction, model_with_no_interaction))
   }
 
-rt_model_no_interaction <- update(lm1, . ~ . - field:level)
-interaction_stats(rt_model, rt_model_no_interaction) |> tidy()
-
+rt_model_no_interaction <- update(rt_model, . ~ . - field:level)
+interaction_stats(rt_model, rt_model_no_interaction) |> tidy() |> pretty_table()
+```
+<br>
+Test for field x level interaction, using emmeans().
+```{r, cache = TRUE}
 ## Use an emmeans contrast, instead of ANOVA.
 ## (1) Create emmeans model object
 rt_emm <- emmeans(rt_model, ~ level*field)
+```
+```{r}
 ## (2) Estimate interaction effect
-rt_emm |> contrast(interaction = c("consec")) |> summary(infer = T) |> tidy()
+rt_emm |> contrast(interaction = c("consec")) |> summary(infer = T) |> tidy() |> pretty_table()
 
 ## Consider including variables not-of-interest as covariates:
 ## target (circle/square), first block (z or slash), overall median rt (ms).
@@ -198,18 +252,9 @@ rt_emm |> contrast(interaction = c("consec")) |> summary(infer = T) |> tidy()
 ## Make a linear model using correct/incorrect responses from every trial.
 ```
 
-```{r}
-warpbreaks
-warp.lm <- lm(breaks ~ wool*tension, data = warpbreaks)
-warp.emm <- emmeans(warp.lm, ~ tension | wool)
-contrast(warp.emm, "poly")    # inherits 'by = "wool"' from warp.emm
-pairs(warp.emm)               # ditto
-contrast(warp.emm, "eff", by = NULL)  # contrasts of the 6 factor combs
-pairs(warp.emm, simple = "wool") # same as pairs(warp.emm, by = "tension")
-```
 
-
-### Main experiment analyses: does global LVF bias differ depending on handedness?
+### Main experiment analyses: Field x Level x Handedness?
+Once we collect data on lefties, we will test whether LVF-global bias is reduced or reversed with left handedness.
 ```{r analyze_main_rt}
 ## Reaction time analyses.
 ## Linear model using data from every trial.
@@ -224,15 +269,7 @@ pairs(warp.emm, simple = "wool") # same as pairs(warp.emm, by = "tension")
 ```{r analyse_main_acc}
 ```
 
-## Summarize demographics
-```{r report_demographics}
-## Summarize demographic data
-## And "end question" responses
-```
-
-```{r report_duration}
-## Report experiment duration
-```
+### [Collapse] {.tabset}
 
 ## Visualize individual results
 ```{r visualize_individual_rt}
