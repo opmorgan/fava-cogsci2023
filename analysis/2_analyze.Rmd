@@ -19,7 +19,7 @@ options(dplyr.summarise.inform = FALSE)
 
 ```{r lib}
 library(here)
-library(readr)
+library(tidyverse)
 library(cli) # For printing error messages
 ```
 
@@ -30,45 +30,68 @@ proc_dir <- here::here(data_dir, "proc_prepilot")
 
 
 ## Analyze data
-```{r load_combined}
+```{r load_combined, include = F}
 ## Load combined trial-per-row data
-aah <- readr::read_tsv(here(proc_dir, "combined", "combined.tsv"),
-                        col_types = cols(
-                            subject = col_character(),
-                            time_elapsed_ms = col_double(),
-                            blocknum = col_double(),
-                            block_type = col_character(),
-                            block_response = col_character(),
-                            trialnum = col_double(),
-                            target = col_character(),
-                            level = col_character(),
-                            field = col_character(),
-                            target_present = col_character(),
-                            response = col_character(),
-                            correct = col_double(),
-                            rt = col_double(),
-                            ehi_i1_writing = col_double(),
-                            ehi_i2_throwing = col_double(),
-                            ehi_i3_toothbrush = col_double(),
-                            ehi_i4_spoon = col_double(),
-                            ehi_total = col_double(),
-                            age = col_double(),
-                            country = col_character(),
-                            sex = col_character(),
-                            education = col_double(),
-                            race = col_character(),
-                            hispanic_ethnicity = col_character(),
-                            task_experience_response = col_character(),
-                            task_experience_other_response = col_character(),
-                            open_ended_feedback_response = col_character()
-                          )
-                        )
+## TODO: add duration_s (and other missing calculated variables?) to this table
+## TODO: add task_experience_response, total duration to exclusion criteria.
+aah <- readr::read_tsv(
+  here(proc_dir, "combined", "combined.tsv"),
+  col_types = cols(
+    subject = col_character(),
+    time_elapsed_ms = col_double(),
+    blocknum = col_double(),
+    block_type = col_character(),
+    block_response = col_character(),
+    trialnum = col_double(),
+    target = col_character(),
+    level = col_character(),
+    field = col_character(),
+    target_present = col_character(),
+    response = col_character(),
+    correct = col_double(),
+    rt = col_double(),
+    ehi_i1_writing = col_double(),
+    ehi_i2_throwing = col_double(),
+    ehi_i3_toothbrush = col_double(),
+    ehi_i4_spoon = col_double(),
+    ehi_total = col_double(),
+    age = col_double(),
+    country = col_character(),
+    sex = col_character(),
+    education = col_double(),
+    race = col_character(),
+    hispanic_ethnicity = col_character(),
+    task_experience_response = col_character(),
+    task_experience_other_response = col_character(),
+    open_ended_feedback_response = col_character()
+  )
+) %>% 
+  filter(block_type == "main" & target_present == "yes") %>%
+  select(
+    subject,
+    block_response,
+    target,
+    level,
+    field,
+    correct,
+    rt,
+    ehi_total,
+    age,
+    country,
+    sex,
+    education,
+    race,
+    open_ended_feedback_response
+  )
+
+aah
 ```
 
-```{r analyze_rt}
+### Pilot analyses: do we see the typical field x level interaction in right handers?
+```{r analyze_pilot_rt}
 ## Reaction time analyses.
 ## Linear model using data from every trial.
-## (1) Binary handedness
+## (1) Binary handedness. (target + field + level + target:field + target:level + field:level + target:field:level)
 aah
 
 ## (2) Continuous handedness
@@ -76,25 +99,34 @@ aah
 ## As a check, use summary rt data instead of trial-level data.
 ```
 
-```{r report_rt}
-## Visualize per-trial RT data (make absent one color, present another)
 
-## Report RT data by condition
-```
 
-```{r report_acc}
-## Report accuracy data by condition
+
+
+
+
+
+## Summarize demographics
+```{r report_demographics}
+## Summarize demographic data
+## And "end question" responses
 ```
 
 ```{r report_duration}
 ## Report experiment duration
 ```
 
-```{r report_demographics}
-## Summarize demographic data
-## And "end question" responses
+## Visualize individual results
+```{r visualize_individual_rt}
+## Visualize per-trial RT data (make absent one color, present another)
+
 ```
 
 ## Visualize group results
+```{r}
+## ## Visualize RT data by condition
+```
 
-## Visualize individual results
+```{r visualize_group_acc}
+## Visualize accuracy data by condition
+```

@@ -752,7 +752,7 @@ summarize_ind <- function(ind_proc, data_type = "task") {
 
 ## Load and combine individuals' processed data (long)
 load_and_combine_proc <-
-  function(input_dir, output_dir, data_type) {
+  function(input_dir, output_dir, data_type = "task") {
     if (data_type == "task") {
       group_proc <- tibble(
         subject = as.character(),
@@ -798,7 +798,7 @@ load_and_combine_proc <-
     }
     
     input_files <- get_input_paths(
-      input_dir = here(proc_dir, "individual"),
+      input_dir = input_dir,
       data_type = data_type,
       pattern = "*.tsv"
     )
@@ -818,3 +818,51 @@ load_and_combine_proc <-
     write_tsv(group_proc, save_path)
     return(group_proc)
   }
+
+load_summary <- function(input_path) {
+  
+  cli::cli_alert_info("Loading summary data from:")
+  cli::cli_bullets(c(" " = "{input_path}"))
+  
+  summary <- readr::read_tsv(
+    input_path,
+    col_types = cols(
+      subject = col_character(),
+      first_block = col_character(),
+      acc_slash = col_double(),
+      acc_z = col_double(),
+      acc_absent = col_double(),
+      acc_present = col_double(),
+      acc_global_LVF = col_double(),
+      acc_global_RVF = col_double(),
+      acc_local_LVF = col_double(),
+      acc_local_RVF = col_double(),
+      rt_global_LVF = col_double(),
+      rt_global_RVF = col_double(),
+      rt_local_LVF = col_double(),
+      rt_local_RVF = col_double(),
+      rt_overall = col_double(),
+      duration_s = col_double(),
+      exclude_many_gos = col_double(),
+      exclude_low_acc = col_double(),
+      exclude_low_rt = col_double(),
+      exclude_high_rt = col_double(),
+      exclude = col_double(),
+      ehi_i1_writing = col_double(),
+      ehi_i2_throwing = col_double(),
+      ehi_i3_toothbrush = col_double(),
+      ehi_i4_spoon = col_double(),
+      ehi_total = col_double(),
+      age = col_double(),
+      country = col_character(),
+      sex = col_character(),
+      education = col_double(),
+      race = col_character(),
+      hispanic_ethnicity = col_character(),
+      task_experience_response = col_character(),
+      task_experience_other_response = col_character(),
+      open_ended_feedback_response = col_character()
+    )
+  )
+return(summary)
+}

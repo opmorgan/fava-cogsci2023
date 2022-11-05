@@ -45,25 +45,21 @@ resummarize_demographics_data <- TRUE
 resummarize_end_data <- TRUE
 
 recombine_task_data <- TRUE
-recombine_ehi_data <- TRUE
-recombine_demographics_data <- TRUE
-recombine_end_data <- TRUE
+recombine_summary_data <- TRUE
 
 #######
-reprocess_task_data <- FALSE
-reprocess_ehi_data <- FALSE
-reprocess_demographics_data <-FALSE
-reprocess_end_data <- FALSE
+# reprocess_task_data <- FALSE
+# reprocess_ehi_data <- FALSE
+# reprocess_demographics_data <-FALSE
+# reprocess_end_data <- FALSE
+# 
+# resummarize_task_data <- FALSE
+# resummarize_ehi_data <- FALSE
+# resummarize_demographics_data <- FALSE
+# resummarize_end_data <- FALSE
 
-resummarize_task_data <- FALSE
-resummarize_ehi_data <- FALSE
-resummarize_demographics_data <- FALSE
-resummarize_end_data <- FALSE
-
-recombine_task_data <- FALSE
-recombine_ehi_data <- FALSE
-recombine_demographics_data <- FALSE
-recombine_end_data <- FALSE
+# recombine_task_data <- FALSE
+# recombine_summary_data <- FALSE
 
 data_dir <- here::here("data")
 input_dir <- here::here(data_dir, "input_prepilot")
@@ -245,42 +241,31 @@ write_tsv(summary, here::here(summary_output_dir, "summary.tsv"))
 }
 ```
 
-Create combined trial-per-row table (with task and survey data)
+Create combined trial-per-row table (with task and survey data, and summary stats)
 ```{r combine_proc}
 ind_input_dir <- here(proc_dir, "individual")
 combined_output_dir <- here(proc_dir, "combined")
+summary_input_path <- here(proc_dir, "summary", "summary.tsv")
 
 if (recombine_task_data == TRUE) {
-task_combined <- load_and_combine_proc(ind_input_dir, combined_output_dir, data_type = "task")
+  task_combined <-
+    load_and_combine_proc(ind_input_dir, combined_output_dir, data_type = "task")
 }
 
-if (recombine_ehi_data == TRUE) {
-ehi_combined <- load_and_combine_proc(ind_input_dir, combined_output_dir, data_type = "ehi")
+if (recombine_summary_data == TRUE) {
+  summary <- load_summary(summary_input_path)
 }
-
-if (recombine_demographics_data == TRUE) {
-demo_combined <- load_and_combine_proc(ind_input_dir, combined_output_dir, data_type = "demographics")
-}
-
-if (recombine_end_data == TRUE) {
-end_combined <- load_and_combine_proc(ind_input_dir, combined_output_dir, data_type = "end")
-}
-
 
 if (recombine_task_data == TRUE
-    | recombine_ehi_data == TRUE
-    | recombine_demographics_data == TRUE
-    | recombine_end_data == TRUE) {
+    | recombine_summary_data == TRUE) {
   ## Combine all processed data into one long table
   combined <- task_combined %>%
-    left_join(ehi_combined) %>%
-    left_join(demo_combined) %>%
-    left_join(end_combined)
-  cli::cli_alert_info("{.strong Saving combined data to:}")
+    left_join(summary)
+  save_path <- here::here(combined_output_dir, "combined_all.tsv")
+  cli::cli_alert_info("{.strong Saving combined task, survey, and summary data to:}")
   cli::cli_bullets(c(" " = glue("{save_path}")))
-  write_tsv(combined, here::here(combined_output_dir, "combined.tsv"))
+  write_tsv(combined, save_path)
 }
-
 ```
 
 
