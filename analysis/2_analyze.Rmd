@@ -215,7 +215,7 @@ TODO: estimate the effect of level, for each visual field.
 
 
 <br>
-Test for field x level interaction, using the anova() function.
+Test for field x level interaction, using the anova() function: is the interaction model's fit significantly different from the no-interaction model's fit?
 ```{r analyze_pilot_rt}
 ## Is there an interaction of field x level?
 ## Make a linear model using data from every trial.
@@ -235,7 +235,7 @@ rt_model_no_interaction <- update(rt_model, . ~ . - field:level)
 interaction_stats(rt_model, rt_model_no_interaction) |> tidy() |> pretty_table()
 ```
 <br>
-Test for field x level interaction, using emmeans().
+Test for field x level interaction, using emmeans() - is the model's interaction effect estimate significantly different from zero?
 ```{r, cache = TRUE}
 ## Use an emmeans contrast, instead of ANOVA.
 ## (1) Create emmeans model object
