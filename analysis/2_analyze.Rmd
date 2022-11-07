@@ -1,9 +1,16 @@
 ---
-title: "Bilateral navon task: Process and test raw data"
+title: "Bilateral Navon Task Analysis"
 author: "Owen Morgan"
 date: "2022-11-04"
 output: html_document
 ---
+
+<style type="text/css">
+  body{
+  font-family: Avenir;
+  font-size: 12pt;
+}
+</style>
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
@@ -29,6 +36,30 @@ library(kableExtra)
 library(gt)
 
 source(here::here("lib", "load_process", "load_process.R"))
+
+#### Define functions for formatting and styling
+
+## Function to make pretty table that rounds to 2 digits and stays in place
+pretty_table <- function(table, title = NULL, digits = 3,
+                         groupname_col = NULL
+                         ) {
+    gt(table, groupname_col = groupname_col) |> 
+      tab_header(title = title) |> 
+      fmt_missing(columns = everything(), missing_text = "-") |> 
+      fmt_number(columns = where(is.numeric),
+                 drop_trailing_zeros = T,
+                 decimals = digits) |> 
+   tab_style(
+      #Apply new style to all column headers
+     locations = cells_column_labels(columns = everything()),
+     style     = list(
+       #Give a thick border below
+       # cell_borders(sides = "bottom", weight = px(2)),
+       #Make text bold
+       cell_text(weight = "bold")
+     )
+   )
+}
 ```
 
 ```{r config}
@@ -36,22 +67,6 @@ data_dir <- here::here("data")
 proc_dir <- here::here(data_dir, "proc_prepilot")
 ```
 
-
-```{r}
-#### Define functions for formatting and styling
-
-## Function to make pretty table that rounds to 2 digits and stays in place
-pretty_table <- function(table, title = NULL, digits = 3,
-                         groupname_col = NULL
-                         ) {
-    gt(table, groupname_col = groupname_col) %>%
-      tab_header(title = title) %>%
-      fmt_missing(columns = everything(), missing_text = "-") %>%
-      fmt_number(columns = where(is.numeric),
-                 drop_trailing_zeros = T,
-                 decimals = digits)
-}
-```
 
 ## Analyze data {.tabset}
 ```{r load_combined, include = F}
@@ -108,7 +123,8 @@ aah <- left_join(aah_task, aah_summary) |>
 ```
 
 ### Demographics
-```{r}
+<br>
+```{r demographics_summary}
 ## Show one-row table with summary info
 report_mean_sd <- function(numeric_vector) {
   return(str_c(
@@ -136,7 +152,7 @@ report_sex <- function(sex_char_vector) {
 rt_demo <- aah_summary |>
   summarize(N = n(),
             `Age (years)` = report_mean_sd(age),
-            `Edu (years)`= report_mean_sd(education),
+            `Education (years)`= report_mean_sd(education),
             `Sex (M/F)` = report_sex(sex),
             EHI = report_mean_sd(ehi_total),
   )
@@ -144,8 +160,7 @@ rt_demo <- aah_summary |>
 rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
 ```
 <br>
-```{r}
-## Show full data for country, race, task experience, task feedback
+```{r country}
 aah_summary |>
   group_by(country) |>
   summarize(n = n()) |>
@@ -154,7 +169,7 @@ aah_summary |>
   pretty_table()
 ```
 <br>
-```{r}
+```{r race}
 aah_summary |>
   group_by(race) |>
   summarize(n = n()) |>
@@ -163,16 +178,16 @@ aah_summary |>
   pretty_table()
 ```
 <br>
-```{r}
+```{r ethnicity}
 aah_summary |>
   group_by(hispanic_ethnicity) |>
   summarize(n = n()) |>
-  rename(`Hispanic Ethnicity` = hispanic_ethnicity) |> 
+  rename(`Hispanic ethnicity` = hispanic_ethnicity) |> 
   arrange(-n) |>
   pretty_table()
 ```
 <br>
-```{r}
+```{r task_experience}
 task_experience <- aah_summary |>
   group_by(task_experience_response, task_experience_other_response) |>
   summarize(n = n()) |>
@@ -182,7 +197,7 @@ task_experience <- aah_summary |>
 task_experience |> pretty_table()
 ```
 <br>
-```{r}
+```{r feedback}
 feedback <- aah_summary |>
   filter(open_ended_feedback_response != "NA") |> 
   group_by(open_ended_feedback_response) |>
@@ -190,40 +205,39 @@ feedback <- aah_summary |>
   summarize()
 feedback |> pretty_table()
 ```
+<br>
+<br>
 
-### Pilot analyses: Field x Level interaction
+### Pilot analyses: Field x Level interaction {.tabset .tabset-pills .active}
 
 In our pilot sample of right handers, do we see the typical field x level interaction? That is, do participants show a relative bias for global shapes in the left visual field (LVF)?
-
-Report descriptive statistics: median RT by level and field.
-```{r}
-rt_descriptive <- aah |> 
-  group_by(field, level) |> 
-  summarize(median = median(rt),
-            mean = mean(rt),
-            SD = sd(rt))
-
-rt_descriptive |> pretty_table()
-```
-
-TODO: estimate the effect of level, for each visual field.
-```{r}
-## Effect of level (global vs. local), for LVF
-
-## Effect of level (global vs. local), for RVF
-```
-
-
 <br>
-Test for field x level interaction, using the anova() function: is the interaction model's fit significantly different from the no-interaction model's fit?
-```{r analyze_pilot_rt}
-## Is there an interaction of field x level?
+
+#### Reaction time
+Reaction time is modeled as a linear effect of field and level, using data from every trial:
+<br>
+**lmer( rt ~ field + level + field:level + (1 | subject) )**
+<br>
+*Discussion question*: Should any variables not-of-interest be included as covariates? E.g., sex, target (circle/square), first block (z or slash), overall median rt (ms).
+```{r rt_model}
 ## Make a linear model using data from every trial.
 ## Fixed effects: field, level (and their interaction)
 ## Random effects: subject.
-## rt ~ field + level + field:level
+## rt ~ field + level + field:level + (1 | subject)
 rt_model <- lmer(rt ~ field:level + field + level + (1 | subject), data = aah)
 
+## Create emmeans model object, and manually cache it.
+#rt_emm <- emmeans(rt_model, ~ field*level)
+
+## Manually cache model
+#saveRDS(rt_emm, here("manual_cache", "rt_emm.rds"))
+
+## Load cached model 
+rt_emm <- readRDS(here("manual_cache", "rt_emm.rds"))
+```
+<!-- Test for field x level interaction, using the anova() function: is the interaction model's fit significantly different from the no-interaction model's fit? -->
+<br>
+```{r rt_interaction_anova}
 ## Use anova() to test 2-way interaction effect.
 interaction_stats <-
   function(model_with_interaction,
@@ -232,28 +246,223 @@ interaction_stats <-
   }
 
 rt_model_no_interaction <- update(rt_model, . ~ . - field:level)
-interaction_stats(rt_model, rt_model_no_interaction) |> tidy() |> pretty_table()
+interaction_anova <- interaction_stats(rt_model, rt_model_no_interaction)
+#interaction_anova
+interaction_anova |>
+  as_tibble() |>
+  pretty_table() |> 
+  tab_header(title = "ANOVA: compare models with vs. without interaction term (RT)") |> 
+    tab_footnote(footnote = "I don't understand exactly what this p-value means",
+               locations = cells_column_labels(
+                 columns = `Pr(>Chisq)`
+               ))
 ```
 <br>
-Test for field x level interaction, using emmeans() - is the model's interaction effect estimate significantly different from zero?
-```{r, cache = TRUE}
-## Use an emmeans contrast, instead of ANOVA.
-## (1) Create emmeans model object
-rt_emm <- emmeans(rt_model, ~ level*field)
-```
-```{r}
-## (2) Estimate interaction effect
-rt_emm |> contrast(interaction = c("consec")) |> summary(infer = T) |> tidy() |> pretty_table()
+<!-- Test for field x level interaction, using emmeans() - is the model's interaction effect estimate significantly different from zero? -->
+```{r rt_interaction_emm}
+## Is there an interaction of field x level?
+## Use an emmeans contrast
+rt_interaction_emm <- rt_emm |>
+  contrast(interaction = c("consec")) |>
+  summary(infer = T)
+#rt_interaction_emm
 
-## Consider including variables not-of-interest as covariates:
-## target (circle/square), first block (z or slash), overall median rt (ms).
+rt_interaction_emm |>
+  as_tibble() |>
+  pretty_table() |>
+  tab_header(title = "Field by level interaction effect estimate (RT)") |>
+  tab_footnote(footnote = "A negative number means global bias is stronger in LVF",
+               locations = cells_column_labels(columns = estimate)) |>
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = lower.CL)) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
 ```
-```{r analyse_pilot_acc}
-## Make a linear model using correct/incorrect responses from every trial.
+<br>
+```{r rt_field_bias}
+rt_field_bias_emm <- rt_emm |>
+  contrast("pairwise") |>
+  summary(infer = T, adjust = "none", rows = c(3, 4))
+#rt_field_bias_emm
+
+rt_field_bias <- rt_field_bias_emm |>  
+  as_tibble() |> 
+  filter(contrast %in%
+           c("LVF global - LVF local", "RVF global - RVF local"))
+
+rt_field_bias |>
+  pretty_table() |>
+  tab_header(title = "Global bias by field (RT)") |>
+  tab_footnote(footnote = "A negative number means global bias (faster RT for global)",
+               locations = cells_column_labels(columns = estimate)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = lower.CL)) |>
+  tab_footnote(footnote = "Two-sided, uncorrected",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
 ```
+<br>
+```{r rt_by_field_level}
+rt_modelled <- summary(rt_emm, type = "response")
+rt_modelled |>
+  as_tibble() |>
+  arrange(field) |>
+  pretty_table() |>
+  tab_header(title = "RT estimates by field and level (from model)") |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = lower.CL)) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+```{r rt_descriptive}
+rt_descriptive <- aah |>
+  group_by(field, level) |>
+  summarize(
+    median = median(rt),
+    mean = mean(rt),
+    SE = sd(rt) / sqrt(length((rt)))
+  )
 
+rt_descriptive |>
+  pretty_table() |>
+  tab_header(title = "RT estimates by field and level (descriptive)")
+```
+<br>
 
-### Main experiment analyses: Field x Level x Handedness?
+#### Accuracy
+Accuracy is modeled as a binomial effect of field and level, using data from every trial (correct/incorrect):
+<br>
+**glmer( correct ~ field + level + field:level + (1 | subject) )**
+<br>
+*Discussion question*: Should any variables not-of-interest be included as covariates? E.g., sex, target (circle/square), first block (z or slash), overall median rt (ms).
+```{r acc_model}
+## Make a binomial logistic model using data from every trial.
+## Fixed effects: field, level (and their interaction)
+## Random effects: subject.
+## correct ~ field + level + field:level + (1 | subject)
+acc_model <- glmer(correct ~ field:level + field + level + (1 | subject),
+                   data = aah,
+                   family = binomial)
+#acc_model
+## Create emmeans model object, and manually cache it.
+#acc_emm <- emmeans(acc_model, ~ field*level)
+
+## Manually cache model
+#saveRDS(acc_emm, here("manual_cache", "acc_emm.rds"))
+
+## Load cached model 
+acc_emm <- readRDS(here("manual_cache", "acc_emm.rds"))
+#acc_emm
+#summary( acc_emm, type = "response")
+```
+<!-- Test for field x level interaction, using the anova() function: is the interaction model's fit significantly different from the no-interaction model's fit? -->
+<br>
+```{r acc_interaction_anova}
+## Use anova() to test 2-way interaction effect.
+interaction_stats <-
+  function(model_with_interaction,
+           model_with_no_interaction) {
+    return(anova(model_with_interaction, model_with_no_interaction))
+  }
+
+acc_model_no_interaction <- update(acc_model, . ~ . - field:level)
+interaction_anova <- interaction_stats(acc_model, acc_model_no_interaction)
+#interaction_anova
+interaction_anova |>
+  as_tibble() |>
+  pretty_table() |> 
+  tab_header(title = "ANOVA: compare models with vs. without interaction term (Accuracy)") |> 
+    tab_footnote(footnote = "I don't understand exactly what this p-value means",
+               locations = cells_column_labels(
+                 columns = `Pr(>Chisq)`
+               ))
+```
+<br>
+<!-- Test for field x level interaction, using emmeans() - is the model's interaction effect estimate significantly different from zero? -->
+```{r acc_interaction_emm}
+## Is there an interaction of field x level?
+## Use an emmeans contrast
+acc_interaction_emm <- acc_emm |>
+  contrast(interaction = c("consec")) |>
+  summary(infer = T, type = "response")
+#acc_interaction_emm
+
+acc_interaction_emm |>
+  as_tibble() |>
+  pretty_table() |>
+  tab_header(title = "Field by level interaction effect estimate (Accuracy)") |>
+  tab_footnote(footnote = "Backtransformed to odds ratio from log odds ratio; tests are performed on log odds ratio scale.",
+               locations = cells_column_labels(columns = odds.ratio)) |>
+  tab_footnote(footnote = "I don't understand why df is 'Inf' here, or how to interpret df for a logistic regression.",
+               locations = cells_column_labels(columns = df)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = asymp.LCL)) |>
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value))
+```
+<br>
+```{r acc_field_bias}
+acc_field_bias_emm <- acc_emm |>
+  contrast("pairwise") |>
+  summary(infer = T, adjust = "none", type = "response")
+#acc_field_bias_emm
+
+acc_field_bias <- acc_field_bias_emm |>
+  as_tibble() |>
+  filter(contrast %in%
+           c("LVF global / LVF local", "RVF global / RVF local"))
+#acc_field_bias
+
+acc_field_bias |>
+  pretty_table() |>
+  tab_header(title = "Global bias by field (Accuracy)") |>
+  tab_footnote(footnote =  "Backtransformed to odds ratio from log odds ratio (tests are performed on log odds ratio scale). A ratio > 1 means global bias (more correct responses for global).",
+               locations = cells_column_labels(columns = odds.ratio)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = asymp.LCL)) |>
+  tab_footnote(footnote = "Two-sided, uncorrected",
+               locations = cells_column_labels(columns = p.value))
+```
+<br>
+```{r acc_by_field_level}
+acc_modelled <- summary(acc_emm, type = "response")
+# acc_modelled
+acc_modelled |>
+  as_tibble() |> 
+  arrange(field) |> 
+  pretty_table() |>
+  tab_header(title = "Accuracy estimates by field and level (from model)") |>
+  tab_footnote(footnote = "Back-transformed to probability (% correct) from logit scale",
+               locations = cells_column_labels(columns = prob)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = asymp.LCL))
+```
+<br>
+```{r acc_descriptive}
+acc_descriptive <- response_counts_condition <- aah |>
+      group_by(level, field, subject) |>
+      summarize(
+        total_responses = n(),
+        n_present_resp = sum(correct),
+        n_absent_resp = total_responses - n_present_resp,
+        n_correct = sum(correct),
+        percent_correct = 100 * (n_correct / total_responses)
+      ) |> 
+      group_by(field, level) |> 
+      summarize(mean_subject_percent_correct = mean(percent_correct))
+#acc_descriptive
+    
+acc_descriptive |>
+  pretty_table() |>
+  tab_header(title = "Accuracy estimates by field and level (descriptive)")
+```
+<br>
+
+### Field x Level x Handedness
 Once we collect data on lefties, we will test whether LVF-global bias is reduced or reversed with left handedness.
 ```{r analyze_main_rt}
 ## Reaction time analyses.
@@ -269,15 +478,13 @@ Once we collect data on lefties, we will test whether LVF-global bias is reduced
 ```{r analyse_main_acc}
 ```
 
-### [Collapse] {.tabset}
-
-## Visualize individual results
+<!-- ## Visualize individual results -->
 ```{r visualize_individual_rt}
 ## Visualize per-trial RT data (make absent one color, present another)
 
 ```
 
-## Visualize group results
+<!-- ## Visualize group results -->
 ```{r}
 ## ## Visualize RT data by condition
 ```
