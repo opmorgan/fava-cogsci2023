@@ -68,11 +68,10 @@ proc_dir <- here::here(data_dir, "proc_prepilot")
 ```
 
 
-## Analyze data {.tabset}
+## Sample & Exclusions {.tabset}
 ```{r load_combined, include = F}
 ## Load combined trial-per-row data
-## TODO: add task_experience_response, total duration, and country to exclusion criteria.
-aah_task <- readr::read_tsv(
+aah_task_all <- readr::read_tsv(
   here(proc_dir, "combined", "combined_task.tsv"),
   col_types = cols(
     subject = col_character(),
@@ -99,7 +98,7 @@ aah_task <- readr::read_tsv(
          correct,
          rt)
 
-aah_summary <- load_summary() |>
+aah_summary_all <- load_summary() |>
   select(
     subject,
     first_block,
@@ -118,13 +117,118 @@ aah_summary <- load_summary() |>
     exclude
   )
 
-aah <- left_join(aah_task, aah_summary) |>
-  filter(exclude == 0)
+## Create long dataset with all subjects (included and excluded)
+aah_all <- left_join(aah_task_all, aah_summary_all)
 ```
 
-### Demographics
-<br>
+### Demographics (All)
 ```{r demographics_summary}
+## Show one-row table with summary info
+report_mean_sd <- function(numeric_vector) {
+  return(str_c(
+    round(mean(numeric_vector),2),
+    " (", round(sd(numeric_vector), 2), ")"))
+}
+
+report_country <- function(country_char_vector) {
+  n_us <- sum(country_char_vector == "US")
+  n_not_us <- sum(country_char_vector != "US")
+  return(str_c(n_us, "/", n_not_us))
+}
+
+report_sex <- function(sex_char_vector) {
+  n_male <- sum(sex_char_vector == "Male")
+  n_female <- sum(sex_char_vector == "Female")
+  n_other <- sum(sex_char_vector == "Not listed:")
+  if (n_other == 0) {
+    return(str_c(n_male, "/", n_female))
+  } else if (n_other > 1) {
+    return(str_c(n_male, "/", n_female, "/", n_other))
+  }
+}
+
+rt_demo <- aah_summary_all |>
+  summarize(N = n(),
+            `Age (years)` = report_mean_sd(age),
+            `Education (years)`= report_mean_sd(education),
+            `Sex (M/F)` = report_sex(sex),
+            EHI = report_mean_sd(ehi_total),
+  )
+
+rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
+```
+<br>
+```{r country}
+aah_summary_all |>
+  group_by(country) |>
+  summarize(n = n()) |>
+  rename(Country = country) |> 
+  arrange(-n) |>
+  pretty_table()
+```
+<br>
+```{r race}
+aah_summary_all |>
+  group_by(race) |>
+  summarize(n = n()) |>
+  rename(Race = race) |> 
+  arrange(-n) |>
+  pretty_table()
+```
+<br>
+```{r ethnicity}
+aah_summary_all |>
+  group_by(hispanic_ethnicity) |>
+  summarize(n = n()) |>
+  rename(`Hispanic ethnicity` = hispanic_ethnicity) |> 
+  arrange(-n) |>
+  pretty_table()
+```
+<br>
+```{r task_experience}
+task_experience <- aah_summary_all |>
+  group_by(task_experience_response, task_experience_other_response) |>
+  summarize(n = n()) |>
+  rename(`Have you done this task before?` = task_experience_response,
+         Explanation = task_experience_other_response) |> 
+  arrange(-n)
+task_experience |> pretty_table()
+```
+<br>
+
+### Exclusions
+```{r exclusions}
+## TODO: Calculate any exclusions not based on task data
+##   (Exclusions based on task data are specified in:
+##    1_process.Rmd, calling load_process.R/summarize_ind())
+##       Responded "go" almost every time (78/80 or more)?
+##       Accuracy at 60% or lower on any main block?
+##       Median RT over 1500 or under 200?
+##       Took longer than 45 minutes to do the task?
+## Exclusions not based on task data:
+##   Demographics exclusions that slipped through pre-screener:
+##     Country (non-us); Age (not between 18 and 40)
+##   Failed "Have you done this task before"
+##   (?) TODO: Failed interactive instructions
+##    TODO: Have task data, but no EHI data.
+
+
+##TODO: save long dataset with columns for all exclusion reasons.
+##TODO: save as: proc_dir/aah_long.tsv
+
+## Create long dataset with inclusions only
+aah <- left_join(aah_task_all, aah_summary_all) |>
+  filter(exclude == 0)
+## TODO: save as: aah_noexclusions.tsv
+
+
+## Create summary table with inclusions only
+aah_summary <- aah_summary_all |> filter(exclude == 0)
+```
+
+### Demographics (Included)
+<br>
+```{r demographics_summary_included}
 ## Show one-row table with summary info
 report_mean_sd <- function(numeric_vector) {
   return(str_c(
@@ -160,7 +264,7 @@ rt_demo <- aah_summary |>
 rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
 ```
 <br>
-```{r country}
+```{r country_included}
 aah_summary |>
   group_by(country) |>
   summarize(n = n()) |>
@@ -169,7 +273,7 @@ aah_summary |>
   pretty_table()
 ```
 <br>
-```{r race}
+```{r race_included}
 aah_summary |>
   group_by(race) |>
   summarize(n = n()) |>
@@ -178,7 +282,7 @@ aah_summary |>
   pretty_table()
 ```
 <br>
-```{r ethnicity}
+```{r ethnicity_included}
 aah_summary |>
   group_by(hispanic_ethnicity) |>
   summarize(n = n()) |>
@@ -187,26 +291,20 @@ aah_summary |>
   pretty_table()
 ```
 <br>
-```{r task_experience}
-task_experience <- aah_summary |>
-  group_by(task_experience_response, task_experience_other_response) |>
-  summarize(n = n()) |>
-  rename(`Have you done this task before?` = task_experience_response,
-         Explanation = task_experience_other_response) |> 
-  arrange(-n)
-task_experience |> pretty_table()
-```
-<br>
+
+### Feedback
 ```{r feedback}
 feedback <- aah_summary |>
   filter(open_ended_feedback_response != "NA") |> 
-  group_by(open_ended_feedback_response) |>
+  group_by(open_ended_feedback_response, exclude) |>
   rename(`Open-ended feedback` = open_ended_feedback_response) |> 
   summarize()
 feedback |> pretty_table()
 ```
-<br>
-<br>
+
+### Blank (Collapse)
+
+## Analyses {.tabset}
 
 ### Pilot analyses: Field x Level interaction {.tabset .tabset-pills .active}
 
@@ -496,3 +594,5 @@ Once we collect data on lefties, we will test whether LVF-global bias is reduced
 ```{r visualize_group_acc}
 ## Visualize accuracy data by condition
 ```
+
+### Blank (Collapse)

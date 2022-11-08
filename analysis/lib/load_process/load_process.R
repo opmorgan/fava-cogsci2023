@@ -437,6 +437,7 @@ load_and_summarize_proc <-
         exclude_low_acc = as.logical(),
         exclude_low_rt = as.logical(),
         exclude_high_rt = as.logical(),
+        exclude_long_duration = as.logical(),
         exclude = as.logical()
       )
     } else if (data_type == "ehi") {
@@ -701,7 +702,6 @@ summarize_ind <- function(ind_proc, data_type = "task") {
         too_many_gos <- 1
       }
     }
-    
     ind_summary <- ind_summary |>
       mutate(exclude_many_gos = too_many_gos)
     
@@ -710,7 +710,6 @@ summarize_ind <- function(ind_proc, data_type = "task") {
     if ((acc_all$acc_slash < 60) | (acc_all$acc_z < 60)) {
       low_acc <- 1
     }
-    
     ind_summary <- ind_summary |>
       mutate(exclude_low_acc = low_acc)
     
@@ -723,10 +722,20 @@ summarize_ind <- function(ind_proc, data_type = "task") {
     if (ind_summary$rt_overall > 1500) {
       high_rt <- 1
     }
-    
     ind_summary <- ind_summary |>
       mutate(exclude_low_rt = low_rt,
              exclude_high_rt = high_rt)
+    
+    
+    ## Took longer than 45 minutes to do the task?
+    ## (45*60 seconds = 2700 seconds)
+    long_duration <- 0
+    if (ind_summary$duration_s > 2700) {
+      long_duration <- 1
+    }
+    ind_summary <- ind_summary |>
+      mutate(exclude_long_duration = long_duration)
+    
     
     ind_summary <- ind_summary |>
       mutate(

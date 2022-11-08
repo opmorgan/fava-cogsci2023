@@ -126,6 +126,7 @@ summary_output_dir <- here(proc_dir, "summary")
 ## TODO: Add overall median RT to summary spreadsheet
 if (resummarize_task_data == TRUE) {
   ## Create summarized task data (saves to tsv as a side effect)
+  ## Calculate any exclusions based on task data
   task_summary <-
     load_and_summarize_proc(ind_input_dir, summary_output_dir,
                             data_type = "task")
