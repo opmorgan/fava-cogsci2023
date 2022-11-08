@@ -381,7 +381,7 @@ interaction_anova <- interaction_stats(acc_model, acc_model_no_interaction)
 interaction_anova |>
   as_tibble() |>
   pretty_table() |> 
-  tab_header(title = "Field by level interaction (RT)", 
+  tab_header(title = "Field by level interaction (Accuracy)", 
              subtitle = "ANOVA: compare models with vs. without interaction term") 
 ```
 <br>
@@ -397,7 +397,7 @@ acc_interaction_emm <- acc_emm |>
 acc_interaction_emm |>
   as_tibble() |>
   pretty_table() |>
-  tab_header(title = "Field by level interaction (accuracy)",
+  tab_header(title = "Field by level interaction (Accuracy)",
              subtitle = "Compare effect estimate to zero with emmeans()") |>
   tab_footnote(footnote = "Backtransformed to odds ratio from log odds ratio; tests are performed on log odds ratio scale.",
                locations = cells_column_labels(columns = odds.ratio)) |>
