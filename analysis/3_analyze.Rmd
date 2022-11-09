@@ -1,7 +1,7 @@
 ---
-title: "Bilateral Navon Task Analysis"
+title: "Action Asymmetry Pilot: Analyses"
 author: "Owen Morgan"
-date: "2022-11-04"
+date: "2022-11-08"
 output: html_document
 ---
 
@@ -32,279 +32,59 @@ library(cli) # For printing error messages
 library(lme4)
 library(emmeans)
 library(broom)
-library(kableExtra)
 library(gt)
 
 source(here::here("lib", "load_process", "load_process.R"))
-
-#### Define functions for formatting and styling
-
-## Function to make pretty table that rounds to 2 digits and stays in place
-pretty_table <- function(table, title = NULL, digits = 3,
-                         groupname_col = NULL
-                         ) {
-    gt(table, groupname_col = groupname_col) |> 
-      tab_header(title = title) |> 
-      fmt_missing(columns = everything(), missing_text = "-") |> 
-      fmt_number(columns = where(is.numeric),
-                 drop_trailing_zeros = T,
-                 decimals = digits) |> 
-   tab_style(
-      #Apply new style to all column headers
-     locations = cells_column_labels(columns = everything()),
-     style     = list(
-       #Give a thick border below
-       # cell_borders(sides = "bottom", weight = px(2)),
-       #Make text bold
-       cell_text(weight = "bold")
-     )
-   )
-}
+source(here::here("lib", "util.R"))
 ```
 
 ```{r config}
 data_dir <- here::here("data")
 proc_dir <- here::here(data_dir, "proc_prepilot")
+
+use_cached_model_rt <- FALSE
+use_cached_model_acc <- FALSE
 ```
 
-
-## Sample & Exclusions {.tabset}
-```{r load_combined, include = F}
-## Load combined trial-per-row data
-aah_task_all <- readr::read_tsv(
-  here(proc_dir, "combined", "combined_task.tsv"),
+## {.tabset}
+```{r load_data}
+## Load long data table, and filter out excluded subjects
+aah <- readr::read_tsv(
+  here(proc_dir, "aah_long.tsv"),
   col_types = cols(
     subject = col_character(),
-    time_elapsed_ms = col_double(),
-    blocknum = col_double(),
-    block_type = col_character(),
     block_response = col_character(),
-    trialnum = col_double(),
     target = col_character(),
     level = col_character(),
     field = col_character(),
-    target_present = col_character(),
-    response = col_character(),
-    correct = col_double(),
+    correct = col_logical(),
     rt = col_double(),
+    first_block = col_character(),
+    ehi_total = col_double(),
+    age = col_double(),
+    country = col_character(),
+    sex = col_character(),
+    education = col_double(),
+    race = col_character(),
+    hispanic_ethnicity = col_character(),
+    rt_overall = col_double(),
+    duration_s = col_double(),
+    task_experience_response = col_character(),
+    task_experience_other_response = col_logical(),
+    open_ended_feedback_response = col_character(),
+    exclude_many_gos = col_logical(),
+    exclude_low_acc = col_logical(),
+    exclude_low_rt = col_logical(),
+    exclude_high_rt = col_logical(),
+    exclude_country = col_logical(),
+    exclude_age = col_logical(),
+    exclude_done_before = col_logical(),
+    exclude_no_ehi = col_logical(),
+    exclude = col_logical()
   )
 ) |>
-  filter(block_type == "main" & target_present == "yes") |>
-  select(subject,
-         block_response,
-         target,
-         level,
-         field,
-         correct,
-         rt)
-
-aah_summary_all <- load_summary() |>
-  select(
-    subject,
-    first_block,
-    ehi_total,
-    age,
-    country,
-    sex,
-    education,
-    race,
-    hispanic_ethnicity,
-    rt_overall,
-    duration_s,
-    task_experience_response,
-    task_experience_other_response,
-    open_ended_feedback_response,
-    exclude
-  )
-
-## Create long dataset with all subjects (included and excluded)
-aah_all <- left_join(aah_task_all, aah_summary_all)
-```
-
-### Demographics (All)
-```{r demographics_summary}
-## Show one-row table with summary info
-report_mean_sd <- function(numeric_vector) {
-  return(str_c(
-    round(mean(numeric_vector),2),
-    " (", round(sd(numeric_vector), 2), ")"))
-}
-
-report_country <- function(country_char_vector) {
-  n_us <- sum(country_char_vector == "US")
-  n_not_us <- sum(country_char_vector != "US")
-  return(str_c(n_us, "/", n_not_us))
-}
-
-report_sex <- function(sex_char_vector) {
-  n_male <- sum(sex_char_vector == "Male")
-  n_female <- sum(sex_char_vector == "Female")
-  n_other <- sum(sex_char_vector == "Not listed:")
-  if (n_other == 0) {
-    return(str_c(n_male, "/", n_female))
-  } else if (n_other > 1) {
-    return(str_c(n_male, "/", n_female, "/", n_other))
-  }
-}
-
-rt_demo <- aah_summary_all |>
-  summarize(N = n(),
-            `Age (years)` = report_mean_sd(age),
-            `Education (years)`= report_mean_sd(education),
-            `Sex (M/F)` = report_sex(sex),
-            EHI = report_mean_sd(ehi_total),
-  )
-
-rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
-```
-<br>
-```{r country}
-aah_summary_all |>
-  group_by(country) |>
-  summarize(n = n()) |>
-  rename(Country = country) |> 
-  arrange(-n) |>
-  pretty_table()
-```
-<br>
-```{r race}
-aah_summary_all |>
-  group_by(race) |>
-  summarize(n = n()) |>
-  rename(Race = race) |> 
-  arrange(-n) |>
-  pretty_table()
-```
-<br>
-```{r ethnicity}
-aah_summary_all |>
-  group_by(hispanic_ethnicity) |>
-  summarize(n = n()) |>
-  rename(`Hispanic ethnicity` = hispanic_ethnicity) |> 
-  arrange(-n) |>
-  pretty_table()
-```
-<br>
-```{r task_experience}
-task_experience <- aah_summary_all |>
-  group_by(task_experience_response, task_experience_other_response) |>
-  summarize(n = n()) |>
-  rename(`Have you done this task before?` = task_experience_response,
-         Explanation = task_experience_other_response) |> 
-  arrange(-n)
-task_experience |> pretty_table()
-```
-<br>
-
-### Exclusions
-```{r exclusions}
-## TODO: Calculate any exclusions not based on task data
-##   (Exclusions based on task data are specified in:
-##    1_process.Rmd, calling load_process.R/summarize_ind())
-##       Responded "go" almost every time (78/80 or more)?
-##       Accuracy at 60% or lower on any main block?
-##       Median RT over 1500 or under 200?
-##       Took longer than 45 minutes to do the task?
-## Exclusions not based on task data:
-##   Demographics exclusions that slipped through pre-screener:
-##     Country (non-us); Age (not between 18 and 40)
-##   Failed "Have you done this task before"
-##   (?) TODO: Failed interactive instructions
-##    TODO: Have task data, but no EHI data.
-
-
-##TODO: save long dataset with columns for all exclusion reasons.
-##TODO: save as: proc_dir/aah_long.tsv
-
-## Create long dataset with inclusions only
-aah <- left_join(aah_task_all, aah_summary_all) |>
   filter(exclude == 0)
-## TODO: save as: aah_noexclusions.tsv
-
-
-## Create summary table with inclusions only
-aah_summary <- aah_summary_all |> filter(exclude == 0)
 ```
-
-### Demographics (Included)
-<br>
-```{r demographics_summary_included}
-## Show one-row table with summary info
-report_mean_sd <- function(numeric_vector) {
-  return(str_c(
-    round(mean(numeric_vector),2),
-    " (", round(sd(numeric_vector), 2), ")"))
-}
-
-report_country <- function(country_char_vector) {
-  n_us <- sum(country_char_vector == "US")
-  n_not_us <- sum(country_char_vector != "US")
-  return(str_c(n_us, "/", n_not_us))
-}
-
-report_sex <- function(sex_char_vector) {
-  n_male <- sum(sex_char_vector == "Male")
-  n_female <- sum(sex_char_vector == "Female")
-  n_other <- sum(sex_char_vector == "Not listed:")
-  if (n_other == 0) {
-    return(str_c(n_male, "/", n_female))
-  } else if (n_other > 1) {
-    return(str_c(n_male, "/", n_female, "/", n_other))
-  }
-}
-
-rt_demo <- aah_summary |>
-  summarize(N = n(),
-            `Age (years)` = report_mean_sd(age),
-            `Education (years)`= report_mean_sd(education),
-            `Sex (M/F)` = report_sex(sex),
-            EHI = report_mean_sd(ehi_total),
-  )
-
-rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
-```
-<br>
-```{r country_included}
-aah_summary |>
-  group_by(country) |>
-  summarize(n = n()) |>
-  rename(Country = country) |> 
-  arrange(-n) |>
-  pretty_table()
-```
-<br>
-```{r race_included}
-aah_summary |>
-  group_by(race) |>
-  summarize(n = n()) |>
-  rename(Race = race) |> 
-  arrange(-n) |>
-  pretty_table()
-```
-<br>
-```{r ethnicity_included}
-aah_summary |>
-  group_by(hispanic_ethnicity) |>
-  summarize(n = n()) |>
-  rename(`Hispanic ethnicity` = hispanic_ethnicity) |> 
-  arrange(-n) |>
-  pretty_table()
-```
-<br>
-
-### Feedback
-```{r feedback}
-feedback <- aah_summary |>
-  filter(open_ended_feedback_response != "NA") |> 
-  group_by(open_ended_feedback_response, exclude) |>
-  rename(`Open-ended feedback` = open_ended_feedback_response) |> 
-  summarize()
-feedback |> pretty_table()
-```
-
-### Blank (Collapse)
-
-## Analyses {.tabset}
 
 ### Pilot analyses: Field x Level interaction {.tabset .tabset-pills .active}
 
@@ -324,14 +104,17 @@ Reaction time is modeled as a linear effect of field and level, using data from 
 ## rt ~ field + level + field:level + (1 | subject)
 rt_model <- lmer(rt ~ field:level + field + level + (1 | subject), data = aah)
 
-## Create emmeans model object, and manually cache it.
-#rt_emm <- emmeans(rt_model, ~ field*level)
-
-## Manually cache model
-#saveRDS(rt_emm, here("manual_cache", "rt_emm.rds"))
-
-## Load cached model 
-rt_emm <- readRDS(here("manual_cache", "rt_emm.rds"))
+if (use_cached_model_rt == FALSE) {
+  ## Create emmeans model object, and manually cache it.
+  rt_emm <- emmeans(rt_model, ~ field * level)
+  
+  ## Manually cache model
+  saveRDS(rt_emm, here("manual_cache", "rt_emm.rds"))
+  
+} else if (use_cached_model_rt == TRUE) {
+  ## Load cached model
+  rt_emm <- readRDS(here("manual_cache", "rt_emm.rds"))
+}
 ```
 <!-- Test for field x level interaction, using the anova() function: is the interaction model's fit significantly different from the no-interaction model's fit? -->
 <br>
@@ -451,17 +234,18 @@ Accuracy is modeled as a binomial effect of field and level, using data from eve
 acc_model <- glmer(correct ~ field:level + field + level + (1 | subject),
                    data = aah,
                    family = "binomial")
-#acc_model
-## Create emmeans model object, and manually cache it.
-#acc_emm <- emmeans(acc_model, ~ field*level)
 
-## Manually cache model
-#saveRDS(acc_emm, here("manual_cache", "acc_emm.rds"))
-
-## Load cached model 
-acc_emm <- readRDS(here("manual_cache", "acc_emm.rds"))
-#acc_emm
-#summary( acc_emm, type = "response")
+if (use_cached_model_acc == FALSE) {
+  ## Create emmeans model object, and manually cache it.
+  acc_emm <- emmeans(acc_model, ~ field * level)
+  
+  ## Manually cache model
+  saveRDS(acc_emm, here("manual_cache", "acc_emm.rds"))
+  
+} else if (use_cached_model_acc == TRUE) {
+  ## Load cached model
+  acc_emm <- readRDS(here("manual_cache", "acc_emm.rds"))
+}
 ```
 <!-- Test for field x level interaction, using the anova() function: is the interaction model's fit significantly different from the no-interaction model's fit? -->
 <br>
@@ -594,5 +378,3 @@ Once we collect data on lefties, we will test whether LVF-global bias is reduced
 ```{r visualize_group_acc}
 ## Visualize accuracy data by condition
 ```
-
-### Blank (Collapse)

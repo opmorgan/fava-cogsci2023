@@ -1,0 +1,8 @@
+subject	first_block	ehi_total	age	country	sex	education	race	hispanic_ethnicity	rt_overall	duration_s	task_experience_response	task_experience_other_response	open_ended_feedback_response	exclude_many_gos	exclude_low_acc	exclude_low_rt	exclude_high_rt	exclude_country	exclude_age	exclude_no_ehi	exclude	exclude_done_before
+59a07638bfd73c00010ea394	z	75	23	US	Male	12	Black or African American	No	837	531.234	No	NA	NA	0	0	0	0	0	0	0	0	0
+5dee933631a7e05381da6b02	slash	100	33	US	Male	16	Black or African American	No	432.5	538.474	No	NA	NA	0	0	0	0	0	0	0	0	0
+5e5731e3e1e8b90e25c1f3a2	z	50	40	US	Male	16	White	No	895	1090.365	No	NA	NA	0	0	0	0	0	0	0	0	0
+62b9cf42a63194f71fc0a393	z	100	23	US	Female	16	American Indian or Alaska Native	No	524.5	725.745	No	NA	NA	0	0	0	0	0	0	0	0	0
+630ab689392291ba70d7fd3d	slash	87.5	21	US	Male	12	White	No	694	850.009	No	NA	NA	0	0	0	0	0	0	0	0	0
+631b593a9bb21bb86ea260a7	slash	100	24	US	Male	16	White	Yes	664.5	803.763	No	NA	NA	0	0	0	0	0	0	0	0	0
+63616c4bc6ecb76a9f0a5f21	slash	100	20	US	Male	12	White	No	380.5	603.087	No	NA	this was a fun experiment. I enjoyed testing my reaction time. it would be interesting to know which hand I did better with.	0	0	0	0	0	0	0	0	0
