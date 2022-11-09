@@ -1,0 +1,109 @@
+subject	first_block	ehi_total	age	country	sex	education	race	hispanic_ethnicity	rt_overall	duration_s	task_experience_response	task_experience_other_response	open_ended_feedback_response	exclude_many_gos	exclude_low_acc	exclude_low_rt	exclude_high_rt	exclude_country	exclude_age	exclude_done_before	exclude_no_ehi	exclude
+545cbbcafdf99b11ed040acf	slash	62.5	28	US	Female	16	Asian	No	766.5	666.221	No	NA	NA	0	0	0	0	0	0	0	0	0
+55bb9ae7fdf99b26d27fda01	z	75	36	US	Female	12	White	No	833	860.42	No	NA	NA	0	0	0	0	0	0	0	0	0
+55c82012fdf99b02adc2a36e	z	100	38	US	Female	16	White	No	764	1341.884	No	NA	NA	0	0	0	0	0	0	0	0	0
+56d0f57421cd29000a9737e4	slash	100	39	US	Male	16	White	No	903	833.453	No	NA	NA	0	0	0	0	0	0	0	0	0
+57901207c9abeb0001af353e	z	100	34	US	Female	14	White	No	533	667.76	No	NA	NA	0	0	0	0	0	0	0	0	0
+581bd344930a280001062c90	slash	100	39	US	Female	16	White	Yes	814.5	716.092	No	NA	NA	0	0	0	0	0	0	0	0	0
+5928b6414a05920001393ecf	z	100	31	US	Female	12	White	No	678	769.208	No	NA	Felt like I did better with my left hand even though I'm right handed	0	0	0	0	0	0	0	0	0
+59a07638bfd73c00010ea394	z	75	23	US	Male	12	Black or African American	No	837	531.234	No	NA	NA	0	0	0	0	0	0	0	0	0
+59d5c894c732930001d88b5e	slash	62.5	30	US	Male	16	White	Yes	940	860.04	No	NA	none	0	0	0	0	0	0	0	0	0
+5a6ff39ef660ae0001a9837e	slash	75	25	US	Female	12	White	No	569.5	1529.713	No	NA	NA	0	0	0	0	0	0	0	0	0
+5a98b39b89de8200013ef94f	z	100	25	US	Male	16	Black or African American	No	1060.5	687.745	No	NA	NA	0	0	0	0	0	0	0	0	0
+5ad7835e9c198c0001fad31a	slash	100	34	US	Female	12	White	No	945.5	832.392	No	NA	NA	0	0	0	0	0	0	0	0	0
+5adf3828dee8590001b05860	slash	100	35	US	Male	16	White	No	462.5	661.125	No	NA	NA	1	0	0	0	0	0	0	0	1
+5af491b6222e4d0001877572	slash	100	40	US	Female	16	White	No	533.5	720.339	No	NA	NA	0	0	0	0	0	0	0	0	0
+5b15307351caaf0001228d9b	z	100	32	US	Female	12	White	No	728.5	930.677	No	NA	no	0	0	0	0	0	0	0	0	0
+5b76d0f5fca8d9000139404c	slash	87.5	32	US	Male	14	White	No	627.5	572.049	No	NA	NA	0	0	0	0	0	0	0	0	0
+5b9530390f85f600015705bf	z	100	32	US	Female	16	White	No	931.5	784.061	No	NA	n/a	0	0	0	0	0	0	0	0	0
+5be2991826f9ec00013f6f40	slash	100	26	US	Male	16	White	No	534.5	577.195	No	NA	NA	0	0	0	0	0	0	0	0	0
+5bea832a4fbb6f00017ea3e9	slash	87.5	35	US	Male	12	Black or African American	No	829.5	684.967	No	NA	NA	0	0	0	0	0	0	0	0	0
+5c06b3f64a2b7b0001c3c185	slash	100	37	US	Female	16	Multiple	Yes	676	697.935	No	NA	Interesting exercise. Good luck with your research.	0	0	0	0	0	0	0	0	0
+5c17294778ee390001ab19e5	slash	100	25	US	Male	16	White	No	839	631.351	No	NA	NA	0	0	0	0	0	0	0	0	0
+5c48ca334635bf000171c13f	slash	100	34	US	Female	14	White	No	773.5	670.92	No	NA	NA	0	0	0	0	0	0	0	0	0
+5c535974b7cf140001d308d3	slash	62.5	29	US	Female	12	White	No	763.5	692.374	No	NA	NA	0	0	0	0	0	0	0	0	0
+5c6ac9e5d9c5be000174497f	z	100	28	US	Female	12	White	No	619	597.937	No	NA	NA	0	0	0	0	0	0	0	0	0
+5c9a7a644a640200171c0cc2	slash	75	32	US	Female	18	White	No	534	537.684	No	NA	NA	0	0	0	0	0	0	0	0	0
+5cb568ebf0e31e0017d9bf32	z	100	38	US	Female	14	White	No	648	916.904	No	NA	no feedback	0	0	0	0	0	0	0	0	0
+5d10102523f6320017c63e07	slash	87.5	28	US	Female	16	Black or African American	No	875.5	661.618	No	NA	NA	0	0	0	0	0	0	0	0	0
+5d1beb9c9e033e0017a725dc	z	100	36	US	Male	18	Black or African American	No	877	617.685	No	NA	NA	0	0	0	0	0	0	0	0	0
+5d3522b6eac3d50017df02cb	z	87.5	39	US	Male	21	Asian	No	638	809.392	No	NA	NA	0	0	0	0	0	0	0	0	0
+5d3df9b23bf3780015abf56f	slash	100	26	US	Female	16	White	No	875	718.832	No	NA	NA	0	0	0	0	0	0	0	0	0
+5d48fcc5643eb80001fb43fa	slash	87.5	29	US	Male	16	White	No	842	658.364	No	NA	no	0	0	0	0	0	0	0	0	0
+5d4b14caed2dfc0001a22c1a	z	100	39	US	Female	14	White	No	428	683.177	No	NA	NA	0	0	0	0	0	0	0	0	0
+5d5315f889849a0001a76d1a	slash	100	37	US	Female	16	Black or African American	No	400.5	603.394	No	NA	NA	0	0	0	0	0	0	0	0	0
+5d7cefc73f9ae70018b400f1	slash	100	40	US	Male	12	White	No	702.5	653.739	No	NA	NA	0	0	0	0	0	0	0	0	0
+5d847ac9be4b0b00188463d7	slash	87.5	25	US	Male	12	White	No	458	607.925	No	NA	NA	0	0	0	0	0	0	0	0	0
+5d96eeed1998fb00177f6b71	slash	87.5	24	US	Female	16	Asian	No	771	835.811	No	NA	NA	0	0	0	0	0	0	0	0	0
+5dcebf4ad2c3e0000ab3debe	slash	100	36	US	Female	16	White	No	613	584.362	No	NA	NA	0	0	0	0	0	0	0	0	0
+5dd95432cf08aa8dc50bb42a	slash	100	31	US	Male	16	White	No	666.5	722.405	No	NA	NA	0	0	0	0	0	0	0	0	0
+5dee933631a7e05381da6b02	slash	100	33	US	Male	16	Black or African American	No	432.5	538.474	No	NA	NA	0	0	0	0	0	0	0	0	0
+5e26762aa8c1118a9d578c4d	z	100	32	US	Male	16	Black or African American	No	561	668.114	No	NA	NA	0	0	0	0	0	0	0	0	0
+5e2e7d79acf5fe45b62f859a	z	100	33	US	Female	18	Asian	No	538.5	1685.849	No	NA	NA	0	0	0	0	0	0	0	0	0
+5e3dff6b8714b707b9a258b0	z	100	38	US	Male	16	White	No	916.5	1159.466	No	NA	NA	0	0	0	0	0	0	0	0	0
+5e5731e3e1e8b90e25c1f3a2	z	50	40	US	Male	16	White	No	895	1090.365	No	NA	NA	0	0	0	0	0	0	0	0	0
+5e6fca371814a4594af2f420	slash	100	30	US	Male	16	White	No	1077.5	862.376	No	NA	NA	0	0	0	0	0	0	0	0	0
+5e820eb36551aa02fd72e1dc	slash	100	35	US	Male	12	White	No	953	709.646	No	NA	NA	0	0	0	0	0	0	0	0	0
+5e8a69c836bc63718a82cb90	slash	100	30	US	Male	18	Asian	No	722	839.849	No	NA	NA	0	0	0	0	0	0	0	0	0
+5eae37af3ac6885048af8db3	slash	87.5	25	US	Male	14	White	No	427.5	807.814	No	NA	NA	0	0	0	0	0	0	0	0	0
+5ed53833cb34a1098e5e2bce	slash	87.5	27	US	Female	12	White	No	1086	892.439	No	NA	NA	0	0	0	0	0	0	0	0	0
+5efaffccf90911000c95a3cb	slash	62.5	31	US	Male	16	White	No	408	1457.631	No	NA	NA	0	0	0	0	0	0	0	0	0
+5f14606495f8a710716e860e	slash	87.5	35	US	Female	16	White	Yes	490	766.474	No	NA	it was very difficult to see the shapes	0	0	0	0	0	0	0	0	0
+5f18a43ed0b0db0b6f0fc067	slash	75	31	US	Female	21	White	No	689.5	648.784	No	NA	NA	0	0	0	0	0	0	0	0	0
+5f3aff819bf5ad209a13d568	slash	50	27	US	Female	12	Black or African American	No	529.5	800.139	No	NA	NA	0	0	0	0	0	0	0	0	0
+5f4d3cb5fdda0b2c403fb801	slash	75	25	US	Not listed:	14	Asian	No	387.5	716.158	No	NA	NA	0	0	0	0	0	0	0	0	0
+5f877e0715f8781a0c7c3ab8	z	100	38	US	Male	16	White	No	759	674.84	No	NA	NA	0	0	0	0	0	0	0	0	0
+5f95a44920f542417f4263cb	z	100	24	US	Male	12	White	Yes	741	590.171	No	NA	NA	0	0	0	0	0	0	0	0	0
+5f974c72a0ed8c0f9ce724ea	slash	100	31	US	Male	16	Multiple	No	762	646.099	No	NA	NA	0	0	0	0	0	0	0	0	0
+5f9fb315ae6f085ff96c0cac	z	100	31	US	Male	12	White	No	894	697.137	No	NA	NA	0	0	0	0	0	0	0	0	0
+5fa8300f0967d163ec3c05c3	slash	100	30	US	Male	16	Black or African American	No	523	666.133	No	NA	NA	0	0	0	0	0	0	0	0	0
+5fd7782dee03dc08d3f3f491	z	87.5	39	US	Male	14	White	No	1007.5	697.546	No	NA	Thanks for the fun study	0	0	0	0	0	0	0	0	0
+5fea7e34e1506a5df25419ec	z	50	38	US	Female	16	White	No	541.5	651.749	No	NA	NA	0	0	0	0	0	0	0	0	0
+5ff0e3319cc6b3ff560a1d4d	slash	62.5	27	US	Female	16	White	No	403	533.448	No	NA	NA	0	0	0	0	0	0	0	0	0
+600c3219a434df2de6427feb	z	100	39	US	Male	12	White	No	408	535.712	No	NA	NA	0	0	0	0	0	0	0	0	0
+605794cd71c6264c6798181b	z	100	22	US	Male	12	White	No	439.5	522.988	No	NA	NA	0	0	0	0	0	0	0	0	0
+608f2aa883599160c8b87a79	slash	75	32	US	Female	16	White	Yes	428	508.951	No	NA	NA	0	0	0	0	0	0	0	0	0
+609be3207792bc09e989b7e0	slash	62.5	30	US	Male	12	White	No	624	597.874	No	NA	NA	0	0	0	0	0	0	0	0	0
+60a8343c2e4dd727c4833eb6	slash	100	21	US	Female	12	White	Yes	501	607.155	No	NA	NA	0	0	0	0	0	0	0	0	0
+60ce9fa3d9f9a088647a62ba	slash	100	31	US	Male	16	Black or African American	No	644.5	613.246	No	NA	maybe give a little countdown before the first one or have to press space again after the instructions	0	0	0	0	0	0	0	0	0
+60dfc07ddcd24dcc266d8690	z	100	26	US	Male	18	White	Yes	459	600.912	No	NA	Accidentally pressed """"""""/"""""""" on one of the """"""""/"""""""" tasks.	0	0	0	0	0	0	0	0	0
+60fcc58f020a0d9d03ce0e2e	z	100	20	US	Male	12	White	No	633	559.353	No	NA	NA	0	0	0	0	0	0	0	0	0
+60fec21e36a05990cfa8a715	z	87.5	25	US	Female	12	White	No	561	734.225	No	NA	NA	0	0	0	0	0	0	0	0	0
+60fef6813613ab668c778a8a	z	100	27	US	Female	16	White	No	814	664.809	No	NA	NA	0	0	0	0	0	0	0	0	0
+60ff18bdffbecdc08f0ff60f	z	100	26	US	Female	18	White	No	748.5	629.973	No	NA	NA	0	0	0	0	0	0	0	0	0
+6102f78ac1791768db58ed54	z	62.5	23	US	Female	12	White	No	689.5	692.606	No	NA	NA	0	0	0	0	0	0	0	0	0
+6104b1c50f6057c1d8a6e3a6	z	100	26	US	Female	18	White	No	651.5	726.966	No	NA	there was a little delay to move onto the second half of the task, maybe a tech issue?	0	0	0	0	0	0	0	0	0
+6108bb33c59f5718fbf341e5	z	100	28	US	Female	14	White	No	421	1065.681	No	NA	NA	0	0	0	0	0	0	0	0	0
+6109f35a1b748c0a8876d117	slash	100	23	US	Female	18	Multiple	No	427	499.414	Yes	NA	NA	0	0	0	0	0	0	1	0	1
+6110bd9e993f6fa5560b68f5	z	100	24	US	Male	16	White	No	743	592.486	No	NA	NA	0	0	0	0	0	0	0	0	0
+6110d7f556da416401efdd5f	slash	100	24	US	Female	16	Multiple	No	451.5	519.201	No	NA	No	0	0	0	0	0	0	0	0	0
+61114b774f9199a8f8f75de2	z	100	31	US	Female	12	Multiple	Yes	693	801.052	No	NA	NA	0	0	0	0	0	0	0	0	0
+61116b7ba2ada479c60a86e7	slash	100	25	US	Female	16	White	Yes	729	720.757	No	NA	NA	0	0	0	0	0	0	0	0	0
+611195657110219178aa70e1	slash	NA	30	US	Male	16	White	No	907.5	667.74	No	NA	NA	0	0	0	0	0	0	0	1	1
+6112dba8e2eb90519a46e6cf	slash	100	24	US	Female	16	White	No	728	545.602	No	NA	NA	0	0	0	0	0	0	0	0	0
+611f123e92042b11d0b1ef8d	slash	87.5	19	US	Female	12	White	No	508	756.319	No	NA	NA	0	0	0	0	0	0	0	0	0
+61281debe85082cc937dd9ae	slash	100	31	US	Female	18	White	No	656	626.21	No	NA	NA	0	0	0	0	0	0	0	0	0
+612d20ea1043719545f90f62	slash	75	36	TW	Male	21	Asian	No	666	679.504	No	NA	NA	0	0	0	0	1	0	0	0	1
+613909e5cf0d18ff1e3162a9	slash	75	20	US	Female	12	White	No	528	556.088	No	NA	NA	0	0	0	0	0	0	0	0	0
+6155d24e3306f96464879b38	z	100	22	US	Female	16	White	No	1009	1918.751	No	NA	NA	0	0	0	0	0	0	0	0	0
+628f0d7e3055b5d1887916c5	slash	75	30	US	Male	12	White	No	519	608.335	No	NA	NA	0	0	0	0	0	0	0	0	0
+6297b5dba0b83527c9907832	slash	75	23	US	Male	14	Multiple	Yes	380.5	545.574	No	NA	NA	0	0	0	0	0	0	0	0	0
+62a33f5217536a32157d874e	z	87.5	31	US	Female	16	White	No	717.5	736.605	No	NA	NA	0	0	0	0	0	0	0	0	0
+62b9b95e108fbc4df78a2956	z	100	22	US	Male	16	White	No	418.5	576.216	No	NA	NA	0	0	0	0	0	0	0	0	0
+62b9cf42a63194f71fc0a393	z	100	23	US	Female	16	American Indian or Alaska Native	No	524.5	725.745	No	NA	NA	0	0	0	0	0	0	0	0	0
+62e29cbc8c0f3271aae4d7bf	slash	87.5	20	US	Female	12	White	No	605.5	609.905	No	NA	NA	0	0	0	0	0	0	0	0	0
+62ec219e5f3634408fb35580	slash	100	31	US	Female	16	White	No	870	768.642	No	NA	No	0	0	0	0	0	0	0	0	0
+62f58a7129fb13cf46a08ae0	slash	50	29	US	Male	12	White	No	632	551.396	No	NA	NA	0	0	0	0	0	0	0	0	0
+630345dd92f26599c777a5fc	slash	100	39	US	Male	8	White	No	451	721.589	No	NA	I'm going crosseyed	0	0	0	0	0	0	0	0	0
+6307a60f9142d2c42021840d	z	100	19	US	Male	12	White	No	404	524.559	No	NA	NA	0	0	0	0	0	0	0	0	0
+630ab689392291ba70d7fd3d	slash	87.5	21	US	Male	12	White	No	694	850.009	No	NA	NA	0	0	0	0	0	0	0	0	0
+630c1ad62af2905fb5bb3d1d	slash	75	40	US	Male	8	White	No	962.5	875.046	No	NA	This was neat.	0	0	0	0	0	0	0	0	0
+63106ea4e8fe9c6cd32bf358	z	62.5	27	US	Male	12	Black or African American	No	605.5	618.189	No	NA	NA	0	0	0	0	0	0	0	0	0
+631b593a9bb21bb86ea260a7	slash	100	24	US	Male	16	White	Yes	664.5	803.763	No	NA	NA	0	0	0	0	0	0	0	0	0
+631fc3e54c3c0515402fdd17	z	87.5	18	US	Male	8	White	No	712.5	650.746	No	NA	NA	0	0	0	0	0	0	0	0	0
+632436c12617a96bb55a2ca8	z	87.5	29	US	Male	12	White	Yes	631	641.587	No	NA	NA	0	0	0	0	0	0	0	0	0
+6339759d40c0cfec41fac4cb	slash	100	24	US	Male	12	White	No	674	621.171	No	NA	N/A	0	0	0	0	0	0	0	0	0
+633d9eb9721ed1d1b6df11af	slash	100	27	US	Male	16	White	No	371	416.504	Yes	Owen	NA	0	0	0	0	0	0	1	0	1
+6350714b7f29a002b46db87a	z	87.5	23	US	Female	16	White	No	771.5	580.595	No	NA	NA	0	0	0	0	0	0	0	0	0
+636162be3bacd9edefc8d894	z	62.5	25	US	Male	14	Asian	No	377.5	659.488	No	NA	Interactive study, shows ambidextrious prowess.	0	0	0	0	0	0	0	0	0
+63616c4bc6ecb76a9f0a5f21	slash	100	20	US	Male	12	White	No	380.5	603.087	No	NA	this was a fun experiment. I enjoyed testing my reaction time. it would be interesting to know which hand I did better with.	0	0	0	0	0	0	0	0	0

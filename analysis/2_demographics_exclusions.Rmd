@@ -38,7 +38,7 @@ source(here::here("lib", "util.R"))
 
 ```{r config}
 data_dir <- here::here("data")
-proc_dir <- here::here(data_dir, "proc_prepilot")
+proc_dir <- here::here(data_dir, "proc_pilot")
 ```
 
 
@@ -237,7 +237,7 @@ aah_all <- left_join(aah_task_all, aah_summary_all)
 ## Save long table with columns for all exclusion reasons.
 ## This is "the data."
 readr::write_tsv(aah_all, here(proc_dir, "aah_long.tsv"))
-readr::write_tsv(aah_summary, here(proc_dir, "aah_summary.tsv"))
+readr::write_tsv(aah_summary_all, here(proc_dir, "aah_summary.tsv"))
 
 ## Create long data table with inclusions only
 aah <- aah_all |> filter(exclude == 0)
@@ -341,7 +341,8 @@ aah_summary |>
 feedback <- aah_summary |>
   filter(open_ended_feedback_response != "NA") |> 
   group_by(open_ended_feedback_response, exclude) |>
-  rename(`Open-ended feedback` = open_ended_feedback_response) |> 
+  rename(`Open-ended feedback` = open_ended_feedback_response,
+         `Excluded?` = exclude) |> 
   summarize()
 feedback |> pretty_table()
 ```
