@@ -39,6 +39,7 @@ source(here::here("lib", "util.R"))
 ```{r config}
 data_dir <- here::here("data")
 proc_dir <- here::here(data_dir, "proc_pilot")
+n_recruited = 112 ## Total recruited + paid. For reporting exclusions
 ```
 
 
@@ -171,6 +172,7 @@ task_experience |> pretty_table()
 <br>
 
 ### Exclusions
+
 ```{r make_exclusions}
 ## Calculate any exclusions not based on task data.
 ##   (Exclusions based on task data are specified in:
@@ -245,6 +247,7 @@ aah <- aah_all |> filter(exclude == 0)
 ## Create summary table with inclusions only
 aah_summary <- aah_summary_all |> filter(exclude == 0)
 ```
+
 ```{r describe_exclusions_1}
 n_all <- aah_summary_all$subject |> unique() |> length()
 n_exclusions <- aah_summary_all$exclude |> sum()
@@ -253,20 +256,40 @@ n_keepers <- aah_summary_all |>
   (\(.) .[["subject"]])() |>
   unique() |>
   length()
-tibble("n (with full task data)" = n_all,
-       "exclusions" = n_exclusions,
-       "n (keepers)" = n_keepers) |> 
+tibble(
+  "n (recruited)" = n_recruited,
+  "n (with full task data)" = n_all,
+  "exclusions" = n_exclusions,
+  "n (keepers)" = n_keepers) |> 
   pretty_table()
 ```
+<br>
+
+We recruited `r n_recruited` right-handed participants through prolific. Of these, `r n_all` completed the task phase of the experiment. `r n_exclusions` were excluded for the reasons described below, leaving `r n_keepers` keepers.
+
 <br>
 ```{r describe_exclusions_2}
 exclusion_tbl <- aah_summary_all |> 
   rename(exclude_any = exclude) |> 
 summarize(across(starts_with("exclude"), sum)) |> 
 pivot_longer(cols = everything(), 
-             names_to = 'Exclusion', values_to = "n",
+             names_to = 'exclusion', values_to = "n",
              names_prefix = "exclude_") |> 
-  arrange(-n, Exclusion)
+  mutate('exclusion' = recode(exclusion,
+    any = "Any",
+    country = "Non-US country",
+    age = "Age outside 18-40",
+    done_before = "Had done the task before",
+    high_rt = "High RT (median > 1500ms)",
+    low_rt = "Low RT (median < 200ms)",
+    low_acc = "Low accuracy (below 60% on any block)",
+    many_gos = "Too many 'gos' (78/80 trials or more)",
+    no_ehi = "Quit before completing EHI"
+  )) |> 
+  arrange(-n, exclusion) |> 
+  select(n, exclusion) |> 
+  rename('Reason for exclusion' = exclusion)
+
 exclusion_tbl |> pretty_table()
 ```
 <br>
