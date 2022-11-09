@@ -222,7 +222,7 @@ recode_raw <- function(data_raw, data_type) {
     
     
     
-    ## Recode reaction time
+    ## Rename reaction time ("latency" -> "rt")
     data_proc <- data_proc |> rename(rt = latency)
     
   } else if (data_type == "ehi") {
@@ -254,6 +254,16 @@ recode_raw <- function(data_raw, data_type) {
       ## remove "response" suffix
       rename_with(trim_end, ends_with("response"))
     
+    #### Recode sex so that "not listed" shows full response.
+    data_proc <- data_proc |> mutate(sex = case_when(
+      sex == "Male" ~ "Male",
+      sex == "Female" ~ "Female",
+      sex == "Not listed:" ~ str_c("Not listed: ", sex_other),
+      TRUE ~ sex
+    ))
+    
+    
+    #### Recode race
     ## Put all race responses in a vector
     race_answers <-
       data_proc |> select(starts_with("race")) |> as.character()
@@ -276,6 +286,7 @@ recode_raw <- function(data_raw, data_type) {
         TRUE ~ race
       ))
     
+    #### Recode education
     ## Code education as number of years (keep as character type)
     data_proc <- data_proc |> 
       mutate(education = case_when(

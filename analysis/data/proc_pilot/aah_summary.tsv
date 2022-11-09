@@ -51,7 +51,7 @@ subject	first_block	ehi_total	age	country	sex	education	race	hispanic_ethnicity	
 5f14606495f8a710716e860e	slash	87.5	35	US	Female	16	White	Yes	490	766.474	No	NA	it was very difficult to see the shapes	0	0	0	0	0	0	0	0	0
 5f18a43ed0b0db0b6f0fc067	slash	75	31	US	Female	21	White	No	689.5	648.784	No	NA	NA	0	0	0	0	0	0	0	0	0
 5f3aff819bf5ad209a13d568	slash	50	27	US	Female	12	Black or African American	No	529.5	800.139	No	NA	NA	0	0	0	0	0	0	0	0	0
-5f4d3cb5fdda0b2c403fb801	slash	75	25	US	Not listed:	14	Asian	No	387.5	716.158	No	NA	NA	0	0	0	0	0	0	0	0	0
+5f4d3cb5fdda0b2c403fb801	slash	75	25	US	Not listed: non-binary	14	Asian	No	387.5	716.158	No	NA	NA	0	0	0	0	0	0	0	0	0
 5f877e0715f8781a0c7c3ab8	z	100	38	US	Male	16	White	No	759	674.84	No	NA	NA	0	0	0	0	0	0	0	0	0
 5f95a44920f542417f4263cb	z	100	24	US	Male	12	White	Yes	741	590.171	No	NA	NA	0	0	0	0	0	0	0	0	0
 5f974c72a0ed8c0f9ce724ea	slash	100	31	US	Male	16	Multiple	No	762	646.099	No	NA	NA	0	0	0	0	0	0	0	0	0
@@ -103,7 +103,6 @@ subject	first_block	ehi_total	age	country	sex	education	race	hispanic_ethnicity	
 631fc3e54c3c0515402fdd17	z	87.5	18	US	Male	8	White	No	712.5	650.746	No	NA	NA	0	0	0	0	0	0	0	0	0
 632436c12617a96bb55a2ca8	z	87.5	29	US	Male	12	White	Yes	631	641.587	No	NA	NA	0	0	0	0	0	0	0	0	0
 6339759d40c0cfec41fac4cb	slash	100	24	US	Male	12	White	No	674	621.171	No	NA	N/A	0	0	0	0	0	0	0	0	0
-633d9eb9721ed1d1b6df11af	slash	100	27	US	Male	16	White	No	371	416.504	Yes	Owen	NA	0	0	0	0	0	0	1	0	1
 6350714b7f29a002b46db87a	z	87.5	23	US	Female	16	White	No	771.5	580.595	No	NA	NA	0	0	0	0	0	0	0	0	0
 636162be3bacd9edefc8d894	z	62.5	25	US	Male	14	Asian	No	377.5	659.488	No	NA	Interactive study, shows ambidextrious prowess.	0	0	0	0	0	0	0	0	0
 63616c4bc6ecb76a9f0a5f21	slash	100	20	US	Male	12	White	No	380.5	603.087	No	NA	this was a fun experiment. I enjoyed testing my reaction time. it would be interesting to know which hand I did better with.	0	0	0	0	0	0	0	0	0

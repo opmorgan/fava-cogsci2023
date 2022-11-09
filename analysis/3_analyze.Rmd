@@ -20,6 +20,9 @@ options(knitr.kable.NA = "")
 
 cli.progress_show_after <- 0
 
+## Do not use scientific notation until 9 decimal places.
+options(scipen = 9, digits = 9)
+
 # Suppress summarise info
 options(dplyr.summarise.inform = FALSE)
 ```
@@ -40,10 +43,10 @@ source(here::here("lib", "util.R"))
 
 ```{r config}
 data_dir <- here::here("data")
-proc_dir <- here::here(data_dir, "proc_prepilot")
+proc_dir <- here::here(data_dir, "proc_pilot")
 
-use_cached_model_rt <- FALSE
-use_cached_model_acc <- FALSE
+use_cached_model_rt <- TRUE
+use_cached_model_acc <- TRUE
 ```
 
 ## {.tabset}
@@ -94,7 +97,9 @@ In our pilot sample of right handers, do we see the typical field x level intera
 #### Reaction time
 Reaction time is modeled as a linear effect of field and level, using data from every trial:
 <br>
-**lmer( rt ~ field + level + field:level + (1 | subject) )**
+<br>
+`lmer( rt ~ field + level + field:level + (1 | subject) )`
+<br>
 <br>
 *Discussion question*: Should any variables not-of-interest be included as covariates? E.g., sex, target (circle/square), first block (z or slash), overall median rt (ms).
 ```{r rt_model}
@@ -106,7 +111,7 @@ rt_model <- lmer(rt ~ field:level + field + level + (1 | subject), data = aah)
 
 if (use_cached_model_rt == FALSE) {
   ## Create emmeans model object, and manually cache it.
-  rt_emm <- emmeans(rt_model, ~ field * level)
+  rt_emm <- emmeans(rt_model, ~ field * level, pbkrtest = 13184)
   
   ## Manually cache model
   saveRDS(rt_emm, here("manual_cache", "rt_emm.rds"))
@@ -128,9 +133,10 @@ interaction_stats <-
 
 rt_model_no_interaction <- update(rt_model, . ~ . - field:level)
 interaction_anova <- interaction_stats(rt_model, rt_model_no_interaction)
-#interaction_anova
 interaction_anova |>
   as_tibble() |>
+  rename(p.value = `Pr(>Chisq)`) |> 
+  format_p.value() |> 
   pretty_table() |> 
   tab_header(title = "Field by level interaction (RT)", 
              subtitle = "ANOVA: compare models with vs. without interaction term") 
@@ -140,7 +146,9 @@ interaction_anova |>
 ## Use aov to test 2-way interaction with a traditional F-test.
 rt_aov <- aov(rt ~ field + level + field:level, data = aah)
 rt_aov_summary <- summary(rt_aov)
-rt_aov_summary |> (\(.) .[[1]])() |> tidy() |> pretty_table() |>
+rt_aov_summary |> (\(.) .[[1]])() |> tidy() |>
+  format_p.value() |> 
+  pretty_table() |>
   tab_header(title = "Field by level interaction (RT)",
              subtitle = "Old-school F-test")
 ```
@@ -155,6 +163,7 @@ rt_interaction_emm <- rt_emm |>
 
 rt_interaction_emm |>
   as_tibble() |>
+  format_p.value() |> 
   pretty_table() |>
   tab_header(title = "Field by level interaction (RT)",
              subtitle = "Compare effect estimate to zero with emmeans()") |>
@@ -180,6 +189,7 @@ rt_field_bias <- rt_field_bias_emm |>
            c("LVF global - LVF local", "RVF global - RVF local"))
 
 rt_field_bias |>
+  format_p.value() |> 
   pretty_table() |>
   tab_header(title = "Global bias by field (RT)") |>
   tab_footnote(footnote = "A negative number means global bias (faster RT for global)",
@@ -223,9 +233,10 @@ rt_descriptive |>
 #### Accuracy
 Accuracy is modeled as a binomial effect of field and level, using data from every trial (correct/incorrect):
 <br>
-**glmer( correct ~ field + level + field:level + (1 | subject), family = "binomial" )**
 <br>
-*Discussion question*: Should any variables not-of-interest be included as covariates? E.g., sex, target (circle/square), first block (z or slash), overall median rt (ms).
+`glmer( correct ~ field + level + field:level + (1 | subject), family = "binomial" )`
+<br>
+<br>
 ```{r acc_model}
 ## Make a binomial logistic model using data from every trial.
 ## Fixed effects: field, level (and their interaction)
@@ -278,12 +289,13 @@ acc_interaction_emm <- acc_emm |>
 
 acc_interaction_emm |>
   as_tibble() |>
+  format_p.value() |> 
   pretty_table() |>
   tab_header(title = "Field by level interaction (Accuracy)",
              subtitle = "Compare effect estimate to zero with emmeans()") |>
   tab_footnote(footnote = "Backtransformed to odds ratio from log odds ratio; tests are performed on log odds ratio scale.",
                locations = cells_column_labels(columns = odds.ratio)) |>
-  tab_footnote(footnote = "I don't understand why df is 'Inf' here, but I think it is expected when emmeans does logistic regressoin. See emmeans FAQ: https://cran.r-project.org/web/packages/emmeans/vignettes/FAQs.html#asymp.",
+  tab_footnote(footnote = "I don't understand why df is 'Inf' here, but I think it is expected when emmeans does logistic regression. See emmeans FAQ: https://cran.r-project.org/web/packages/emmeans/vignettes/FAQs.html#asymp.",
                locations = cells_column_labels(columns = df)) |>
   tab_footnote(footnote = "Confidence level: 95%",
                locations = cells_column_labels(columns = asymp.LCL)) |>
@@ -304,6 +316,7 @@ acc_field_bias <- acc_field_bias_emm |>
 #acc_field_bias
 
 acc_field_bias |>
+  format_p.value() |> 
   pretty_table() |>
   tab_header(title = "Global bias by field (Accuracy)") |>
   tab_footnote(footnote =  "Backtransformed to odds ratio from log odds ratio (tests are performed on log odds ratio scale). A ratio > 1 means global bias (more correct responses for global).",
