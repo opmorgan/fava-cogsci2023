@@ -37,16 +37,23 @@ library(emmeans)
 library(broom)
 library(gt)
 
+library(knitr) # For include_graphics
+
 source(here::here("lib", "load_process", "load_process.R"))
 source(here::here("lib", "util.R"))
+source(here::here("lib", "demographics.R"))
 ```
 
 ```{r config}
 data_dir <- here::here("data")
 proc_dir <- here::here(data_dir, "proc_pilot")
+fig_dir <- here::here("figures")
 
 use_cached_model_rt <- TRUE
 use_cached_model_acc <- TRUE
+
+use_cached_demofigs <- FALSE
+use_cached_rtfigs <- FALSE
 ```
 
 ## {.tabset}
@@ -86,15 +93,310 @@ aah <- readr::read_tsv(
     exclude = col_logical()
   )
 ) |>
-  filter(exclude == 0)
+  filter(exclude == 0) |> 
+  select(-starts_with("exclude"))
+
+aah_summary <- readr::read_tsv(
+  here(proc_dir, "aah_summary.tsv"),
+  col_types = cols(
+    subject = col_character(),
+    first_block = col_character(),
+    ehi_total = col_double(),
+    age = col_double(),
+    country = col_character(),
+    sex = col_character(),
+    education = col_double(),
+    race = col_character(),
+    hispanic_ethnicity = col_character(),
+    rt_overall = col_double(),
+    duration_s = col_double(),
+    task_experience_response = col_character(),
+    task_experience_other_response = col_logical(),
+    open_ended_feedback_response = col_character(),
+    exclude_many_gos = col_double(),
+    exclude_low_acc = col_double(),
+    exclude_low_rt = col_double(),
+    exclude_high_rt = col_double(),
+    exclude_country = col_double(),
+    exclude_age = col_double(),
+    exclude_done_before = col_double(),
+    exclude_no_ehi = col_double(),
+    exclude = col_double()
+  )
+) |> 
+  filter(exclude == 0) |> 
+  select(-starts_with("exclude"))
 ```
 
-### Pilot analyses: Field x Level interaction {.tabset .tabset-pills .active}
+### Demographics
+```{r}
+rt_demo <- demo_summary_table(aah_summary)
+rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
+```
+
+```{r}
+## Functions to style plots
+gg_style <- function(g) {
+  g_styled <- g +
+    theme_minimal(base_size = 10) +
+    theme(aspect.ratio = 1 / 1,
+          axis.ticks.x = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_rect(fill = NA)
+    )
+    return(g_styled)
+}
+
+gg_style_demo <- function(g) {
+  g_styled <- g +
+    theme_minimal(base_size = 8) +
+    theme(aspect.ratio = 1 / 1,
+          axis.ticks.x = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_rect(fill = NA, color = "gray50")
+    )
+    return(g_styled)
+}
+
+gg_style_means <- function(g) {
+  g_styled <- g +
+  theme_minimal() +
+  theme(
+    aspect.ratio = 2 / 1,
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_blank(),
+    panel.border = element_rect(fill = NA, color = "gray50")
+  )
+    return(g_styled)
+}
+
+plot_blue <- c("#337aB7")
+plot_color <- plot_blue
+plot_colors <- c("#4477AA",
+                 "#EE6677",
+                 "#CCBB44",
+                 "#66CCEE",
+                 "#AA3377",
+                 "#228833",
+                 "#BBBBBB")
+
+gg_color <- function(g, plot_colors) {
+  if (missing(plot_colors)) {
+    # By default, use colorblind-safe categorical palette
+    plot_colors <- c("#4477AA", "#EE6677", "#CCBB44", "#66CCEE",
+                     "#AA3377", "#228833", "#BBBBBB")
+  }
+  g_colored <- g +
+    scale_color_manual(values = plot_colors) +
+    scale_fill_manual(values = plot_colors)
+  return(g_colored)
+}
+```
+
+```{r plot_ehi}
+fig_path <- here(fig_dir, "ehi.png")
+
+if (use_cached_demofigs == FALSE) {
+g <- ggplot(aah_summary, aes(x = ehi_total)) +
+  geom_histogram(color = NA, fill = plot_color, alpha = .8, binwidth = 8, boundary = 100) +
+  labs(x = "EHI")+
+  xlim(c(-104, 104))
+
+g <- g |> gg_style_demo() + theme(aspect.ratio = 1/2,
+                            axis.title.y = element_blank())
+
+ggsave(fig_path, g, "png", height = 2, width = 4)
+}
+
+include_graphics(fig_path)
+```
+
+```{r plot_age}
+fig_path <- here(fig_dir, "age.png")
+
+if (use_cached_demofigs == FALSE) {
+g <- ggplot(aah_summary, aes(x = age)) +
+  geom_histogram(color = NA, fill = plot_color, alpha = .8, binwidth = 1) +
+  labs(x = "Age (years)")
+
+g <- g |> gg_style_demo() + theme(aspect.ratio = 1/2,
+                            axis.title.y = element_blank())
+
+ggsave(fig_path, g, "png", height = 2, width = 4)
+}
+
+include_graphics(fig_path)
+```
+
+```{r plot_edu}
+fig_path <- here(fig_dir, "edu.png")
+
+if (use_cached_demofigs == FALSE) {
+g <- ggplot(aah_summary, aes(x = education)) +
+  geom_histogram(color = NA, fill = plot_color, alpha = .8, binwidth = 1) +
+  labs(x = "Education (years)")
+
+g <- g |> gg_style_demo() + theme(aspect.ratio = 1/2,
+                            axis.title.y = element_blank(),
+                            axis.text.y = element_blank())
+
+ggsave(fig_path, g, "png", height = 2, width = 4)
+}
+
+include_graphics(fig_path)
+```
+<br>
+```{r race_included}
+demo_race_table(aah_summary) |> pretty_table()
+```
+<br>
+```{r ethnicity_included}
+demo_ethnicity_table(aah_summary) |> pretty_table()
+```
+<br>
+
+### Field x Level {.tabset .tabset-pills}
 
 In our pilot sample of right handers, do we see the typical field x level interaction? That is, do participants show a relative bias for global shapes in the left visual field (LVF)?
 <br>
 
 #### Reaction time
+```{r plot_lib}
+library(ggpubr) ## functions for plotting SD, SEM, CI.
+library(ggbeeswarm)
+library(patchwork)
+```
+
+```{r plot_rt_alltrials}
+## Plot data from every trial, with overall mean, median and bounds.
+fig_path <- here(fig_dir, "rt_alltrials.png")
+
+if (use_cached_rtfigs == FALSE) {
+aah_correct <- aah |> filter(correct == T) |> 
+  mutate(level = recode(level, global = "Global", local = "Local"))
+
+rt_descriptive <- aah_correct |>
+  group_by(field, level) |>
+  summarize(
+    median = median(rt),
+    mean = mean(rt),
+    SE = sd(rt) / sqrt(length((rt)))
+  )
+
+## Facet by: Visual field
+g <- ggplot(aah_correct, aes(
+  x = level,
+  y = rt,
+  fill = level,
+  color = level
+)) +
+  geom_quasirandom(alpha = .05, show.legend = F) +
+  geom_boxplot(
+    alpha = 0.5,
+    size = 0.3,
+    varwidth = F,
+    outlier.shape = NA,
+    color = "gray20",
+    show.legend = F
+  ) +
+  stat_summary(
+    fun.data = mean_cl_normal,
+    fun.args = list(conf.int = 0.95),
+    geom = "errorbar",
+    position = "dodge",
+    linetype = 1,
+    color = "gray5",
+    width = .3,
+    # size = point_size / 5,
+    show.legend = F
+  ) +
+  geom_point(data = rt_descriptive, aes(y = mean), color = "black", shape = 21,
+             show.legend = F) +
+  scale_y_continuous(minor_breaks = seq(0 , 2000, 100),
+                     breaks = seq(0, 2000, 200)) +
+  facet_wrap(~ field) +
+  labs(title = "All trials (RT)", x = "Level", y = "Reaction time (ms)")
+
+g <- g |> gg_style_means() |> gg_color()
+ggsave(fig_path, g, "png", height = 4, width = 4)
+g1 <- g
+}
+
+#include_graphics(fig_path)
+```
+
+```{r plot_rt_subjects}
+fig_path <- here(fig_dir, "rt_subjectmedians.png")
+
+if (use_cached_rtfigs == FALSE) {
+rt_subject <- aah_correct |> group_by(subject, field, level) |> 
+  summarize(rt = median(rt))
+
+rt_descriptive <- rt_subject |>
+  group_by(field, level) |>
+  summarize(
+    median = median(rt),
+    mean = mean(rt),
+    SE = sd(rt) / sqrt(length((rt)))
+  )
+
+g <- ggplot(rt_subject, aes(
+  x = level,
+  y = rt,
+  fill = level,
+  color = level
+)) +
+  geom_quasirandom(alpha = .1, show.legend = F) +
+  geom_boxplot(
+    alpha = 0.5,
+    size = 0.3,
+    varwidth = F,
+    outlier.shape = NA,
+    color = "gray20",
+    show.legend = F
+  ) +
+  stat_summary(
+    fun.data = mean_cl_normal,
+    fun.args = list(conf.int = 0.95),
+    geom = "errorbar",
+    position = "dodge",
+    linetype = 1,
+    color = "gray5",
+    width = .2,
+    # size = point_size / 5,
+    show.legend = F
+  ) +
+  geom_point(
+    data = rt_descriptive,
+    aes(y = mean),
+    color = "black",
+    shape = 21,
+    show.legend = F
+  ) +
+  scale_y_continuous(minor_breaks = seq(0 , 1500, 100),
+                     breaks = seq(0, 1500, 200)) +
+  facet_wrap( ~ field) +
+  labs(title = "Per-subject medians (RT)", x = "Level", y = "Reaction time (ms)")
+
+g <- g |> gg_style_means() |> gg_color()
+ggsave(fig_path, g, "png", height = 4, width = 4)
+g2 <- g
+}
+
+#include_graphics(fig_path)
+```
+```{r display_figs}
+fig_path <- here(fig_dir, "rt_both.png")
+
+if (use_cached_rtfigs == FALSE) {
+g_both <- g1 + g2
+ggsave(fig_path, g_both, "png", height = 4, width = 8)
+}
+
+include_graphics(fig_path)
+```
+
+
 Reaction time is modeled as a linear effect of field and level, using data from every trial:
 <br>
 <br>
@@ -216,7 +518,7 @@ rt_modelled |>
 ```
 <br>
 ```{r rt_descriptive}
-rt_descriptive <- aah |>
+rt_descriptive <- aah_correct |>
   group_by(field, level) |>
   summarize(
     median = median(rt),
@@ -231,6 +533,71 @@ rt_descriptive |>
 <br>
 
 #### Accuracy
+```{r}
+fig_path <- here(fig_dir, "acc_subjectpct.png")
+
+if (use_cached_rtfigs == FALSE) {
+acc_subject <- aah |> group_by(subject, field, level) |> 
+      summarize(
+        total_responses = n(),
+        n_present_resp = sum(correct),
+        n_absent_resp = total_responses - n_present_resp,
+        n_correct = sum(correct),
+        acc = 100 * (n_correct / total_responses)
+      ) |> 
+  select(subject, field, level, acc) |> 
+  mutate(level = recode(level, global = "Global", local = "Local"))
+
+acc_descriptive <- acc_subject |>
+      group_by(field, level) |> 
+      summarize(mean = mean(acc))
+
+g <- ggplot(acc_subject, aes(
+  x = level,
+  y = acc,
+  fill = level,
+  color = level
+)) +
+  geom_quasirandom(alpha = .1, show.legend = F) +
+  geom_boxplot(
+    alpha = 0.5,
+    size = 0.3,
+    varwidth = F,
+    outlier.shape = NA,
+    color = "gray20",
+    show.legend = F
+  ) +
+  stat_summary(
+    fun.data = mean_cl_normal,
+    fun.args = list(conf.int = 0.95),
+    geom = "errorbar",
+    position = "dodge",
+    linetype = 1,
+    color = "gray5",
+    width = .2,
+    # size = point_size / 5,
+    show.legend = F
+  ) +
+  geom_point(
+    data = acc_descriptive,
+    aes(y = mean),
+    color = "black",
+    shape = 21,
+    show.legend = F
+  ) +
+  # scale_y_continuous(minor_breaks = seq(0 , 1500, 100),
+  #                    breaks = seq(0, 1500, 200)) +
+  facet_wrap( ~ field) +
+  labs(title = "Per-subject Accuracy", x = "Level", y = "Percent correct")
+
+g <- g |> gg_style_means() |> gg_color()
+g
+ggsave(fig_path, g, "png", height = 4, width = 4)
+}
+
+include_graphics(fig_path)
+```
+
 Accuracy is modeled as a binomial effect of field and level, using data from every trial (correct/incorrect):
 <br>
 <br>
@@ -342,7 +709,7 @@ acc_modelled |>
 ```
 <br>
 ```{r acc_descriptive}
-acc_descriptive <- response_counts_condition <- aah |>
+acc_descriptive <- aah |>
       group_by(level, field, subject) |>
       summarize(
         total_responses = n(),
