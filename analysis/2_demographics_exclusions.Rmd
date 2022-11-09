@@ -331,6 +331,10 @@ rt_demo <- aah_summary |>
 rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
 ```
 <br>
+```{r demographics_distribution}
+##TODO: plot distribution of age, education, EHI (dot plots)
+```
+
 ```{r country_included}
 aah_summary |>
   group_by(country) |>
