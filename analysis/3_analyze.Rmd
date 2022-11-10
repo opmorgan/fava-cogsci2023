@@ -49,6 +49,7 @@ source(here::here("lib", "demographics.R"))
 ```
 
 ```{r lib_plot}
+## Todo: put these in a separate file.
 ## Functions to style plots
 gg_style <- function(g) {
   g_styled <- g +
@@ -116,6 +117,8 @@ use_cached_model_acc <- TRUE
 
 use_cached_demofigs <- FALSE
 use_cached_rtfigs <- FALSE
+use_cached_accfigs <- FALSE
+
 ```
 
 ## {.tabset}
@@ -201,7 +204,7 @@ plot_color = plot_blue
 ```
 
 ```{r plot_ehi}
-fig_path <- here(fig_dir, "ehi.png")
+fig_path <- here(fig_dir, "demo_ehi.png")
 
 if (use_cached_demofigs == FALSE) {
 g <- ggplot(aah_summary, aes(x = ehi_total)) +
@@ -219,7 +222,7 @@ include_graphics(fig_path)
 ```
 
 ```{r plot_age}
-fig_path <- here(fig_dir, "age.png")
+fig_path <- here(fig_dir, "demo_age.png")
 
 if (use_cached_demofigs == FALSE) {
 g <- ggplot(aah_summary, aes(x = age)) +
@@ -236,7 +239,7 @@ include_graphics(fig_path)
 ```
 
 ```{r plot_edu}
-fig_path <- here(fig_dir, "edu.png")
+fig_path <- here(fig_dir, "demo_edu.png")
 
 if (use_cached_demofigs == FALSE) {
 g <- ggplot(aah_summary, aes(x = education)) +
@@ -273,9 +276,9 @@ In our pilot sample of right handers, do we see the typical field x level intera
 plot_color <- plot_colors[[5]]
 ```
 
-```{r plot_g1_rt_4_alltrials}
+```{r plot_rt_4a_all_trials}
 ## Plot data from every trial, with overall mean, median and bounds.
-fig_path_g1 <- here(fig_dir, "rt_4_all.png")
+fig_path_rt_4a <- here(fig_dir, "rt_4a.png")
 
 if (use_cached_rtfigs == FALSE) {
 aah_correct <- aah |> filter(correct == T) |> 
@@ -324,14 +327,14 @@ g <- ggplot(aah_correct, aes(
   labs(title = "All trials (RT)", x = "Level", y = "Reaction time (ms)")
 
 g <- g |> gg_style_means() |> gg_color()
-ggsave(fig_path_g1, g, "png", height = 4, width = 4)
-g1 <- g
+ggsave(fig_path_rt_4a, g, "png", height = 4, width = 4)
+g_rt_4a <- g
 }
 
-#include_graphics(fig_path_g1)
+#include_graphics(fig_path_g_rt_4a)
 ```
-```{r plot_g2_rt_4_subjects}
-fig_path_g2 <- here(fig_dir, "rt_4_subjects.png")
+```{r plot_rt_4}
+fig_path_rt_4 <- here(fig_dir, "rt_4.png")
 
 if (use_cached_rtfigs == FALSE) {
 rt_subject <- aah_correct |> group_by(subject, field, level) |> 
@@ -384,25 +387,25 @@ g <- ggplot(rt_subject, aes(
   labs(title = "Per-subject medians (RT)", x = "Level", y = "Reaction time (ms)")
 
 g <- g |>  gg_style_means() |> gg_color()
-ggsave(fig_path_g2, g, "png", height = 4, width = 4)
-g2 <- g
+ggsave(fig_path_rt_4, g, "png", height = 4, width = 4)
+g_rt_4 <- g
 }
 
-#include_graphics(fig_path_g2)
+#include_graphics(fig_path_rt_4)
 ```
-```{r display_figs_rt_4_both}
-fig_path_g12 <- here(fig_dir, "rt_4_both.png")
+```{r plot_rt_4a4}
+fig_path_rt_4a4 <- here(fig_dir, "rt_combo_4a-4.png")
 
 if (use_cached_rtfigs == FALSE) {
-g_12 <- g1 + g2
-ggsave(fig_path_g12, g_12, "png", height = 4, width = 8)
+g_rt_4a4 <- g_rt_4a + g_rt_4
+ggsave(fig_path_rt_4a4, g_rt_4a4, "png", height = 4, width = 8)
 }
 
-include_graphics(fig_path_g12)
+include_graphics(fig_path_rt_4a4)
 ```
 
-```{r plot_g3_rt_2_subjects}
-fig_path_g3 <- here(fig_dir, "rt_2_subjects.png")
+```{r plot_rt_2}
+fig_path_rt_2 <- here(fig_dir, "rt_2.png")
 
 if (use_cached_rtfigs == FALSE) {
 ## Make a table showing:
@@ -457,14 +460,14 @@ g <- ggplot(rt_2, aes(x = field,
   labs(title = "Global bias (RT)", x = "Level", y = "Local - Global RT (ms)")
 
 g <- g |> gg_style_means()
-ggsave(fig_path_g3, g, "png", height = 4, width = 4)
-g3 <- g
+ggsave(fig_path_rt_2, g, "png", height = 4, width = 4)
+g_rt_2 <- g
 }
 
-#include_graphics(fig_path_g3)
+#include_graphics(fig_path_rt_2)
 ```
-```{r plot_g4_rt_1_subjects}
-fig_path_g4 <- here(fig_dir, "rt_1_subjects.png")
+```{r plot_rt_1}
+fig_path_rt_1 <- here(fig_dir, "rt_1.png")
 
 if (use_cached_rtfigs == FALSE) {
   ## Make a table showing:
@@ -510,7 +513,6 @@ g <- ggplot(rt_1, aes(
     position = "dodge",
     linetype = 1,
     color = "gray5",
-    fill = plot_color,
     width = .2,
     # size = point_size / 5,
     show.legend = F
@@ -530,72 +532,24 @@ g <- ggplot(rt_1, aes(
 
 g <- g |> gg_style_means() |> gg_color() +
   theme(axis.text.x = element_blank(), aspect.ratio = 4/1)
-ggsave(fig_path_g4, g, "png", height = 4, width = 4)
-g4 <- g
+ggsave(fig_path_rt_1, g, "png", height = 4, width = 4)
+g_rt_1 <- g
 }
 
-#include_graphics(fig_path_g4)
+#include_graphics(fig_path_rt_1)
 ```
-```{r display_figs_rt_2_both}
-fig_path_g34 <- here(fig_dir, "rt_2_both.png")
+```{r plot_rt_21}
+fig_path_rt_21 <- here(fig_dir, "rt_combo_2-1.png")
 
 if (use_cached_rtfigs == FALSE) {
-g4_padded <- g4 + theme(plot.margin = unit(c(10, 50, 5.5, 40), "pt"))
-g_34 <- g3 + g4_padded
-ggsave(fig_path_g34, g_34, "png", height = 4, width = 8)
+g_rt_1_padded <- g_rt_1 + theme(plot.margin = unit(c(10, 50, 5.5, 40), "pt"))
+g_rt_21 <- g_rt_2 + g_rt_1_padded
+ggsave(fig_path_rt_21, g_rt_21, "png", height = 4, width = 8)
 }
 
-include_graphics(fig_path_g34)
+include_graphics(fig_path_rt_21)
 ```
 
-```{r display_figs_rt_234}
-## TODO: try this with figpatch
-# library(figpatch)
-# fig_path_g234 <- here(fig_dir, "rt_g234.png")
-# 
-# if (use_cached_rtfigs == FALSE) {
-# g4_padded <- g4 + theme(plot.margin = unit(c(10, 40, 5.5, 40), "pt"))
-# g_34 <- g3 + g4_padded
-# g2
-# g2 + g_34
-# g3
-# g_234 <- g2 + g3 + g4_padded + plot_layout(widths = c(4, 2, 1))
-# g_234
-# ggsave(fig_path_g234, g_both, "png", height = 4, width = 8)
-# }
-# 
-# include_graphics(fig_path_g34)
-```
-
-
-<!-- Flexbox! -->
-<!-- <div style=" -->
-<!-- display:flex;  -->
-<!-- flex-wrap: wrap;  -->
-<!-- flex-direction: column; -->
-<!-- "> -->
-
-<!-- <div> -->
-<!-- This is the first row (on the top) -->
-<!-- ```{r} -->
-<!-- include_graphics(fig_path_g1) -->
-<!-- ``` -->
-<!-- ```{r} -->
-<!-- include_graphics(fig_path_g3) -->
-<!-- ``` -->
-<!-- </div> -->
-
-<!-- <div> -->
-<!-- ... and this is the second row (on the bottom) -->
-<!-- ```{r} -->
-<!-- include_graphics(fig_path_g2) -->
-<!-- ``` -->
-
-<!-- ```{r} -->
-<!-- include_graphics(fig_path_g4) -->
-<!-- ``` -->
-<!-- </div> -->
-<!-- </div> -->
 
 Reaction time is modeled as a linear effect of field and level, using data from every trial:
 <br>
@@ -669,7 +623,7 @@ rt_interaction_emm |>
   pretty_table() |>
   tab_header(title = "Field by level interaction (RT)",
              subtitle = "Compare effect estimate to zero with emmeans()") |>
-  tab_footnote(footnote = "A negative number means global bias is stronger in LVF",
+  tab_footnote(footnote = "A negative number means global bias is stronger in LVF (as predicted for right handers)",
                locations = cells_column_labels(columns = estimate)) |>
   tab_footnote(footnote = "Two-sided",
                locations = cells_column_labels(columns = p.value)) |>
@@ -733,8 +687,10 @@ rt_descriptive |>
 <br>
 
 #### Accuracy
-```{r}
-fig_path <- here(fig_dir, "acc_subjectpct.png")
+##### {.tabset}
+```{r plot_acc_4}
+fig_path_acc_4 <- here(fig_dir, "acc_4.png")
+fig_path_acc_4_wide <- here(fig_dir, "acc_wide_4.png")
 
 if (use_cached_rtfigs == FALSE) {
 acc_subject <- aah |> group_by(subject, field, level) |> 
@@ -785,19 +741,167 @@ g <- ggplot(acc_subject, aes(
     shape = 21,
     show.legend = F
   ) +
-  # scale_y_continuous(minor_breaks = seq(0 , 1500, 100),
-  #                    breaks = seq(0, 1500, 200)) +
+  scale_y_continuous(minor_breaks = seq(-100, 100, 5),
+                     breaks = seq(-100, 100, 10)) +
   facet_wrap( ~ field) +
-  labs(title = "Per-subject Accuracy", x = "Level", y = "Percent correct")
+  labs(title = "Per-subject accuracy", x = "Level", y = "Accuracy (% correct)")
 
 g <- g |> gg_style_means() |> gg_color()
-g
-ggsave(fig_path, g, "png", height = 4, width = 4)
+ggsave(fig_path_acc_4, g, "png", height = 4, width = 4)
+
+ggsave(fig_path_acc_4_wide, g, "png", height = 4, width = 8)
+
+g_acc_4 <- g
 }
 
-include_graphics(fig_path)
+include_graphics(fig_path_acc_4_wide)
+```
+```{r plot_acc_2}
+fig_path_acc_2 <- here(fig_dir, "acc_2.png")
+
+if (use_cached_rtfigs == FALSE) {
+## Make a table showing:
+## For each subject and field, the difference in median acc for:
+## Global - Local
+acc_2 <- acc_subject |> 
+  pivot_wider(names_from = c(level),
+              values_from = acc) |> 
+  mutate(Global_Bias = Global - Local)
+
+acc_descriptive <- acc_2 |>
+  group_by(field) |>
+  summarize(
+    median = median(Global_Bias),
+    mean = mean(Global_Bias),
+    SE = sd(Global_Bias) / sqrt(length((Global_Bias)))
+  )
+
+g <- ggplot(acc_2, aes(x = field,
+                      y = Global_Bias, color)) +
+  geom_quasirandom(
+    alpha = .1, show.legend = F,
+    color = plot_color) +
+  geom_boxplot(
+    alpha = 0.5,
+    size = 0.3,
+    varwidth = F,
+    outlier.shape = NA,
+    fill = plot_color,
+    color = "gray20",
+    show.legend = F
+  ) +
+  stat_summary(
+    fun.data = mean_cl_normal,
+    fun.args = list(conf.int = 0.95),
+    geom = "errorbar",
+    position = "dodge",
+    linetype = 1,
+    color = "gray5",
+    width = .2,
+    show.legend = F
+  ) +
+  geom_point(
+    data = acc_descriptive,
+    aes(y = mean),
+    fill = plot_color,
+    shape = 21,
+    show.legend = F
+  ) +
+  scale_y_continuous(minor_breaks = seq(-100 , 100, 5),
+                     breaks = seq(-100, 100, 10)) +
+  labs(title = "Global bias (Accuracy)", x = "Level", y = "Local - Global Accuracy (% correct)")
+
+g <- g |> gg_style_means()
+ggsave(fig_path_acc_2, g, "png", height = 4, width = 4)
+g_acc_2 <- g
+}
+
+#include_graphics(fig_path_acc_2)
+```
+```{r plot_acc_1}
+fig_path_ga1 <- here(fig_dir, "acc_1.png")
+
+if (use_cached_accfigs == FALSE) {
+  ## Make a table showing:
+  ## For each subject and field, the difference in median acc for:
+  ## Global - Local
+  acc_1 <- acc_subject |>
+    pivot_wider(names_from = c(field, level),
+                values_from = acc) |>
+    mutate(LVF_Global_Bias = (LVF_Global - LVF_Local) - (RVF_Global - RVF_Local)) |>
+    mutate(all_one_group = "all_one_group")
+  
+acc_descriptive <- acc_1 |>
+  group_by(all_one_group) |> 
+  summarize(
+    median = median(LVF_Global_Bias),
+    mean = mean(LVF_Global_Bias),
+    SE = sd(LVF_Global_Bias) / sqrt(length((LVF_Global_Bias)))
+  )
+
+g <- ggplot(acc_1, aes(
+  x = all_one_group,
+  y = LVF_Global_Bias
+)) +
+  geom_quasirandom(
+    alpha = .1, show.legend = F,
+    color = plot_color) +
+  geom_boxplot(
+    alpha = 0.5,
+    size = 0.3,
+    varwidth = F,
+    outlier.shape = NA,
+    color = "gray20",
+    fill = plot_color,
+    show.legend = F
+  ) +
+  stat_summary(
+    fun.data = mean_cl_normal,
+    fun.args = list(conf.int = 0.95),
+    geom = "errorbar",
+    position = "dodge",
+    linetype = 1,
+    color = "gray5",
+    width = .2,
+    # size = point_size / 5,
+    show.legend = F
+  ) +
+  geom_point(
+    data = acc_descriptive,
+    aes(y = mean),
+    fill = plot_color,
+    color = "black",
+    shape = 21,
+    show.legend = F
+  ) +
+  scale_y_continuous(minor_breaks = seq(-100 , 100, 5),
+                     breaks = seq(-100, 100, 10)) +
+  theme(axis.text.x = element_blank()) +
+  labs(title = "LVF>RVF Global Bias (Acc.)", x = "Level", y = "LVF-RVF, Global - Local (% correct)")
+
+g <- g |> gg_style_means() |> gg_color() +
+  theme(axis.text.x = element_blank(), aspect.ratio = 4/1)
+ggsave(fig_path_ga1, g, "png", height = 4, width = 4)
+g_acc_1 <- g
+}
+
+#include_graphics(fig_path_ga1)
+```
+```{r plot_acc_21}
+fig_path_acc_21 <- here(fig_dir, "acc_combo_21.png")
+
+if (use_cached_rtfigs == FALSE) {
+  g_acc_1_padded <- g_acc_1 + theme(plot.margin = 
+                              margin(t = 30, r = 50, b = 10, l = 50, unit = "pt"))
+  g_acc_21 <- g_acc_2 + g_acc_1_padded
+  g_acc_21
+  ggsave(fig_path_acc_21, g_acc_21, "png", height = 4, width = 8)
+}
+
+include_graphics(fig_path_acc_21)
 ```
 
+##### Statistics
 Accuracy is modeled as a binomial effect of field and level, using data from every trial (correct/incorrect):
 <br>
 <br>

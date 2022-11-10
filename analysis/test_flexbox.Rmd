@@ -35,3 +35,32 @@ str(chickwts)
 
 </div>
 </div>
+
+<!-- Flexbox! -->
+<!-- <div style=" -->
+<!-- display:flex;  -->
+<!-- flex-wrap: wrap;  -->
+<!-- flex-direction: column; -->
+<!-- "> -->
+
+<!-- <div> -->
+<!-- This is the first row (on the top) -->
+<!-- ```{r} -->
+<!-- include_graphics(fig_path_g1) -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- include_graphics(fig_path_g3) -->
+<!-- ``` -->
+<!-- </div> -->
+
+<!-- <div> -->
+<!-- ... and this is the second row (on the bottom) -->
+<!-- ```{r} -->
+<!-- include_graphics(fig_path_g2) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- include_graphics(fig_path_g4) -->
+<!-- ``` -->
+<!-- </div> -->
+<!-- </div> -->
