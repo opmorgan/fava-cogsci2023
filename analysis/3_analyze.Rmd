@@ -164,8 +164,11 @@ aah <- readr::read_tsv(
     exclude = col_logical()
   )
 ) |>
-  filter(exclude == 0) |> 
-  select(-starts_with("exclude"))
+  filter(exclude == 0) |>
+  select(-starts_with("exclude")) |>
+  ## Recode field and level, so that emmeans will show a positive number for LVF global bias.
+  mutate(level = level |> factor(levels = c("global", "local")),
+         field = field |> factor(levels = c("RVF", "LVF")))
 
 aah_summary <- readr::read_tsv(
   here(proc_dir, "aah_summary.tsv"),
@@ -620,7 +623,7 @@ rt_aov_summary |> (\(.) .[[1]])() |> tidy() |>
 <!-- Test for field x level interaction, using emmeans() - is the model's interaction effect estimate significantly different from zero? -->
 ```{r rt_interaction_emm}
 ## Use emmeans() to test 2-way interaction.
-rt_interaction_emm <- rt_emm |>
+rt_interaction_emm <- rt_emm |> 
   contrast(interaction = c("consec")) |>
   summary(infer = T)
 #rt_interaction_emm
@@ -631,7 +634,7 @@ rt_interaction_emm |>
   pretty_table() |>
   tab_header(title = "Field by level interaction (RT)",
              subtitle = "Compare effect estimate to zero with emmeans()") |>
-  tab_footnote(footnote = "A negative number means global bias is stronger in LVF (as predicted for right handers)",
+  tab_footnote(footnote = "A positive number means global bias is stronger in LVF (as predicted for right handers)",
                locations = cells_column_labels(columns = estimate)) |>
   tab_footnote(footnote = "Two-sided",
                locations = cells_column_labels(columns = p.value)) |>
@@ -643,20 +646,21 @@ rt_interaction_emm |>
 <br>
 ```{r rt_field_bias}
 rt_field_bias_emm <- rt_emm |>
-  contrast("pairwise") |>
+  contrast("revpairwise") |>
   summary(infer = T, adjust = "none", rows = c(3, 4))
 #rt_field_bias_emm
 
 rt_field_bias <- rt_field_bias_emm |>  
   as_tibble() |> 
   filter(contrast %in%
-           c("LVF global - LVF local", "RVF global - RVF local"))
+           c("LVF local - LVF global", "RVF local - RVF global")) |> 
+  arrange(contrast)
 
 rt_field_bias |>
   format_p.value() |> 
   pretty_table() |>
   tab_header(title = "Global bias by field (RT)") |>
-  tab_footnote(footnote = "A negative number means global bias (faster RT for global)",
+  tab_footnote(footnote = "A positive number means global bias (faster RT for global)",
                locations = cells_column_labels(columns = estimate)) |>
   tab_footnote(footnote = "Confidence level: 95%",
                locations = cells_column_labels(columns = lower.CL)) |>
@@ -973,7 +977,7 @@ acc_interaction_emm |>
   pretty_table() |>
   tab_header(title = "Field by level interaction (Accuracy)",
              subtitle = "Compare effect estimate to zero with emmeans()") |>
-  tab_footnote(footnote = "Backtransformed to odds ratio from log odds ratio; tests are performed on log odds ratio scale.",
+  tab_footnote(footnote =  "Backtransformed to odds ratio from log odds ratio (tests are performed on log odds ratio scale). A ratio > 1 means global bias is stronger in the LVF, as predicted for right handers.",
                locations = cells_column_labels(columns = odds.ratio)) |>
   tab_footnote(footnote = "I don't understand why df is 'Inf' here, but I think it is expected when emmeans does logistic regression. See emmeans FAQ: https://cran.r-project.org/web/packages/emmeans/vignettes/FAQs.html#asymp.",
                locations = cells_column_labels(columns = df)) |>
