@@ -165,10 +165,9 @@ aah <- readr::read_tsv(
   )
 ) |>
   filter(exclude == 0) |>
-  select(-starts_with("exclude")) |>
-  ## Recode field and level, so that emmeans will show a positive number for LVF global bias.
-  mutate(level = level |> factor(levels = c("global", "local")),
-         field = field |> factor(levels = c("RVF", "LVF")))
+  select(-starts_with("exclude")) |> 
+  ## Recode "level" for nicer printing.
+  mutate(level = recode(level, global = "Global", local = "Local"))
 
 aah_summary <- readr::read_tsv(
   here(proc_dir, "aah_summary.tsv"),
@@ -281,9 +280,8 @@ In our pilot sample of right handers, do we see the typical field x level intera
 
 ### Reaction time
 ```{r filter_data_to_correct_trials_only}
-## Prepare dataset with only correct trials.
-aah_correct <- aah |> filter(correct == T) |> 
-  mutate(level = recode(level, global = "Global", local = "Local"))
+## Prepare dataset with only correct trials, and reformat field levels for plotting.
+aah_correct <- aah |> filter(correct == T)
 ```
 #### Plots
 ```{r plot_rt_config}
@@ -539,7 +537,7 @@ g <- ggplot(rt_1, aes(
   scale_y_continuous(minor_breaks = seq(-500 , 500, 50),
                      breaks = seq(-500, 500, 100)) +
   theme(axis.text.x = element_blank()) +
-  labs(title = "LVF>RVF Global Bias (RT)", x = "Level", y = "RVF-LVF, Local - Global RT (ms)")
+  labs(title = "LVF>RVF Global Bias (RT)", x = "Level", y = "RVF - LVF, Local - Global RT (ms)")
 
 g <- g |> gg_style_means() |> gg_color() +
   theme(axis.text.x = element_blank(), aspect.ratio = 4/1)
@@ -562,7 +560,15 @@ include_graphics(fig_path_rt_21)
 ```
 
 #### Statistics
-Reaction time is modeled as a linear effect of field and level, using data from every trial:
+```{r}
+## To model the effect of field and level on RT, look only at correct ("go") responses to present trials.
+aah_for_rt_model <- aah_correct |> 
+  ## Recode field and level, so that emmeans will show a positive number for LVF global bias.
+  mutate(level = level |> factor(levels = c("Global", "Local")),
+         field = field |> factor(levels = c("RVF", "LVF")))
+```
+
+Reaction time is modeled as a linear effect of field and level, using data from every target-present trial with a "go" response:
 <br>
 <br>
 `lmer( rt ~ field + level + field:level + (1 | subject) )`
@@ -574,7 +580,7 @@ Reaction time is modeled as a linear effect of field and level, using data from 
 ## Fixed effects: field, level (and their interaction)
 ## Random effects: subject.
 ## rt ~ field + level + field:level + (1 | subject)
-rt_model <- lmer(rt ~ field:level + field + level + (1 | subject), data = aah)
+rt_model <- lmer(rt ~ field:level + field + level + (1 | subject), data = aah_for_rt_model)
 
 if (use_cached_model_rt == FALSE) {
   ## Create emmeans model object, and manually cache it.
@@ -588,6 +594,7 @@ if (use_cached_model_rt == FALSE) {
   rt_emm <- readRDS(here("manual_cache", "rt_emm.rds"))
 }
 ```
+
 <!-- Test for field x level interaction, using the anova() function: is the interaction model's fit significantly different from the no-interaction model's fit? -->
 <br>
 ```{r rt_interaction_anova}
@@ -653,7 +660,7 @@ rt_field_bias_emm <- rt_emm |>
 rt_field_bias <- rt_field_bias_emm |>  
   as_tibble() |> 
   filter(contrast %in%
-           c("LVF local - LVF global", "RVF local - RVF global")) |> 
+           c("LVF Local - LVF Global", "RVF Local - RVF Global")) |> 
   arrange(contrast)
 
 rt_field_bias |>
@@ -674,7 +681,7 @@ rt_field_bias |>
 rt_modelled <- summary(rt_emm, type = "response")
 rt_modelled |>
   as_tibble() |>
-  arrange(field) |>
+  arrange(desc(field)) |>
   pretty_table() |>
   tab_header(title = "RT estimates by field and level (from model)") |>
   tab_footnote(footnote = "Confidence level: 95%",
@@ -915,7 +922,7 @@ include_graphics(fig_path_acc_21)
 ```
 
 #### Statistics
-Accuracy is modeled as a binomial effect of field and level, using data from every trial (correct/incorrect):
+Accuracy is modeled as a binomial effect of field and level, using binary correct/incorrect data from every target-present trial:
 <br>
 <br>
 `glmer( correct ~ field + level + field:level + (1 | subject), family = "binomial" )`
@@ -996,7 +1003,7 @@ acc_field_bias_emm <- acc_emm |>
 acc_field_bias <- acc_field_bias_emm |>
   as_tibble() |>
   filter(contrast %in%
-           c("LVF global / LVF local", "RVF global / RVF local"))
+           c("LVF Global / LVF Local", "RVF Global / RVF Local"))
 #acc_field_bias
 
 acc_field_bias |>
