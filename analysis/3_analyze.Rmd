@@ -46,9 +46,7 @@ library(knitr) # For include_graphics
 source(here::here("lib", "load_process", "load_process.R"))
 source(here::here("lib", "util.R"))
 source(here::here("lib", "demographics.R"))
-```
 
-```{r lib_plot}
 ## Todo: put these in a separate file.
 ## Functions to style plots
 gg_style <- function(g) {
@@ -129,7 +127,7 @@ if (use_cached_figs == TRUE) {
 }
 ```
 
-## {.tabset}
+# {.tabset}
 ```{r load_data}
 ## Load long data table, and filter out excluded subjects
 aah <- readr::read_tsv(
@@ -201,17 +199,17 @@ aah_summary <- readr::read_tsv(
   select(-starts_with("exclude"))
 ```
 
-### Demographics
+## Demographics
 ```{r demo_summary}
 rt_demo <- demo_summary_table(aah_summary)
 rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
 ```
-
+<br>
 ```{r demo_plot_config}
 plot_color = plot_blue
 ```
 
-```{r plot_ehi}
+```{r demo_plot_ehi}
 fig_path <- here(fig_dir, "demo_ehi.png")
 
 if (use_cached_demofigs == FALSE) {
@@ -229,7 +227,7 @@ ggsave(fig_path, g, "png", height = 2, width = 4)
 include_graphics(fig_path)
 ```
 
-```{r plot_age}
+```{r demo_plot_age}
 fig_path <- here(fig_dir, "demo_age.png")
 
 if (use_cached_demofigs == FALSE) {
@@ -246,7 +244,7 @@ ggsave(fig_path, g, "png", height = 2, width = 4)
 include_graphics(fig_path)
 ```
 
-```{r plot_edu}
+```{r demo_plot_edu}
 fig_path <- here(fig_dir, "demo_edu.png")
 
 if (use_cached_demofigs == FALSE) {
@@ -264,31 +262,30 @@ ggsave(fig_path, g, "png", height = 2, width = 4)
 include_graphics(fig_path)
 ```
 <br>
-```{r race_included}
+```{r demo_race}
 demo_race_table(aah_summary) |> pretty_table()
 ```
 <br>
-```{r ethnicity_included}
+```{r demo_ethnicity}
 demo_ethnicity_table(aah_summary) |> pretty_table()
 ```
 <br>
 
-### Field x Level {.tabset .tabset-pills .active}
 
+## Field x Level {.tabset .tabset-pills .active}
 In our pilot sample of right handers, do we see the typical field x level interaction? That is, do participants show a relative bias for global shapes in the left visual field (LVF)?
 <br>
 
-#### Reaction time
-
-```{r plot_interactions_config}
-plot_color <- plot_colors[[5]] # Color for interaction plots with only one color.
-```
-```{r prepare}
+### Reaction time
+```{r filter_data_to_correct_trials_only}
 ## Prepare dataset with only correct trials.
 aah_correct <- aah |> filter(correct == T) |> 
   mutate(level = recode(level, global = "Global", local = "Local"))
 ```
-
+#### Plots
+```{r plot_rt_config}
+plot_color <- plot_colors[[5]] # Color for interaction plots with only one color.
+```
 
 ```{r plot_rt_4a_all_trials}
 ## Plot data from every trial, with overall mean, median and bounds.
@@ -561,7 +558,7 @@ ggsave(fig_path_rt_21, g_rt_21, "png", height = 4, width = 8)
 include_graphics(fig_path_rt_21)
 ```
 
-
+#### Statistics
 Reaction time is modeled as a linear effect of field and level, using data from every trial:
 <br>
 <br>
@@ -697,8 +694,9 @@ rt_descriptive |>
 ```
 <br>
 
-#### Accuracy
-##### {.tabset}
+
+### Accuracy
+#### Plots
 ```{r plot_acc_4}
 fig_path_acc_4 <- here(fig_dir, "acc_4.png")
 fig_path_acc_4_wide <- here(fig_dir, "acc_wide_4.png")
@@ -912,7 +910,7 @@ if (use_cached_rtfigs == FALSE) {
 include_graphics(fig_path_acc_21)
 ```
 
-##### Statistics
+#### Statistics
 Accuracy is modeled as a binomial effect of field and level, using data from every trial (correct/incorrect):
 <br>
 <br>
@@ -1043,7 +1041,8 @@ acc_descriptive |>
 ```
 <br>
 
-### Field x Level x Handedness
+
+## Field x Level x Handedness
 Once we collect data on lefties, we will test whether LVF-global bias is reduced or reversed with left handedness.
 ```{r analyze_main_rt}
 ## Reaction time analyses.
@@ -1073,3 +1072,4 @@ Once we collect data on lefties, we will test whether LVF-global bias is reduced
 ```{r visualize_group_acc}
 ## Visualize accuracy data by condition
 ```
+
