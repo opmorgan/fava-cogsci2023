@@ -1,7 +1,7 @@
 ---
 title: "Action Asymmetry Pilot: Analyses"
 author: "Owen Morgan"
-date: "2022-11-08"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: html_document
 ---
 
@@ -115,10 +115,18 @@ fig_dir <- here::here("figures")
 use_cached_model_rt <- TRUE
 use_cached_model_acc <- TRUE
 
-use_cached_demofigs <- FALSE
-use_cached_rtfigs <- FALSE
-use_cached_accfigs <- FALSE
+use_cached_figs <- TRUE
 
+
+if (use_cached_figs == TRUE) {
+  use_cached_demofigs <- TRUE
+  use_cached_rtfigs <- TRUE
+  use_cached_accfigs <- TRUE
+} else if (use_cached_figs == FALSE) {
+  use_cached_demofigs <- FALSE
+  use_cached_rtfigs <- FALSE
+  use_cached_accfigs <- FALSE
+}
 ```
 
 ## {.tabset}
@@ -273,17 +281,20 @@ In our pilot sample of right handers, do we see the typical field x level intera
 #### Reaction time
 
 ```{r plot_interactions_config}
-plot_color <- plot_colors[[5]]
+plot_color <- plot_colors[[5]] # Color for interaction plots with only one color.
 ```
+```{r prepare}
+## Prepare dataset with only correct trials.
+aah_correct <- aah |> filter(correct == T) |> 
+  mutate(level = recode(level, global = "Global", local = "Local"))
+```
+
 
 ```{r plot_rt_4a_all_trials}
 ## Plot data from every trial, with overall mean, median and bounds.
 fig_path_rt_4a <- here(fig_dir, "rt_4a.png")
 
 if (use_cached_rtfigs == FALSE) {
-aah_correct <- aah |> filter(correct == T) |> 
-  mutate(level = recode(level, global = "Global", local = "Local"))
-
 rt_descriptive <- aah_correct |>
   group_by(field, level) |>
   summarize(

@@ -1,7 +1,7 @@
 ---
 title: "Action Asymmetry Pilot: Demographics & Exclusions"
 author: "Owen Morgan"
-date: "2022-11-04"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
 output:
   html_document
 ---
