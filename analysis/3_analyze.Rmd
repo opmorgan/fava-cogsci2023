@@ -37,11 +37,73 @@ library(emmeans)
 library(broom)
 library(gt)
 
+library(ggpubr) ## functions for plotting SD, SEM, CI.
+library(ggbeeswarm)
+library(patchwork)
+
 library(knitr) # For include_graphics
 
 source(here::here("lib", "load_process", "load_process.R"))
 source(here::here("lib", "util.R"))
 source(here::here("lib", "demographics.R"))
+```
+
+```{r lib_plot}
+## Functions to style plots
+gg_style <- function(g) {
+  g_styled <- g +
+    theme_minimal(base_size = 10) +
+    theme(aspect.ratio = 1 / 1,
+          axis.ticks.x = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_rect(fill = NA)
+    )
+    return(g_styled)
+}
+
+gg_style_demo <- function(g) {
+  g_styled <- g +
+    theme_minimal(base_size = 8) +
+    theme(aspect.ratio = 1 / 1,
+          axis.ticks.x = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_rect(fill = NA, color = "gray50")
+    )
+    return(g_styled)
+}
+
+gg_style_means <- function(g) {
+  g_styled <- g +
+  theme_minimal() +
+  theme(
+    aspect.ratio = 2 / 1,
+    plot.title = element_text(hjust = 0.5),
+    axis.title.x = element_blank(),
+    panel.border = element_rect(fill = NA, color = "gray50")
+  )
+    return(g_styled)
+}
+
+plot_blue <- c("#337aB7")
+plot_colors <- c("#4477AA",
+                 "#EE6677",
+                 "#CCBB44",
+                 "#66CCEE",
+                 "#AA3377",
+                 "#228833",
+                 "#BBBBBB")
+
+gg_color <- function(g, plot_colors) {
+  if (missing(plot_colors)) {
+    # By default, use colorblind-safe categorical palette
+    plot_colors <- c("#4477AA", "#EE6677", "#CCBB44", "#66CCEE",
+                     "#AA3377", "#228833", "#BBBBBB")
+  }
+  g_colored <- g +
+    scale_color_manual(values = plot_colors) +
+    scale_fill_manual(values = plot_colors)
+  return(g_colored)
+}
 ```
 
 ```{r config}
@@ -129,68 +191,13 @@ aah_summary <- readr::read_tsv(
 ```
 
 ### Demographics
-```{r}
+```{r demo_summary}
 rt_demo <- demo_summary_table(aah_summary)
 rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
 ```
 
-```{r}
-## Functions to style plots
-gg_style <- function(g) {
-  g_styled <- g +
-    theme_minimal(base_size = 10) +
-    theme(aspect.ratio = 1 / 1,
-          axis.ticks.x = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.border = element_rect(fill = NA)
-    )
-    return(g_styled)
-}
-
-gg_style_demo <- function(g) {
-  g_styled <- g +
-    theme_minimal(base_size = 8) +
-    theme(aspect.ratio = 1 / 1,
-          axis.ticks.x = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.border = element_rect(fill = NA, color = "gray50")
-    )
-    return(g_styled)
-}
-
-gg_style_means <- function(g) {
-  g_styled <- g +
-  theme_minimal() +
-  theme(
-    aspect.ratio = 2 / 1,
-    plot.title = element_text(hjust = 0.5),
-    axis.title.x = element_blank(),
-    panel.border = element_rect(fill = NA, color = "gray50")
-  )
-    return(g_styled)
-}
-
-plot_blue <- c("#337aB7")
-plot_color <- plot_blue
-plot_colors <- c("#4477AA",
-                 "#EE6677",
-                 "#CCBB44",
-                 "#66CCEE",
-                 "#AA3377",
-                 "#228833",
-                 "#BBBBBB")
-
-gg_color <- function(g, plot_colors) {
-  if (missing(plot_colors)) {
-    # By default, use colorblind-safe categorical palette
-    plot_colors <- c("#4477AA", "#EE6677", "#CCBB44", "#66CCEE",
-                     "#AA3377", "#228833", "#BBBBBB")
-  }
-  g_colored <- g +
-    scale_color_manual(values = plot_colors) +
-    scale_fill_manual(values = plot_colors)
-  return(g_colored)
-}
+```{r demo_plot_config}
+plot_color = plot_blue
 ```
 
 ```{r plot_ehi}
@@ -255,21 +262,20 @@ demo_ethnicity_table(aah_summary) |> pretty_table()
 ```
 <br>
 
-### Field x Level {.tabset .tabset-pills}
+### Field x Level {.tabset .tabset-pills .active}
 
 In our pilot sample of right handers, do we see the typical field x level interaction? That is, do participants show a relative bias for global shapes in the left visual field (LVF)?
 <br>
 
 #### Reaction time
-```{r plot_lib}
-library(ggpubr) ## functions for plotting SD, SEM, CI.
-library(ggbeeswarm)
-library(patchwork)
+
+```{r plot_interactions_config}
+plot_color <- plot_colors[[5]]
 ```
 
-```{r plot_rt_alltrials}
+```{r plot_g1_rt_4_alltrials}
 ## Plot data from every trial, with overall mean, median and bounds.
-fig_path <- here(fig_dir, "rt_alltrials.png")
+fig_path_g1 <- here(fig_dir, "rt_4_all.png")
 
 if (use_cached_rtfigs == FALSE) {
 aah_correct <- aah |> filter(correct == T) |> 
@@ -318,15 +324,14 @@ g <- ggplot(aah_correct, aes(
   labs(title = "All trials (RT)", x = "Level", y = "Reaction time (ms)")
 
 g <- g |> gg_style_means() |> gg_color()
-ggsave(fig_path, g, "png", height = 4, width = 4)
+ggsave(fig_path_g1, g, "png", height = 4, width = 4)
 g1 <- g
 }
 
-#include_graphics(fig_path)
+#include_graphics(fig_path_g1)
 ```
-
-```{r plot_rt_subjects}
-fig_path <- here(fig_dir, "rt_subjectmedians.png")
+```{r plot_g2_rt_4_subjects}
+fig_path_g2 <- here(fig_dir, "rt_4_subjects.png")
 
 if (use_cached_rtfigs == FALSE) {
 rt_subject <- aah_correct |> group_by(subject, field, level) |> 
@@ -378,24 +383,219 @@ g <- ggplot(rt_subject, aes(
   facet_wrap( ~ field) +
   labs(title = "Per-subject medians (RT)", x = "Level", y = "Reaction time (ms)")
 
-g <- g |> gg_style_means() |> gg_color()
-ggsave(fig_path, g, "png", height = 4, width = 4)
+g <- g |>  gg_style_means() |> gg_color()
+ggsave(fig_path_g2, g, "png", height = 4, width = 4)
 g2 <- g
 }
 
-#include_graphics(fig_path)
+#include_graphics(fig_path_g2)
 ```
-```{r display_figs}
-fig_path <- here(fig_dir, "rt_both.png")
+```{r display_figs_rt_4_both}
+fig_path_g12 <- here(fig_dir, "rt_4_both.png")
 
 if (use_cached_rtfigs == FALSE) {
-g_both <- g1 + g2
-ggsave(fig_path, g_both, "png", height = 4, width = 8)
+g_12 <- g1 + g2
+ggsave(fig_path_g12, g_12, "png", height = 4, width = 8)
 }
 
-include_graphics(fig_path)
+include_graphics(fig_path_g12)
 ```
 
+```{r plot_g3_rt_2_subjects}
+fig_path_g3 <- here(fig_dir, "rt_2_subjects.png")
+
+if (use_cached_rtfigs == FALSE) {
+## Make a table showing:
+## For each subject and field, the difference in median rt for:
+## Global - Local
+rt_2 <- rt_subject |> 
+  pivot_wider(names_from = c(level),
+              values_from = rt) |> 
+  mutate(Global_Bias = Local - Global)
+
+rt_descriptive <- rt_2 |>
+  group_by(field) |>
+  summarize(
+    median = median(Global_Bias),
+    mean = mean(Global_Bias),
+    SE = sd(Global_Bias) / sqrt(length((Global_Bias)))
+  )
+
+g <- ggplot(rt_2, aes(x = field,
+                      y = Global_Bias, color)) +
+  geom_quasirandom(
+    alpha = .1, show.legend = F,
+    color = plot_color) +
+  geom_boxplot(
+    alpha = 0.5,
+    size = 0.3,
+    varwidth = F,
+    outlier.shape = NA,
+    fill = plot_color,
+    color = "gray20",
+    show.legend = F
+  ) +
+  stat_summary(
+    fun.data = mean_cl_normal,
+    fun.args = list(conf.int = 0.95),
+    geom = "errorbar",
+    position = "dodge",
+    linetype = 1,
+    color = "gray5",
+    width = .2,
+    show.legend = F
+  ) +
+  geom_point(
+    data = rt_descriptive,
+    aes(y = mean),
+    fill = plot_color,
+    shape = 21,
+    show.legend = F
+  ) +
+  scale_y_continuous(minor_breaks = seq(-500 , 500, 50),
+                     breaks = seq(-500, 500, 100)) +
+  labs(title = "Global bias (RT)", x = "Level", y = "Local - Global RT (ms)")
+
+g <- g |> gg_style_means()
+ggsave(fig_path_g3, g, "png", height = 4, width = 4)
+g3 <- g
+}
+
+#include_graphics(fig_path_g3)
+```
+```{r plot_g4_rt_1_subjects}
+fig_path_g4 <- here(fig_dir, "rt_1_subjects.png")
+
+if (use_cached_rtfigs == FALSE) {
+  ## Make a table showing:
+  ## For each subject and field, the difference in median rt for:
+  ## Global - Local
+  rt_1 <- rt_subject |>
+    pivot_wider(names_from = c(field, level),
+                values_from = rt) |>
+    mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
+    mutate(all_one_group = "all_one_group")
+    
+rt_descriptive <- rt_1 |>
+  group_by(all_one_group) |> 
+  summarize(
+    median = median(LVF_Global_Bias),
+    mean = mean(LVF_Global_Bias),
+    SE = sd(LVF_Global_Bias) / sqrt(length((LVF_Global_Bias)))
+  )
+rt_descriptive
+
+g <- ggplot(rt_1, aes(
+  x = all_one_group,
+  y = LVF_Global_Bias,
+  fill = plot_colors[[3]],
+  color = plot_colors[[3]]
+)) +
+  geom_quasirandom(
+    alpha = .1, show.legend = F,
+    color = plot_color) +
+  geom_boxplot(
+    alpha = 0.5,
+    size = 0.3,
+    varwidth = F,
+    outlier.shape = NA,
+    color = "gray20",
+    fill = plot_color,
+    show.legend = F
+  ) +
+  stat_summary(
+    fun.data = mean_cl_normal,
+    fun.args = list(conf.int = 0.95),
+    geom = "errorbar",
+    position = "dodge",
+    linetype = 1,
+    color = "gray5",
+    fill = plot_color,
+    width = .2,
+    # size = point_size / 5,
+    show.legend = F
+  ) +
+  geom_point(
+    data = rt_descriptive,
+    aes(y = mean),
+    fill = plot_color,
+    color = "black",
+    shape = 21,
+    show.legend = F
+  ) +
+  scale_y_continuous(minor_breaks = seq(-500 , 500, 50),
+                     breaks = seq(-500, 500, 100)) +
+  theme(axis.text.x = element_blank()) +
+  labs(title = "LVF>RVF Global Bias (RT)", x = "Level", y = "RVF-LVF, Local - Global RT (ms)")
+
+g <- g |> gg_style_means() |> gg_color() +
+  theme(axis.text.x = element_blank(), aspect.ratio = 4/1)
+ggsave(fig_path_g4, g, "png", height = 4, width = 4)
+g4 <- g
+}
+
+#include_graphics(fig_path_g4)
+```
+```{r display_figs_rt_2_both}
+fig_path_g34 <- here(fig_dir, "rt_2_both.png")
+
+if (use_cached_rtfigs == FALSE) {
+g4_padded <- g4 + theme(plot.margin = unit(c(10, 50, 5.5, 40), "pt"))
+g_34 <- g3 + g4_padded
+ggsave(fig_path_g34, g_34, "png", height = 4, width = 8)
+}
+
+include_graphics(fig_path_g34)
+```
+
+```{r display_figs_rt_234}
+## TODO: try this with figpatch
+# library(figpatch)
+# fig_path_g234 <- here(fig_dir, "rt_g234.png")
+# 
+# if (use_cached_rtfigs == FALSE) {
+# g4_padded <- g4 + theme(plot.margin = unit(c(10, 40, 5.5, 40), "pt"))
+# g_34 <- g3 + g4_padded
+# g2
+# g2 + g_34
+# g3
+# g_234 <- g2 + g3 + g4_padded + plot_layout(widths = c(4, 2, 1))
+# g_234
+# ggsave(fig_path_g234, g_both, "png", height = 4, width = 8)
+# }
+# 
+# include_graphics(fig_path_g34)
+```
+
+
+<!-- Flexbox! -->
+<!-- <div style=" -->
+<!-- display:flex;  -->
+<!-- flex-wrap: wrap;  -->
+<!-- flex-direction: column; -->
+<!-- "> -->
+
+<!-- <div> -->
+<!-- This is the first row (on the top) -->
+<!-- ```{r} -->
+<!-- include_graphics(fig_path_g1) -->
+<!-- ``` -->
+<!-- ```{r} -->
+<!-- include_graphics(fig_path_g3) -->
+<!-- ``` -->
+<!-- </div> -->
+
+<!-- <div> -->
+<!-- ... and this is the second row (on the bottom) -->
+<!-- ```{r} -->
+<!-- include_graphics(fig_path_g2) -->
+<!-- ``` -->
+
+<!-- ```{r} -->
+<!-- include_graphics(fig_path_g4) -->
+<!-- ``` -->
+<!-- </div> -->
+<!-- </div> -->
 
 Reaction time is modeled as a linear effect of field and level, using data from every trial:
 <br>

@@ -1,0 +1,37 @@
+---
+title: "test flexbox"
+author: "Owen Morgan"
+date: "2022-11-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Two columns independent of browser width
+
+This uses **flexbox** 
+
+## Using `<div>`
+
+<div style="display: flex;">
+<div>
+
+This is the first column (on the left)
+
+```{r}
+str(quakes)
+```
+
+</div>
+<div>
+
+... and this is the second column (on the right)
+
+```{r}
+str(chickwts)
+```
+
+</div>
+</div>
