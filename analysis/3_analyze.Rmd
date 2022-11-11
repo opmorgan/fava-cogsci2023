@@ -791,8 +791,10 @@ if (use_cached_model_rt_complex == FALSE) {
 }
 ```
 <!-- Test for field x level interaction, using the anova() function: is the interaction model's fit significantly different from the no-interaction model's fit? -->
-```{r rt_interaction_anova_complex, include = F}
-## This code gives two identical models -- what's the problem? [Question]
+
+```{r rt_interaction_anova_complex, include = T}
+## The code I tried at first, comparing the full model with 3-way interactions to one that included all three-ways, but not the two-way field:level, gave two identical models -- what's the problem? [Question]
+## Answer: ANOVA only works on nested models. The appropriate test for the interaction of field x level includes covariates in 2-way and 1-way effects, but includes no 3-way effects.
 ## Use anova() on competing models to test 2-way interaction.
 interaction_stats <-
   function(model_with_interaction,
@@ -800,8 +802,14 @@ interaction_stats <-
     return(anova(model_with_interaction, model_with_no_interaction))
   }
 
-rt_model_no_interaction <- update(rt_model_complex, . ~ . - field:level)
-interaction_anova <- interaction_stats(rt_model_complex, rt_model_no_interaction)
+rt_model_complex_2 <- lmer(rt ~ field:level + field:sex + level:sex + field:age + level:age + field:target + level:target + field:block_response + level:block_response + field + level + sex + age + target + block_response + (1 | subject),
+                      data = aah_for_rt_model_complex)
+
+
+rt_model_complex_2_no_interaction <- update(rt_model_complex_2, . ~ . - field:level)
+
+interaction_anova <- interaction_stats(rt_model_complex_2, rt_model_complex_2_no_interaction)
+print(interaction_anova)
 interaction_anova |>
   as_tibble() |>
   rename(p.value = `Pr(>Chisq)`) |> 
@@ -1245,6 +1253,7 @@ if (use_cached_model_acc == FALSE) {
 <!-- Test for field x level interaction, using the anova() function: is the interaction model's fit significantly different from the no-interaction model's fit? -->
 <br>
 ```{r acc_interaction_anova}
+## TODO: figure out why this table doesn't render in the knit document.
 ## Use anova() to test 2-way interaction effect.
 interaction_stats <-
   function(model_with_interaction,
@@ -1359,6 +1368,11 @@ So, this analysis uses a smaller model with combinations of field x level x targ
 <br>
 <br>
 ***Discussion question***: What should be included as covariates? E.g., sex, age, target (circle/square), first block (z or slash), overall median rt (ms). Should we use the pilot to test which variables-not-of interest should be included in the main experiment analysis? What variables could plausibly influence (1) the field x level interaction, and (2) more importantly, the field x level x handedness interaction? Am I specifying the model correctly, giving what we want to test?
+```{r include = F}
+##DEBUGGING -- Why doesn't the full model converge?
+# test_full_glmer <- glmer( correct ~ field*level*sex + field*level*age + field*level*target + field*level*block_response + field*level + field + level + sex + age + target + block_response + (1 | subject), data = aah_for_acc_model, family = "binomial")
+```
+
 ```{r acc_model_complex}
 ## Exclude one subject with nonbinary sex
 aah_for_acc_model_complex <- aah_for_acc_model |> 
