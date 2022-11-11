@@ -111,7 +111,11 @@ proc_dir <- here::here(data_dir, "proc_pilot")
 fig_dir <- here::here("figures")
 
 use_cached_model_rt <- TRUE
+use_cached_model_rt_complex <- TRUE
 use_cached_model_acc <- TRUE
+use_cached_model_acc_complex <- TRUE
+use_cached_model_rt_ehi <- TRUE
+use_cached_model_acc_ehi <- TRUE
 
 use_cached_figs <- TRUE
 
@@ -130,6 +134,7 @@ if (use_cached_figs == TRUE) {
 # {.tabset}
 ```{r load_data}
 ## Load long data table, and filter out excluded subjects
+## aah_long include only main experiment trials with present targets.
 aah <- readr::read_tsv(
   here(proc_dir, "aah_long.tsv"),
   col_types = cols(
@@ -167,7 +172,9 @@ aah <- readr::read_tsv(
   filter(exclude == 0) |>
   select(-starts_with("exclude")) |> 
   ## Recode "level" for nicer printing.
-  mutate(level = recode(level, global = "Global", local = "Local"))
+  mutate(level = recode(level, global = "Global", local = "Local")) |> 
+  ## Rename ehi to make it read nicer in models.
+  rename(ehi = ehi_total)
 
 aah_summary <- readr::read_tsv(
   here(proc_dir, "aah_summary.tsv"),
@@ -198,7 +205,56 @@ aah_summary <- readr::read_tsv(
   )
 ) |> 
   filter(exclude == 0) |> 
-  select(-starts_with("exclude"))
+  select(-starts_with("exclude")) |> 
+  ## Rename ehi to make it read nicer in models.
+  rename(ehi = ehi_total)
+```
+
+```{r prepare_data}
+## Prepare dataset with only correct trials, with levels formatted for plotting.
+## In our RT model, we only care about correct responses to present trials.
+aah_correct <- aah |> filter(correct == T)
+
+## To model the effect of field and level on RT, look only at correct ("go") responses to present trials.
+## Recode field and level with RVF first (unintuitive for plotting),
+## so that emmeans will show a positive number for LVF global bias.
+aah_for_rt_model <- aah_correct |> 
+  mutate(level = level |> factor(levels = c("Global", "Local")),
+         field = field |> factor(levels = c("RVF", "LVF")))
+
+aah_for_acc_model <- aah |> 
+  mutate(level = level |> factor(levels = c("Global", "Local")),
+         field = field |> factor(levels = c("RVF", "LVF")))
+
+## Prepare subject-level data
+rt_subject <- aah_correct |> group_by(subject, field, level) |>
+  summarize(rt = median(rt))
+
+## Prepare subject-level LVF Global bias summary (RT)
+rt_1 <- rt_subject |>
+  pivot_wider(names_from = c(field, level),
+              values_from = rt) |>
+  mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
+  mutate(all_one_group = "all_one_group")
+
+## Prepare subject-level LVF Global bias summary (RT)
+## (For accuracy, include incorrect trials!)
+acc_subject <- aah |> group_by(subject, field, level) |> 
+      summarize(
+        total_responses = n(),
+        n_present_resp = sum(correct),
+        n_absent_resp = total_responses - n_present_resp,
+        n_correct = sum(correct),
+        acc = 100 * (n_correct / total_responses)
+      ) |> 
+  select(subject, field, level, acc) |> 
+  mutate(level = recode(level, global = "Global", local = "Local"))
+
+acc_1 <- acc_subject |>
+  pivot_wider(names_from = c(field, level),
+              values_from = acc) |>
+  mutate(LVF_Global_Bias = (LVF_Global - LVF_Local) - (RVF_Global - RVF_Local)) |>
+  mutate(all_one_group = "all_one_group")
 ```
 
 ## Demographics
@@ -215,7 +271,7 @@ plot_color = plot_blue
 fig_path <- here(fig_dir, "demo_ehi.png")
 
 if (use_cached_demofigs == FALSE) {
-g <- ggplot(aah_summary, aes(x = ehi_total)) +
+g <- ggplot(aah_summary, aes(x = ehi)) +
   geom_histogram(color = NA, fill = plot_color, alpha = .8, binwidth = 8, boundary = 100) +
   labs(x = "EHI")+
   xlim(c(-104, 104))
@@ -277,12 +333,12 @@ demo_ethnicity_table(aah_summary) |> pretty_table()
 ## Field x Level {.tabset .tabset-pills .active}
 In our pilot sample of right handers, do we see the typical field x level interaction? That is, do participants show a relative bias for global shapes in the left visual field (LVF)?
 <br>
+<br>
+***Summary.*** We see the predicted effect, for both reaction time (30ms) and accuracy (OR = 1.6). The RT laterality effect is marginally stronger for squares (40ms) than for circles (18ms; p = .13), and there is a trend in the same direction for accuracy (OR = 1.7, p = .16). <br>
+Squares (46ms) but not circles (2.8ms) show an overall global precedence effect (Accuracy: OR 2.1/1.1). Maybe, global precedence and the global precedence laterality effect are weaker for circles because both global and local circles are highly visible.
 
 ### Reaction time
-```{r filter_data_to_correct_trials_only}
-## Prepare dataset with only correct trials, and reformat field levels for plotting.
-aah_correct <- aah |> filter(correct == T)
-```
+
 #### Plots
 ```{r plot_rt_config}
 plot_color <- plot_colors[[5]] # Color for interaction plots with only one color.
@@ -560,21 +616,15 @@ include_graphics(fig_path_rt_21)
 ```
 
 #### Statistics
-```{r}
-## To model the effect of field and level on RT, look only at correct ("go") responses to present trials.
-aah_for_rt_model <- aah_correct |> 
-  ## Recode field and level, so that emmeans will show a positive number for LVF global bias.
-  mutate(level = level |> factor(levels = c("Global", "Local")),
-         field = field |> factor(levels = c("RVF", "LVF")))
-```
 
+##### Simple mixed regression model
 Reaction time is modeled as a linear effect of field and level, using data from every target-present trial with a "go" response:
 <br>
 <br>
 `lmer( rt ~ field + level + field:level + (1 | subject) )`
 <br>
 <br>
-*Discussion question*: Should any variables not-of-interest be included as covariates? E.g., sex, target (circle/square), first block (z or slash), overall median rt (ms).
+***Discussion question***: Should any variables not-of-interest be included as covariates? E.g., sex, target (circle/square), first block (z or slash), overall median rt (ms).
 ```{r rt_model}
 ## Make a linear model using data from every trial.
 ## Fixed effects: field, level (and their interaction)
@@ -618,13 +668,13 @@ interaction_anova |>
 <br>
 ```{r rt_interacion_aov}
 ## Use aov to test 2-way interaction with a traditional F-test.
-rt_aov <- aov(rt ~ field + level + field:level, data = aah)
+rt_aov <- aov(rt ~ field + level + field:level, data = aah_for_rt_model)
 rt_aov_summary <- summary(rt_aov)
 rt_aov_summary |> (\(.) .[[1]])() |> tidy() |>
   format_p.value() |> 
   pretty_table() |>
   tab_header(title = "Field by level interaction (RT)",
-             subtitle = "Old-school F-test")
+             subtitle = "Omnibus F-test")
 ```
 <br>
 <!-- Test for field x level interaction, using emmeans() - is the model's interaction effect estimate significantly different from zero? -->
@@ -706,6 +756,267 @@ rt_descriptive |>
 <br>
 
 
+
+##### Mixed regression model with covariates: sex, age, target, response key.
+Reaction time is modeled as a linear effect of field and level, using data from every target-present trial with a "go" response:
+<br>
+<br>
+`lmer( rt ~ field*level*sex + field*level*age + field*level*target + field*level*block_response + field*level + field + level + sex + age + target + block_response + (1 | subject), data = aah_for_rt_model )`
+<br>
+<br>
+***Discussion question***: What should be included as covariates? E.g., sex, age, target (circle/square), first block (z or slash), overall median rt (ms). Should we use the pilot to test which variables-not-of interest should be included in the main experiment analysis? What variables could plausibly influence (1) the field x level interaction, and (2) more importantly, the field x level x handedness interaction? Am I specifying the model correctly, giving what we want to test?
+```{r rt_model_complex}
+## Exclude one subject with nonbinary sex
+aah_for_rt_model_complex <- aah_for_rt_model |> 
+  filter(sex %in% c("Male", "Female"))
+
+## Make a linear model using data from every trial.
+## Fixed effects: field, level (and their interaction)
+## Random effects: subject.
+## rt ~ field + level + field:level + (1 | subject)
+rt_model_complex <- lmer(rt ~ field*level*sex + field*level*age + field*level*target + field*level*block_response + field + level + sex + age + target + block_response + (1 | subject), data = aah_for_rt_model_complex)
+
+
+#rt_emm_complex <- emmeans(rt_model_complex, ~ field * level)
+if (use_cached_model_rt_complex == FALSE) {
+  ## Create emmeans model object, and manually cache it.
+  rt_emm_complex <- emmeans(rt_model_complex, ~ field * level, pbkrtest = 13184)
+  
+  ## Manually cache model
+  saveRDS(rt_emm_complex, here("manual_cache", "rt_emm_complex.rds"))
+  
+} else if (use_cached_model_rt_complex == TRUE) {
+  ## Load cached model
+  rt_emm_complex <- readRDS(here("manual_cache", "rt_emm_complex.rds"))
+}
+```
+
+<!-- Test for field x level interaction, using the anova() function: is the interaction model's fit significantly different from the no-interaction model's fit? -->
+<br>
+```{r rt_interaction_anova_complex, include = F}
+## This code gives two identical models -- what's the problem? [Question]
+## Use anova() on competing models to test 2-way interaction.
+interaction_stats <-
+  function(model_with_interaction,
+           model_with_no_interaction) {
+    return(anova(model_with_interaction, model_with_no_interaction))
+  }
+
+rt_model_no_interaction <- update(rt_model_complex, . ~ . - field:level)
+interaction_anova <- interaction_stats(rt_model_complex, rt_model_no_interaction)
+interaction_anova |>
+  as_tibble() |>
+  rename(p.value = `Pr(>Chisq)`) |> 
+  format_p.value() |> 
+  pretty_table() |> 
+  tab_header(title = "Field by level interaction (RT)", 
+             subtitle = "ANOVA: compare models with vs. without interaction term") 
+```
+<br>
+```{r rt_interaction_aov_complex}
+## Use aov to test 2-way interaction with a traditional F-test.
+rt_aov <- aov(rt ~ field*level*sex + field*level*age + field*level*target + field*level*block_response + field:level + field + level + sex + age + target + block_response, data = aah_for_rt_model_complex)
+rt_aov_summary <- summary(rt_aov)
+rt_aov_summary |> (\(.) .[[1]])() |> tidy() |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "Field by level interaction (RT)",
+             subtitle = "Omnibus F-test")
+```
+<br>
+<!-- Test for field x level interaction, using emmeans() - is the model's interaction effect estimate significantly different from zero? -->
+```{r rt_interaction_emm_complex}
+## Use emmeans() to test 2-way interaction.
+rt_interaction_emm_complex <- rt_emm_complex |> 
+  contrast(interaction = c("consec")) |>
+  summary(infer = T)
+#rt_interaction_emm_complex
+
+rt_interaction_emm_complex |>
+  as_tibble() |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "Field by level interaction (RT)",
+             subtitle = "Compare effect estimate to zero with emmeans()") |>
+  tab_footnote(footnote = "A positive number means global bias is stronger in LVF (as predicted for right handers)",
+               locations = cells_column_labels(columns = estimate)) |>
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = lower.CL)) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+```{r rt_field_bias_complex}
+rt_field_bias_emm_complex <- rt_emm_complex |>
+  contrast("revpairwise") |>
+  summary(infer = T, adjust = "none", rows = c(3, 4))
+#rt_field_bias_emm
+
+rt_field_bias_complex <- rt_field_bias_emm_complex |>  
+  as_tibble() |> 
+  filter(contrast %in%
+           c("LVF Local - LVF Global", "RVF Local - RVF Global")) |> 
+  arrange(contrast)
+
+rt_field_bias_complex |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "Global bias by field (RT)") |>
+  tab_footnote(footnote = "A positive number means global bias (faster RT for global)",
+               locations = cells_column_labels(columns = estimate)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = lower.CL)) |>
+  tab_footnote(footnote = "Two-sided, uncorrected",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+**Investigate the possible interaction of target x level x field. Is one shape (the circles?) easier to see when global? Does one shape (the more visible circles?) have a weaker laterality effect?**
+```{r rt_target_interaction}
+rt_emm_target <- emmeans(rt_model_complex, ~ field * level * target)
+## Use emmeans() to test 3-way interaction.
+rt_interaction_emm_target <- rt_emm_target |> 
+  contrast(interaction = c("consec")) |>
+  summary(infer = T)
+# rt_interaction_emm_target
+
+rt_interaction_emm_target |>
+  as_tibble() |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "Field by level by target interaction (RT)",
+             subtitle = "Compare effect estimate to zero with emmeans()") |>
+  tab_footnote(footnote = "A positive number means LVF global bias (the predicted effect for right handers) is stronger for squares",
+               locations = cells_column_labels(columns = estimate)) |>
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
+```
+```{r rt_bias_by_target}
+rt_emm_target <- emmeans(rt_model_complex, ~ field * level * target)
+## Use emmeans() to test 3-way interaction.
+rt_interaction_emm_target <- rt_emm_target |> 
+  contrast(interaction = c("consec"), by = "target") |>
+  summary(infer = T)
+# rt_interaction_emm_target
+
+rt_interaction_emm_target |>
+  as_tibble() |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "Field by level by target interaction (RT)",
+             subtitle = "Compare effect estimate to zero with emmeans()") |>
+  tab_footnote(footnote = "A positive number means LVF global bias (the predicted effect for right handers)",
+               locations = cells_column_labels(columns = estimate)) |>
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+```{r rt_bias_by_target_field}
+rt_field_bias_emm_target <- rt_emm_target |>
+  contrast("revpairwise", by = "target") |>
+  summary(infer = T, adjust = "none")
+# rt_field_bias_emm_target
+
+rt_field_bias_target <- rt_field_bias_emm_target |>  
+  as_tibble() |> 
+  filter(contrast %in%
+           c("LVF Local - LVF Global", "RVF Local - RVF Global")) |> 
+  arrange(target, desc(contrast))
+
+rt_field_bias_target |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "LVF global bias by target (RT)") |>
+  tab_footnote(footnote = "A positive number means global bias (faster RT for global)",
+               locations = cells_column_labels(columns = estimate)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Two-sided, uncorrected",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+```{r rt_level_bias_by_target}
+rt_emm_target_level <- emmeans(rt_model_complex, ~ level * target)
+rt_field_bias_emm_target_level <- rt_emm_target_level |>
+  contrast("revpairwise", by = "target") |>
+  summary(infer = T, adjust = "none", type = "response")
+#rt_field_bias_emm_target_level
+
+rt_field_bias_target_level <- rt_field_bias_emm_target_level |>  
+  as_tibble() |> 
+  arrange(target, desc(contrast))
+
+rt_field_bias_target_level |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "Global bias by target (RT)") |>
+  tab_footnote(footnote = "A positive number means global bias (faster RT for global)",
+               locations = cells_column_labels(columns = estimate)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Two-sided, uncorrected",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+```{r rt_shape_main_effect}
+rt_emm_target_maineffect <- emmeans(rt_model_complex, ~ target)
+rt_emm_target_maineffect <- rt_emm_target_maineffect |>
+  contrast("revpairwise") |>
+  summary(infer = T, adjust = "none", type = "response")
+#rt_emm_target_maineffect
+
+rt_target_maineffect <- rt_emm_target_maineffect |>  
+  as_tibble()
+
+rt_target_maineffect |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "Effect of target on RT") |>
+  tab_footnote(footnote = "A positive number means global bias (faster RT for global)",
+               locations = cells_column_labels(columns = estimate)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Two-sided, uncorrected",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+```{rt_shape_main_effect_2}
+rt_emm_target_maineffect_2 <- rt_emm_target_maineffect |>
+  summary(infer = T, adjust = "none", type = "response")
+rt_emm_target_maineffect_2
+
+rt_target_maineffect_2 <- rt_emm_target_maineffect_2 |>  
+  as_tibble() |> 
+  select(-z.ratio, -p.value)
+
+rt_target_maineffect_2 |>
+  pretty_table() |>
+  tab_header(title = "RT by target") |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+
+
 ### Accuracy
 #### Plots
 ```{r plot_acc_4}
@@ -713,17 +1024,6 @@ fig_path_acc_4 <- here(fig_dir, "acc_4.png")
 fig_path_acc_4_wide <- here(fig_dir, "acc_wide_4.png")
 
 if (use_cached_rtfigs == FALSE) {
-acc_subject <- aah |> group_by(subject, field, level) |> 
-      summarize(
-        total_responses = n(),
-        n_present_resp = sum(correct),
-        n_absent_resp = total_responses - n_present_resp,
-        n_correct = sum(correct),
-        acc = 100 * (n_correct / total_responses)
-      ) |> 
-  select(subject, field, level, acc) |> 
-  mutate(level = recode(level, global = "Global", local = "Local"))
-
 acc_descriptive <- acc_subject |>
       group_by(field, level) |> 
       summarize(mean = mean(acc))
@@ -842,15 +1142,6 @@ g_acc_2 <- g
 fig_path_ga1 <- here(fig_dir, "acc_1.png")
 
 if (use_cached_accfigs == FALSE) {
-  ## Make a table showing:
-  ## For each subject and field, the difference in median acc for:
-  ## Global - Local
-  acc_1 <- acc_subject |>
-    pivot_wider(names_from = c(field, level),
-                values_from = acc) |>
-    mutate(LVF_Global_Bias = (LVF_Global - LVF_Local) - (RVF_Global - RVF_Local)) |>
-    mutate(all_one_group = "all_one_group")
-  
 acc_descriptive <- acc_1 |>
   group_by(all_one_group) |> 
   summarize(
@@ -922,6 +1213,8 @@ include_graphics(fig_path_acc_21)
 ```
 
 #### Statistics
+
+##### Simple mixed regression model
 Accuracy is modeled as a binomial effect of field and level, using binary correct/incorrect data from every target-present trial:
 <br>
 <br>
@@ -1052,35 +1345,467 @@ acc_descriptive |>
 ```
 <br>
 
+##### Mixed regression model with covariates: sex, age, target, response key.
+Accuracy is modeled as a linear effect of field and level, using data from every target-present trial with a "go" response. The full model did not converge:
+<br>
+<br>
+`glmer( correct ~ field*level*sex + field*level*age + field*level*target + field*level*block_response + field*level + field + level + sex + age + target + block_response + (1 | subject), data = aah_for_acc_model, family = "binomial")`
+<br>
+<br>
+So, this analysis uses a smaller model with combinations of field x level x target as predictors:
+<br>
+<br>
+`glmer( correct ~ field*level*target + (1 | subject), data = aah_for_acc_model, family = "binomial" )`
+<br>
+<br>
+***Discussion question***: What should be included as covariates? E.g., sex, age, target (circle/square), first block (z or slash), overall median rt (ms). Should we use the pilot to test which variables-not-of interest should be included in the main experiment analysis? What variables could plausibly influence (1) the field x level interaction, and (2) more importantly, the field x level x handedness interaction? Am I specifying the model correctly, giving what we want to test?
+```{r acc_model_complex}
+## Exclude one subject with nonbinary sex
+aah_for_acc_model_complex <- aah_for_acc_model |> 
+  filter(sex %in% c("Male", "Female"))
 
-## Field x Level x Handedness
+## Make a linear model using data from every trial.
+## Fixed effects: field, level (and their interaction)
+## Random effects: subject.
+## rt ~ field + level + field:level + (1 | subject)
+if (use_cached_model_acc_complex == FALSE) {
+  ## Create model object
+  acc_model_complex <- glmer(correct ~ field:level:target + field:level + field:target + level:target + field + level + target + (1 | subject),
+                           data = aah_for_acc_model_complex,
+                           family = "binomial")
+  
+  ## Create emmeans model object, and manually cache it.
+  acc_emm_complex <- emmeans(acc_model_complex, ~ field * level, pbkrtest = 13184)
+  
+  ## Manually cache model
+  saveRDS(acc_model_complex, here("manual_cache", "acc_model_complex.rds"))
+  saveRDS(acc_emm_complex, here("manual_cache", "acc_emm_complex.rds"))
+  
+} else if (use_cached_model_acc_complex == TRUE) {
+  ## Load cached model
+  acc_model_complex <- readRDS(here("manual_cache", "acc_model_complex.rds"))
+  acc_emm_complex <- readRDS(here("manual_cache", "acc_emm_complex.rds"))
+}
+```
+
+<!-- Test for field x level interaction, using the anova() function: is the interaction model's fit significantly different from the no-interaction model's fit? -->
+<br>
+```{r acc_interaction_anova_complex, include = F}
+## This code gives two identical models -- what's the problem? [Question]
+## Use anova() on competing models to test 2-way interaction.
+interaction_stats <-
+  function(model_with_interaction,
+           model_with_no_interaction) {
+    return(anova(model_with_interaction, model_with_no_interaction))
+  }
+
+acc_model_no_interaction <- update(acc_model_complex, . ~ . - field:level)
+interaction_anova <- interaction_stats(acc_model_complex, acc_model_no_interaction)
+interaction_anova |>
+  as_tibble() |>
+  rename(p.value = `Pr(>Chisq)`) |> 
+  format_p.value() |> 
+  pretty_table() |> 
+  tab_header(title = "Field by level interaction (RT)", 
+             subtitle = "ANOVA: compare models with vs. without interaction term") 
+```
+<br>
+<!-- Test for field x level interaction, using emmeans() - is the model's interaction effect estimate significantly different from zero? -->
+```{r acc_interaction_emm_complex}
+## Is there an interaction of field x level?
+## Use an emmeans contrast
+acc_interaction_emm_complex <- acc_emm_complex |>
+  contrast(interaction = c("consec")) |>
+  summary(infer = T, type = "response")
+#acc_interaction_emm_complex
+
+acc_interaction_emm_complex |>
+  as_tibble() |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "Field by level interaction (Accuracy)",
+             subtitle = "Compare effect estimate to zero with emmeans()") |>
+  tab_footnote(footnote =  "Backtransformed to odds ratio from log odds ratio (tests are performed on log odds ratio scale). A ratio > 1 means global bias is stronger in the LVF, as predicted for right handers.",
+               locations = cells_column_labels(columns = odds.ratio)) |>
+  tab_footnote(footnote = "I don't understand why df is 'Inf' here, but I think it is expected when emmeans does logistic regression. See emmeans FAQ: https://cran.r-project.org/web/packages/emmeans/vignettes/FAQs.html#asymp.",
+               locations = cells_column_labels(columns = df)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = asymp.LCL)) |>
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value))
+```
+<br>
+```{r acc_field_bias_complex}
+acc_field_bias_emm_complex <- acc_emm_complex |>
+  contrast("pairwise") |>
+  summary(infer = T, adjust = "none", type = "response")
+#acc_field_bias_emm
+
+acc_field_bias_complex <- acc_field_bias_emm_complex |>
+  as_tibble() |>
+  filter(contrast %in%
+           c("LVF Global / LVF Local", "RVF Global / RVF Local"))
+#acc_field_bias_complex
+
+acc_field_bias_complex |>
+  arrange(contrast) |> 
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "Global bias by field (Accuracy)") |>
+  tab_footnote(footnote =  "Backtransformed to odds ratio from log odds ratio (tests are performed on log odds ratio scale). A ratio > 1 means global bias (more correct responses for global).",
+               locations = cells_column_labels(columns = odds.ratio)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = asymp.LCL)) |>
+  tab_footnote(footnote = "Two-sided, uncorrected",
+               locations = cells_column_labels(columns = p.value))
+```
+<br>
+**Investigate the possible interaction of target x level x field. Is one shape (the circles?) easier to see when global? Does one shape (the more visible circles?) have a weaker laterality effect?**
+```{r acc_target_interaction}
+acc_emm_target <- emmeans(acc_model_complex, ~ field * level * target)
+## Use emmeans() to test 3-way interaction.
+acc_interaction_emm_target <- acc_emm_target |> 
+  contrast(interaction = c("consec")) |>
+  summary(infer = T, type = "response")
+#acc_interaction_emm_target
+
+acc_interaction_emm_target |>
+  as_tibble() |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "Field by level by target interaction (Accuracy)",
+             subtitle = "Compare effect estimate to zero with emmeans()") |>
+  tab_footnote(footnote = "Backtransformed to odds ratio from log odds ratio (tests are performed on log odds ratio scale). A ratio > 1 means LVF global bias (the predicted effect for right handers) is stronger for squares.",
+               locations = cells_column_labels(columns = odds.ratio)) |>
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+```{r acc_bias_by_target}
+acc_emm_target <- emmeans(acc_model_complex, ~ field * level * target)
+## Use emmeans() to test 3-way interaction.
+acc_interaction_emm_target <- acc_emm_target |> 
+  contrast(interaction = c("consec"), by = "target") |>
+  summary(infer = T, type = "response")
+# acc_interaction_emm_target
+
+acc_interaction_emm_target |>
+  as_tibble() |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "Field by level by target interaction (Accuracy)",
+             subtitle = "Compare effect estimate to zero with emmeans()") |>
+  tab_footnote(footnote = "A ratio > 1 means LVF global bias (the predicted effect for right handers)",
+               locations = cells_column_labels(columns = odds.ratio)) |>
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+```{r acc_bias_by_target_field}
+acc_field_bias_emm_target <- acc_emm_target |>
+  contrast("pairwise", by = "target") |>
+  summary(infer = T, adjust = "none", type = "response")
+#acc_field_bias_emm_target
+
+acc_field_bias_target <- acc_field_bias_emm_target |>  
+  as_tibble() |> 
+  filter(contrast %in%
+           c("LVF Global / LVF Local", "RVF Global / RVF Local")) |> 
+  arrange(target, desc(contrast))
+
+acc_field_bias_target |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "LVF global bias by target (Accuracy)") |>
+  tab_footnote(footnote = "A ratio > 1 means global bias (better accuracy for global)",
+               locations = cells_column_labels(columns = odds.ratio)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Two-sided, uncorrected",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+```{r acc_level_bias_by_target}
+acc_emm_target_level <- emmeans(acc_model_complex, ~ level * target)
+acc_field_bias_emm_target_level <- acc_emm_target_level |>
+  contrast("pairwise", by = "target") |>
+  summary(infer = T, adjust = "none", type = "response")
+#acc_field_bias_emm_target_level
+
+acc_field_bias_target_level <- acc_field_bias_emm_target_level |>  
+  as_tibble() |> 
+  arrange(target, desc(contrast))
+
+acc_field_bias_target_level |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "Global bias by target (Accuracy)") |>
+  tab_footnote(footnote = "A ratio > 1 means global bias (better accuracy for global).",
+               locations = cells_column_labels(columns = odds.ratio)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Two-sided, uncorrected",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+```{r acc_shape_main_effect}
+acc_emm_target_maineffect <- emmeans(acc_model_complex, ~ target)
+acc_field_bias_emm_target_maineffect <- acc_emm_target_maineffect |>
+  contrast("revpairwise") |>
+  summary(infer = T, adjust = "none", type = "response")
+#acc_field_bias_emm_target_maineffect
+
+acc_field_bias_target_maineffect <- acc_field_bias_emm_target_maineffect |>  
+  as_tibble()
+
+acc_field_bias_target_maineffect |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "Effect of target on accuracy") |>
+  tab_footnote(footnote = "A ratio > 1 means better accuracy for squares",
+               locations = cells_column_labels(columns = odds.ratio)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Two-sided, uncorrected",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+```{acc_shape_main_effect_2}
+acc_emm_target_maineffect_2 <- acc_emm_target_maineffect |>
+  summary(infer = T, adjust = "none", type = "response")
+#acc_emm_target_maineffect_2
+
+acc_target_maineffect_2 <- acc_emm_target_maineffect_2 |>  
+  as_tibble() |> 
+  select(-null, -z.ratio, -p.value)
+
+acc_target_maineffect_2 |>
+  pretty_table() |>
+  tab_header(title = "Accuracy by target") |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+
+## Field x Level x Handedness {.tabset .tabset-pills}
 Once we collect data on lefties, we will test whether LVF-global bias is reduced or reversed with left handedness.
-```{r analyze_main_rt}
+
+### Reaction time
+```{r}
+rt_ehi_1 <- rt_1 |>
+  left_join(aah_summary |> select(subject, ehi)) |>
+  select(subject, ehi, LVF_Global_Bias)
+```
+
+
+#### Plots
+```{r}
+fig_path_rt_ehi_cor <- here(fig_dir, "rt_ehi_cor.png")
+fig_path_rt_ehi_cor_wide <- here(fig_dir, "rt_ehi_cor_wide.png")
+g <- rt_ehi_1 |> ggplot(aes(x = ehi, y = LVF_Global_Bias)) +
+  geom_beeswarm(alpha = .5) +
+  geom_smooth(method = "lm", color = "black") +
+  labs(x = "EHI", y = "RVF - LVF, Local - Global RT (ms)",
+       title = "EHI and each subject's mean LVF global bias")
+
+g <- g |> gg_style()
+ggsave(fig_path_rt_ehi_cor, g, "png", height = 4, width = 4)
+ggsave(fig_path_rt_ehi_cor_wide, g, "png", height = 4, width = 8)
+```
+```{r}
+include_graphics(fig_path_rt_ehi_cor_wide)
+```
+
+
+#### Statistics
+First, test for a simple correlation between each subject's EHI and LVF global bias.
+<br>
+```{r}
+## A quick look: does EHI correlate with per-subject LVF global bias?
+rt_ehi_model_simple <- lm(LVF_Global_Bias ~ ehi, data = rt_ehi_1)
+rt_ehi_model_simple |> summary() |> tidy() |> format_p.value() |> pretty_table() |>
+  tab_header(title = "Subject-level correlation: linear model") |> 
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value))
+```
+<br>
+```{r}
+cor.test(rt_ehi_1$ehi, rt_ehi_1$LVF_Global_Bias, method = "spearman", alternative = "greater") |> tidy() |>
+  rename(rho = estimate) |> 
+  format_p.value() |> pretty_table() |>
+  tab_header(title = "Subject-level correlation: Spearman's rho") |> 
+  tab_footnote(footnote = "One-sided",
+               locations = cells_column_labels(columns = p.value))
+```
+<br>
+<br>
+
+***In progress.*** Model rt as a linear effect of field, level, and EHI (continuous):
+<br>
+<br>
+`rt_ehi_model <- lmer( rt ~ field:level:ehi + field:level + field:ehi + field + level + ehi + (1 | subject) )`
+<br>
+<br>
+***Discussion questions.*** (1) Is this the right approach? (2) Should every interaction term be in this model? Even level:ehi? (3) Covariates not-of-interest? (4) How do you estimate the slope of the interaction effect in R? How do you report it?
+<br>
+```{r rt_ehi_model}
 ## Reaction time analyses.
 ## Linear model using data from every trial.
-## (1) Binary handedness. 
 ## rt ~ target*field*level*handedness
 
 ## (2) Continuous handedness
-
-## As a sanity check, do parallel analyses with summary rt data instead of trial-level data.
+## Make a linear model using data from every trial.
+## Fixed effects: field, level (and their interaction)
+## Random effects: subject.
+## rt ~ field + level + field:level + (1 | subject)
+## Do we need to include the effect of field:ehi?
+```
+```{r, echo = T}
+rt_ehi_model <- lmer(rt ~ field:level:ehi + field:level + field:ehi + field + level + ehi + (1 | subject), data = aah_for_rt_model)
 ```
 
-```{r analyse_main_acc}
+```{r rt_ehi_model_caching}
+if (use_cached_model_rt_ehi == FALSE) {
+  ## Create emmeans model object, and manually cache it.
+  ## TODO: run without z-score approximation.
+  rt_ehi_emm <- emmeans(rt_model_ehi, ~ field * level * ehi, pbkrtest = 13184)
+  
+  ## Manually cache model
+  saveRDS(rt_ehi_emm, here("manual_cache", "rt_ehi_emm.rds"))
+  
+} else if (use_cached_model_rt_ehi == TRUE) {
+  ## Load cached model
+  rt_ehi_emm <- readRDS(here("manual_cache", "rt_ehi_emm.rds"))
+}
 ```
 
+```{r rt_ehi_interaction_anova, echo = T}
+## Use anova() on competing models to test 2-way interaction.
+interaction_stats <-
+  function(model_with_interaction,
+           model_with_no_interaction) {
+    return(anova(model_with_interaction, model_with_no_interaction))
+  }
+
+rt_model_no_interaction <- update(rt_ehi_model, . ~ . - field:level:ehi)
+interaction_anova <- interaction_stats(rt_model, rt_model_no_interaction)
+interaction_anova |>
+  as_tibble() |>
+  rename(p.value = `Pr(>Chisq)`) |> 
+  format_p.value() |> 
+  pretty_table() |> 
+  tab_header(title = "Field by level by ehi interaction (RT)", 
+             subtitle = "ANOVA: compare models with vs. without interaction term") 
+```
+```{r run_summary, echo = T, results = "markup"}
+summary(rt_ehi_model)
+```
+
+```{r inspect_slopes}
+## TODO: look at estimate of slope of ehi's effect on LVF global bias
+# emtrends(rt_ehi_model, ~ field*level, var = "ehi") |> as_tibble |> format_p.value |> pretty_table()
+# rt_ehi_emm |> summary(infer = T)
+# summary(rt_ehi_emm, infer = T)
+#summary(rt_ehi_model)
+```
+
+```{r rt_ehi_interaction_emm}
+## Use emmeans() to test 3-way interaction. TODO: figure out how to do this!
+# rt_ehi_interaction_emm <- rt_ehi_emm |> 
+#   contrast(interaction = c("consec")) |>
+#   summary(infer = T)
+# rt_ehi_interaction_emm
+# 
+# rt_ehi_interaction_emm |>
+#   as_tibble() |>
+#   format_p.value() |> 
+#   pretty_table() |>
+#   tab_header(title = "Field by level interaction (RT)",
+#              subtitle = "Compare effect estimate to zero with emmeans()") |>
+#   tab_footnote(footnote = "A positive number means global bias is stronger in LVF (as predicted for right handers)",
+#                locations = cells_column_labels(columns = estimate)) |>
+#   tab_footnote(footnote = "Two-sided",
+#                locations = cells_column_labels(columns = p.value)) |>
+#   tab_footnote(footnote = "Confidence level: 95%",
+#                locations = cells_column_labels(columns = lower.CL)) |>
+#   tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+#                locations = cells_column_labels(columns = df))
+```
+
+
+### Accuracy
+```{r}
+acc_ehi_1 <- acc_1 |>
+  left_join(aah_summary |> select(subject, ehi)) |>
+  select(subject, ehi, LVF_Global_Bias)
+```
+
+
+#### Plots
+```{r}
+fig_path_acc_ehi_cor <- here(fig_dir, "acc_ehi_cor.png")
+fig_path_acc_ehi_cor_wide <- here(fig_dir, "acc_ehi_cor_wide.png")
+g <- acc_ehi_1 |> ggplot(aes(x = ehi, y = LVF_Global_Bias)) +
+  geom_beeswarm(alpha = .5) +
+  geom_smooth(method = "lm", color = "black") +
+  labs(x = "EHI", y = "RVF - LVF, Local - Global % correct",
+       title = "EHI and each subject's mean LVF global bias")
+
+g <- g |> gg_style()
+ggsave(fig_path_acc_ehi_cor, g, "png", height = 4, width = 4)
+ggsave(fig_path_acc_ehi_cor_wide, g, "png", height = 4, width = 8)
+```
+```{r}
+include_graphics(fig_path_acc_ehi_cor_wide)
+```
+
+#### Statistics
+First, test for a simple correlation between each subject's EHI and LVF global bias.
+<br>
+```{r}
+## A quick look: does EHI correlate with per-subject LVF global bias?
+acc_ehi_model_simple <- lm(LVF_Global_Bias ~ ehi, data = acc_ehi_1)
+acc_ehi_model_simple |> summary() |> tidy() |> format_p.value() |> pretty_table() |>
+  tab_header(title = "Subject-level correlation: linear model") |> 
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value))
+```
+<br>
+```{r}
+cor.test(acc_ehi_1$ehi, acc_ehi_1$LVF_Global_Bias, method = "spearman", alternative = "greater") |> tidy() |>
+  rename(rho = estimate) |> 
+  format_p.value() |> pretty_table() |>
+  tab_header(title = "Subject-level correlation: Spearman's rho") |> 
+  tab_footnote(footnote = "One-sided",
+               locations = cells_column_labels(columns = p.value))
+```
+<br>
+<br>
+
+***In progress.*** Model accuracy as a binomial effect of field, level, and EHI (continuous):
+<br>
+<br>
+`acc_ehi_model <- glmer( rt ~ field:level:ehi + field:level + field:ehi + field + level + ehi + (1 | subject) )`
+<br>
+<br>
 <!-- ## Visualize individual results -->
 ```{r visualize_individual_rt}
 ## Visualize per-trial RT data (make absent one color, present another)
 
 ```
-
-<!-- ## Visualize group results -->
-```{r}
-## ## Visualize RT data by condition
-```
-
-```{r visualize_group_acc}
-## Visualize accuracy data by condition
-```
-

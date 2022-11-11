@@ -28,7 +28,7 @@ demo_table <- aah_summary |>
             `Age (years)` = report_mean_sd(age),
             `Education (years)`= report_mean_sd(education),
             `Sex (M/F/O)` = report_sex(sex),
-            EHI = report_mean_sd(ehi_total)
+            EHI = report_mean_sd(ehi)
   )
 return(demo_table)
 }
