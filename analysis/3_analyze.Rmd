@@ -790,9 +790,7 @@ if (use_cached_model_rt_complex == FALSE) {
   rt_emm_complex <- readRDS(here("manual_cache", "rt_emm_complex.rds"))
 }
 ```
-
 <!-- Test for field x level interaction, using the anova() function: is the interaction model's fit significantly different from the no-interaction model's fit? -->
-<br>
 ```{r rt_interaction_anova_complex, include = F}
 ## This code gives two identical models -- what's the problem? [Question]
 ## Use anova() on competing models to test 2-way interaction.
@@ -874,6 +872,7 @@ rt_field_bias_complex |>
                locations = cells_column_labels(columns = df))
 ```
 <br>
+<br>
 **Investigate the possible interaction of target x level x field. Is one shape (the circles?) easier to see when global? Does one shape (the more visible circles?) have a weaker laterality effect?**
 ```{r rt_target_interaction}
 rt_emm_target <- emmeans(rt_model_complex, ~ field * level * target)
@@ -898,6 +897,7 @@ rt_interaction_emm_target |>
   tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
                locations = cells_column_labels(columns = df))
 ```
+<br>
 ```{r rt_bias_by_target}
 rt_emm_target <- emmeans(rt_model_complex, ~ field * level * target)
 ## Use emmeans() to test 3-way interaction.
@@ -1409,7 +1409,6 @@ interaction_anova |>
   tab_header(title = "Field by level interaction (RT)", 
              subtitle = "ANOVA: compare models with vs. without interaction term") 
 ```
-<br>
 <!-- Test for field x level interaction, using emmeans() - is the model's interaction effect estimate significantly different from zero? -->
 ```{r acc_interaction_emm_complex}
 ## Is there an interaction of field x level?
@@ -1459,6 +1458,7 @@ acc_field_bias_complex |>
   tab_footnote(footnote = "Two-sided, uncorrected",
                locations = cells_column_labels(columns = p.value))
 ```
+<br>
 <br>
 **Investigate the possible interaction of target x level x field. Is one shape (the circles?) easier to see when global? Does one shape (the more visible circles?) have a weaker laterality effect?**
 ```{r acc_target_interaction}
@@ -1636,6 +1636,7 @@ include_graphics(fig_path_rt_ehi_cor_wide)
 #### Statistics
 First, test for a simple correlation between each subject's EHI and LVF global bias.
 <br>
+<br>
 ```{r}
 ## A quick look: does EHI correlate with per-subject LVF global bias?
 rt_ehi_model_simple <- lm(LVF_Global_Bias ~ ehi, data = rt_ehi_1)
@@ -1777,6 +1778,7 @@ include_graphics(fig_path_acc_ehi_cor_wide)
 
 #### Statistics
 First, test for a simple correlation between each subject's EHI and LVF global bias.
+<br>
 <br>
 ```{r}
 ## A quick look: does EHI correlate with per-subject LVF global bias?
