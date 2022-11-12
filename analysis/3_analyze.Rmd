@@ -147,7 +147,7 @@ aah <- readr::read_tsv(
     correct = col_logical(),
     rt = col_double(),
     first_block = col_character(),
-    ehi_total = col_double(),
+    ehi = col_double(),
     age = col_double(),
     country = col_character(),
     sex = col_character(),
@@ -173,16 +173,14 @@ aah <- readr::read_tsv(
   filter(exclude == 0) |>
   select(-starts_with("exclude")) |> 
   ## Recode "level" for nicer printing.
-  mutate(level = recode(level, global = "Global", local = "Local")) |> 
-  ## Rename ehi to make it read nicer in models.
-  rename(ehi = ehi_total)
+  mutate(level = recode(level, global = "Global", local = "Local"))
 
 aah_summary <- readr::read_tsv(
   here(proc_dir, "aah_summary.tsv"),
   col_types = cols(
     subject = col_character(),
     first_block = col_character(),
-    ehi_total = col_double(),
+    ehi = col_double(),
     age = col_double(),
     country = col_character(),
     sex = col_character(),
@@ -206,9 +204,7 @@ aah_summary <- readr::read_tsv(
   )
 ) |> 
   filter(exclude == 0) |> 
-  select(-starts_with("exclude")) |> 
-  ## Rename ehi to make it read nicer in models.
-  rename(ehi = ehi_total)
+  select(-starts_with("exclude"))
 ```
 
 ```{r prepare_data}
@@ -810,7 +806,6 @@ rt_model_complex_2 <- lmer(rt ~ field:level + field:sex + level:sex + field:age 
 rt_model_complex_2_no_interaction <- update(rt_model_complex_2, . ~ . - field:level)
 
 interaction_anova <- interaction_stats(rt_model_complex_2, rt_model_complex_2_no_interaction)
-print(interaction_anova)
 interaction_anova |>
   as_tibble() |>
   rename(p.value = `Pr(>Chisq)`) |> 
