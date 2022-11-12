@@ -1,4 +1,4 @@
-subject	first_block	ehi_total	age	country	sex	education	race	hispanic_ethnicity	rt_overall	duration_s	task_experience_response	task_experience_other_response	open_ended_feedback_response	exclude_many_gos	exclude_low_acc	exclude_low_rt	exclude_high_rt	exclude_country	exclude_age	exclude_done_before	exclude_no_ehi	exclude
+subject	first_block	ehi	age	country	sex	education	race	hispanic_ethnicity	rt_overall	duration_s	task_experience_response	task_experience_other_response	open_ended_feedback_response	exclude_many_gos	exclude_low_acc	exclude_low_rt	exclude_high_rt	exclude_country	exclude_age	exclude_done_before	exclude_no_ehi	exclude
 545cbbcafdf99b11ed040acf	slash	62.5	28	US	Female	16	Asian	No	766.5	666.221	No	NA	NA	0	0	0	0	0	0	0	0	0
 55bb9ae7fdf99b26d27fda01	z	75	36	US	Female	12	White	No	833	860.42	No	NA	NA	0	0	0	0	0	0	0	0	0
 55c82012fdf99b02adc2a36e	z	100	38	US	Female	16	White	No	764	1341.884	No	NA	NA	0	0	0	0	0	0	0	0	0

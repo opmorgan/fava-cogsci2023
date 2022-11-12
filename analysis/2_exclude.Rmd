@@ -1,5 +1,6 @@
 ---
 title: "Action Asymmetry Pilot: Demographics & Exclusions"
+pagetitle: "aah | pilot | exclusions"
 author: "Owen Morgan"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output:
@@ -94,7 +95,7 @@ aah_summary_all <- load_summary() |>
     exclude_low_acc,
     exclude_low_rt,
     exclude_high_rt
-  )
+  ) |> rename(ehi = ehi_total)
 ```
 
 ### Demographics (All)
@@ -162,7 +163,7 @@ aah_summary_all <- aah_summary_all |>
 ## Mark exclusion if no EHI (if EHI is not between -100 & 100)
 aah_summary_all <- aah_summary_all |>
   mutate(exclude_no_ehi = case_when(
-    ehi_total >= -100 & ehi_total <= 100 ~ 0,
+    ehi >= -100 & ehi <= 100 ~ 0,
     TRUE ~ 1
   ))
 

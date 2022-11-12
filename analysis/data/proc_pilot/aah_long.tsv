@@ -1,4 +1,4 @@
-subject	block_response	target	level	field	correct	rt	first_block	ehi_total	age	country	sex	education	race	hispanic_ethnicity	rt_overall	duration_s	task_experience_response	task_experience_other_response	open_ended_feedback_response	exclude_many_gos	exclude_low_acc	exclude_low_rt	exclude_high_rt	exclude_country	exclude_age	exclude_done_before	exclude_no_ehi	exclude
+subject	block_response	target	level	field	correct	rt	first_block	ehi	age	country	sex	education	race	hispanic_ethnicity	rt_overall	duration_s	task_experience_response	task_experience_other_response	open_ended_feedback_response	exclude_many_gos	exclude_low_acc	exclude_low_rt	exclude_high_rt	exclude_country	exclude_age	exclude_done_before	exclude_no_ehi	exclude
 545cbbcafdf99b11ed040acf	slash	square	local	LVF	1	927	slash	62.5	28	US	Female	16	Asian	No	766.5	666.221	No	NA	NA	0	0	0	0	0	0	0	0	0
 545cbbcafdf99b11ed040acf	slash	circle	global	LVF	1	848	slash	62.5	28	US	Female	16	Asian	No	766.5	666.221	No	NA	NA	0	0	0	0	0	0	0	0	0
 545cbbcafdf99b11ed040acf	slash	square	local	RVF	1	753	slash	62.5	28	US	Female	16	Asian	No	766.5	666.221	No	NA	NA	0	0	0	0	0	0	0	0	0
