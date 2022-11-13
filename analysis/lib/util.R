@@ -10,7 +10,7 @@ pretty_table <- function(table, title = NULL, digits = 3,
                          ) {
     gt(table, groupname_col = groupname_col) |> 
       tab_header(title = title) |> 
-      fmt_missing(columns = everything(), missing_text = "-") |> 
+      sub_missing(columns = everything(), missing_text = "-") |> 
       fmt_number(columns = where(is.numeric),
                  drop_trailing_zeros = T,
                  decimals = digits) |> 
