@@ -59,7 +59,7 @@ recombine_summary_data <- TRUE
 # resummarize_end_data <- FALSE
 # 
 # recombine_task_data <- FALSE
-# recombine_summary_data <- FALSE
+# recombine_summary_data <- TRUE
 
 data_dir <- here::here("data")
 input_dir <- here::here(data_dir, "input_pilot")
@@ -247,7 +247,6 @@ Create combined trial-per-row table (with task and survey data, and summary stat
 ```{r combine_proc}
 ind_input_dir <- here(proc_dir, "individual")
 combined_output_dir <- here(proc_dir, "combined")
-summary_input_path <- here(proc_dir, "summary", "summary.tsv")
 
 if (recombine_task_data == TRUE) {
   task_combined <-
@@ -255,7 +254,7 @@ if (recombine_task_data == TRUE) {
 }
 
 if (recombine_summary_data == TRUE) {
-  summary <- load_summary(summary_input_path)
+  summary <- load_summary(proc_dir)
 }
 
 if (recombine_task_data == TRUE

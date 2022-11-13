@@ -111,6 +111,10 @@ data_dir <- here::here("data")
 proc_dir <- here::here(data_dir, "proc_pilot")
 fig_dir <- here::here("figures")
 
+## TODO: specify cache for models from each script version:
+## pilot, main experiment 
+## (Each will have its own "rt_emm.rds", for example)
+
 use_cached_model_rt <- TRUE
 use_cached_model_rt_complex <- TRUE
 use_cached_model_acc <- TRUE
@@ -134,96 +138,43 @@ if (use_cached_figs == TRUE) {
 
 # {.tabset}
 ```{r load_data}
-## Load long data table, and filter out excluded subjects
-## aah_long include only main experiment trials with present targets.
-aah <- readr::read_tsv(
-  here(proc_dir, "aah_long.tsv"),
-  col_types = cols(
-    subject = col_character(),
-    block_response = col_character(),
-    target = col_character(),
-    level = col_character(),
-    field = col_character(),
-    correct = col_logical(),
-    rt = col_double(),
-    first_block = col_character(),
-    ehi = col_double(),
-    age = col_double(),
-    country = col_character(),
-    sex = col_character(),
-    education = col_double(),
-    race = col_character(),
-    hispanic_ethnicity = col_character(),
-    rt_overall = col_double(),
-    duration_s = col_double(),
-    task_experience_response = col_character(),
-    task_experience_other_response = col_logical(),
-    open_ended_feedback_response = col_character(),
-    exclude_many_gos = col_logical(),
-    exclude_low_acc = col_logical(),
-    exclude_low_rt = col_logical(),
-    exclude_high_rt = col_logical(),
-    exclude_country = col_logical(),
-    exclude_age = col_logical(),
-    exclude_done_before = col_logical(),
-    exclude_no_ehi = col_logical(),
-    exclude = col_logical()
-  )
-) |>
-  filter(exclude == 0) |>
-  select(-starts_with("exclude")) |> 
-  ## Recode "level" for nicer printing.
-  mutate(level = recode(level, global = "Global", local = "Local"))
+## Load "the data" with all subjects & trials.
+aah_long <- load_aah_long(proc_dir)
 
-aah_summary <- readr::read_tsv(
-  here(proc_dir, "aah_summary.tsv"),
-  col_types = cols(
-    subject = col_character(),
-    first_block = col_character(),
-    ehi = col_double(),
-    age = col_double(),
-    country = col_character(),
-    sex = col_character(),
-    education = col_double(),
-    race = col_character(),
-    hispanic_ethnicity = col_character(),
-    rt_overall = col_double(),
-    duration_s = col_double(),
-    task_experience_response = col_character(),
-    task_experience_other_response = col_logical(),
-    open_ended_feedback_response = col_character(),
-    exclude_many_gos = col_double(),
-    exclude_low_acc = col_double(),
-    exclude_low_rt = col_double(),
-    exclude_high_rt = col_double(),
-    exclude_country = col_double(),
-    exclude_age = col_double(),
-    exclude_done_before = col_double(),
-    exclude_no_ehi = col_double(),
-    exclude = col_double()
-  )
-) |> 
-  filter(exclude == 0) |> 
-  select(-starts_with("exclude"))
+## Load summary data table (for quick demographic analyses)
+## with all subjects.
+aah_summary_all <- load_aah_summary(proc_dir)
 ```
 
 ```{r prepare_data}
-## Prepare dataset with only correct trials, with levels formatted for plotting.
+#### PREPARE SUMMARY DATA FOR DEMOGRAPHICS ANALYSES
+aah_summary <- filter_aah_summary_for_analysis(aah_summary_all)
+
+#### PREPARE TRIAL-LEVEL DATA FOR RT, ACCURACY ANALYSES
+## Prepare "the data" (aah_long) for all analyses:
+## Filter out practice trials, absent trials, and excluded subjects
+## This data (all present trials, correct or incorrect) will be used for
+## accuracy analyses
+aah <- filter_aah_long_for_analysis(aah_long)
+
+## For RT analyses, prepare dataset with only correct, present trials.
 ## In our RT model, we only care about correct responses to present trials.
 aah_correct <- aah |> filter(correct == T)
-
-## To model the effect of field and level on RT, look only at correct ("go") responses to present trials.
-## Recode field and level with RVF first (unintuitive for plotting),
+## Relevel field and level with RVF first (unintuitive for plotting),
 ## so that emmeans will show a positive number for LVF global bias.
-aah_for_rt_model <- aah_correct |> 
+aah_for_rt_model <- aah_correct |>
   mutate(level = level |> factor(levels = c("Global", "Local")),
          field = field |> factor(levels = c("RVF", "LVF")))
 
-aah_for_acc_model <- aah |> 
+## For accuracy analyses, prepare dataset will all present trials.
+## Relevel field and level,
+## so that emmeans will show a positive number for LVF global bias.
+aah_for_acc_model <- aah |>
   mutate(level = level |> factor(levels = c("Global", "Local")),
          field = field |> factor(levels = c("RVF", "LVF")))
 
-## Prepare subject-level data
+#### PREPARE SUBJECT_LEVEL DATA FOR RT, ACCURACY ANALYSES
+## Prepare subject-level data (RT)
 rt_subject <- aah_correct |> group_by(subject, field, level) |>
   summarize(rt = median(rt))
 
@@ -234,17 +185,17 @@ rt_1 <- rt_subject |>
   mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
   mutate(all_one_group = "all_one_group")
 
-## Prepare subject-level LVF Global bias summary (RT)
+## Prepare subject-level LVF Global bias summary (Accuracy)
 ## (For accuracy, include incorrect trials!)
-acc_subject <- aah |> group_by(subject, field, level) |> 
-      summarize(
-        total_responses = n(),
-        n_present_resp = sum(correct),
-        n_absent_resp = total_responses - n_present_resp,
-        n_correct = sum(correct),
-        acc = 100 * (n_correct / total_responses)
-      ) |> 
-  select(subject, field, level, acc) |> 
+acc_subject <- aah |> group_by(subject, field, level) |>
+  summarize(
+    total_responses = n(),
+    n_present_resp = sum(correct),
+    n_absent_resp = total_responses - n_present_resp,
+    n_correct = sum(correct),
+    acc = 100 * (n_correct / total_responses)
+  ) |>
+  select(subject, field, level, acc) |>
   mutate(level = recode(level, global = "Global", local = "Local"))
 
 acc_1 <- acc_subject |>

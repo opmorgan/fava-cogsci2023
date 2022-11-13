@@ -7,7 +7,8 @@ source(here::here("lib", "load_process", "code_target_level_field.R"))
 source(here::here("lib", "load_process", "data_tests.R"))
 
 ####***********************************************************************####
-#### PROCESS INDIVIDUAL-LEVEL DATA
+#### LOAD AND PROCESS RAW INDIVIDUAL-LEVEL DATA
+#### (1_process.Rmd)
 ## Given an input folder, load and process all task data (main loop)
 process_raw <- function(input_dir, proc_dir, data_type) {
   input_files <- get_input_paths(input_dir, data_type)
@@ -227,9 +228,10 @@ recode_raw <- function(data_raw, data_type) {
     
   } else if (data_type == "ehi") {
     data_proc <- data_raw |>
-      select(-ends_with("latency"),-date,-time,-group,
-             -session,
-             -build) |>
+      select(-ends_with("latency"),
+             -date,
+             -time,
+             -group,-session,-build) |>
       rename_with(trim_end, ends_with("response")) |>
       mutate(across(
         starts_with("ehi"),
@@ -245,22 +247,19 @@ recode_raw <- function(data_raw, data_type) {
   } else if (data_type == "demographics") {
     data_proc <- data_raw |>
       ## remove all latency measures, and trim columns
-      select(-ends_with("latency"),
-             -date,
-             -time,
-             -group,
-             -session,
-             -build) |>
+      select(-ends_with("latency"),-date,-time,-group,-session,-build) |>
       ## remove "response" suffix
       rename_with(trim_end, ends_with("response"))
     
     #### Recode sex so that "not listed" shows full response.
-    data_proc <- data_proc |> mutate(sex = case_when(
-      sex == "Male" ~ "Male",
-      sex == "Female" ~ "Female",
-      sex == "Not listed:" ~ str_c("Not listed: ", sex_other),
-      TRUE ~ sex
-    ))
+    data_proc <- data_proc |> mutate(
+      sex = case_when(
+        sex == "Male" ~ "Male",
+        sex == "Female" ~ "Female",
+        sex == "Not listed:" ~ str_c("Not listed: ", sex_other),
+        TRUE ~ sex
+      )
+    )
     
     
     #### Recode race
@@ -280,7 +279,7 @@ recode_raw <- function(data_raw, data_type) {
       select(-starts_with("race")) |>
       mutate(race = race_recoded) |>
       select(subject, age, country, sex, education, race, ethnicity) |>
-      rename(hispanic_ethnicity = ethnicity) |> 
+      rename(hispanic_ethnicity = ethnicity) |>
       mutate(race = case_when(
         race == "Some other race (please describe)" ~ "Other",
         TRUE ~ race
@@ -288,21 +287,23 @@ recode_raw <- function(data_raw, data_type) {
     
     #### Recode education
     ## Code education as number of years (keep as character type)
-    data_proc <- data_proc |> 
-      mutate(education = case_when(
-        education == "Doctoral or professional degree (~21+ years of education)" ~ "21",
-        education == "Master's degree (~18 years)" ~ "18",
-        education == "Bachelor's degree (~16 years)" ~ "16",
-        education == "Associate's degree (~14 years)" ~ "14",
-        education == "Postsecondary non-degree award (~14 years)" ~ "14",
-        education == "Some college, no degree (~12-16 years)" ~ "12",
-        education == "High school diploma or equivalent (~12 years)" ~ "12",
-        education == "Some high school, no degree (~8-12 years)" ~ "8",
-        education == "Elementary or Middle school (~5-8 years)" ~ "5",
-        education == "Less than Elementary or Middle school (<5 years)" ~ "0",
-        education == "Something else (please specify):" ~ "Other",
-        TRUE ~ "NA"
-      ))
+    data_proc <- data_proc |>
+      mutate(
+        education = case_when(
+          education == "Doctoral or professional degree (~21+ years of education)" ~ "21",
+          education == "Master's degree (~18 years)" ~ "18",
+          education == "Bachelor's degree (~16 years)" ~ "16",
+          education == "Associate's degree (~14 years)" ~ "14",
+          education == "Postsecondary non-degree award (~14 years)" ~ "14",
+          education == "Some college, no degree (~12-16 years)" ~ "12",
+          education == "High school diploma or equivalent (~12 years)" ~ "12",
+          education == "Some high school, no degree (~8-12 years)" ~ "8",
+          education == "Elementary or Middle school (~5-8 years)" ~ "5",
+          education == "Less than Elementary or Middle school (<5 years)" ~ "0",
+          education == "Something else (please specify):" ~ "Other",
+          TRUE ~ "NA"
+        )
+      )
     
   } else if (data_type == "end") {
     data_proc <- data_raw
@@ -367,7 +368,7 @@ clean_recoded <- function(data_recoded, data_type) {
     
   } else if (data_type == "ehi") {
     data_cleaned <- data_recoded |>
-      mutate(ehi_total = sum(across(starts_with("ehi")))) |> 
+      mutate(ehi_total = sum(across(starts_with("ehi")))) |>
       select(subject,
              starts_with("ehi"))
   } else if (data_type == "demographics") {
@@ -423,6 +424,7 @@ save_cleaned <- function(data_cleaned, proc_dir, data_type) {
 
 ####***********************************************************************####
 #### LOAD AND SUMMARIZE PROCESSED INDIVIDUAL DATA
+#### (1_process.Rmd)
 ## Load and summarize an individual's processed data (wide) (main loop)
 load_and_summarize_proc <-
   function(input_dir, output_dir, data_type) {
@@ -817,11 +819,9 @@ load_and_combine_proc <-
       )
     }
     
-    input_files <- get_input_paths(
-      input_dir = input_dir,
-      data_type = data_type,
-      pattern = "*.tsv"
-    )
+    input_files <- get_input_paths(input_dir = input_dir,
+                                   data_type = data_type,
+                                   pattern = "*.tsv")
     
     n_input_files <- length(input_files)
     for (j in (c(1:n_input_files))) {
@@ -839,9 +839,14 @@ load_and_combine_proc <-
     return(group_proc)
   }
 
-load_summary <- function(input_path = here(proc_dir, "summary", "summary.tsv")) {
+
+####***********************************************************************####
+#### LOAD SUMMARIZED GROUP DATA (PRE-EXCLUSION CALCULATIONS)
+#### (1_process.Rmd, 2_exclude.Rmd)
+load_summary <- function(proc_dir) {
+  input_path = here(proc_dir, "summary", "summary.tsv")
   
-  cli::cli_alert_info("Loading summary data from:")
+  cli::cli_alert_info("Loading summary data (pre-exclusion calculation) from:")
   cli::cli_bullets(c(" " = "{input_path}"))
   
   summary <- readr::read_tsv(
@@ -884,5 +889,198 @@ load_summary <- function(input_path = here(proc_dir, "summary", "summary.tsv")) 
       open_ended_feedback_response = col_character()
     )
   )
-return(summary)
+  return(summary)
+}
+
+
+####***********************************************************************####
+#### LOAD DATA NEEDED TO CALCULATE EXCLUSIONS
+#### (2_exclude.Rmd)
+####
+#### LOAD PROCESSED INDIVIDUAL TASK DATA (PRE-EXCLUSION CALCULATIONS)
+#### & SUBSET COLUMNS TO THOSE NEEDED FOR ANALYSIS
+#### [old] & SUBSET TO "main", "present"
+#### [old] (The relevant data for behavioral exclusions; RT/accuracy analyses)
+#### (2_exclude.Rmd)
+load_task_all <- function(proc_dir) {
+  input_path <- here(proc_dir, "combined", "combined_task.tsv")
+  
+  cli::cli_alert_info("Loading task data (pre-exclusion calculation) from:")
+  cli::cli_bullets(c(" " = "{input_path}"))
+  
+  aah_task_all <- readr::read_tsv(
+    input_path,
+    col_types = cols(
+      subject = col_character(),
+      time_elapsed_ms = col_double(),
+      blocknum = col_double(),
+      block_type = col_character(),
+      block_response = col_character(),
+      trialnum = col_double(),
+      target = col_character(),
+      level = col_character(),
+      field = col_character(),
+      target_present = col_character(),
+      response = col_character(),
+      correct = col_double(),
+      rt = col_double(),
+    )
+  ) |>
+    select(
+      subject,
+      block_type,
+      block_response,
+      target_present,
+      target,
+      level,
+      field,
+      correct,
+      rt
+    )
+  return(aah_task_all)
+}
+
+#### LOAD SUMMARIZED GROUP DATA (PRE-EXCLUSION CALCULATIONS)
+#### & SUBSET to columns used to calculate exclusions
+#### Recode "ehi_total" to "ehi" (for analysis)
+#### (2_exclude.Rmd)
+## Depends on: lib/load_process/load_process.R/load_summary()
+load_summary_all <- function(proc_dir) {
+  aah_summary_all <- load_summary(proc_dir) |>
+    select(
+      subject,
+      first_block,
+      ehi_total,
+      age,
+      country,
+      sex,
+      education,
+      race,
+      hispanic_ethnicity,
+      rt_overall,
+      duration_s,
+      task_experience_response,
+      task_experience_other_response,
+      open_ended_feedback_response,
+      exclude_many_gos,
+      exclude_low_acc,
+      exclude_low_rt,
+      exclude_high_rt
+    ) |> rename(ehi = ehi_total)
+}
+
+####***********************************************************************####
+#### LOAD TASK DATA (POST-EXCLUSION CALCULATION) FOR ANALYSIS
+#### (3_analysis.Rmd, ...)
+#### aah_long.tsv is "the data": all trials (including practice & absent),
+#### all subjects, and all exclusion information.
+#### This data must be filtered to "main" blocks, "present" trials,
+#### and included subjects (exclude == 0) for analyses.
+load_aah_long <- function(proc_dir) {
+  input_path <- here(proc_dir, "aah_long.tsv")
+  
+  cli::cli_alert_info("Loading long task data (all subjects  and all trials, including practice and target absent) from:")
+  cli::cli_bullets(c(" " = "{input_path}", " " = "-> aah_long"))
+  
+  aah_long <- readr::read_tsv(
+    input_path,
+    col_types = cols(
+      subject = col_character(),
+      block_response = col_character(),
+      target = col_character(),
+      level = col_character(),
+      field = col_character(),
+      correct = col_logical(),
+      rt = col_double(),
+      first_block = col_character(),
+      ehi = col_double(),
+      age = col_double(),
+      country = col_character(),
+      sex = col_character(),
+      education = col_double(),
+      race = col_character(),
+      hispanic_ethnicity = col_character(),
+      rt_overall = col_double(),
+      duration_s = col_double(),
+      task_experience_response = col_character(),
+      task_experience_other_response = col_logical(),
+      open_ended_feedback_response = col_character(),
+      exclude_many_gos = col_logical(),
+      exclude_low_acc = col_logical(),
+      exclude_low_rt = col_logical(),
+      exclude_high_rt = col_logical(),
+      exclude_country = col_logical(),
+      exclude_age = col_logical(),
+      exclude_done_before = col_logical(),
+      exclude_no_ehi = col_logical(),
+      exclude = col_logical()
+    )
+  )
+  return(aah_long)
+}
+#### Filter aah_long ("the data") to: "main" blocks, "present" trials,
+#### and included subjects (exclude == 0) for analyses.
+filter_aah_long_for_analysis <- function(aah_long) {
+  
+  cli::cli_alert_info("Filtering long task data for analysis (no excluded subjects; experimental trials (not practice) only; target present only).")
+  cli::cli_bullets(c(" " = "aah_long -> aah"))
+  ## For analysis, filter aah_long to:
+  ## (1) no excluded subjects,
+  ## (2) "main" phase only (filtering out "practice")
+  ## (3) target-present trials only (for RT, accuracy by level)
+  aah <- aah_long |> 
+    filter(exclude == 0) |>
+    filter(block_type == "main" & target_present == "yes") |>
+    select(-starts_with("exclude")) |>
+    ## Recode "level" for nicer printing.
+    mutate(level = recode(level, global = "Global", local = "Local"))
+  return(aah)
+}
+
+#### LOAD SUMMARY DATA (POST-EXCLUSION CALCULATION) FOR ANALYSIS
+#### (3_analysis.Rmd)
+load_aah_summary <- function(proc_dir) {
+  input_path <- here(proc_dir, "aah_summary.tsv")
+  
+  cli::cli_alert_info("Loading summary data (all subjects) from:")
+  cli::cli_bullets(c(" " = "{input_path}", " " = "-> aah_summary"))
+  
+  aah_summary <- readr::read_tsv(
+    input_path,
+    col_types = cols(
+      subject = col_character(),
+      first_block = col_character(),
+      ehi = col_double(),
+      age = col_double(),
+      country = col_character(),
+      sex = col_character(),
+      education = col_double(),
+      race = col_character(),
+      hispanic_ethnicity = col_character(),
+      rt_overall = col_double(),
+      duration_s = col_double(),
+      task_experience_response = col_character(),
+      task_experience_other_response = col_logical(),
+      open_ended_feedback_response = col_character(),
+      exclude_many_gos = col_double(),
+      exclude_low_acc = col_double(),
+      exclude_low_rt = col_double(),
+      exclude_high_rt = col_double(),
+      exclude_country = col_double(),
+      exclude_age = col_double(),
+      exclude_done_before = col_double(),
+      exclude_no_ehi = col_double(),
+      exclude = col_double()
+    )
+  )
+  return(aah_summary)
+}
+#### Filter summary data for analysis (no excluded subjects)
+filter_aah_summary_for_analysis <- function(aah_summary_all) {
+  cli::cli_alert_info("Filtering summary data for analysis (no excluded subjects).")
+  cli::cli_bullets(c(" " = "aah_summary_all -> aah_summary"))
+  aah_summary <- aah_summary_all |>
+    filter(exclude == 0) |>
+    select(-starts_with("exclude"))
+  return(aah_summary)
 }

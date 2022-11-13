@@ -44,58 +44,13 @@ proc_dir <- here::here(data_dir, "proc_pilot")
 n_recruited = 112 ## Total recruited + paid. For reporting exclusions
 ```
 
-
 ##  {.tabset}
 ```{r load_combined, include = F}
-## Load combined trial-per-row data
-aah_task_all <- readr::read_tsv(
-  here(proc_dir, "combined", "combined_task.tsv"),
-  col_types = cols(
-    subject = col_character(),
-    time_elapsed_ms = col_double(),
-    blocknum = col_double(),
-    block_type = col_character(),
-    block_response = col_character(),
-    trialnum = col_double(),
-    target = col_character(),
-    level = col_character(),
-    field = col_character(),
-    target_present = col_character(),
-    response = col_character(),
-    correct = col_double(),
-    rt = col_double(),
-  )
-) |>
-  filter(block_type == "main" & target_present == "yes") |>
-  select(subject,
-         block_response,
-         target,
-         level,
-         field,
-         correct,
-         rt)
+## Load pre-exclusion combined trial-per-row data, subset columns
+aah_task_all <- load_task_all(proc_dir)
 
-aah_summary_all <- load_summary() |>
-  select(
-    subject,
-    first_block,
-    ehi_total,
-    age,
-    country,
-    sex,
-    education,
-    race,
-    hispanic_ethnicity,
-    rt_overall,
-    duration_s,
-    task_experience_response,
-    task_experience_other_response,
-    open_ended_feedback_response,
-    exclude_many_gos,
-    exclude_low_acc,
-    exclude_low_rt,
-    exclude_high_rt
-  ) |> rename(ehi = ehi_total)
+## Load pre-exclusion summary data, subset columns, and recode "ehi_total" to "ehi."
+aah_summary_all <- load_summary_all(proc_dir)
 ```
 
 ### Demographics (All)
