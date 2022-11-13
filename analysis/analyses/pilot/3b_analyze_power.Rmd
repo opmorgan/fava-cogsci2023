@@ -42,6 +42,21 @@ source(here::here("lib", "util.R"))
 source(here::here("lib", "demographics.R"))
 ```
 
+```{r config}
+data_dir <- here::here("data")
+proc_dir <- here::here(data_dir, "proc_pilot")
+cache_dir <- here::here("manual_cache", "pilot")
+
+## TODO: specify cache for models from each script version:
+## pilot, main experiment 
+## (Each will have its own "rt_emm.rds", for example)
+
+use_cached_model_rt <- TRUE
+use_cached_model_acc <- TRUE
+use_cached_model_rt_ehi <- TRUE
+use_cached_model_acc_ehi <- TRUE
+```
+
 ```{r load_and_prep_data}
 ## Load "the data" with all subjects & trials.
 aah_long <- load_aah_long(proc_dir)
@@ -59,8 +74,25 @@ aah_summary <- filter_aah_summary_for_analysis(aah_summary_all)
 ## This data (all present trials, correct or incorrect) will be used for
 ## accuracy analyses
 aah <- filter_aah_long_for_analysis(aah_long)
+
+## For RT analyses, prepare dataset with only correct, present trials.
+## In our RT model, we only care about correct responses to present trials.
+aah_correct <- aah |> filter(correct == T)
+## Relevel field and level with RVF first (unintuitive for plotting),
+## so that emmeans will show a positive number for LVF global bias.
+aah_for_rt_model <- aah_correct |>
+  mutate(level = level |> factor(levels = c("Global", "Local")),
+         field = field |> factor(levels = c("RVF", "LVF")))
+
+## For accuracy analyses, prepare dataset will all present trials.
+## Relevel field and level,
+## so that emmeans will show a positive number for LVF global bias.
+aah_for_acc_model <- aah |>
+  mutate(level = level |> factor(levels = c("Global", "Local")),
+         field = field |> factor(levels = c("RVF", "LVF")))
 ```
 
+# {.tabset}
 
 ## Demographics
 ```{r demo_summary}
@@ -68,4 +100,114 @@ rt_demo <- demo_summary_table(aah_summary)
 rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
 ```
 
+## Estimate: Field x Level {.tabset .tabset-pills .active}
+Estimate the effect size of the field x level interaction seen in right handers.
+<br>
+<br>
+
+### Reaction time
+
+Reaction time is modeled as a linear effect of field and level, using data from every target-present trial with a "go" response:
+<br>
+<br>
+`lmer( rt ~ field + level + field:level + (1 | subject) )`
+<br>
+<br>
+
+```{r rt_model}
+## Make a linear model using data from every trial.
+## Fixed effects: field, level (and their interaction)
+## Random effects: subject.
+## rt ~ field + level + field:level + (1 | subject)
+rt_model <- lmer(rt ~ field:level + field + level + (1 | subject), data = aah_for_rt_model)
+
+if (use_cached_model_rt == FALSE) {
+  ## Create emmeans model object, and manually cache it.
+  rt_emm <- emmeans(rt_model, ~ field * level, pbkrtest = 13184)
+  
+  ## Manually cache model
+  saveRDS(rt_emm, here(cache_dir, "rt_emm.rds"))
+  
+} else if (use_cached_model_rt == TRUE) {
+  ## Load cached model
+  rt_emm <- readRDS(here("manual_cache", "rt_emm.rds"))
+}
+```
+
+```{r rt_interaction_emm}
+## Use emmeans() to test 2-way interaction.
+rt_interaction_emm <- rt_emm |> 
+  contrast(interaction = c("consec")) |>
+  summary(infer = T)
+#rt_interaction_emm
+
+rt_interaction_emm |>
+  as_tibble() |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "Field by level interaction (RT)",
+             subtitle = "Compare effect estimate to zero with emmeans()") |>
+  tab_footnote(footnote = "A positive number means global bias is stronger in LVF (as predicted for right handers)",
+               locations = cells_column_labels(columns = estimate)) |>
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = lower.CL)) |>
+  tab_footnote(footnote = "Degrees-of-freedom method: kenward-roger",
+               locations = cells_column_labels(columns = df))
+```
+
+### Accuracy
+Accuracy is modeled as a binomial effect of field and level, using binary correct/incorrect data from every target-present trial:
+<br>
+<br>
+`glmer( correct ~ field + level + field:level + (1 | subject), family = "binomial" )`
+<br>
+<br>
+```{r acc_model}
+## Make a binomial logistic model using data from every trial.
+## Fixed effects: field, level (and their interaction)
+## Random effects: subject.
+## correct ~ field + level + field:level + (1 | subject)
+acc_model <- glmer(correct ~ field:level + field + level + (1 | subject),
+                   data = aah,
+                   family = "binomial")
+
+if (use_cached_model_acc == FALSE) {
+  ## Create emmeans model object, and manually cache it.
+  acc_emm <- emmeans(acc_model, ~ field * level)
+  
+  ## Manually cache model
+  saveRDS(acc_emm, here("manual_cache", "acc_emm.rds"))
+  
+} else if (use_cached_model_acc == TRUE) {
+  ## Load cached model
+  acc_emm <- readRDS(here("manual_cache", "acc_emm.rds"))
+}
+```
+
+
+```{r acc_interaction_emm}
+## Is there an interaction of field x level?
+## Use an emmeans contrast
+acc_interaction_emm <- acc_emm |>
+  contrast(interaction = c("consec")) |>
+  summary(infer = T, type = "response")
+#acc_interaction_emm
+
+acc_interaction_emm |>
+  as_tibble() |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "Field by level interaction (Accuracy)",
+             subtitle = "Compare effect estimate to zero with emmeans()") |>
+  tab_footnote(footnote =  "Backtransformed to odds ratio from log odds ratio (tests are performed on log odds ratio scale). A ratio > 1 means global bias is stronger in the LVF, as predicted for right handers.",
+               locations = cells_column_labels(columns = odds.ratio)) |>
+  tab_footnote(footnote = "I don't understand why df is 'Inf' here, but I think it is expected when emmeans does logistic regression. See emmeans FAQ: https://cran.r-project.org/web/packages/emmeans/vignettes/FAQs.html#asymp.",
+               locations = cells_column_labels(columns = df)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = asymp.LCL)) |>
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value))
+```
 
