@@ -58,7 +58,7 @@ use_cached_model_acc <- TRUE
 use_cached_model_rt_ehi <- TRUE
 use_cached_model_acc_ehi <- TRUE
 
-use_cached_sims <- TRUE
+use_cached_sims <- FALSE
 
 
 # use_cached_model_rt <- FALSE
@@ -68,7 +68,8 @@ use_cached_sims <- TRUE
 ```
 
 ```{r simr_config}
-n_sim <- 10
+n_sim <- 1000
+n_sim_acc <- 100
 ```
 
 ```{r load_and_prep_data}
@@ -358,7 +359,7 @@ rt_pc_tbl |>
 
 ### Accuracy
 
-```{r simulate_lefties_rt_bin}
+```{r simulate_lefties_acc_bin}
 # acc_model |> summary()
 # acc_interaction_emm <- acc_emm |>
 #   contrast(interaction = c("consec")) |>
@@ -436,7 +437,7 @@ if (use_cached_sims == FALSE) {
     alpha = 0.05,
     along = "subject",
     breaks = seq(206, 824, 50),
-    nsim = n_sim,
+    nsim = n_sim_acc,
   )
   
   saveRDS(acc_model_sim_extended,
