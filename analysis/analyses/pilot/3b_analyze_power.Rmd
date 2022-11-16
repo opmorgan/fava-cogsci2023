@@ -21,7 +21,7 @@ options(scipen = 9, digits = 9)
 options(dplyr.summarise.inform = FALSE)
 ```
 
-```{r}
+```{r lib}
 library(here)
 library(tidyverse)
 library(cli) # For printing error messages
@@ -30,6 +30,8 @@ library(lme4)
 library(emmeans)
 # library(broom)
 library(gt)
+
+library(simr) # for power analyses
 
 # library(ggpubr) ## functions for plotting SD, SEM, CI.
 # library(ggbeeswarm)
@@ -55,6 +57,14 @@ use_cached_model_rt <- TRUE
 use_cached_model_acc <- TRUE
 use_cached_model_rt_ehi <- TRUE
 use_cached_model_acc_ehi <- TRUE
+
+use_cached_sims <- FALSE
+
+
+# use_cached_model_rt <- FALSE
+# use_cached_model_acc <- FALSE
+# use_cached_model_rt_ehi <- FALSE
+# use_cached_model_acc_ehi <- FALSE
 ```
 
 ```{r load_and_prep_data}
@@ -130,7 +140,7 @@ if (use_cached_model_rt == FALSE) {
   
 } else if (use_cached_model_rt == TRUE) {
   ## Load cached model
-  rt_emm <- readRDS(here("manual_cache", "rt_emm.rds"))
+  rt_emm <- readRDS(here(cache_dir, "rt_emm.rds"))
 }
 ```
 
@@ -178,11 +188,11 @@ if (use_cached_model_acc == FALSE) {
   acc_emm <- emmeans(acc_model, ~ field * level)
   
   ## Manually cache model
-  saveRDS(acc_emm, here("manual_cache", "acc_emm.rds"))
+  saveRDS(acc_emm, here(cache_dir, "acc_emm.rds"))
   
 } else if (use_cached_model_acc == TRUE) {
   ## Load cached model
-  acc_emm <- readRDS(here("manual_cache", "acc_emm.rds"))
+  acc_emm <- readRDS(here(cache_dir, "acc_emm.rds"))
 }
 ```
 
@@ -211,3 +221,138 @@ acc_interaction_emm |>
                locations = cells_column_labels(columns = p.value))
 ```
 
+
+
+
+```{r simr_config}
+n_sim <- 10
+```
+## Power: Binned handedness {.tabset .tabset-pills .active}
+### Reaction time
+
+Power to find field x level effect in righties.
+```{r use_rt_model}
+## Calculate power for observed field x level interaction
+rt_model <- lmer(rt ~ field:level + field + level + (1 | subject), data = aah_for_rt_model)
+
+if (use_cached_sims == FALSE) {
+  ## Create simulation(s), and manually cache.
+rt_sim_field <- powerSim(rt_model, nsim=n_sim, test = fcompare(rt~level))
+  
+rt_sim_fieldXlevel <- powerSim(rt_model, nsim=n_sim, test = fcompare(rt~level + field))
+  ## Manually cache model
+  saveRDS(rt_sim_field, here(cache_dir, "rt_sim_field.rds"))
+  saveRDS(rt_sim_fieldXlevel,
+          here(cache_dir, "rt_sim_fieldXlevel.rds"))
+  
+} else if (use_cached_sims == TRUE) {
+  ## Load cached model
+  rt_sim_field <- readRDS(here(cache_dir, "rt_sim_field.rds"))
+  rt_sim_field <- readRDS(here(cache_dir, "rt_sim_fieldXlevel.rds"))
+}
+
+rt_sim_field
+rt_sim_fieldXlevel
+## We had 90% power to detect the observed effect.
+```
+
+```{r simulate_lefties}
+rt_model <- lmer(rt ~ field:level + field + level + (1 | subject), data = aah_for_rt_model)
+## Right handers' field x level effect is 28.74ms, SE 7.60.
+
+use_cached_sims = FALSE
+
+if (use_cached_sims == FALSE) {
+  ## Create simulation(s), and manually cache.
+  
+  ## Create simulated data with left handers,
+  ## and a binary handedness variable.
+  ## Lefty handedness can be simulated as the
+  ## mirror image of right handers' EHI scores.
+  
+  ## Then, we can estimate the effect of the difference btw handedness groups.
+  rt_data_pilot <- aah_for_rt_model
+  
+  ## Make simulated lefties with the same RT data as righties:
+  rt_sim_lefties <- rt_data_pilot |> mutate(ehi = -ehi)
+  
+  ## Make a dataset that includes the simulated lefties.
+  rt_sim <- add_row(rt_data_pilot, rt_sim_lefties) |>
+    mutate(handedness = case_when(ehi > 0 ~ "right",
+                                  ehi <= 0 ~ "left"))
+  
+  ## Make a model using the simulated data
+  rt_model_sim <-
+    lmer(rt ~ field * level * handedness + (1 |
+                                              subject), data = rt_sim)
+  
+  ## Manually cache model
+  saveRDS(rt_model_sim, here(cache_dir, "rt_model_sim.rds"))
+  
+} else if (use_cached_sims == TRUE) {
+  ## Load cached model
+  rt_model_sim <- readRDS(here(cache_dir, "rt_model_sim.rds"))
+}
+
+#rt_model_sim |> summary()
+## As expected, 
+## right handers' field x level effect is 28.74ms, SE 7.60.
+```
+
+
+Power to detect an interaction is lefties' LVF Global bias is 14.37ms or lower (1/2 the effect we saw in our pilot righties).
+```{r 14.37ms_n103}
+## Modify the estimated interaction of field*level*handedness:
+## If the effect is 1/2x in left handers (14.37ms difference)
+fixef(rt_model_sim)["fieldLVF:levelLocal:handednessright"] <- 14.37
+rt_model_sim |> summary()
+
+
+##TODO: delete all one-off simulations. Just calculate the p-curve with n=824 subjects as the upper limit, and save it.
+
+## Now, we have a simulated model in which left handers' 
+## interaction effect is 1/2x right handers.
+## With 103 subjects, how much power do we have to detect the 3-way interaction effect?
+p1 <- powerSim(rt_model_sim, nsim = n_sim, test = compare(rt ~ field*level + (1 | subject)))
+p1
+## nsim = 10, 47% power. nrow = 24946 
+## (each 103 subjects have 12,463 rows - 206 have 24946.)
+
+## Make a model with a large number of subjects, that will hopefully have more than enough power.
+rt_model_sim_2 <- extend(rt_model_sim, along="subject", n=824)
+p2 <- powerSim(rt_model_sim_2, nsim = n_sim, test = compare(rt ~ field*level + (1 | subject)))
+p2
+## nsim = 10, 100% power. nrow = 199568 (24946*4)
+
+## Then, make a power curve using that model as an upper bound.
+pc2 <- powerSim(rt_model_sim_2,
+                  nsim = n_sim,
+                  test = compare(rt ~ field*level + (1 | subject))
+                  )
+print(pc2)
+```
+
+<!-- Power to detect an interaction if lefties' LVF global bias is 0ms or negative. -->
+```{r 28.74ms_n103}
+## Modify the estimated interaction of field*level*handedness:
+## If the effect is 0 in left handers (28.74ms difference)
+fixef(rt_model_sim)["fieldLVF:levelLocal:handednessright"] <- 28.74
+rt_model_sim |> summary()
+
+## Now, we have a simulated model in which left handers' 
+## interaction effect is 1/2x right handers.
+## With 103 subjects, how much power do we have to detect the 3-way interaction effect?
+powerSim(rt_model_sim, nsim = 100, test = compare(rt ~ field*level + (1 | subject)))
+## nsim =100, 100% power.
+```
+
+
+### Accuracy
+
+
+## Power analyses: Continuous handedness {.tabset .tabset-pills}
+### Reaction time
+```{r}
+
+```
+### Accuracy

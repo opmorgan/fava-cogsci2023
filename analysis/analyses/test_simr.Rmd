@@ -1,0 +1,152 @@
+---
+title: "test_simr"
+author: "Owen Morgan"
+date: "2022-11-16"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+A workshop:
+https://humburg.github.io/Power-Analysis/simr_power_analysis.html
+Official Docs: https://cran.r-project.org/web/packages/simr/simr.pdf
+Tutorial Paper: https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12504
+Presentation from creators: https://med.und.edu/daccota/_files/pdfs/berdc_resource_pdfs/sample_size_r_module_glmm2.pdf
+
+```{r simr_tutorial_1}
+## Tutorial Paper:
+## https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.12504
+
+## (1) Start with a model fitted in lme4.
+## "This will typically be based on an analysis of data from a pilot study, but more advanced users can create artificial pilot data from scratch (see Appendix S2)."
+
+## In simr, power is calculated by repeating the following three steps: 
+##    (i) simulate new values for the response variable using the model provided; 
+##    (ii) refit the model to the simulated response; 
+##    (iii) apply a statistical test to the simulated fit. 
+## In this setup the tested effect is known to exist, and so every positive test is a true positive and every negative test is a Type II error. The power of the test can be calculated from the number of successes and failures at step 3. More details are given in Appendix S3.
+
+## The data set is representative of environmental monitoring data, with a response variable z (e.g. bird abundance) measured at 10 levels of the continuous fixed effect variable x (e.g. study year) for three groups g (e.g. study site). There is also a continuous response variable y, which is not used in this tutorial.
+## x: year (1:10)
+## g: site (a, b, c)
+## y: continuous outcome
+## z: count outcome (bird abundance)
+simdata
+modely <- lmer(y ~ x + (1|g), data = simdata)
+summary(modely)
+
+model1 <- glmer(z ~ x + (1|g), family="poisson", data=simdata)
+summary(model1)
+## The estimated effect of year is -0.11, p = .004
+
+## Here, we will consider the power to detect a slope of -.05.
+## The fixed effects within the fitted glmer model can be accessed with the lme4 function fixef. The simr function fixef<- can then be used to change the size of the fixed effect. The size of the fixed effect for the variable x can be changed from −0·11 to −0·05 as follows:
+
+fixef(model1)["x"]
+fixef(model1)["x"] <- -0.05
+model1 |> summary()
+
+## In this tutorial, we only change the fixed slope for the variable x. However, we could also change the random effect parameters or the residual variance (for models where that is appropriate). See the help entry ?modify for more details.
+set.seed(123)
+powerSim(model1, nsim = 10)
+## "test" argument: by default, the first fixed effect in "fit."
+powerSim(model1, nsim = 10, test = fixed("x"))
+## We could also test the significance of a model comparison:
+powerSim(model1, nsim = 100, test = compare(z~(1|g)))
+## nsim = 10, power = 20%
+
+
+## Increasing sample size
+#The pilot study had observations at 10 values of x, representing for example study years 1 through 10. In this step, we will calculate the effect of increasing this to 20 years.
+
+model2 <- extend(model1, along="x", n=20)
+powerSim(model2, nsim = 100)
+## nsim = 100, power = 94%
+## The along argument specifies which variable is being extended, and n specifies how many levels to replace it with. The extended model2 will now have x values from 1 to 20, in three groups as before, for a total of 60 rows (compared to 30 in model1).
+model3 <- extend(model1, along="x", n=100)
+powerSim(model3, nsim = 10)
+
+## Power curve analysis
+pc2 <- powerCurve(model2, nsim = 2, test = compare(z~(1|g)))
+print(pc2)
+```
+
+
+```{r simr_tutorial_2}
+## Workshop:
+## https://humburg.github.io/Power-Analysis/simr_power_analysis.html
+subj <- factor(1:10)
+class_id <- letters[1:5]
+time <- 0:2
+group <- c("control", "intervention")
+
+subj_full <- rep(subj, 15)
+class_full <- rep(rep(class_id, each=10), 3)
+time_full <- rep(time, each=50)
+group_full <- rep(rep(group, each=5), 15)
+
+covars <- data.frame(id=subj_full, class=class_full, treat=group_full, time=factor(time_full))
+
+covars
+
+
+## The next step requires us to specify the parameters for the model. We’ll use the model
+## y ∼ treatment + time + treatment × time + (1|class/id)+ϵ
+## Intercept and slopes for intervention, time1, time2, intervention:time1, intervention:time2
+fixed <- c(5, 0, 0.1, 0.2, 1, 0.9)
+
+## Random intercepts for participants clustered by class
+## Q. there are 5 classes -- why two random intercepts?
+rand <- list(0.5, 0.1)
+
+## residual variance
+res <- 2
+
+## Create model
+## The makeLmer function from the simr package allows us to combine all this information to create a fitted lmer model from scratch.
+model <- makeLmer(y ~ treat*time + (1|class/id), fixef=fixed, VarCorr=rand, sigma=res, data=covars)
+model |> summary()
+
+
+## Once you have a fitted lmer model, whether it was fitted to real data or created from scratch, you can use that to simulate new data and assess the required sample size.
+
+## The powerSim function allows us to estimate the power to detect a specific effect in the model. Here we are interested in the effect of the intervention. Since the treatment variable is part of an interaction we will assess its effect by comparing the model specified above to the the alternative model that doesn’t include a treatment variable. We can provide this model alternative via the fcompare function. This allows us to only specify the fixed effects in the alternative model. All random effects will be assumed to be the same as in the original model.
+sim_treat <- powerSim(model, nsim=5, test = fcompare(y~time))
+sim_treat
+
+## The effect of time
+sim_time <- powerSim(model, nsim=5, test = fcompare(y~treat))
+sim_time
+
+## Vary the number of classrooms in the sample
+model_ext_class <- extend(model, along="class", n=20)
+model_ext_class |> summary()
+
+sim_treat_class <- powerSim(model_ext_class, nsim=5, test = fcompare(y~time))
+sim_treat_class
+
+p_curve_treat <- powerCurve(model_ext_class, nsim=5, test=fcompare(y~time), along="class", breaks = c(5, 10, 15, 20))
+p_curve_treat
+plot(p_curve_treat)
+
+## Changing the number of participants per class
+## Instead of increasing the number of classes we could increase the number of participants per class. This can be achieved with the within argument to extend. Here we are extending the number of students for each treatment at each time point within each class to 20.
+model_ext_subj <- extend(model, within="class+treat+time", n=20)
+model_ext_subj
+
+sim_treat_subj <- powerSim(model_ext_subj, nsim=5, test = fcompare(y~time))
+sim_treat_subj
+p_curve_treat_2 <- powerCurve(model_ext_subj, nsim=5, test=fcompare(y~time), within="class+treat+time", breaks=c(5,10,15,20))
+p_curve_treat_2
+plot(p_curve_treat_2)
+
+## Changing number of classes and participants per class
+## We may want to study models with changes to multiple sample size components. The relevant changes can be applied to the model successively.
+model_final <- extend(model, along="class", n=8)
+model_final <- extend(model_final, within="class+treat+time", n=10)
+
+sim_final <- powerSim(model_final, nsim=20, test = fcompare(y~time))
+sim_final
+```
