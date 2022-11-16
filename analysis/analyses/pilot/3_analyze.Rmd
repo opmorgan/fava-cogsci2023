@@ -1621,7 +1621,7 @@ cor.test(rt_ehi_1$ehi, rt_ehi_1$LVF_Global_Bias, method = "spearman", alternativ
 ***In progress.*** Model rt as a linear effect of field, level, and EHI (continuous):
 <br>
 <br>
-`rt_ehi_model <- lmer( rt ~ field:level:ehi + field:level + field:ehi + field + level + ehi + (1 | subject) )`
+`rt_ehi_model <- lmer( rt ~ field:level:ehi + field:level + field:ehi + level:ehi + field + level + ehi + (1 | subject) )`
 <br>
 <br>
 ***Discussion questions.*** (1) Is this the right approach? (2) Should every interaction term be in this model? Even level:ehi? (3) Covariates not-of-interest? (4) How do you estimate the slope of the interaction effect in R? How do you report it?
@@ -1639,7 +1639,7 @@ cor.test(rt_ehi_1$ehi, rt_ehi_1$LVF_Global_Bias, method = "spearman", alternativ
 ## Do we need to include the effect of field:ehi?
 ```
 ```{r, echo = T}
-rt_ehi_model <- lmer(rt ~ field:level:ehi + field:level + field:ehi + field + level + ehi + (1 | subject), data = aah_for_rt_model)
+rt_ehi_model <- lmer(rt ~ field:level:ehi + field:level + field:ehi + level:ehi + field + level + ehi + (1 | subject), data = aah_for_rt_model)
 ```
 
 ```{r rt_ehi_model_caching}
