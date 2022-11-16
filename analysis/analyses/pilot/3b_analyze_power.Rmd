@@ -58,7 +58,7 @@ use_cached_model_acc <- TRUE
 use_cached_model_rt_ehi <- TRUE
 use_cached_model_acc_ehi <- TRUE
 
-use_cached_sims <- FALSE
+use_cached_sims <- TRUE
 
 
 # use_cached_model_rt <- FALSE
@@ -110,7 +110,7 @@ rt_demo <- demo_summary_table(aah_summary)
 rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
 ```
 
-## Estimate: Field x Level {.tabset .tabset-pills .active}
+## Estimate: Field x Level {.tabset .tabset-pills}
 Estimate the effect size of the field x level interaction seen in right handers.
 <br>
 <br>
@@ -230,37 +230,35 @@ n_sim <- 10
 ## Power: Binned handedness {.tabset .tabset-pills .active}
 ### Reaction time
 
-Power to find field x level effect in righties.
+<!-- Power to find field x level effect in righties. -->
 ```{r use_rt_model}
 ## Calculate power for observed field x level interaction
-rt_model <- lmer(rt ~ field:level + field + level + (1 | subject), data = aah_for_rt_model)
-
-if (use_cached_sims == FALSE) {
-  ## Create simulation(s), and manually cache.
-rt_sim_field <- powerSim(rt_model, nsim=n_sim, test = fcompare(rt~level))
-  
-rt_sim_fieldXlevel <- powerSim(rt_model, nsim=n_sim, test = fcompare(rt~level + field))
-  ## Manually cache model
-  saveRDS(rt_sim_field, here(cache_dir, "rt_sim_field.rds"))
-  saveRDS(rt_sim_fieldXlevel,
-          here(cache_dir, "rt_sim_fieldXlevel.rds"))
-  
-} else if (use_cached_sims == TRUE) {
-  ## Load cached model
-  rt_sim_field <- readRDS(here(cache_dir, "rt_sim_field.rds"))
-  rt_sim_field <- readRDS(here(cache_dir, "rt_sim_fieldXlevel.rds"))
-}
-
-rt_sim_field
-rt_sim_fieldXlevel
+# rt_model <- lmer(rt ~ field:level + field + level + (1 | subject), data = aah_for_rt_model)
+# 
+# if (use_cached_sims == FALSE) {
+#   ## Create simulation(s), and manually cache.
+# rt_sim_field <- powerSim(rt_model, nsim=n_sim, test = fcompare(rt~level))
+#   
+# rt_sim_fieldXlevel <- powerSim(rt_model, nsim=n_sim, test = fcompare(rt~level + field))
+#   ## Manually cache model
+#   saveRDS(rt_sim_field, here(cache_dir, "rt_sim_field.rds"))
+#   saveRDS(rt_sim_fieldXlevel,
+#           here(cache_dir, "rt_sim_fieldXlevel.rds"))
+#   
+# } else if (use_cached_sims == TRUE) {
+#   ## Load cached model
+#   rt_sim_field <- readRDS(here(cache_dir, "rt_sim_field.rds"))
+#   rt_sim_field <- readRDS(here(cache_dir, "rt_sim_fieldXlevel.rds"))
+# }
+# 
+# rt_sim_field
+# rt_sim_fieldXlevel
 ## We had 90% power to detect the observed effect.
 ```
 
 ```{r simulate_lefties}
 rt_model <- lmer(rt ~ field:level + field + level + (1 | subject), data = aah_for_rt_model)
 ## Right handers' field x level effect is 28.74ms, SE 7.60.
-
-use_cached_sims = FALSE
 
 if (use_cached_sims == FALSE) {
   ## Create simulation(s), and manually cache.
@@ -286,11 +284,13 @@ if (use_cached_sims == FALSE) {
     lmer(rt ~ field * level * handedness + (1 |
                                               subject), data = rt_sim)
   
-  ## Manually cache model
+  ## Manually cache dataset and model
+  saveRDS(rt_sim, here(cache_dir, "rt_sim.rds"))
   saveRDS(rt_model_sim, here(cache_dir, "rt_model_sim.rds"))
   
 } else if (use_cached_sims == TRUE) {
   ## Load cached model
+  rt_sim <- readRDS(here(cache_dir, "rt_sim.rds"))
   rt_model_sim <- readRDS(here(cache_dir, "rt_model_sim.rds"))
 }
 
@@ -300,49 +300,65 @@ if (use_cached_sims == FALSE) {
 ```
 
 
-Power to detect an interaction is lefties' LVF Global bias is 14.37ms or lower (1/2 the effect we saw in our pilot righties).
+Calculate power to detect an interaction if lefties' LVF Global bias is 14.37ms or lower (1/2 the effect we saw in our pilot righties).
 ```{r 14.37ms_n103}
 ## Modify the estimated interaction of field*level*handedness:
 ## If the effect is 1/2x in left handers (14.37ms difference)
 fixef(rt_model_sim)["fieldLVF:levelLocal:handednessright"] <- 14.37
-rt_model_sim |> summary()
-
-
-##TODO: delete all one-off simulations. Just calculate the p-curve with n=824 subjects as the upper limit, and save it.
+#rt_model_sim |> summary()
 
 ## Now, we have a simulated model in which left handers' 
 ## interaction effect is 1/2x right handers.
 ## With 103 subjects, how much power do we have to detect the 3-way interaction effect?
-p1 <- powerSim(rt_model_sim, nsim = n_sim, test = compare(rt ~ field*level + (1 | subject)))
-p1
+#p1 <- powerSim(rt_model_sim, nsim = n_sim, test = compare(rt ~ field*level + (1 | subject)))
+#p1
 ## nsim = 10, 47% power. nrow = 24946 
 ## (each 103 subjects have 12,463 rows - 206 have 24946.)
 
+if (use_cached_sims == FALSE) {
 ## Make a model with a large number of subjects, that will hopefully have more than enough power.
-rt_model_sim_2 <- extend(rt_model_sim, along="subject", n=824)
-p2 <- powerSim(rt_model_sim_2, nsim = n_sim, test = compare(rt ~ field*level + (1 | subject)))
-p2
+rt_model_sim_extended <- extend(rt_model_sim, along="subject", n=824)
+#p2 <- powerSim(rt_model_sim_2, nsim = n_sim, test = compare(rt ~ field*level + (1 | subject)))
 ## nsim = 10, 100% power. nrow = 199568 (24946*4)
 
 ## Then, make a power curve using that model as an upper bound.
-pc2 <- powerSim(rt_model_sim_2,
-                  nsim = n_sim,
-                  test = compare(rt ~ field*level + (1 | subject))
+pc <- powerCurve(fit = rt_model_sim_extended,
+                  test = compare(rt ~ field*level + (1 | subject)),
+                  alpha = 0.05,
+                  along = "subject",
+                  breaks = seq(206, 824, 50),
+                  nsim = 2,
                   )
-print(pc2)
+
+  saveRDS(rt_model_sim_extended, here(cache_dir, "rt_model_sim_extended.rds"))
+  saveRDS(pc, here(cache_dir, "rt_model_sim_extended_pc.rds"))
+} else if (use_cached_sims == TRUE) {
+  pc <- readRDS(here(cache_dir, "rt_model_sim_extended_pc.rds"))
+}
+
+pc_tbl <- pc |> summary() |> as_tibble() |>
+  rename(n_trials = nrow, n_subjects = nlevels,
+         simulations = trials, power = mean)
+pc_tbl |> 
+  pretty_table() |> tab_header(title = "Power to detect field x level x handedness (binary) interaction", subtitle =  "alpha =  .05") |> 
+  tab_footnote(footnote = "Total subjects: 1/2 right, 1/2 left handed.",
+               locations = cells_column_labels(columns = n_subjects)) |> 
+  tab_footnote(footnote = "Number of simulations where the interaction was significant.",
+               locations = cells_column_labels(columns = successes))
+  
 ```
 
 <!-- Power to detect an interaction if lefties' LVF global bias is 0ms or negative. -->
 ```{r 28.74ms_n103}
 ## Modify the estimated interaction of field*level*handedness:
 ## If the effect is 0 in left handers (28.74ms difference)
-fixef(rt_model_sim)["fieldLVF:levelLocal:handednessright"] <- 28.74
-rt_model_sim |> summary()
+#fixef(rt_model_sim)["fieldLVF:levelLocal:handednessright"] <- 28.74
+#rt_model_sim |> summary()
 
 ## Now, we have a simulated model in which left handers' 
 ## interaction effect is 1/2x right handers.
 ## With 103 subjects, how much power do we have to detect the 3-way interaction effect?
-powerSim(rt_model_sim, nsim = 100, test = compare(rt ~ field*level + (1 | subject)))
+#powerSim(rt_model_sim, nsim = 100, test = compare(rt ~ field*level + (1 | subject)))
 ## nsim =100, 100% power.
 ```
 
