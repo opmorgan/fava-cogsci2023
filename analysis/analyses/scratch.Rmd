@@ -1,0 +1,49 @@
+---
+title: "scratch"
+output: html_document
+date: "2022-11-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+<!-- Power to find field x level effect in righties. -->
+```{r use_rt_model}
+## Calculate power for observed field x level interaction
+# rt_model <- lmer(rt ~ field:level + field + level + (1 | subject), data = aah_for_rt_model)
+# 
+# if (use_cached_sims == FALSE) {
+#   ## Create simulation(s), and manually cache.
+# rt_sim_field <- powerSim(rt_model, nsim=n_sim, test = fcompare(rt~level))
+#   
+# rt_sim_fieldXlevel <- powerSim(rt_model, nsim=n_sim, test = fcompare(rt~level + field))
+#   ## Manually cache model
+#   saveRDS(rt_sim_field, here(cache_dir, "rt_sim_field.rds"))
+#   saveRDS(rt_sim_fieldXlevel,
+#           here(cache_dir, "rt_sim_fieldXlevel.rds"))
+#   
+# } else if (use_cached_sims == TRUE) {
+#   ## Load cached model
+#   rt_sim_field <- readRDS(here(cache_dir, "rt_sim_field.rds"))
+#   rt_sim_field <- readRDS(here(cache_dir, "rt_sim_fieldXlevel.rds"))
+# }
+# 
+# rt_sim_field
+# rt_sim_fieldXlevel
+## We had 90% power to detect the observed effect.
+```
+
+<!-- Power to detect an interaction if lefties' LVF global bias is 0ms or negative. -->
+```{r 28.74ms_n103}
+## Modify the estimated interaction of field*level*handedness:
+## If the effect is 0 in left handers (28.74ms difference)
+#fixef(rt_model_sim)["fieldLVF:levelLocal:handednessright"] <- 28.74
+#rt_model_sim |> summary()
+
+## Now, we have a simulated model in which left handers' 
+## interaction effect is 1/2x right handers.
+## With 103 subjects, how much power do we have to detect the 3-way interaction effect?
+#powerSim(rt_model_sim, nsim = 100, test = compare(rt ~ field*level + (1 | subject)))
+## nsim =100, 100% power.
+```
