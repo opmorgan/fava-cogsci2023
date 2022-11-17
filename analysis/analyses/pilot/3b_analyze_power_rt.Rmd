@@ -54,9 +54,7 @@ cache_dir <- here::here("manual_cache", "pilot")
 ## (Each will have its own "rt_emm.rds", for example)
 
 use_cached_model_rt <- TRUE
-use_cached_model_acc <- TRUE
 use_cached_model_rt_ehi <- TRUE
-use_cached_model_acc_ehi <- TRUE
 
 use_cached_sims <- TRUE
 
@@ -67,8 +65,7 @@ use_cached_sims <- TRUE
 ```
 
 ```{r simr_config}
-n_sim <- 2 
-n_sim_acc <- 2
+n_sim <- 1000 
 ```
 
 ```{r load_and_prep_data}
@@ -354,13 +351,13 @@ if (use_cached_sims == FALSE) {
                                   ehi <= 0 ~ "left"))
   
   ## Make a model using the simulated data
-  rt_ehi_model_sim <-
+  rt_model_sim <-
     lmer(rt ~ field * level * handedness + (1 |
                                               subject), data = rt_sim)
   
   ## Manually cache dataset and model
-  saveRDS(rt_sim, here(cache_dir, "rt_ehi_sim.rds"))
-  saveRDS(rt_model_sim, here(cache_dir, "rt_ehi_model_sim.rds"))
+  saveRDS(rt_sim, here(cache_dir, "rt_sim.rds"))
+  saveRDS(rt_model_sim, here(cache_dir, "rt_model_sim.rds"))
   
 } else if (use_cached_sims == TRUE) {
   ## Load cached model
@@ -374,6 +371,8 @@ if (use_cached_sims == FALSE) {
 ```
 
 Calculate power to detect an interaction if lefties' LVF Global bias is 14.37ms or lower (1/2 the effect we saw in the pilot sample of right handers).
+<br>
+<br>
 ```{r rt_14.37ms_n103_bin}
 ## Modify the estimated interaction of field*level*handedness:
 ## If the effect is 1/2x in left handers (14.37ms difference)
@@ -430,7 +429,7 @@ rt_pc_tbl |>
 ```
 <br>
 
-## Power analyses: Continuous handedness {.tabset .tabset-pills}
+## Power: Continuous handedness {.tabset .tabset-pills}
 
 ```{r simulate_lefties_rt_continuous}
 rt_ehi_model <- lmer(rt ~ field*level*ehi + (1 | subject), data = aah_for_rt_model)
@@ -474,8 +473,9 @@ if (use_cached_sims == FALSE) {
 ## As expected, 
 ## the estimated effect of field:level:ehi is close to zero.
 ```
-
 Calculate power to detect an interaction of EHI x field x level if the slope of EHI's effect on the field x level interaction is .132 (the slope estimated in the pilot sample of right handers).
+<br>
+<br>
 ```{r rt_slope013_n103_continuous}
 ## Modify the estimated interaction of field*level*handedness:
 ## Use the slope estimated from right handers.
