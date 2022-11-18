@@ -401,7 +401,7 @@ fixef(rt_model_sim)["fieldLVF:levelLocal:handednessright"] <- 14.37
 if (use_cached_sims == FALSE) {
   ## Make a model with a large number of subjects, that will hopefully have more than enough power.
   rt_model_sim_extended <-
-    extend(rt_model_sim, along = "subject", n = 606)
+    extend(rt_model_sim, along = "subject", n = 1006)
   #rt_model_sim_extended |> summary()
   #p2 <- powerSim(rt_model_sim, nsim = 5, test = compare(rt ~ field*level + (1 | subject)))
   
@@ -460,7 +460,7 @@ fixef(rt_model_sim_2)["fieldLVF:levelLocal:handednessright"] <- 28.74
 if (use_cached_sims == FALSE) {
   ## Make a model with a large number of subjects, that will hopefully have more than enough power.
   rt_model_sim_extended_2 <-
-    extend(rt_model_sim_2, along = "subject", n = 606)
+    extend(rt_model_sim_2, along = "subject", n = 406)
   #rt_model_sim_extended |> summary()
   #p2 <- powerSim(rt_model_sim, nsim = 5, test = compare(rt ~ field*level + (1 | subject)))
   
@@ -545,7 +545,7 @@ fixef(rt_ehi_model_sim_2)["fieldLVF:levelLocal:ehi"] <- 0.07185
 if (use_cached_sims == FALSE) {
   ## Make a model with a large number of subjects, that will hopefully have more than enough power.
   rt_ehi_model_sim_extended_2 <-
-    extend(rt_ehi_model_sim_2, along = "subject", n = 606)
+    extend(rt_ehi_model_sim_2, along = "subject", n = 1006)
   #p2 <- powerSim(rt_model_sim_2, nsim = n_sim, test = compare(rt ~ field*level + (1 | subject)))
   ## nsim = 10, 100% power. nrow = 199568 (24946*4)
   
