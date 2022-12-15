@@ -1,0 +1,2 @@
+date	time	group	subject	session	build	task_experience_response	task_experience_latency	task_experience_other_response	task_experience_other_latency	open_ended_feedback_response	open_ended_feedback_latency
+2022-12-14	16:55:43	273211925	5c958b7bd676900001e1a73b	1	6.6.1	No	2790		2790	A progress bar would be nice	17213

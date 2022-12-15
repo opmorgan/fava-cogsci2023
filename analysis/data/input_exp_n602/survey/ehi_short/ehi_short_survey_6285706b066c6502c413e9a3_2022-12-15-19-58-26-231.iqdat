@@ -1,0 +1,2 @@
+date	time	group	subject	session	build	ehi_i1_writing_response	ehi_i1_writing_latency	ehi_i2_throwing_response	ehi_i2_throwing_latency	ehi_i3_toothbrush_response	ehi_i3_toothbrush_latency	ehi_i4_spoon_response	ehi_i4_spoon_latency
+2022-12-15	14:58:26	16301670	6285706b066c6502c413e9a3	1	6.6.1	Always left	18374	Usually left	18374	Usually left	18374	Always left	18374
