@@ -1,0 +1,2 @@
+date	time	group	subject	session	build	task_experience_response	task_experience_latency	task_experience_other_response	task_experience_other_latency	open_ended_feedback_response	open_ended_feedback_latency
+2022-12-14	21:35:10	401488314	5fa4c21a04bc5912180291bc	1	6.6.1	No	2344		2344	Was it intended, for the prompts to flash on screen for only 0.26 seconds?  (Ha ha ha.)	26208

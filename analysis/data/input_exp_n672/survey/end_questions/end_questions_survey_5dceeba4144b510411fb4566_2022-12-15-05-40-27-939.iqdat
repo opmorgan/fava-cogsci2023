@@ -1,0 +1,2 @@
+date	time	group	subject	session	build	task_experience_response	task_experience_latency	task_experience_other_response	task_experience_other_latency	open_ended_feedback_response	open_ended_feedback_latency
+2022-12-14	22:40:27	583315317	5dceeba4144b510411fb4566	1	6.6.1	No	4227		4227	Right at the start, the experiment took a little time to load, and I had thought it had frozen, so I did hit the escape key (but didn't exit the experiment). 	114843

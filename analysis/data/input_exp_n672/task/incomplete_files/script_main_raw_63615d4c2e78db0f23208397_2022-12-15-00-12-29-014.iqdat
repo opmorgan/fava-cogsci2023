@@ -1,0 +1,5 @@
+build	computer.platform	date	time	timestamp	time_elapsed_ms	subject	group	session	blockcode	blocknum	trialcode	trialnum	stimulus_left	stimulus_right	stim_index	target_present	response	correct	latency
+6.6.1	win	2022-12-14	18:12:29	18:14:23	113175	63615d4c2e78db0f23208397	148445321	1	practice_slash	5	practice_slash	1	stimuli_distractor_trianglediamonds.svg	stimuli_distractor_trianglediamonds.svg	15	no	0	1	2003
+6.6.1	win	2022-12-14	18:12:29	18:14:23	113175	63615d4c2e78db0f23208397	148445321	1	practice_slash	5	advance_on_keypress_SLASH	2	stimuli_distractor_trianglediamonds.svg	stimuli_distractor_trianglediamonds.svg	15	no	57	0	1245
+6.6.1	win	2022-12-14	18:12:29	18:14:28	118080	63615d4c2e78db0f23208397	148445321	1	practice_slash	5	practice_slash	3	stimuli_distractor_diamondtriangles.svg	stimuli_distractor_diamondtriangles.svg	13	no	0	1	2003
+6.6.1	win	2022-12-14	18:12:29	18:14:28	118080	63615d4c2e78db0f23208397	148445321	1	practice_slash	5	advance_on_keypress_SLASH	4	stimuli_distractor_diamondtriangles.svg	stimuli_distractor_diamondtriangles.svg	13	no	Ctrl+'Q'	1	3846
