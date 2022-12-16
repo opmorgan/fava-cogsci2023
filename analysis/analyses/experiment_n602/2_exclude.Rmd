@@ -40,8 +40,8 @@ source(here::here("lib", "demographics.R"))
 
 ```{r config}
 data_dir <- here::here("data")
-proc_dir <- here::here(data_dir, "proc_pilot")
-n_recruited = 112 ## Total recruited + paid. For reporting exclusions
+proc_dir <- here::here(data_dir, "proc_exp_n602")
+n_recruited = 602 ## Total recruited + paid. For reporting exclusions
 ```
 
 ##  {.tabset}
@@ -111,7 +111,8 @@ aah_summary_all <- aah_summary_all |>
 aah_summary_all <- aah_summary_all |> 
   mutate(exclude_done_before = case_when(
     task_experience_response == "No" ~ 0,
-    task_experience_response == "Yes" ~ 1
+    task_experience_response == "Yes" ~ 1,
+    TRUE ~ 0 # do not exclude people who did not complete the question
   ))
 
 
@@ -170,7 +171,7 @@ tibble(
 ```
 <br>
 
-We recruited `r n_recruited` right-handed participants through prolific. Of these, `r n_all` completed the task phase of the experiment. `r n_exclusions` were excluded for the reasons described below, leaving `r n_keepers` keepers.
+We recruited `r n_recruited` participants through prolific. Of these, `r n_all` completed the task phase of the experiment. `r n_exclusions` were excluded for the reasons described below, leaving `r n_keepers` keepers.
 
 <br>
 ```{r describe_exclusions_2}
@@ -200,6 +201,9 @@ exclusion_tbl |> pretty_table()
 <br>
 
 ### Demographics (Included)
+
+TODO: report demographics by handedness group.
+
 ```{r demographics_summary_included}
 rt_demo <- demo_summary_table(aah_summary)
 rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
@@ -220,12 +224,12 @@ demo_ethnicity_table(aah_summary) |> pretty_table()
 
 ### Feedback
 ```{r feedback}
-feedback <- aah_summary |>
+feedback <- aah_summary_all |>
   filter(open_ended_feedback_response != "NA") |> 
   group_by(open_ended_feedback_response, exclude) |>
   rename(`Open-ended feedback` = open_ended_feedback_response,
          `Excluded?` = exclude) |> 
   summarize()
-feedback |> pretty_table()
+feedback |> arrange(desc(`Excluded?`)) |> pretty_table()
 ```
 

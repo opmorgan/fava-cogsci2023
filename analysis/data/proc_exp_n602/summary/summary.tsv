@@ -521,7 +521,7 @@ subject	first_block	acc_slash	acc_z	acc_absent	acc_present	acc_global_LVF	acc_gl
 62f41a3f40490ce7273873ec	slash	88.75	90	84.375	90.625	96.875	87.5	90.625	87.5	606	692.5	694	697.5	669.5	675.13	0	0	0	0	0	0	-25	25	-25	-25	-50	20	US	Male	12	White	No	No	NA	N/A
 62f58a7129fb13cf46a08ae0	slash	97.5	98.75	96.875	98.4375	96.875	96.875	100	100	621	652	671	610.5	632	551.396	0	0	0	0	0	0	12.5	12.5	12.5	12.5	50	29	US	Male	12	White	No	No	NA	NA
 62f975cbc3507ecf77180d00	z	97.5	95	81.25	100	100	100	100	100	472	438.5	466	442	452.5	576.331	0	0	0	0	0	0	25	25	25	25	100	19	US	Male	12	White	No	No	NA	NA
-62fb9a3f8da41fb2b6d28121	slash	97.5	93.75	81.25	99.21875	100	100	100	96.875	393.5	417.5	444.5	446	427.5	546.148	0	0	0	0	0	0	25	12.5	12.5	25	75	NA	NA	NA	NA	NA	NA	No	NA	This was absolutely irritating. I wear glasses though, so I already have shitty sight. I know for sure I got at least 5 wrong with my left hand.
+62fb9a3f8da41fb2b6d28121	slash	97.5	93.75	81.25	99.21875	100	100	100	96.875	393.5	417.5	444.5	446	427.5	546.148	0	0	0	0	0	0	25	12.5	12.5	25	75	33	US	Not listed: Nonbinary, genderfluid, transgender, demiwoman	16	Multiple	No	No	NA	This was absolutely irritating. I wear glasses though, so I already have shitty sight. I know for sure I got at least 5 wrong with my left hand.
 63026053812fe400f2929701	slash	87.5	91.25	90.625	89.0625	100	96.875	87.5	71.875	688.5	751	884	929	790	732.603	0	0	0	0	0	0	25	25	25	25	100	38	US	Male	8	Black or African American	Yes	No	NA	NA
 630345dd92f26599c777a5fc	slash	95	96.25	84.375	98.4375	100	100	93.75	100	430.5	447.5	577	456	451	721.589	0	0	0	0	0	0	25	25	25	25	100	39	US	Male	8	White	No	No	NA	I'm going crosseyed
 6303fb5b692c378ba1d010f9	slash	90	93.75	96.875	90.625	100	93.75	71.875	96.875	456.5	484.5	663	532.5	512.5	624.596	0	0	0	0	0	0	25	25	12.5	12.5	75	32	US	Male	12	White	No	No	NA	NA
@@ -560,7 +560,6 @@ subject	first_block	acc_slash	acc_z	acc_absent	acc_present	acc_global_LVF	acc_gl
 6333813956b0fd924b64a4d0	slash	97.5	98.75	90.625	100	100	100	100	100	850	855	879	868	864.5	602.227	0	0	0	0	0	0	25	25	25	25	100	31	US	Male	14	White	No	No	NA	NA
 6337b9604370dd57643b81a0	slash	68.75	78.75	34.375	83.59375	96.875	96.875	81.25	59.375	636.5	681.5	858.5	821.5	703	678.548	0	0	0	0	0	0	-25	25	-12.5	-25	-37.5	31	US	Male	16	White	No	No	NA	NA
 6339759d40c0cfec41fac4cb	slash	62.5	91.25	93.75	72.65625	100	100	46.875	43.75	478.5	464.5	2000	2000	674	621.171	0	0	0	0	0	0	25	25	25	25	100	24	US	Male	12	White	No	No	NA	N/A
-633d9eb9721ed1d1b6df11af	slash	96.25	96.25	81.25	100	100	100	100	100	381	350	384	363	371	416.504	0	0	0	0	0	0	25	25	25	25	100	27	US	Male	16	White	No	Yes	Owen	NA
 6340b7955ab968e4426eb476	slash	95	96.25	93.75	96.09375	100	93.75	96.875	93.75	503.5	470	549.5	504	511.5	546.349	0	0	0	0	0	0	0	0	-12.5	-12.5	-25	27	US	Male	12	White	No	No	NA	NA
 6340d2fa46f2d707e146b63b	z	80	81.25	3.125	100	100	100	100	100	326	316.5	354.5	300	318	536.592	1	0	0	0	0	1	25	12.5	12.5	0	50	23	US	Male	12	White	Yes	No	NA	NA
 634694a1401b066cb71e4c82	z	95	88.75	81.25	94.53125	96.875	96.875	90.625	93.75	954.5	920.5	918	915	921	1228.974	0	0	0	0	0	0	25	25	25	25	100	33	US	Female	12	White	No	No	NA	NA
