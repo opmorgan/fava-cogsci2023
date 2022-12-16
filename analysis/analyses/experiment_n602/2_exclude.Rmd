@@ -115,14 +115,6 @@ aah_summary_all <- aah_summary_all |>
     TRUE ~ 1
   ))
 
-## Add categorical handedness variable
-aah_summary_all <- aah_summary_all |> mutate(
-  handedness = case_when(
-    ehi <= -40 ~ "Left",
-    ehi >= 40 ~ "Right",
-    ehi > -40 & ehi < 40 ~ "Mixed"
-  )
-)
 
 ## Update "exclude" column.
 aah_summary_all <- aah_summary_all |>
@@ -151,7 +143,14 @@ readr::write_tsv(aah_summary_all, here(proc_dir, "aah_summary.tsv"))
 ## Create long data table with inclusions only
 aah <- aah_all |> filter(exclude == 0)
 
-## Create summary table with inclusions only
+## Create summary table with inclusions only, and handedness coded
+aah_summary_all <- aah_summary_all |> mutate(
+  handedness = case_when(
+    ehi <= -40 ~ "Left",
+    ehi >= 40 ~ "Right",
+    ehi > -40 & ehi < 40 ~ "Mixed"
+  )
+)
 aah_summary <- aah_summary_all |> filter(exclude == 0)
 ```
 
@@ -230,19 +229,6 @@ demo_ethnicity_table(aah_summary) |> pretty_table()
 
 Demographics for included participants, by handedness group (EHI bins). 
 ```{r}
-hand_demo_summary_table <- function(aah_summary) {
-demo_table <- aah_summary |>
-  group_by(handedness) |> 
-  summarize(
-            N = n(),
-            `Age (years)` = report_mean_sd(age),
-            `Education (years)`= report_mean_sd(education),
-            `Sex (M/F/O)` = report_sex(sex),
-            EHI = report_mean_sd(ehi)
-  ) |> 
-  rename(Handedness = handedness)
-return(demo_table)
-}
 hand_demo_summary_table(aah_summary) |> pretty_table() |>
   tab_footnote("Left: (EHI <= -40)  |  Mixed: (-40 < EHI < 40)  |  Right: (EHI >= 40)")
 ```
