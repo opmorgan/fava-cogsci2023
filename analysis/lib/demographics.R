@@ -66,3 +66,35 @@ demo_xp_table <- function(aah_summary){
          Explanation = task_experience_other_response) |> 
   arrange(-n)
 }
+
+## Read prolific data
+read_prolific_data <- function(input_path) {
+  data <- read_csv(
+    input_path,
+    col_types =
+      cols(
+        `Submission id` = col_character(),
+        `Participant id` = col_character(),
+        Status = col_character(),
+        `Started at` = col_datetime(format = ""),
+        `Completed at` = col_datetime(format = ""),
+        `Reviewed at` = col_datetime(format = ""),
+        `Archived at` = col_datetime(format = ""),
+        `Time taken` = col_double(),
+        `Completion code` = col_character(),
+        `Total approvals` = col_double(),
+        `Fluent languages` = col_character(),
+        Handedness = col_character(),
+        Age = col_character(),
+        Sex = col_character(),
+        `Ethnicity simplified` = col_character(),
+        `Country of birth` = col_character(),
+        `Country of residence` = col_character(),
+        Nationality = col_character(),
+        Language = col_character(),
+        `Student status` = col_character(),
+        `Employment status` = col_character()
+      )
+  )
+  return(data)
+}

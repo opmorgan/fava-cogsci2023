@@ -1,5 +1,5 @@
 ---
-title: "Action Asymmetry Pilot: Demographics & Exclusions"
+title: "Action Asymmetry Experiment (interim sample, n = 602): Demographics & Exclusions"
 pagetitle: "aah | pilot | exclusions"
 author: "Owen Morgan"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
@@ -30,17 +30,31 @@ options(dplyr.summarise.inform = FALSE)
 library(here)
 library(tidyverse)
 library(cli) # For printing error messages
+library(knitr) # for printing figures
 
 library(gt)
 
 source(here::here("lib", "load_process", "load_process.R"))
 source(here::here("lib", "util.R"))
 source(here::here("lib", "demographics.R"))
+source(here::here("lib", "plots.R"))
+
+## Colors for plots
+plot_blue <- c("#337aB7")
+plot_colors <- c("#4477AA",
+                 "#EE6677",
+                 "#CCBB44",
+                 "#66CCEE",
+                 "#AA3377",
+                 "#228833",
+                 "#BBBBBB")
 ```
 
 ```{r config}
 data_dir <- here::here("data")
+input_dir <- here::here(data_dir, "input_exp_n602")
 proc_dir <- here::here(data_dir, "proc_exp_n602")
+fig_dir <- here::here("figures")
 n_recruited = 602 ## Total recruited + paid. For reporting exclusions
 ```
 
@@ -53,30 +67,8 @@ aah_task_all <- load_task_all(proc_dir)
 aah_summary_all <- load_summary_all(proc_dir)
 ```
 
-### Demographics (All)
-```{r demographics_summary}
-rt_demo <- demo_summary_table(aah_summary_all)
-rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
-```
-<br>
-```{r country}
-demo_country_table(aah_summary_all) |> pretty_table()
-```
-<br>
-```{r race}
-demo_race_table(aah_summary_all) |> pretty_table()
-```
-<br>
-```{r ethnicity}
-demo_ethnicity_table(aah_summary_all) |> pretty_table()
-```
-<br>
-```{r task_experience}
-demo_xp_table(aah_summary_all) |> pretty_table()
-```
-<br>
 
-### Exclusions
+### Recruitment & Exclusions
 
 ```{r make_exclusions}
 ## Calculate any exclusions not based on task data.
@@ -122,6 +114,15 @@ aah_summary_all <- aah_summary_all |>
     ehi >= -100 & ehi <= 100 ~ 0,
     TRUE ~ 1
   ))
+
+## Add categorical handedness variable
+aah_summary_all <- aah_summary_all |> mutate(
+  handedness = case_when(
+    ehi <= -40 ~ "Left",
+    ehi >= 40 ~ "Right",
+    ehi > -40 & ehi < 40 ~ "Mixed"
+  )
+)
 
 ## Update "exclude" column.
 aah_summary_all <- aah_summary_all |>
@@ -200,9 +201,12 @@ exclusion_tbl |> pretty_table()
 ```
 <br>
 
-### Demographics (Included)
+### Demographics (Included) {.tabset .tabset-pills}
 
-TODO: report demographics by handedness group.
+
+#### Everyone
+
+Demographics for all included participants.
 
 ```{r demographics_summary_included}
 rt_demo <- demo_summary_table(aah_summary)
@@ -221,6 +225,107 @@ demo_race_table(aah_summary) |> pretty_table()
 demo_ethnicity_table(aah_summary) |> pretty_table()
 ```
 <br>
+
+#### By handedness group
+
+Demographics for included participants, by handedness group (EHI bins).
+
+```{r}
+hand_demo_summary_table <- function(aah_summary) {
+demo_table <- aah_summary |>
+  group_by(handedness) |> 
+  summarize(
+            N = n(),
+            `Age (years)` = report_mean_sd(age),
+            `Education (years)`= report_mean_sd(education),
+            `Sex (M/F/O)` = report_sex(sex),
+            EHI = report_mean_sd(ehi)
+  ) |> 
+  rename(Handedness = handedness)
+return(demo_table)
+}
+hand_demo_summary_table(aah_summary) |> pretty_table() |>
+  tab_footnote("Left: (EHI <= -40)  |  Mixed: (-40 < EHI < 40)  |  Right: (EHI >= 40)")
+```
+
+
+<br>
+There are fewer left handers than I expected. This is, in part, because some of Prolific's pre-screened "Left-handed" and "Ambidextrous" participants are fairly right handed, as measured by the EHI:
+
+```{r}
+## Load Prolific's handedness screening data
+prolific_data_dir <- here::here(input_dir, "prolific")
+input_files <- list.files(path = prolific_data_dir,
+                          pattern = "*.csv",
+                          full.names = TRUE)
+prolific_data <- lapply(input_files, read_prolific_data) |>
+  bind_rows() |>
+  rename(subject = `Participant id`,
+         prolific_handedness = Handedness) |>
+  mutate(
+    prolific_handedness = prolific_handedness |> recode(
+      `Right-handed` = "Right",
+      `Left-handed` = "Left",
+      `Ambidextrous` = "Mixed"
+    ) |> as.factor() |> droplevels()
+  ) |>
+  select(subject, prolific_handedness)
+
+## Add prolific handedness to dataset
+ehi_data <- aah_summary |> select(subject, handedness, ehi)
+h_data <- left_join(ehi_data, prolific_data, by = "subject")
+```
+
+```{r prolific_handedness_plot}
+## Show distribution of handedness by Prolific category
+use_cached_demofigs <-FALSE
+plot_color = plot_blue
+
+h_data_n <-
+  h_data |>
+  group_by(prolific_handedness) |>
+  summarize(n = str_c("n = ", as.character(n())))
+
+fig_path <- here(fig_dir, "prolific_ehi.png")
+
+if (use_cached_demofigs == FALSE) {
+  g <- ggplot(h_data, aes(x = ehi)) +
+    geom_histogram(
+      color = NA,
+      fill = plot_color,
+      alpha = .8,
+      binwidth = 8,
+      boundary = 100
+    ) +
+    labs(x = "EHI") +
+    xlim(c(-104, 104)) +
+    facet_grid( ~ prolific_handedness) +
+    geom_text(
+      data = h_data_n,
+      aes(x = -100, y = 150, label = n),
+      hjust = 0,
+      colour = "gray20",
+      inherit.aes = FALSE,
+      parse = FALSE
+    ) +
+    labs(title = "EHI distribution for each of Prolific's prescreened handedness groups")
+  
+  g <- g |> gg_style_demo() + theme(aspect.ratio = 1 / 1,
+                                    axis.title.y = element_blank())
+  
+  ggsave(fig_path, g, "png", height = 3, width = 6)
+}
+
+include_graphics(fig_path)
+```
+
+We recruited two groups of participants, in equal numbers: 
+
+(1) Prolific's "Right handed" participants, and 
+(2) Prolific's "Left handed" or "Ambidextrous" participants. 
+
+If we want to get balanced handedness groups (a more U-shaped EHI distribution) on Prolific going forward, we should recruit a larger proportion of "Left-handed" and "Ambidextrous" participants.
+
 
 ### Feedback
 ```{r feedback}
