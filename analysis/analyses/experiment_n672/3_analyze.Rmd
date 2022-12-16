@@ -1,6 +1,6 @@
 ---
-title: "Action Asymmetry Experiment (interim sample, n = 602): Analyses"
-pagetitle: "aah | pilot | analysis"
+title: "Action Asymmetry Experiment (n = 672): Analyses"
+pagetitle: "aah | exp | analysis"
 author: "Owen Morgan"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: html_document
@@ -61,18 +61,16 @@ plot_colors <- c("#4477AA",
 ```
 
 ```{r config}
-proc_dir <- here::here("data", "proc_exp_n602")
-fig_dir <- here::here("figures", "exp_n602")
-manual_cache_dir <- here::here("manual_cache", "exp_n602")
+proc_dir <- here::here("data", "proc_exp_n672")
+fig_dir <- here::here("figures", "exp_n672")
+manual_cache_dir <- here::here("manual_cache", "exp_n672")
 
-use_cached_model_rt <- TRUE
-use_cached_model_rt_complex <- TRUE
-use_cached_model_acc <- TRUE
-use_cached_model_acc_complex <- TRUE
-use_cached_model_rt_ehi <- TRUE
-use_cached_model_acc_ehi <- TRUE
+use_cached_model_rt <- F
+use_cached_model_acc <- F
+use_cached_model_rt_ehi <- F
+use_cached_model_acc_ehi <- F
 
-use_cached_figs <- TRUE
+use_cached_figs <- F
 
 if (use_cached_figs == TRUE) {
   use_cached_demofigs <- TRUE
@@ -297,7 +295,6 @@ plot_color <- plot_colors[[5]] # Color for interaction plots with only one color
 ```{r plot_rt_4a_all_trials}
 ## Plot data from every trial, with overall mean, median and bounds.
 fig_path_rt_4a <- here(fig_dir, "rt_4a.png")
-
 
 if (use_cached_rtfigs == FALSE) {
 rt_descriptive <- aah_correct |>
@@ -590,7 +587,7 @@ include_graphics(fig_path_rt_1)
 #### Statistics
 
 ##### Simple mixed regression model
-Reaction time is modeled as a linear effect of field and level, using data from every target-present trial with a "go" response:
+Reaction time is modeled as a linear effect of field, level, and handedness, using data from every target-present trial with a "go" response:
 <br>
 <br>
 `lmer( rt ~ field*level*handedness + (1 | subject) )`
@@ -645,8 +642,8 @@ interaction_stats <-
     return(anova(model_with_interaction, model_with_no_interaction))
   }
 
-rt_model_no_interaction <- update(rt_model, . ~ . - field:level:handedness)
-interaction_anova <- interaction_stats(rt_model, rt_model_no_interaction)
+rt_model_no_interaction <- update(rt_model_2bins, . ~ . - field:level:handedness)
+interaction_anova <- interaction_stats(rt_model_2bins, rt_model_no_interaction)
 interaction_anova |>
   as_tibble() |>
   rename(p.value = `Pr(>Chisq)`) |> 

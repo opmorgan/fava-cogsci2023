@@ -1,6 +1,6 @@
 ---
 title: "Action Asymmetry Experiment (n = 672): Demographics & Exclusions"
-pagetitle: "aah | pilot | exclusions"
+pagetitle: "aah | exp | exclusions"
 author: "Owen Morgan"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output:
@@ -54,7 +54,7 @@ plot_colors <- c("#4477AA",
 data_dir <- here::here("data")
 input_dir <- here::here(data_dir, "input_exp_n672")
 proc_dir <- here::here(data_dir, "proc_exp_n672")
-fig_dir <- here::here("figures")
+fig_dir <- here::here("figures", "exp_n672")
 n_recruited = 672 ## Total recruited + paid. For reporting exclusions
 ```
 

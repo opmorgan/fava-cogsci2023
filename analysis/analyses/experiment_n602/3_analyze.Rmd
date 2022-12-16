@@ -645,8 +645,8 @@ interaction_stats <-
     return(anova(model_with_interaction, model_with_no_interaction))
   }
 
-rt_model_no_interaction <- update(rt_model, . ~ . - field:level:handedness)
-interaction_anova <- interaction_stats(rt_model, rt_model_no_interaction)
+rt_model_no_interaction <- update(rt_model_2bins, . ~ . - field:level:handedness)
+interaction_anova <- interaction_stats(rt_model_2bins, rt_model_no_interaction)
 interaction_anova |>
   as_tibble() |>
   rename(p.value = `Pr(>Chisq)`) |> 
@@ -658,7 +658,7 @@ interaction_anova |>
 <br>
 ```{r rt_interacion_aov}
 ## Use aov to test 2-way interaction with a traditional F-test.
-rt_aov <- aov(rt ~ field*level*handedness, data = aah_for_rt_model_bins)
+rt_aov <- aov(rt ~ field*level*handedness, data = aah_for_rt_model_2bins)
 rt_aov_summary <- summary(rt_aov)
 rt_aov_summary |> (\(.) .[[1]])() |> tidy() |>
   format_p.value() |> 
@@ -670,7 +670,7 @@ rt_aov_summary |> (\(.) .[[1]])() |> tidy() |>
 
 ```{r rt_interaction_emm}
 ## Use emmeans() to test 3-way interaction.
-rt_interaction_emm <- rt_emm |> 
+rt_interaction_emm <- rt_emm_2bins |> 
   contrast(interaction = c("consec")) |>
   summary(infer = T)
 
@@ -874,7 +874,7 @@ Each unit change in EHI (-100:100) corresponds to a **0.064ms** difference in LV
 <br>
 
 ```{r, echo = T, results = "markup"}
-summary(rt_ehi_model)
+summary(rt_model_ehi)
 ```
 
 
