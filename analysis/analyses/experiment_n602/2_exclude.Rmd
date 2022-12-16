@@ -228,8 +228,7 @@ demo_ethnicity_table(aah_summary) |> pretty_table()
 
 #### By handedness group
 
-Demographics for included participants, by handedness group (EHI bins).
-
+Demographics for included participants, by handedness group (EHI bins). 
 ```{r}
 hand_demo_summary_table <- function(aah_summary) {
 demo_table <- aah_summary |>
@@ -247,10 +246,11 @@ return(demo_table)
 hand_demo_summary_table(aah_summary) |> pretty_table() |>
   tab_footnote("Left: (EHI <= -40)  |  Mixed: (-40 < EHI < 40)  |  Right: (EHI >= 40)")
 ```
-
-
 <br>
-There are fewer left handers than I expected. This is, in part, because some of Prolific's pre-screened "Left-handed" and "Ambidextrous" participants are fairly right handed, as measured by the EHI:
+
+So far, we have recruited 336 "Right handed", and 266 "Left handed" or "Ambidextrous" participants, using Prolific's pre-screeners.
+
+Even though we are still recruiting left handers, there are fewer than I expected. This is, in part, because some of Prolific's pre-screened "Left-handed" and "Ambidextrous" participants are fairly right handed, as measured by the EHI:
 
 ```{r}
 ## Load Prolific's handedness screening data
@@ -318,11 +318,6 @@ if (use_cached_demofigs == FALSE) {
 
 include_graphics(fig_path)
 ```
-
-We recruited two groups of participants, in equal numbers: 
-
-(1) Prolific's "Right handed" participants, and 
-(2) Prolific's "Left handed" or "Ambidextrous" participants. 
 
 If we want to get balanced handedness groups (a more U-shaped EHI distribution) on Prolific going forward, we should recruit a larger proportion of "Left-handed" and "Ambidextrous" participants.
 
