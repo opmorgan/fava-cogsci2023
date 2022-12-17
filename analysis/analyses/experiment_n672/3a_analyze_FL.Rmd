@@ -78,7 +78,7 @@ use_cached_model_acc_complex <- TRUE
 use_cached_model_rt_ehi <- TRUE
 use_cached_model_acc_ehi <- TRUE
 
-use_cached_figs <- TRUE
+use_cached_figs <- FALSE
 
 
 if (use_cached_figs == TRUE) {
@@ -91,12 +91,12 @@ if (use_cached_figs == TRUE) {
   use_cached_accfigs <- FALSE
 }
 
-# use_cached_model_rt <- FALSE
-# use_cached_model_rt_complex <- FALSE
-# use_cached_model_acc <- FALSE
-# use_cached_model_acc_complex <- FALSE
-# use_cached_model_rt_ehi <- FALSE
-# use_cached_model_acc_ehi <- FALSE
+use_cached_model_rt <- FALSE
+use_cached_model_rt_complex <- FALSE
+use_cached_model_acc <- FALSE
+use_cached_model_acc_complex <- FALSE
+use_cached_model_rt_ehi <- FALSE
+use_cached_model_acc_ehi <- FALSE
 ```
 
 # {.tabset}
@@ -228,7 +228,7 @@ plot_color = plot_blue
 Demographics for included participants, by handedness sample: pilot righties, new righties, and lefties/mixedies. 
 ```{r}
 sample_demo_summary_table(aah_summary) |> rename(`N (keepers)` = N) |>  pretty_table() |>
-  tab_footnote("Left: (EHI <= -40)  |  Mixed: (-40 < EHI < 40)  |  Right: (EHI >= 40)")
+  tab_footnote("Left/mixedies: reported 'Left Handed' or 'Ambidextrous' on Prolific |  Righties: reported 'Right handed' on Prolific")
 ```
 <br>
 
@@ -307,7 +307,7 @@ subgroup_label <- "112RH"
 In our pilot sample of right handers, do we see the typical field x level interaction? That is, do participants show a relative bias for global shapes in the left visual field (LVF)?
 <br>
 <br>
-***Summary.*** We see the predicted effect, for both reaction time (28.35ms, 95%CI [13.54, 43.16], p < .001) and accuracy (OR = 1.6, 95%CI [1.22, 2.28])
+***Summary.*** We see the predicted effect, for both reaction time (28.35ms, 95%CI [13.54, 43.16], p < .001) and accuracy (OR = 1.66, 95%CI [1.22, 2.28], p = .001).
 <br>
 <br>
 
@@ -328,7 +328,7 @@ subgroup_label <- "224RH"
 Do we replicate the field x level interaction in our new righties?
 <br>
 <br>
-***Summary.*** We see the predicted effect, for both reaction time (27.27ms, 95%CI [17.17, 36.37], p < .001) and accuracy (OR = 2.0, 95%CI [1.6, 2.6])
+***Summary.*** We see the predicted effect, for both reaction time (27.27ms, 95%CI [17.17, 36.37], p < .001) and accuracy (OR = 2.00, 95%CI [1.62, 2.62], p < .001).
 <br>
 <br>
 
@@ -349,7 +349,7 @@ subgroup_label <- "336RH"
 What is the effect of field x level in the full right hander sample?
 <br>
 <br>
-***Summary.*** We see the predicted effect, for both reaction time (27.63ms, 95%CI [19.28, 35.98], p < .001) and accuracy (OR = 1.89, 95%CI [1.56, 2.30])
+***Summary.*** We see the predicted effect, for both reaction time (27.63ms, 95%CI [19.28, 35.98], p < .001) and accuracy (OR = 1.89, 95%CI [1.56, 2.30], p < .001).
 <br>
 <br>
 
@@ -360,21 +360,41 @@ What is the effect of field x level in the full right hander sample?
 ```
 
 
-### Lefties/mixedies (n = 312/336) {.tabset}
+### EHI righties (n = 372) {.tabset}
 
 ```{r}
-subgroup <- "Left/mixedies"
-subgroup_label <- "336LH"
+handedness_subgroup <- "Right"
+subgroup_label <- "RH"
 ```
 
-In our left/mixed hander sample (some of whom are EHI right handers), do we see a field x level interaction?
+In all EHI-confirmed righties (EHI > 40), do we see the predicted field by level interaction?
 <br>
 <br>
-***Summary.*** We see an effect in the same direction as right handers', for both reaction time (19.85ms, 95%CI [11.49, 28.22], p < .001) and accuracy (OR = 1.94, 95%CI [1.61, 2.35])
+***Summary.*** We see the predicted effect, for both reaction time (27.28ms, 95%CI [19.62, 34.94], p < .001) and accuracy (OR = 1.96, 95%CI [1.65, 2.33], p < .001).
 <br>
 <br>
-```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_rt.Rmd"))}
+
+```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_rt_EHI.Rmd"))}
 ```
 
-```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_acc.Rmd"))}
+```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_acc_EHI.Rmd"))}
+```
+
+### EHI lefties (n = 171) {.tabset}
+
+```{r}
+handedness_subgroup <- "Left"
+subgroup_label <- "LH"
+```
+
+In all EHI-confirmed lefties (EHI < -40), do we see a field by level interaction?
+<br>
+<br>
+***Summary.*** We see a smaller effect in the same direction as right handers', for both reaction time (17.50ms, 95%CI [6.25, 28.75], p = .002) and accuracy (OR = 1.94, 95%CI [1.61, 2.35], p < .001).
+<br>
+<br>
+```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_rt_EHI.Rmd"))}
+```
+
+```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_acc_EHI.Rmd"))}
 ```

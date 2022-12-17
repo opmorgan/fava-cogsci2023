@@ -277,11 +277,13 @@ include_graphics(fig_path)
 
 
 ## Field x Level x Handedness (binned) {.tabset .tabset-pills}
-Within each handedness group, do we see the typical field x level interaction? That is, do participants show a relative bias for global shapes in the left visual field (LVF)?
+
+Do we find an interaction of field x level x handedness, when handedness is binned as left (EHI < -40) or right (EHI > +40)?
 <br>
 <br>
-<!-- ***Summary.*** We see the predicted effect, for both reaction time (30ms) and accuracy (OR = 1.6). The RT laterality effect is marginally stronger for squares (40ms) than for circles (18ms; p = .13), and there is a trend in the same direction for accuracy (OR = 1.7, p = .16). <br> -->
-<!-- Squares (46ms) but not circles (2.8ms) show an overall global precedence effect (Accuracy: OR 2.1/1.1). Maybe, global precedence and the global precedence laterality effect are weaker for circles because both global and local circles are highly visible. -->
+ ***Summary.*** For reaction time, the interaction trends in the predicted direction (9.79ms, 95%CI [-3.84, 23.41], p = .08, one-sided). I haven't run accuracy yet, but the effect will be close to zero (the point estimates are 1.96 for righties, 1.94 for lefties).
+<br>
+<br>
 
 ### Reaction time {.tabset}
 
@@ -717,6 +719,10 @@ rt_emm2 |>
 
 ## Field x Level x Handedness (continuous) {.tabset .tabset-pills}
 
+Do we find an interaction of field x level x handedness (continuous EHI score)?
+
+***Summary.*** For reaction time, the interaction trends in the predicted direction (.063ms per EHI unit, or 15.54ms for EHI = -100, 28.12ms for EHI = +100. I haven't figured out how to get confidence intervals around this estimate yet, but the one-sided p-value for an ANOVA model comparison is .056.I haven't run the accuracy stats yet, but the subject-level scatter plot looks strikingly flat.
+
 ### Reaction time
 ```{r}
 rt_ehi_1 <- rt_1 |>
@@ -778,7 +784,7 @@ if (use_cached_model_rt_ehi == FALSE) {
 }
 ```
 
-```{r rt_ehi_interaction_anova, echo = T}
+```{r rt_ehi_interaction_anova, echo = F}
 ## Use anova() on competing models to test 3-way interaction.
 interaction_stats <-
   function(model_with_interaction,
@@ -794,7 +800,9 @@ interaction_anova |>
   format_p.value() |> 
   pretty_table() |> 
   tab_header(title = "Field by level by ehi interaction (RT)", 
-             subtitle = "ANOVA: compare models with vs. without interaction term") 
+             subtitle = "ANOVA: compare models with vs. without interaction term") |> 
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value))
 ```
 
 <br>
