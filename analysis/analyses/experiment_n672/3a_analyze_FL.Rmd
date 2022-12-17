@@ -346,7 +346,7 @@ subgroup <- "All righties"
 subgroup_label <- "336RH"
 ```
 
-In our pilot sample of right handers, do we see the typical field x level interaction? That is, do participants show a relative bias for global shapes in the left visual field (LVF)?
+What is the effect of field x level in the full right hander sample?
 <br>
 <br>
 ***Summary.*** We see the predicted effect, for both reaction time (27.63ms, 95%CI [19.28, 35.98], p < .001) and accuracy (OR = 1.89, 95%CI [1.56, 2.30])
@@ -367,7 +367,7 @@ subgroup <- "Left/mixedies"
 subgroup_label <- "336LH"
 ```
 
-In our pilot sample of right handers, do we see the typical field x level interaction? That is, do participants show a relative bias for global shapes in the left visual field (LVF)?
+In our left/mixed hander sample (some of whom are EHI right handers), do we see a field x level interaction?
 <br>
 <br>
 ***Summary.*** We see an effect in the same direction as right handers', for both reaction time (19.85ms, 95%CI [11.49, 28.22], p < .001) and accuracy (OR = 1.94, 95%CI [1.61, 2.35])
