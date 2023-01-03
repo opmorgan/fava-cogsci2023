@@ -1,0 +1,348 @@
+---
+title: "Action Asymmetry Experiment (n = 672): Field by Level interaction"
+pagetitle: "aah | exp | analysis"
+author: "Owen Morgan"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output: html_document
+---
+
+<style type="text/css">
+  body{
+  font-family: Avenir;
+  font-size: 12pt;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
+                      fig.align = "center", fig.width = 9,
+                      fig.height = 6, results = "asis")
+options(knitr.kable.NA = "")
+
+cli.progress_show_after <- 0
+
+## Do not use scientific notation until 9 decimal places.
+options(scipen = 9, digits = 9)
+
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+```
+
+```{r lib}
+library(here)
+library(tidyverse)
+library(cli) # For printing error messages
+
+library(lme4)
+library(emmeans)
+library(broom)
+library(gt)
+
+library(ggpubr) ## functions for plotting SD, SEM, CI.
+library(ggbeeswarm)
+library(patchwork)
+
+library(knitr) # For include_graphics
+
+source(here::here("lib", "load_process", "load_process.R"))
+source(here::here("lib", "util.R"))
+source(here::here("lib", "demographics.R"))
+source(here::here("lib", "plots.R"))
+
+plot_blue <- c("#337aB7")
+plot_colors <- c("#4477AA",
+                 "#EE6677",
+                 "#CCBB44",
+                 "#66CCEE",
+                 "#AA3377",
+                 "#228833",
+                 "#BBBBBB")
+```
+
+```{r config}
+data_dir <- here::here("data")
+input_dir <- here::here(data_dir, "input_exp_n672")
+proc_dir <- here::here(data_dir, "proc_exp_n672")
+fig_dir <- here::here("figures", "exp_n672_a")
+analysis_dir <- here::here("analyses", "experiment_n672")
+manual_cache_dir <- here::here("manual_cache", "exp_n672_a")
+
+## TODO: specify cache for models from each script version:
+## pilot, main experiment 
+## (Each will have its own "rt_emm.rds", for example)
+
+use_cached_model_rt <- TRUE
+use_cached_model_rt_complex <- TRUE
+use_cached_model_acc <- TRUE
+use_cached_model_acc_complex <- TRUE
+use_cached_model_rt_ehi <- TRUE
+use_cached_model_acc_ehi <- TRUE
+
+use_cached_figs <- FALSE
+
+
+if (use_cached_figs == TRUE) {
+  use_cached_demofigs <- TRUE
+  use_cached_rtfigs <- TRUE
+  use_cached_accfigs <- TRUE
+} else if (use_cached_figs == FALSE) {
+  use_cached_demofigs <- FALSE
+  use_cached_rtfigs <- FALSE
+  use_cached_accfigs <- FALSE
+}
+
+use_cached_model_rt <- FALSE
+use_cached_model_rt_complex <- FALSE
+use_cached_model_acc <- FALSE
+use_cached_model_acc_complex <- FALSE
+use_cached_model_rt_ehi <- FALSE
+use_cached_model_acc_ehi <- FALSE
+```
+
+# {.tabset}
+```{r load_data}
+## Load "the data" with all subjects & trials.
+## TODO: update these functions to load new aah_long, with prolific handedness column, ehi mismatch exclusion column.
+aah_long <- load_aah_long(proc_dir)
+
+## Load summary data table (for quick demographic analyses)
+## with all subjects.
+aah_summary_all <- load_aah_summary(proc_dir)
+```
+
+```{r prepare_data}
+#### PREPARE TRIAL-LEVEL DATA FOR RT, ACCURACY ANALYSES
+## Prepare "the data" (aah_long) for all analyses:
+## Filter out practice trials, absent trials, and excluded subjects
+## This data (all present trials, correct or incorrect) will be used for
+## accuracy analyses
+aah <- filter_aah_long_for_analysis(aah_long)
+
+## For RT analyses, prepare dataset with only correct, present trials.
+## In our RT model, we only care about correct responses to present trials.
+aah_correct <- aah |> filter(correct == T)
+
+## Relevel field and level with RVF first (unintuitive for plotting),
+## so that emmeans will show a positive number for LVF global bias.
+aah_for_rt_model <- aah_correct |>
+  mutate(level = level |> factor(levels = c("Global", "Local")),
+         field = field |> factor(levels = c("RVF", "LVF")))
+
+## For accuracy analyses, prepare dataset will all present trials.
+## Relevel field and level,
+## so that emmeans will show a positive number for LVF global bias.
+aah_for_acc_model <- aah |>
+  mutate(level = level |> factor(levels = c("Global", "Local")),
+         field = field |> factor(levels = c("RVF", "LVF")))
+
+#### PREPARE SUBJECT_LEVEL DATA FOR RT, ACCURACY ANALYSES
+## Prepare subject-level data (RT)
+rt_subject <- aah_correct |> group_by(subject, field, level, handedness) |>
+  summarize(rt = median(rt))
+
+## Prepare subject-level LVF Global bias summary (RT)
+rt_1 <- rt_subject |>
+  pivot_wider(names_from = c(field, level),
+              values_from = rt) |>
+  mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
+  mutate(all_one_group = "all_one_group")
+
+## Prepare subject-level LVF Global bias summary (Accuracy)
+## (For accuracy, include incorrect trials!)
+acc_subject <- aah |> group_by(subject, field, level, handedness, sample, sample2) |>
+  summarize(
+    total_responses = n(),
+    n_present_resp = sum(correct),
+    n_absent_resp = total_responses - n_present_resp,
+    n_correct = sum(correct),
+    acc = 100 * (n_correct / total_responses)
+  ) |>
+  select(subject, field, level, acc, handedness, sample, sample2) |>
+  mutate(level = recode(level, global = "Global", local = "Local"))
+
+acc_1 <- acc_subject |>
+  pivot_wider(names_from = c(field, level),
+              values_from = acc) |>
+  mutate(LVF_Global_Bias = (LVF_Global - LVF_Local) - (RVF_Global - RVF_Local)) |>
+  mutate(all_one_group = "all_one_group")
+```
+
+## Demographics {.tabset .tabset-pills}
+```{r demo_plot_config}
+plot_color = plot_blue
+```
+
+
+#### By sample {.active}
+Demographics for included participants, by handedness sample: pilot righties, new righties, and lefties/mixedies. 
+```{r}
+sample_demo_summary_table(aah_summary) |> rename(`N (keepers)` = N) |>  pretty_table() |>
+  tab_footnote("Left/mixedies: reported 'Left Handed' or 'Ambidextrous' on Prolific |  Righties: reported 'Right handed' on Prolific")
+```
+<br>
+
+#### By handedness group
+
+Demographics for included participants, by handedness group (EHI bins). 
+```{r}
+hand_demo_summary_table(aah_summary) |> pretty_table() |>
+  tab_footnote("Left: (EHI <= -40)  |  Mixed: (-40 < EHI < 40)  |  Right: (EHI >= 40)")
+```
+<br>
+
+We have recruited 336 "Right handed", and 366 "Left handed" or "Ambidextrous" participants, using Prolific's pre-screeners. 
+
+There are fewer EHI-confirmed left and mixed handers than I expected. This is, in part, because some of Prolific's pre-screened "Left-handed" and "Ambidextrous" participants are fairly right handed, as measured by the EHI:
+
+```{r prolific_handedness_plot}
+## Show distribution of handedness by Prolific category
+plot_color = plot_blue
+
+h_data_n <-
+  aah_summary |>
+  group_by(prolific_handedness) |>
+  summarize(n = str_c("n = ", as.character(n())))
+
+fig_path <- here(fig_dir, "prolific_ehi.png")
+
+if (use_cached_demofigs == FALSE) {
+  g <- ggplot(aah_summary, aes(x = ehi)) +
+    geom_histogram(
+      color = NA,
+      fill = plot_color,
+      alpha = .8,
+      binwidth = 8,
+      boundary = 100
+    ) +
+    labs(x = "EHI") +
+    xlim(c(-104, 104)) +
+    facet_grid( ~ prolific_handedness) +
+    geom_text(
+      data = h_data_n,
+      aes(x = -100, y = 150, label = n),
+      hjust = 0,
+      colour = "gray20",
+      inherit.aes = FALSE,
+      parse = FALSE
+    ) +
+    labs(title = "EHI distribution for each of Prolific's prescreened handedness groups (keepers only)")
+  
+  g <- g |> gg_style_demo() + theme(aspect.ratio = 1 / 1,
+                                    axis.title.y = element_blank())
+  
+  ggsave(fig_path, g, "png", height = 3, width = 6)
+}
+
+include_graphics(fig_path)
+```
+
+If we want to get balanced handedness groups (a more U-shaped EHI distribution) on Prolific going forward, we should recruit a larger proportion of "Left-handed" and "Ambidextrous" participants.
+
+## Field x Level {.tabset .tabset-pills .active}
+
+```{r plot_rt_config}
+plot_color <- plot_colors[[5]] # Color for interaction plots with only one color.
+```
+
+
+### Pilot righties (n = 104/112 RH) {.tabset}
+
+```{r}
+subgroup <- "Pilot righties"
+subgroup_label <- "112RH"
+```
+
+In our pilot sample of right handers, do we see the typical field x level interaction? That is, do participants show a relative bias for global shapes in the left visual field (LVF)?
+<br>
+<br>
+***Summary.*** We see the predicted effect, for both reaction time (28.35ms, 95%CI [13.54, 43.16], p < .001) and accuracy (OR = 1.66, 95%CI [1.22, 2.28], p = .001).
+<br>
+<br>
+
+```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_rt.Rmd"))}
+```
+
+```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_acc.Rmd"))}
+```
+
+
+### New righties (n = 205/224) {.tabset .active}
+
+```{r}
+subgroup <- "New righties"
+subgroup_label <- "224RH"
+```
+
+Do we replicate the field x level interaction in our new righties?
+<br>
+<br>
+***Summary.*** We see the predicted effect, for both reaction time (27.27ms, 95%CI [17.17, 36.37], p < .001) and accuracy (OR = 2.00, 95%CI [1.62, 2.62], p < .001).
+<br>
+<br>
+
+```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_rt.Rmd"))}
+```
+
+```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_acc.Rmd"))}
+```
+
+
+### All righties (n = 309/336) {.tabset}
+
+```{r}
+subgroup <- "All righties"
+subgroup_label <- "336RH"
+```
+
+What is the effect of field x level in the full right hander sample?
+<br>
+<br>
+***Summary.*** We see the predicted effect, for both reaction time (27.63ms, 95%CI [19.28, 35.98], p < .001) and accuracy (OR = 1.89, 95%CI [1.56, 2.30], p < .001).
+<br>
+<br>
+
+```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_rt.Rmd"))}
+```
+
+```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_acc.Rmd"))}
+```
+
+
+### EHI righties (n = 372) {.tabset}
+
+```{r}
+handedness_subgroup <- "Right"
+subgroup_label <- "RH"
+```
+
+In all EHI-confirmed righties (EHI > 40), do we see the predicted field by level interaction?
+<br>
+<br>
+***Summary.*** We see the predicted effect, for both reaction time (27.28ms, 95%CI [19.62, 34.94], p < .001) and accuracy (OR = 1.96, 95%CI [1.65, 2.33], p < .001).
+<br>
+<br>
+
+```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_rt_EHI.Rmd"))}
+```
+
+```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_acc_EHI.Rmd"))}
+```
+
+### EHI lefties (n = 171) {.tabset}
+
+```{r}
+handedness_subgroup <- "Left"
+subgroup_label <- "LH"
+```
+
+In all EHI-confirmed lefties (EHI < -40), do we see a field by level interaction?
+<br>
+<br>
+***Summary.*** We see a smaller effect in the same direction as right handers', for both reaction time (17.50ms, 95%CI [6.25, 28.75], p = .002) and accuracy (OR = 1.94, 95%CI [1.61, 2.35], p < .001).
+<br>
+<br>
+```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_rt_EHI.Rmd"))}
+```
+
+```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_acc_EHI.Rmd"))}
+```

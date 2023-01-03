@@ -1,0 +1,384 @@
+---
+title: "Action Asymmetry Experiment (n = 1008): Demographics & Exclusions"
+pagetitle: "aah | exp | exclusions"
+author: "Owen Morgan"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document
+---
+
+<style type="text/css">
+  body{
+  font-family: Avenir;
+  font-size: 12pt;
+}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
+                      fig.align = "center", fig.width = 9,
+                      fig.height = 6, results = "asis")
+options(knitr.kable.NA = "")
+
+cli.progress_show_after <- 0
+
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+```
+
+```{r lib}
+library(here)
+library(tidyverse)
+library(cli) # For printing error messages
+library(knitr) # for printing figures
+
+library(gt)
+
+source(here::here("lib", "load_process", "load_process.R"))
+source(here::here("lib", "util.R"))
+source(here::here("lib", "demographics.R"))
+source(here::here("lib", "plots.R"))
+
+## Colors for plots
+plot_blue <- c("#337aB7")
+plot_colors <- c("#4477AA",
+                 "#EE6677",
+                 "#CCBB44",
+                 "#66CCEE",
+                 "#AA3377",
+                 "#228833",
+                 "#BBBBBB")
+```
+
+```{r config}
+data_dir <- here::here("data")
+input_dir <- here::here(data_dir, "input_exp_n1008")
+proc_dir <- here::here(data_dir, "proc_exp_n1008")
+fig_dir <- here::here("figures", "exp_n1008")
+n_recruited = 1008 ## Total recruited + paid. For reporting exclusions
+
+```
+
+##  {.tabset}
+```{r load_combined, include = F}
+## Load pre-exclusion combined trial-per-row data, subset columns
+aah_task_all <- load_task_all(proc_dir)
+
+## Load pre-exclusion summary data, subset columns, and recode "ehi_total" to "ehi."
+aah_summary_all <- load_summary_all(proc_dir)
+```
+
+```{r prepare}
+## Combine prolific demographic/prescreener data with summary data
+
+### Add prolific data, with sample information.
+## Load Prolific's handedness screening data
+prolific_data_dir <- here::here(input_dir, "prolific")
+path_26LH <- "26LH_prolific_export_63979ef32f7902b33f7f3c5a.csv"
+path_102RH <- "102RH_prolific_export_6366c40e499d20d5ab538875.csv"
+path_10RH <- "10RH_prolific_export_6363e0519aa80e82b28504f9.csv"
+path_224RH <- "224RH_prolific_export_63979ee865e24e9544a399c0.csv"
+path_310LH <- "310LH_prolific_export_63979ef89c10063fe77140ba.csv"
+## TODO: ADD NEW PROLIFIC DATA
+pdata_102RH <-
+  read_prolific_data(here(prolific_data_dir, path_102RH))
+pdata_10RH <- read_prolific_data(here(prolific_data_dir, path_10RH))
+pdata_26LH <- read_prolific_data(here(prolific_data_dir, path_26LH))
+pdata_310LH <-
+  read_prolific_data(here(prolific_data_dir, path_310LH))
+pdata_112RH <-
+  bind_rows(pdata_102RH, pdata_10RH) |> mutate(sample = "Pilot righties", sample2 = "All righties")
+pdata_224RH <-
+  read_prolific_data(here(prolific_data_dir, path_224RH)) |> mutate(sample = "New righties", sample2 = "All righties")
+pdata_336LH <-
+  bind_rows(pdata_310LH, pdata_26LH) |> mutate(sample = "Left/mixedies", sample2 = "Left/mixedies")
+prolific_data <-
+  bind_rows(pdata_112RH, pdata_224RH, pdata_336LH) |>
+  rename(subject = `Participant id`,
+         prolific_handedness = Handedness) |>
+  mutate(
+    prolific_handedness = prolific_handedness |> recode(
+      `Right-handed` = "Right",
+      `Left-handed` = "Left",
+      `Ambidextrous` = "Mixed"
+    ) |> as.factor() |> droplevels()
+  ) |>
+  select(subject, sample, sample2, prolific_handedness)
+## Add prolific handedness to dataset
+aah_summary_all <-
+  aah_summary_all |> left_join(prolific_data, by = "subject")
+### Code handedness
+aah_summary_all <- aah_summary_all |>
+  mutate(handedness = case_when(ehi <= -40 ~ "Left",
+                                ehi >= 40 ~ "Right",
+                                ehi > -40 & ehi < 40 ~ "Mixed"))
+
+```
+
+
+### Recruitment & Exclusions
+
+```{r make_exclusions}
+## Calculate any exclusions not based on task data.
+##   (Exclusions based on task data are specified in:
+##    1_process.Rmd, calling load_process.R/summarize_ind())
+##       Responded "go" almost every time (78/80 or more)?
+##       Accuracy at 60% or lower on any main block?
+##       Median RT over 1500 or under 200?
+##       Took longer than 45 minutes to do the task?
+## Exclusions not based on task data:
+##   Demographics exclusions that slipped through pre-screener:
+##     Country (non-us); Age (not between 18 and 40)
+##   Failed "Have you done this task before"
+##   Has task data, but no EHI data. (e.g., if they quit inquisit after task)
+##   (?) TODO: Failed interactive instructions
+##   TODO: EHI handedness does not match pre-screener
+
+## Mark exclusion if country is not "US"
+aah_summary_all <- aah_summary_all |>
+  mutate(exclude_country = case_when(
+    country == "US" ~ 0,
+    TRUE ~ 1,)
+    )
+
+## Mark exclusion if age is not between 18 and 40
+aah_summary_all <- aah_summary_all |>
+  mutate(exclude_age = case_when(
+    age >=18 & age <= 40 ~ 0,
+    TRUE ~ 1
+  ))
+
+## Mark exclusion if failed "Have you done this task before?"
+aah_summary_all <- aah_summary_all |> 
+  mutate(exclude_done_before = case_when(
+    task_experience_response == "No" ~ 0,
+    task_experience_response == "Yes" ~ 1,
+    TRUE ~ 0 # do not exclude people who did not complete the question
+  ))
+
+
+## Mark exclusion if no EHI (if EHI is not between -100 & 100)
+aah_summary_all <- aah_summary_all |>
+  mutate(exclude_no_ehi = case_when(
+    ehi >= -100 & ehi <= 100 ~ 0,
+    TRUE ~ 1
+  ))
+
+## TODO: Mark exclusion if EHI response does not match pre-screened handedness
+## Two ways to do this:
+## (1) More conservative, probably too restrictive. Only include participants whose handedness matches our EHI bins: pre-screen left handers with EHI < -40, pre-screen ambis with ehi between -40 and 40, pre-screen right-handers with EHI > 40
+## (2) Recommended -- more liberal -- just remove obvious mismatches. Remove pre-screen lefties with EHI > 0; Remove pre-screen ambis with EHI == 100 or -100; Remove pre-screen righties with handedness < 0.
+aah_summary_all <- aah_summary_all |>
+  mutate(exclude_ehi_mismatch = case_when(
+    prolific_handedness == "Left" & ehi => 0 ~ 1,
+    prolific_handedness == "Mixed" & (ehi == 100 | ehi == -100) ~ 1,
+    prolific_handedness == "Right" & ehi <= 0 ~ 1,
+    TRUE ~ 0
+  ))
+
+## Update "exclude" column.
+aah_summary_all <- aah_summary_all |>
+  mutate(
+    exclude = case_when(
+      exclude_many_gos == 1 ~ 1,
+      exclude_low_acc == 1 ~ 1,
+      exclude_low_rt == 1 ~ 1,
+      exclude_high_rt == 1 ~ 1,
+      exclude_country == 1 ~ 1,
+      exclude_age == 1 ~ 1,
+      exclude_done_before == 1 ~ 1,
+      exclude_no_ehi == 1 ~ 1,
+      exclude_ehi_mismatch == 1 ~ 1,
+      TRUE ~ 0
+    )
+  )
+
+## Create long dataset with all subjects (included and excluded)
+aah_all <- left_join(aah_task_all, aah_summary_all)
+
+## Save long table with columns for all exclusion reasons.
+## This is "the data."
+readr::write_tsv(aah_all, here(proc_dir, "aah_long.tsv"))
+readr::write_tsv(aah_summary_all, here(proc_dir, "aah_summary.tsv"))
+
+## Create long data table with inclusions only
+aah <- aah_all |> filter(exclude == 0)
+
+## Create summary table with inclusions only, and handedness coded
+aah_summary_all <- aah_summary_all |> mutate(
+  handedness = case_when(
+    ehi <= -40 ~ "Left",
+    ehi >= 40 ~ "Right",
+    ehi > -40 & ehi < 40 ~ "Mixed"
+  )
+)
+aah_summary <- aah_summary_all |> filter(exclude == 0)
+```
+
+```{r describe_exclusions_1}
+n_all <- aah_summary_all$subject |> unique() |> length()
+n_exclusions <- aah_summary_all$exclude |> sum()
+n_keepers <- aah_summary_all |>
+  filter(exclude == 0) |>
+  (\(.) .[["subject"]])() |>
+  unique() |>
+  length()
+tibble(
+  "n (recruited)" = n_recruited,
+  "n (with full task data)" = n_all,
+  "exclusions" = n_exclusions,
+  "n (keepers)" = n_keepers) |> 
+  pretty_table()
+```
+<br>
+
+We recruited `r n_recruited` participants through prolific. Of these, `r n_all` completed the task phase of the experiment. `r n_exclusions` were excluded for the reasons described below, leaving `r n_keepers` keepers.
+
+<br>
+```{r describe_exclusions_2}
+exclusion_tbl <- aah_summary_all |> 
+  rename(exclude_any = exclude) |> 
+summarize(across(starts_with("exclude"), sum)) |> 
+pivot_longer(cols = everything(), 
+             names_to = 'exclusion', values_to = "n",
+             names_prefix = "exclude_") |> 
+  mutate('exclusion' = recode(exclusion,
+    any = "Any",
+    country = "Non-US country",
+    age = "Age outside 18-40",
+    done_before = "Reported having done the task before",
+    high_rt = "High RT (median > 1500ms)",
+    low_rt = "Low RT (median < 200ms)",
+    low_acc = "Low accuracy (below 60% on any block)",
+    many_gos = "Too many 'gos' (78/80 trials or more)",
+    no_ehi = "Quit before completing EHI",
+    ehi_mismatch = "Prescreener/EHI mismatch"
+  )) |> 
+  arrange(-n, exclusion) |> 
+  select(n, exclusion) |> 
+  rename('Reason for exclusion' = exclusion)
+
+exclusion_tbl |> pretty_table()
+```
+<br>
+Participants are excluded if the handedness in their pre-screener mismatched their EHI-measured handedness.
+These "Prescreener/EHI mismatch" exclusions are defined as: 
+(1) A Prolific "Left handed" participant with EHI >= 0
+(1) A Prolific "Ambidextrous" participant with EHI = 100 or -100
+(1) A Prolific "Right handed" participant with EHI <= 0
+<br>
+
+### Demographics (Keepers) {.tabset .tabset-pills}
+
+
+#### Everyone
+
+Demographics for all included participants.
+
+```{r demographics_summary_included}
+rt_demo <- demo_summary_table(aah_summary)
+rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
+```
+<br>
+```{r country_included}
+demo_country_table(aah_summary) |> pretty_table()
+```
+<br>
+```{r race_included}
+demo_race_table(aah_summary) |> pretty_table()
+```
+<br>
+```{r ethnicity_included}
+demo_ethnicity_table(aah_summary) |> pretty_table()
+```
+<br>
+
+#### By handedness group
+
+Demographics for included participants, by handedness group (EHI bins). 
+```{r}
+hand_demo_summary_table(aah_summary) |> pretty_table() |>
+  tab_footnote("Left: (EHI <= -40)  |  Mixed: (-40 < EHI < 40)  |  Right: (EHI >= 40)")
+```
+<br>
+
+We have recruited 336 "Right handed", and 732 "Left handed" or "Ambidextrous" participants, using Prolific's pre-screeners. 
+
+```{r}
+## Load Prolific's handedness screening data
+prolific_data_dir <- here::here(input_dir, "prolific")
+input_files <- list.files(path = prolific_data_dir,
+                          pattern = "*.csv",
+                          full.names = TRUE)
+prolific_data <- lapply(input_files, read_prolific_data) |>
+  bind_rows() |>
+  rename(subject = `Participant id`,
+         prolific_handedness = Handedness) |>
+  mutate(
+    prolific_handedness = prolific_handedness |> recode(
+      `Right-handed` = "Right",
+      `Left-handed` = "Left",
+      `Ambidextrous` = "Mixed"
+    ) |> as.factor() |> droplevels()
+  ) |>
+  select(subject, prolific_handedness)
+
+## Add prolific handedness to dataset
+ehi_data <- aah_summary |> select(subject, handedness, ehi)
+h_data <- left_join(ehi_data, prolific_data, by = "subject")
+```
+
+```{r prolific_handedness_plot}
+## Show distribution of handedness by Prolific category
+use_cached_demofigs <-FALSE
+plot_color = plot_blue
+
+h_data_n <-
+  h_data |>
+  group_by(prolific_handedness) |>
+  summarize(n = str_c("n = ", as.character(n())))
+
+fig_path <- here(fig_dir, "prolific_ehi.png")
+
+if (use_cached_demofigs == FALSE) {
+  g <- ggplot(h_data, aes(x = ehi)) +
+    geom_histogram(
+      color = NA,
+      fill = plot_color,
+      alpha = .8,
+      binwidth = 8,
+      boundary = 100
+    ) +
+    labs(x = "EHI") +
+    xlim(c(-104, 104)) +
+    facet_grid( ~ prolific_handedness) +
+    geom_text(
+      data = h_data_n,
+      aes(x = -100, y = 150, label = n),
+      hjust = 0,
+      colour = "gray20",
+      inherit.aes = FALSE,
+      parse = FALSE
+    ) +
+    labs(title = "EHI distribution for each of Prolific's prescreened handedness groups (keepers only)")
+  
+  g <- g |> gg_style_demo() + theme(aspect.ratio = 1 / 1,
+                                    axis.title.y = element_blank())
+  
+  ggsave(fig_path, g, "png", height = 3, width = 6)
+}
+
+include_graphics(fig_path)
+```
+
+### Feedback
+```{r feedback}
+feedback <- aah_summary_all |>
+  filter(open_ended_feedback_response != "NA") |> 
+  group_by(open_ended_feedback_response, exclude) |>
+  rename(`Open-ended feedback` = open_ended_feedback_response,
+         `Excluded?` = exclude) |> 
+  summarize()
+feedback |> arrange(desc(`Excluded?`)) |> pretty_table()
+```
+

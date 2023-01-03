@@ -1005,8 +1005,6 @@ load_aah_long <- function(proc_dir) {
       task_experience_response = col_character(),
       task_experience_other_response = col_logical(),
       open_ended_feedback_response = col_character(),
-      prolific_handedness = col_character(),
-      handedness = col_character(),
       exclude_many_gos = col_logical(),
       exclude_low_acc = col_logical(),
       exclude_low_rt = col_logical(),
@@ -1015,7 +1013,6 @@ load_aah_long <- function(proc_dir) {
       exclude_age = col_logical(),
       exclude_done_before = col_logical(),
       exclude_no_ehi = col_logical(),
-      exclude_ehi_mismatch = col_logical(),
       exclude = col_logical()
     )
   )
@@ -1065,8 +1062,6 @@ load_aah_summary <- function(proc_dir) {
       task_experience_response = col_character(),
       task_experience_other_response = col_logical(),
       open_ended_feedback_response = col_character(),
-      prolific_handedness = col_character(),
-      handedness = col_character(),
       exclude_many_gos = col_double(),
       exclude_low_acc = col_double(),
       exclude_low_rt = col_double(),
@@ -1075,7 +1070,6 @@ load_aah_summary <- function(proc_dir) {
       exclude_age = col_double(),
       exclude_done_before = col_double(),
       exclude_no_ehi = col_double(),
-      exclude_ehi_mismatch = col_double(),
       exclude = col_double()
     )
   )

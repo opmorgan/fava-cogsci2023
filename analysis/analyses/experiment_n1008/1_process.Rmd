@@ -1,0 +1,249 @@
+---
+title: "Action Asymmetry Hypothesis (n = 1008): Process and test raw data"
+author: "Owen Morgan"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:
+    highlight: zenburn
+    editor_options:
+      chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
+                      fig.align = "center", fig.width = 9,
+                      fig.height = 6, results = "asis")
+options(knitr.kable.NA = "")
+
+cli.progress_show_after <- 0
+
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+```
+
+```{r lib}
+library(here)
+library(readr)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(cli) # For printing error messages
+library(glue) # To make writing error message strings easier
+
+source(here::here("lib", "load_process", "load_process.R"))
+```
+
+```{r config, include = F}
+reprocess_task_data <- TRUE
+reprocess_ehi_data <- TRUE
+reprocess_demographics_data <- TRUE
+reprocess_end_data <- TRUE
+
+resummarize_task_data <- TRUE
+resummarize_ehi_data <- TRUE
+resummarize_demographics_data <- TRUE
+resummarize_end_data <- TRUE
+
+recombine_task_data <- TRUE
+recombine_summary_data <- TRUE
+
+#######
+# reprocess_task_data <- FALSE
+# reprocess_ehi_data <- FALSE
+# reprocess_demographics_data <-FALSE
+# reprocess_end_data <- FALSE
+
+#resummarize_task_data <- FALSE
+# resummarize_ehi_data <- FALSE
+# resummarize_demographics_data <- FALSE
+# resummarize_end_data <- FALSE
+
+#recombine_task_data <- FALSE
+#recombine_summary_data <- FALSE
+
+data_dir <- here::here("data")
+input_dir <- here::here(data_dir, "input_exp_n1008")
+proc_dir <- here::here(data_dir, "proc_exp_n1008")
+```
+
+## Load and check quality of individual-level data
+### Load and process task data
+```{r load_process_task}
+## If data have been processed already, set to FALSE
+if (reprocess_task_data == TRUE) {
+  process_raw(input_dir, proc_dir, data_type = "task")
+}
+```
+
+## Load and process survey data
+```{r load_process_surveys}
+if (reprocess_ehi_data == TRUE) {
+  process_raw(input_dir, proc_dir, data_type = "ehi")
+}
+
+#TODO: Recode sex
+if (reprocess_demographics_data == TRUE) {
+  process_raw(input_dir, proc_dir, data_type = "demographics")
+}
+
+if (reprocess_end_data == TRUE) {
+  process_raw(input_dir, proc_dir, data_type = "end")
+}
+```
+
+## Find calculated variables, save summary data
+```{r calculate_summaries}
+## Load processed data
+ind_input_dir <- here(proc_dir, "individual")
+summary_output_dir <- here(proc_dir, "summary")
+
+## Create summary row for each subject
+## TODO: Add overall median RT to summary spreadsheet
+if (resummarize_task_data == TRUE) {
+  ## Create summarized task data (saves to tsv as a side effect)
+  ## Calculate any exclusions based on task data
+  task_summary <-
+    load_and_summarize_proc(ind_input_dir, summary_output_dir,
+                            data_type = "task")
+}
+
+if (resummarize_ehi_data == TRUE) {
+  ## Create summarized task data (saves to tsv as a side effect)
+  ehi_summary <-
+    load_and_summarize_proc(ind_input_dir, summary_output_dir,
+                            data_type = "ehi")
+}
+
+## TODO: (URGENT) fix logic for race variable -- always shows "multiple"
+## TODO: Recode "Not listed" so it shows "Not listed: XXX"
+if (resummarize_demographics_data == TRUE) {
+  ## Create summarized demographics data (saves to tsv as a side effect)
+  demo_summary <-
+    load_and_summarize_proc(ind_input_dir, summary_output_dir,
+                            data_type = "demographics")
+}
+
+if (resummarize_end_data == TRUE) {
+  ## Create summarized end question data (saves to tsv as a side effect)
+  end_summary <-
+    load_and_summarize_proc(ind_input_dir, summary_output_dir,
+                            data_type = "end")
+}
+```
+
+```{r debug_summary, include = F}
+# group_summary <- tibble(
+#   subject = as.character(),
+#   ehi_i1_writing = as.numeric(),
+#   ehi_i2_throwing = as.numeric(),
+#   ehi_i3_toothbrush = as.numeric(),
+#   ehi_i4_spoon = as.numeric(),
+#   ehi_total = as.numeric()
+# )
+#
+#
+# group_summary <- tibble(
+#   subject = as.character(),
+#   age = as.numeric(),
+#   country = as.character(),
+#   sex = as.character(),
+#   education = as.character(),
+#   race = as.character(),
+#   hispanic_ethnicity = as.character()
+# )
+#
+# group_summary <- tibble(
+#   subject = as.character(),
+#   task_experience_response = as.character(),
+#   task_experience_other_response = as.character(),
+#   open_ended_feedback_response = as.character()
+# )
+#
+# group_summary <- tibble(
+#   subject = as.character(),
+#   first_block = as.character(),
+#   acc_slash = as.numeric(),
+#   acc_z = as.numeric(),
+#   acc_absent = as.numeric(),
+#   acc_present = as.numeric(),
+#   acc_global_LVF = as.numeric(),
+#   acc_global_RVF = as.numeric(),
+#   acc_local_LVF = as.numeric(),
+#   acc_local_RVF = as.numeric(),
+#   rt_global_LVF = as.numeric(),
+#   rt_global_RVF = as.numeric(),
+#   rt_local_LVF = as.numeric(),
+#   rt_local_RVF = as.numeric(),
+#   exclude_many_gos = as.logical(),
+#   exclude_low_acc = as.logical(),
+#   exclude_low_rt = as.logical(),
+#   exclude_high_rt = as.logical(),
+#   exclude = as.logical()
+# )
+#
+# data_type = "task"
+# input_files <- get_input_paths(ind_input_dir, data_type = data_type,
+#                                pattern = "*.tsv")
+#
+# input_path <- input_files[1]
+# input_path
+# ind_proc <- load_proc(input_path, data_type = data_type)
+#
+# duration_s <- last(ind_proc$time_elapsed_ms) / 1000
+# duration_s
+#
+#
+# ind_summary <- summarize_ind(ind_proc, data_type = data_type)
+# ind_summary
+#
+#
+# group_summary <- group_summary |> add_row(ind_summary)
+# group_summary
+
+```
+
+Create combined summary table (with task and survey data)
+```{r combine_summary}
+if (resummarize_task_data == TRUE
+    | resummarize_ehi_data == TRUE
+    | resummarize_demographics_data == TRUE
+    | resummarize_end_data == TRUE) {
+## Combine summaries into one big table, with a wide row for each subject.
+summary <- task_summary |>
+  left_join(ehi_summary) |>
+  left_join(demo_summary) |>
+  left_join(end_summary)
+
+write_tsv(summary, here::here(summary_output_dir, "summary.tsv"))
+}
+```
+
+Create combined trial-per-row table (with task and survey data, and summary stats)
+```{r combine_proc}
+ind_input_dir <- here(proc_dir, "individual")
+combined_output_dir <- here(proc_dir, "combined")
+
+if (recombine_task_data == TRUE) {
+  task_combined <-
+    load_and_combine_proc(ind_input_dir, combined_output_dir, data_type = "task")
+}
+
+if (recombine_summary_data == TRUE) {
+  summary <- load_summary(proc_dir)
+}
+
+if (recombine_task_data == TRUE
+    | recombine_summary_data == TRUE) {
+  ## Combine all processed data into one long table
+  combined <- task_combined |>
+    left_join(summary)
+  save_path <- here::here(combined_output_dir, "combined_all.tsv")
+  cli::cli_alert_info("{.strong Saving combined task, survey, and summary data to:}")
+  cli::cli_bullets(c(" " = glue("{save_path}")))
+  write_tsv(combined, save_path)
+}
+```
+
+
+
+
