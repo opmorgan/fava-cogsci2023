@@ -1,0 +1,2 @@
+date	time	group	subject	session	build	ehi_i1_writing_response	ehi_i1_writing_latency	ehi_i2_throwing_response	ehi_i2_throwing_latency	ehi_i3_toothbrush_response	ehi_i3_toothbrush_latency	ehi_i4_spoon_response	ehi_i4_spoon_latency
+2022-12-26	11:01:19	206537579	5781c15381f331000139a89e	1	6.6.1	Usually right	9157	Usually right	9157	Usually right	9157	Usually right	9157

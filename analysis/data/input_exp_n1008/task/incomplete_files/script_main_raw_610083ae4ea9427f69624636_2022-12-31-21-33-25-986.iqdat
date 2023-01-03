@@ -1,0 +1,2 @@
+build	computer.platform	date	time	timestamp	time_elapsed_ms	subject	group	session	blockcode	blocknum	trialcode	trialnum	stimulus_left	stimulus_right	stim_index	target_present	response	correct	latency
+6.6.1	mac	2022-12-31	16:33:25	0	0	610083ae4ea9427f69624636	114829642	1	inst_1_2_UNIVERSAL	1	inst_1_welcome	1			0		Ctrl+'Q'	1	8678
