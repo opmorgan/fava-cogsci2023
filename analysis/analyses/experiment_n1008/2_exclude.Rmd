@@ -285,7 +285,7 @@ These "Prescreener/EHI mismatch" exclusions have been defined as:
 (1) A Prolific "Right handed" participant with EHI <= 0
 
 
-We could make these exclusions stricter by defining a mismatch as anything that doesn't match the EHI bins we use in categorical analysis (left <= -40, mixed between -40 and 40; right >= +40). But I think this would be too conservative and would unnecessarily exclude many lefties and mixedies.
+We could make these exclusions stricter by defining a mismatch as anything that doesn't match the EHI bins we use in categorical analysis (left <= -40; mixed between -40 and 40; right >= +40). But I think this would be too conservative and would unnecessarily exclude many lefties and mixedies.
 
 ```{r prolific_handedness_plot_all}
 ## Show distribution of handedness by Prolific category
