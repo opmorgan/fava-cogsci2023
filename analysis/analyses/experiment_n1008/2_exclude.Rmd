@@ -57,6 +57,8 @@ proc_dir <- here::here(data_dir, "proc_exp_n1008")
 fig_dir <- here::here("figures", "exp_n1008")
 n_recruited = 1008 ## Total recruited + paid. For reporting exclusions
 
+
+use_cached_demofigs = FALSE
 ```
 
 ##  {.tabset}
@@ -79,7 +81,9 @@ path_102RH <- "102RH_prolific_export_6366c40e499d20d5ab538875.csv"
 path_10RH <- "10RH_prolific_export_6363e0519aa80e82b28504f9.csv"
 path_224RH <- "224RH_prolific_export_63979ee865e24e9544a399c0.csv"
 path_310LH <- "310LH_prolific_export_63979ef89c10063fe77140ba.csv"
+path_336LH <- "336LH_prolific_export_639f8f876705dcad52b598b2.csv"
 ## TODO: ADD NEW PROLIFIC DATA
+
 pdata_102RH <-
   read_prolific_data(here(prolific_data_dir, path_102RH))
 pdata_10RH <- read_prolific_data(here(prolific_data_dir, path_10RH))
@@ -91,9 +95,13 @@ pdata_112RH <-
 pdata_224RH <-
   read_prolific_data(here(prolific_data_dir, path_224RH)) |> mutate(sample = "New righties", sample2 = "All righties")
 pdata_336LH <-
-  bind_rows(pdata_310LH, pdata_26LH) |> mutate(sample = "Left/mixedies", sample2 = "Left/mixedies")
+  read_prolific_data(here(prolific_data_dir, path_336LH))
+
+pdata_672LH <-
+  bind_rows(pdata_310LH, pdata_26LH, pdata_336LH) |> mutate(sample = "Left/mixedies", sample2 = "Left/mixedies")
+
 prolific_data <-
-  bind_rows(pdata_112RH, pdata_224RH, pdata_336LH) |>
+  bind_rows(pdata_112RH, pdata_224RH, pdata_672LH) |>
   rename(subject = `Participant id`,
          prolific_handedness = Handedness) |>
   mutate(
@@ -114,6 +122,14 @@ aah_summary_all <- aah_summary_all |>
                                 ehi > -40 & ehi < 40 ~ "Mixed"))
 
 ```
+
+```{r}
+## DEBUGGING
+# aah_summary_all |> select(sample, sample2, prolific_handedness, handedness, ehi) |> 
+#   group_by(sample2, prolific_handedness, handedness) |> 
+#   summarize(n = n())
+```
+
 
 
 ### Recruitment & Exclusions
@@ -170,7 +186,7 @@ aah_summary_all <- aah_summary_all |>
 ## (2) Recommended -- more liberal -- just remove obvious mismatches. Remove pre-screen lefties with EHI > 0; Remove pre-screen ambis with EHI == 100 or -100; Remove pre-screen righties with handedness < 0.
 aah_summary_all <- aah_summary_all |>
   mutate(exclude_ehi_mismatch = case_when(
-    prolific_handedness == "Left" & ehi => 0 ~ 1,
+    prolific_handedness == "Left" & ehi >= 0 ~ 1,
     prolific_handedness == "Mixed" & (ehi == 100 | ehi == -100) ~ 1,
     prolific_handedness == "Right" & ehi <= 0 ~ 1,
     TRUE ~ 0
@@ -232,7 +248,7 @@ tibble(
 ```
 <br>
 
-We recruited `r n_recruited` participants through prolific. Of these, `r n_all` completed the task phase of the experiment. `r n_exclusions` were excluded for the reasons described below, leaving `r n_keepers` keepers.
+We have recruited `r n_recruited` participants through prolific. Of these, `r n_all` completed the task phase of the experiment. `r n_exclusions` were excluded for the reasons described below, leaving `r n_keepers` keepers.
 
 <br>
 ```{r describe_exclusions_2}
@@ -261,37 +277,123 @@ pivot_longer(cols = everything(),
 exclusion_tbl |> pretty_table()
 ```
 <br>
-Participants are excluded if the handedness in their pre-screener mismatched their EHI-measured handedness.
-These "Prescreener/EHI mismatch" exclusions are defined as: 
+Participants were excluded if the handedness in their pre-screener strongly mismatched their EHI-measured handedness.
+These "Prescreener/EHI mismatch" exclusions have been defined as: 
+
 (1) A Prolific "Left handed" participant with EHI >= 0
-(1) A Prolific "Ambidextrous" participant with EHI = 100 or -100
+(1) A Prolific "Ambidextrous" participant with EHI = +100 or -100
 (1) A Prolific "Right handed" participant with EHI <= 0
+
+
+We could make these exclusions stricter by defining a mismatch as anything that doesn't match the EHI bins we use in categorical analysis (left = < -40, mixed = between -40 and 40; right >= +40). But I think this would be too conservative and would unnecessarily exclude many lefties and mixedies.
+
+```{r prolific_handedness_plot_all}
+## Show distribution of handedness by Prolific category
+plot_color = plot_blue
+
+h_data_n <-
+  aah_summary_all |>
+  group_by(prolific_handedness) |>
+  summarize(n = str_c("n = ", as.character(n())))
+
+fig_path <- here(fig_dir, "prolific_ehi_all.png")
+
+if (use_cached_demofigs == FALSE) {
+  g <- ggplot(aah_summary_all, aes(x = ehi)) +
+    geom_histogram(
+      color = NA,
+      fill = plot_color,
+      alpha = .8,
+      binwidth = 8,
+      boundary = 100
+    ) +
+    labs(x = "EHI") +
+    xlim(c(-104, 104)) +
+    facet_grid( ~ prolific_handedness) +
+    geom_text(
+      data = h_data_n,
+      aes(x = -100, y = 150, label = n),
+      hjust = 0,
+      colour = "gray20",
+      inherit.aes = FALSE,
+      parse = FALSE
+    ) +
+    labs(title = "EHI distribution for each of Prolific's prescreened handedness groups (all recruits with task data)")
+  
+  g <- g |> gg_style_demo() + theme(aspect.ratio = 1 / 1,
+                                    axis.title.y = element_blank())
+  
+  ggsave(fig_path, g, "png", height = 3, width = 6)
+}
+
+include_graphics(fig_path)
+```
+
+```{r prolific_handedness_plot_nomismatches}
+## Show distribution of handedness by Prolific category
+plot_color = plot_blue
+
+aah_summary_nomismatches <- aah_summary_all |> 
+  filter(exclude_ehi_mismatch == 0)
+
+h_data_n <-
+  aah_summary_nomismatches |>
+  group_by(prolific_handedness) |>
+  summarize(n = str_c("n = ", as.character(n())))
+
+fig_path <- here(fig_dir, "prolific_ehi_mismatches_excluded.png")
+
+if (use_cached_demofigs == FALSE) {
+  g <- ggplot(aah_summary_nomismatches, aes(x = ehi)) +
+    geom_histogram(
+      color = NA,
+      fill = plot_color,
+      alpha = .8,
+      binwidth = 8,
+      boundary = 100
+    ) +
+    labs(x = "EHI") +
+    xlim(c(-104, 104)) +
+    facet_grid( ~ prolific_handedness) +
+    geom_text(
+      data = h_data_n,
+      aes(x = -100, y = 150, label = n),
+      hjust = 0,
+      colour = "gray20",
+      inherit.aes = FALSE,
+      parse = FALSE
+    ) +
+    labs(title = "EHI distribution for each of Prolific's prescreened handedness groups (mismatches excluded)")
+  
+  g <- g |> gg_style_demo() + theme(aspect.ratio = 1 / 1,
+                                    axis.title.y = element_blank())
+  
+  ggsave(fig_path, g, "png", height = 3, width = 6)
+}
+
+include_graphics(fig_path)
+```
+
+```{r}
+## Describe prescreener ehi mismatches
+
+## Summarize
+aah_summary_all |> filter(exclude_ehi_mismatch == 1) |>
+  rename(ehi_handedness = handedness) |>
+  group_by(prolific_handedness, ehi_handedness) |>
+  summarize(n = n()) |>
+  arrange(prolific_handedness, desc(ehi_handedness)) |>
+  rename(`Prolific handedness` = prolific_handedness,
+         `EHI handedness` = ehi_handedness) |>
+  pretty_table(title = "Prescreener/EHI mismatch exclusions (summary)") |>
+  tab_footnote(
+    "Left: (EHI <= -40)  |  Mixed: (-40 < EHI < 40)  |  Right: (EHI >= 40)",
+    locations = cells_column_labels(columns = `EHI handedness`)
+  )
+```
 <br>
 
 ### Demographics (Keepers) {.tabset .tabset-pills}
-
-
-#### Everyone
-
-Demographics for all included participants.
-
-```{r demographics_summary_included}
-rt_demo <- demo_summary_table(aah_summary)
-rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
-```
-<br>
-```{r country_included}
-demo_country_table(aah_summary) |> pretty_table()
-```
-<br>
-```{r race_included}
-demo_race_table(aah_summary) |> pretty_table()
-```
-<br>
-```{r ethnicity_included}
-demo_ethnicity_table(aah_summary) |> pretty_table()
-```
-<br>
 
 #### By handedness group
 
@@ -302,46 +404,62 @@ hand_demo_summary_table(aah_summary) |> pretty_table() |>
 ```
 <br>
 
-We have recruited 336 "Right handed", and 732 "Left handed" or "Ambidextrous" participants, using Prolific's pre-screeners. 
 
-```{r}
-## Load Prolific's handedness screening data
-prolific_data_dir <- here::here(input_dir, "prolific")
-input_files <- list.files(path = prolific_data_dir,
-                          pattern = "*.csv",
-                          full.names = TRUE)
-prolific_data <- lapply(input_files, read_prolific_data) |>
-  bind_rows() |>
-  rename(subject = `Participant id`,
-         prolific_handedness = Handedness) |>
-  mutate(
-    prolific_handedness = prolific_handedness |> recode(
-      `Right-handed` = "Right",
-      `Left-handed` = "Left",
-      `Ambidextrous` = "Mixed"
-    ) |> as.factor() |> droplevels()
-  ) |>
-  select(subject, prolific_handedness)
-
-## Add prolific handedness to dataset
-ehi_data <- aah_summary |> select(subject, handedness, ehi)
-h_data <- left_join(ehi_data, prolific_data, by = "subject")
-```
-
-```{r prolific_handedness_plot}
+```{r ehi_bin_handedness_plot_keepers}
 ## Show distribution of handedness by Prolific category
-use_cached_demofigs <-FALSE
 plot_color = plot_blue
 
 h_data_n <-
-  h_data |>
+  aah_summary |>
+  group_by(handedness) |>
+  summarize(n = str_c("n = ", as.character(n())))
+
+fig_path <- here(fig_dir, "bin_ehi_keepers.png")
+
+if (use_cached_demofigs == FALSE) {
+  g <- ggplot(aah_summary, aes(x = ehi)) +
+    geom_histogram(
+      color = NA,
+      fill = plot_color,
+      alpha = .8,
+      binwidth = 8,
+      boundary = 100
+    ) +
+    labs(x = "EHI") +
+    xlim(c(-104, 104)) +
+    facet_grid( ~ handedness) +
+    geom_text(
+      data = h_data_n,
+      aes(x = -100, y = 150, label = n),
+      hjust = 0,
+      colour = "gray20",
+      inherit.aes = FALSE,
+      parse = FALSE
+    ) +
+    labs(title = "Distribution within each EHI bin (keepers only)")
+  
+  g <- g |> gg_style_demo() + theme(aspect.ratio = 1 / 1,
+                                    axis.title.y = element_blank())
+  
+  ggsave(fig_path, g, "png", height = 3, width = 6)
+}
+
+include_graphics(fig_path)
+```
+
+```{r prolific_handedness_plot_keepers}
+## Show distribution of handedness by Prolific category
+plot_color = plot_blue
+
+h_data_n <-
+  aah_summary |>
   group_by(prolific_handedness) |>
   summarize(n = str_c("n = ", as.character(n())))
 
-fig_path <- here(fig_dir, "prolific_ehi.png")
+fig_path <- here(fig_dir, "prolific_ehi_keepers.png")
 
 if (use_cached_demofigs == FALSE) {
-  g <- ggplot(h_data, aes(x = ehi)) +
+  g <- ggplot(aah_summary, aes(x = ehi)) +
     geom_histogram(
       color = NA,
       fill = plot_color,
@@ -371,14 +489,39 @@ if (use_cached_demofigs == FALSE) {
 include_graphics(fig_path)
 ```
 
+
+#### Everyone
+
+Demographics for all included participants.
+
+```{r demographics_summary_included}
+rt_demo <- demo_summary_table(aah_summary)
+rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
+```
+<br>
+```{r country_included}
+demo_country_table(aah_summary) |> pretty_table()
+```
+<br>
+```{r race_included}
+demo_race_table(aah_summary) |> pretty_table()
+```
+<br>
+```{r ethnicity_included}
+demo_ethnicity_table(aah_summary) |> pretty_table()
+```
+<br>
+
 ### Feedback
 ```{r feedback}
 feedback <- aah_summary_all |>
   filter(open_ended_feedback_response != "NA") |> 
-  group_by(open_ended_feedback_response, exclude) |>
+  group_by(sample, open_ended_feedback_response, exclude) |>
   rename(`Open-ended feedback` = open_ended_feedback_response,
-         `Excluded?` = exclude) |> 
-  summarize()
+         `Excluded?` = exclude,
+         Sample = sample) |> 
+  summarize() |> 
+  select(`Open-ended feedback`, `Excluded?`, Sample)
 feedback |> arrange(desc(`Excluded?`)) |> pretty_table()
 ```
 
