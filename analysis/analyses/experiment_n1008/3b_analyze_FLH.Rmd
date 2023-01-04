@@ -243,10 +243,10 @@ include_graphics(fig_path)
 
 ## Field x Level x Handedness (binned) {.tabset .tabset-pills}
 
-Do we find an interaction of field x level x handedness, when handedness is binned as left (EHI <= -40) or right (EHI >= +40)?
+Do we find an interaction of field x level x handedness, when handedness is binned as left (EHI <= -40) or right (EHI > +40)?
 <br>
 <br>
- ***Summary.*** For reaction time, we find the critical interaction in the predicted direction (11.67ms, 95%CI [0.65, 22.69], p = .019, one-sided). Accuracy stats are in progress: the interaction effect will be close to zero, opposite the predicted direction (the point estimates are 1.76 for righties, 1.10 for mixedies, and 1.96 for lefties).
+ ***Summary.*** For reaction time, we find the critical interaction in the predicted direction (11.67ms, 95%CI [0.65, 22.69], p = .019, one-sided). Accuracy stats are in progress: the interaction effect will be close to zero, opposite the predicted direction (the point estimates are 1.76 for righties and 1.96 for lefties).
 <br>
 <br>
 
