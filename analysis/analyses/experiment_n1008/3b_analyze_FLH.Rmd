@@ -243,10 +243,10 @@ include_graphics(fig_path)
 
 ## Field x Level x Handedness (binned) {.tabset .tabset-pills}
 
-Do we find an interaction of field x level x handedness, when handedness is binned as left (EHI < -40) or right (EHI > +40)?
+Do we find an interaction of field x level x handedness, when handedness is binned as left (EHI <= -40) or right (EHI >= +40)?
 <br>
 <br>
- ***Summary.*** For reaction time, we find the critical interaction in the predicted direction (11.67ms, 95%CI [0.65, 22.69], p = .019, one-sided). I haven't run accuracy yet, but the effect will be close to zero, opposite the predicted direction (the point estimates are 1.76 for righties, 1.96 for lefties).
+ ***Summary.*** For reaction time, we find the critical interaction in the predicted direction (11.67ms, 95%CI [0.65, 22.69], p = .019, one-sided). Accuracy stats are in progress: the interaction effect will be close to zero, opposite the predicted direction (the point estimates are 1.76 for righties, 1.10 for mixedies, and 1.96 for lefties).
 <br>
 <br>
 
@@ -617,22 +617,10 @@ interaction_anova |>
   pretty_table() |> 
   tab_header(title = "Field by level by handedness interaction (RT)", 
              subtitle = "ANOVA: compare models with vs. without interaction term") |> 
-  tab_footnote(footnote = "F-test (Two-sided?)",
+  tab_footnote(footnote = "F-test (two-sided? https://daniellakens.blogspot.com/2016/04/one-sided-f-tests-and-halving-p-values.html)",
                locations = cells_column_labels(columns = p.value))
 ```
 <br>
-```{r rt_interacion_aov}
-## Use aov to test 2-way interaction with a traditional F-test.
-rt_aov <- aov(rt ~ field*level*handedness, data = aah_for_rt_model_2bins)
-rt_aov_summary <- summary(rt_aov)
-rt_aov_summary |> (\(.) .[[1]])() |> tidy() |>
-  format_p.value() |> 
-  pretty_table() |>
-  tab_header(title = "Field by level interaction (RT)",
-             subtitle = "Omnibus F-test")
-```
-<br>
-
 ```{r rt_interaction_emm}
 ## Use emmeans() to test 3-way interaction.
 rt_interaction_emm <- rt_emm_2bins |> 
@@ -676,6 +664,17 @@ rt_emm2 |>
                locations = cells_column_labels(columns = df))
 ```
 <br>
+```{r rt_interacion_aov}
+## Use aov to test 2-way interaction with a traditional F-test.
+rt_aov <- aov(rt ~ field*level*handedness, data = aah_for_rt_model_2bins)
+rt_aov_summary <- summary(rt_aov)
+rt_aov_summary |> (\(.) .[[1]])() |> tidy() |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "Field by level interaction (RT)",
+             subtitle = "Old-school Omnibus F-test")
+```
+<br>
 
 ### Accuracy
 ***In progress.*** 
@@ -685,7 +684,7 @@ rt_emm2 |>
 
 Do we find an interaction of field x level x handedness (continuous EHI score)?
 
-***Summary.*** For reaction time, we find the critical interaction in the predicted direction (.067ms per EHI unit, or 14.82ms for EHI = -100, 28.14ms for EHI = +100. I haven't figured out how to get confidence intervals around this estimate yet, but the one-sided p-value for an ANOVA model comparison is .020. I haven't run the accuracy stats yet, but the subject-level scatter plot looks very flat.
+***Summary.*** For reaction time, we find the critical interaction in the predicted direction (.067ms per EHI unit, 95% CI [0.003, 0.13], p = .020, one-sided). This slope corresponds to 14.82ms for EHI = -100, and 28.14ms for EHI = +100. Accuracy stats are in progress.
 
 ### Reaction time
 ```{r}
@@ -765,28 +764,86 @@ interaction_anova |>
   pretty_table() |> 
   tab_header(title = "Field by level by ehi interaction (RT)", 
              subtitle = "ANOVA: compare models with vs. without interaction term") |> 
-  tab_footnote(footnote = "F-test (two-sided?)",
+  tab_footnote(footnote = "F-test (two-sided? https://daniellakens.blogspot.com/2016/04/one-sided-f-tests-and-halving-p-values.html)",
                locations = cells_column_labels(columns = p.value))
 ## Is this p-valued "one-sided"?
 ## https://daniellakens.blogspot.com/2016/04/one-sided-f-tests-and-halving-p-values.html
 ## https://stats.libretexts.org/Bookshelves/Applied_Statistics/Book%3A_Learning_Statistics_with_R_-_A_tutorial_for_Psychology_Students_and_other_Beginners_(Navarro)/16%3A_Factorial_ANOVA/16.05%3A_The___F___test_as_a_model_comparison
 ```
-
+<br>
 ```{r}
-## Test whether interaction slope differs from zero
-## How to do this???
-# summary(rt_emm_ehi, infer=c(TRUE,TRUE),null=0)
-# 
-# rt_emm_ehi <- emmeans(rt_model_ehi, ~ field * level * ehi)
-# summary(test(emtrends(mod, ~syst|timing, var = "year")))
-# summary(test(emtrends(rt_model_ehi, ~field|level, var = "ehi")), infer = T)
-```
+## Test whether interaction slope differs from zer, with emmeans
 
+## This code estimates the effect of EHI on RT for each field*level:
+rt_emt <- emtrends(rt_model_ehi, pairwise ~ field*level, var = "ehi")
+## We want to compare the effect of EHI on RT for:
+## (LVF Local - LVF Global) - (RVF local - RVF Global)
+## Contrast indices: 2 - 5
+
+## Report interaction estimate, with CI and p value.
+rt_emt[[1]] |> contrast(interaction = c("consec"), var = "ehi") |> 
+  summary(infer = T)|>
+  format_p.value() |> 
+  pretty_table() |> 
+  tab_header(title = "Field by level interaction (RT)",
+             subtitle = "Compare effect estimate to zero with emmeans()") |>
+  tab_footnote(footnote = "A positive number means global bias is stronger in LVF for right handers (as predicted), in ms per EHI unit (-100 to 100). Multiply this value by 200 to get the estimated difference in LVF global bias for strong left vs. right handers.",
+               locations = cells_column_labels(columns = estimate)) |>
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Confidence level: 95%. Lower CI for one-sided test: 0.013.",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Z-approximation",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+```{r}
+## Report EHI effect on bias by field, with CI and p-value
+rt_emt$contrasts |>
+  summary(infer = T) |> 
+  as_tibble() |> 
+  filter(contrast %in%
+           c("LVF Local - LVF Global", "RVF Local - RVF Global")) |> 
+  format_p.value() |> 
+  pretty_table() |> 
+  tab_header(title = "Field by level interaction (RT)",
+             subtitle = "Compare effect estimate to zero with emmeans()") |>
+  tab_footnote(footnote = "A positive number means more global bias for right handers, in ms per EHI unit (-100 to 100)",
+               locations = cells_column_labels(columns = estimate)) |>
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Z-approximation",
+               locations = cells_column_labels(columns = df))
+
+```
+<br>
+```{r}
+## Report EHI effect by field and level, with CI and p-value
+rt_emt$emtrends |> summary(infer = T) |>
+  as_tibble() |>
+  format_p.value() |>
+  pretty_table() |>
+  tab_header(title = "Slope of EHI and RT by field and level",
+             subtitle = "Compare effect estimate to zero with emmeans()") |>
+  tab_footnote(footnote = "A positive number means slower RTs for right handers, in ms per EHI unit (-100 to 100).",
+               locations = cells_column_labels(columns = ehi.trend)) |>
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Z-approximation",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+
+---
 
 <br>
 ```{r}
+## Pull estimates for strong left and right handers (ehi = -100, +100)
 ## Estimate effect of ehi on field x level.
-## (It should be .13)
 
 ## Use ref_grid (following quant 2 HW5)
 ref <- ref_grid(rt_model_ehi, at = list(ehi = c(-100, 100)))
@@ -801,14 +858,13 @@ R_tbl <- ref_R |> contrast("pairwise") |> as_tibble() |> slice(2, 5)
 L_tbl |> 
   format_p.value() |> 
   pretty_table() |> 
-  tab_header(title = "Estimated global bias by field, for EHI of -100") |> 
+  tab_header(title = "Estimated global bias by field, for EHI of -100 (strong left hander)") |> 
   tab_footnote(footnote = "Estimated global bias (ms)",
                locations = cells_column_labels(columns = estimate))
   
 ## This shows the pairwise differences like RVF Global - RVF Local
 ## when ehi = -100.
 ```
-<br>
 <br>
 ```{r}
 ## Estimate LVF Global bias for EHI -100
@@ -828,14 +884,14 @@ L_LVF_global_bias |>
   as_tibble() |>
   rename(LVF_global_bias = value) |>
   pretty_table() |> 
-  tab_header(title = "Estimated LVF Global Bias for EHI of -100") 
+  tab_header(title = "Estimated LVF Global Bias for EHI of -100 (strong left hander)") 
 ```
 <br>
 ```{r}
 R_tbl |> 
   format_p.value() |> 
   pretty_table() |> 
-  tab_header(title = "Estimated global bias by field, for EHI of +100") |> 
+  tab_header(title = "Estimated global bias by field, for EHI of +100 (strong right hander)") |> 
   tab_footnote(footnote = "Estimated global bias (ms)",
                locations = cells_column_labels(columns = estimate))
 ## This shows the pairwise differences like RVF Global - RVF Local
@@ -848,20 +904,24 @@ R_LVF_global_bias |>
   as_tibble() |>
   rename(LVF_global_bias = value) |>
   pretty_table() |> 
-  tab_header(title = "Estimated LVF Global Bias for EHI of +100")
+  tab_header(title = "Estimated LVF Global Bias for EHI of +100 (strong right hander)")
 ```
 <br>
 $$
 28.144 - 14.822 = 13.322ms \\
 13.322/200 = 0.067ms / EHI unit
 $$
-Each unit change in EHI (-100:100) corresponds to a **0.067ms** difference in LVF global bias. This is the slope estimate given by the summary function:
+The model estimates that an average strong right hander (EHI +100) will have **13.32ms** more LVF global bias than a strong left hander (EHI -100). Each unit change in EHI (-100:100) corresponds to a **0.067ms** difference in LVF global bias. This is also the slope estimate given by the summary function:
 <br>
 
 ```{r, echo = T, results = "markup"}
 summary(rt_model_ehi)
 ```
+<br>
 
+---
+
+<br>
 
 Test for a simple correlation between each subject's EHI and LVF global bias.
 <br>
