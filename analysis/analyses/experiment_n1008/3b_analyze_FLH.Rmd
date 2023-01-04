@@ -246,7 +246,7 @@ include_graphics(fig_path)
 Do we find an interaction of field x level x handedness, when handedness is binned as left (EHI < -40) or right (EHI > +40)?
 <br>
 <br>
- ***Summary.*** For reaction time, the critical interaction is significant in the predicted direction (11.67ms, 95%CI [0.65, 22.69], p = .019, one-sided). I haven't run accuracy yet, but the effect will be close to zero, opposite the predicted direction (the point estimates are 1.76 for righties, 1.96 for lefties).
+ ***Summary.*** For reaction time, we find the critical interaction in the predicted direction (11.67ms, 95%CI [0.65, 22.69], p = .019, one-sided). I haven't run accuracy yet, but the effect will be close to zero, opposite the predicted direction (the point estimates are 1.76 for righties, 1.96 for lefties).
 <br>
 <br>
 
