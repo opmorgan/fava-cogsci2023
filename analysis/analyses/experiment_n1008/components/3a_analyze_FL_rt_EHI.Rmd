@@ -1,7 +1,6 @@
 ```{r}
 ## Setup
 aah_correct_sub <- aah_correct |> filter(handedness == handedness_subgroup)
-aah_sub <- aah |> filter(handedness == handedness_subgroup)
 aah_for_rt_model_sub <- aah_for_rt_model |> filter(handedness == handedness_subgroup)
 ```
 

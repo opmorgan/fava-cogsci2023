@@ -1,5 +1,5 @@
 ---
-title: "Action Asymmetry Experiment (n = 672): Field by Level interaction"
+title: "Action Asymmetry Experiment (n = 1008): Field by Level interaction"
 pagetitle: "aah | exp | analysis"
 author: "Owen Morgan"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
@@ -61,15 +61,11 @@ plot_colors <- c("#4477AA",
 
 ```{r config}
 data_dir <- here::here("data")
-input_dir <- here::here(data_dir, "input_exp_n672")
-proc_dir <- here::here(data_dir, "proc_exp_n672")
-fig_dir <- here::here("figures", "exp_n672_a")
-analysis_dir <- here::here("analyses", "experiment_n672")
-manual_cache_dir <- here::here("manual_cache", "exp_n672_a")
-
-## TODO: specify cache for models from each script version:
-## pilot, main experiment 
-## (Each will have its own "rt_emm.rds", for example)
+input_dir <- here::here(data_dir, "input_exp_n1008")
+proc_dir <- here::here(data_dir, "proc_exp_n1008")
+fig_dir <- here::here("figures", "exp_n1008_a")
+analysis_dir <- here::here("analyses", "experiment_n1008")
+manual_cache_dir <- here::here("manual_cache", "exp_n1008_a")
 
 use_cached_model_rt <- TRUE
 use_cached_model_rt_complex <- TRUE
@@ -102,7 +98,6 @@ use_cached_model_acc_ehi <- FALSE
 # {.tabset}
 ```{r load_data}
 ## Load "the data" with all subjects & trials.
-## TODO: update these functions to load new aah_long, with prolific handedness column, ehi mismatch exclusion column.
 aah_long <- load_aah_long(proc_dir)
 
 ## Load summary data table (for quick demographic analyses)
@@ -110,7 +105,17 @@ aah_long <- load_aah_long(proc_dir)
 aah_summary_all <- load_aah_summary(proc_dir)
 ```
 
+```{r}
+## Debugging
+# aah_long |> colnames()
+# aah_summary_all |> colnames()
+```
+
+
 ```{r prepare_data}
+#### PREPARE SUMMARY DATA FOR DEMOGRAPHICS ANALYSES
+aah_summary <- filter_aah_summary_for_analysis(aah_summary_all)
+
 #### PREPARE TRIAL-LEVEL DATA FOR RT, ACCURACY ANALYSES
 ## Prepare "the data" (aah_long) for all analyses:
 ## Filter out practice trials, absent trials, and excluded subjects
@@ -173,14 +178,6 @@ plot_color = plot_blue
 ```
 
 
-#### By sample {.active}
-Demographics for included participants, by handedness sample: pilot righties, new righties, and lefties/mixedies. 
-```{r}
-sample_demo_summary_table(aah_summary) |> rename(`N (keepers)` = N) |>  pretty_table() |>
-  tab_footnote("Left/mixedies: reported 'Left Handed' or 'Ambidextrous' on Prolific |  Righties: reported 'Right handed' on Prolific")
-```
-<br>
-
 #### By handedness group
 
 Demographics for included participants, by handedness group (EHI bins). 
@@ -190,20 +187,16 @@ hand_demo_summary_table(aah_summary) |> pretty_table() |>
 ```
 <br>
 
-We have recruited 336 "Right handed", and 366 "Left handed" or "Ambidextrous" participants, using Prolific's pre-screeners. 
-
-There are fewer EHI-confirmed left and mixed handers than I expected. This is, in part, because some of Prolific's pre-screened "Left-handed" and "Ambidextrous" participants are fairly right handed, as measured by the EHI:
-
-```{r prolific_handedness_plot}
-## Show distribution of handedness by Prolific category
+```{r ehi_handedness_plot}
+## Show distribution of handedness by EHI bin
 plot_color = plot_blue
 
 h_data_n <-
   aah_summary |>
-  group_by(prolific_handedness) |>
+  group_by(handedness) |>
   summarize(n = str_c("n = ", as.character(n())))
 
-fig_path <- here(fig_dir, "prolific_ehi.png")
+fig_path <- here(fig_dir, "bin_ehi_keepers3a.png")
 
 if (use_cached_demofigs == FALSE) {
   g <- ggplot(aah_summary, aes(x = ehi)) +
@@ -216,7 +209,7 @@ if (use_cached_demofigs == FALSE) {
     ) +
     labs(x = "EHI") +
     xlim(c(-104, 104)) +
-    facet_grid( ~ prolific_handedness) +
+    facet_grid( ~ handedness) +
     geom_text(
       data = h_data_n,
       aes(x = -100, y = 150, label = n),
@@ -225,7 +218,7 @@ if (use_cached_demofigs == FALSE) {
       inherit.aes = FALSE,
       parse = FALSE
     ) +
-    labs(title = "EHI distribution for each of Prolific's prescreened handedness groups (keepers only)")
+    labs(title = "EHI distribution within each EHI bin (keepers only)")
   
   g <- g |> gg_style_demo() + theme(aspect.ratio = 1 / 1,
                                     axis.title.y = element_blank())
@@ -236,7 +229,6 @@ if (use_cached_demofigs == FALSE) {
 include_graphics(fig_path)
 ```
 
-If we want to get balanced handedness groups (a more U-shaped EHI distribution) on Prolific going forward, we should recruit a larger proportion of "Left-handed" and "Ambidextrous" participants.
 
 ## Field x Level {.tabset .tabset-pills .active}
 
@@ -245,80 +237,18 @@ plot_color <- plot_colors[[5]] # Color for interaction plots with only one color
 ```
 
 
-### Pilot righties (n = 104/112 RH) {.tabset}
-
-```{r}
-subgroup <- "Pilot righties"
-subgroup_label <- "112RH"
-```
-
-In our pilot sample of right handers, do we see the typical field x level interaction? That is, do participants show a relative bias for global shapes in the left visual field (LVF)?
-<br>
-<br>
-***Summary.*** We see the predicted effect, for both reaction time (28.35ms, 95%CI [13.54, 43.16], p < .001) and accuracy (OR = 1.66, 95%CI [1.22, 2.28], p = .001).
-<br>
-<br>
-
-```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_rt.Rmd"))}
-```
-
-```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_acc.Rmd"))}
-```
-
-
-### New righties (n = 205/224) {.tabset .active}
-
-```{r}
-subgroup <- "New righties"
-subgroup_label <- "224RH"
-```
-
-Do we replicate the field x level interaction in our new righties?
-<br>
-<br>
-***Summary.*** We see the predicted effect, for both reaction time (27.27ms, 95%CI [17.17, 36.37], p < .001) and accuracy (OR = 2.00, 95%CI [1.62, 2.62], p < .001).
-<br>
-<br>
-
-```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_rt.Rmd"))}
-```
-
-```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_acc.Rmd"))}
-```
-
-
-### All righties (n = 309/336) {.tabset}
-
-```{r}
-subgroup <- "All righties"
-subgroup_label <- "336RH"
-```
-
-What is the effect of field x level in the full right hander sample?
-<br>
-<br>
-***Summary.*** We see the predicted effect, for both reaction time (27.63ms, 95%CI [19.28, 35.98], p < .001) and accuracy (OR = 1.89, 95%CI [1.56, 2.30], p < .001).
-<br>
-<br>
-
-```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_rt.Rmd"))}
-```
-
-```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_acc.Rmd"))}
-```
-
-
-### EHI righties (n = 372) {.tabset}
+### EHI righties (n = 378) {.tabset}
 
 ```{r}
 handedness_subgroup <- "Right"
 subgroup_label <- "RH"
 ```
 
+
 In all EHI-confirmed righties (EHI > 40), do we see the predicted field by level interaction?
 <br>
 <br>
-***Summary.*** We see the predicted effect, for both reaction time (27.28ms, 95%CI [19.62, 34.94], p < .001) and accuracy (OR = 1.96, 95%CI [1.65, 2.33], p < .001).
+***Summary.*** We see the predicted effect, for both reaction time (27.31ms, 95%CI [19.80, 34.82], p < .001) and accuracy (OR = 1.76, 95%CI [1.49, 2.09], p < .001).
 <br>
 <br>
 
@@ -328,7 +258,26 @@ In all EHI-confirmed righties (EHI > 40), do we see the predicted field by level
 ```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_acc_EHI.Rmd"))}
 ```
 
-### EHI lefties (n = 171) {.tabset}
+### EHI mixedies (n = 135) {.tabset}
+
+```{r}
+handedness_subgroup <- "Mixed"
+subgroup_label <- "MH"
+```
+
+In all EHI-confirmed mixed handers (-40 < EHI < +40), do we see a field by level interaction?
+<br>
+<br>
+***Summary.*** We see a smaller effect in the same direction as right handers' for reaction time (21.66ms, 95%CI [9.26, 34.06], p < .001). For accuracy, we see a smaller, non-significant effect in the same direction as right handers' (OR = 1.10, 95%CI [0.82, 1.47], p = .53).
+<br>
+<br>
+```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_rt_EHI.Rmd"))}
+```
+
+```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_acc_EHI.Rmd"))}
+```
+
+### EHI lefties (n = 331) {.tabset}
 
 ```{r}
 handedness_subgroup <- "Left"
@@ -338,7 +287,7 @@ subgroup_label <- "LH"
 In all EHI-confirmed lefties (EHI < -40), do we see a field by level interaction?
 <br>
 <br>
-***Summary.*** We see a smaller effect in the same direction as right handers', for both reaction time (17.50ms, 95%CI [6.25, 28.75], p = .002) and accuracy (OR = 1.94, 95%CI [1.61, 2.35], p < .001).
+***Summary.*** We see a smaller effect in the same direction as right handers' for reaction time (15.64ms, 95%CI [7.58, 23.70], p < .001). For accuracy, we see a larger effect in the same direction as right handers (OR = 1.96, 95%CI [1.63, 2.37], p < .001).
 <br>
 <br>
 ```{r, child=c(here(analysis_dir, "components", "3a_analyze_FL_rt_EHI.Rmd"))}

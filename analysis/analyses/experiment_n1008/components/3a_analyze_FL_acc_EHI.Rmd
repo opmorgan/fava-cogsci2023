@@ -249,6 +249,8 @@ interaction_anova <- interaction_stats(acc_model, acc_model_no_interaction)
 #interaction_anova
 interaction_anova |>
   as_tibble() |>
+  rename(p.value = `Pr(>Chisq)`) |> 
+  format_p.value() |> 
   pretty_table() |> 
   tab_header(title = "Field by level interaction (Accuracy)", 
              subtitle = "ANOVA: compare models with vs. without interaction term") 

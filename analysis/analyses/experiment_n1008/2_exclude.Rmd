@@ -406,7 +406,7 @@ hand_demo_summary_table(aah_summary) |> pretty_table() |>
 
 
 ```{r ehi_bin_handedness_plot_keepers}
-## Show distribution of handedness by Prolific category
+## Show distribution of handedness by EHI bin
 plot_color = plot_blue
 
 h_data_n <-

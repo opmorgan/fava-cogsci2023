@@ -1,5 +1,5 @@
 ---
-title: "Action Asymmetry Experiment (n = 672): Field by Level by Handedness Analyses"
+title: "Action Asymmetry Experiment (n = 1008): Field by Level by Handedness Analyses"
 pagetitle: "aah | exp | analysis"
 author: "Owen Morgan"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
@@ -61,9 +61,9 @@ plot_colors <- c("#4477AA",
 ```
 
 ```{r config}
-proc_dir <- here::here("data", "proc_exp_n672")
-fig_dir <- here::here("figures", "exp_n672")
-manual_cache_dir <- here::here("manual_cache", "exp_n672")
+proc_dir <- here::here("data", "proc_exp_n1008")
+fig_dir <- here::here("figures", "exp_n1008")
+manual_cache_dir <- here::here("manual_cache", "exp_n1008")
 
 use_cached_model_rt <- T
 use_cached_model_acc <- T
