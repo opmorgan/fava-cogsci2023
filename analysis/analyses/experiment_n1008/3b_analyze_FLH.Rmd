@@ -65,12 +65,12 @@ proc_dir <- here::here("data", "proc_exp_n1008")
 fig_dir <- here::here("figures", "exp_n1008_b")
 manual_cache_dir <- here::here("manual_cache", "exp_n1008_b")
 
-use_cached_model_rt <- F
-use_cached_model_acc <- F
-use_cached_model_rt_ehi <- F
-use_cached_model_acc_ehi <- F
+use_cached_model_rt <- T
+use_cached_model_acc <- T
+use_cached_model_rt_ehi <- T
+use_cached_model_acc_ehi <- T
 
-use_cached_figs <- F
+use_cached_figs <- T
 
 if (use_cached_figs == TRUE) {
   use_cached_demofigs <- TRUE
@@ -246,7 +246,7 @@ include_graphics(fig_path)
 Do we find an interaction of field x level x handedness, when handedness is binned as left (EHI < -40) or right (EHI > +40)?
 <br>
 <br>
- ***Summary.*** For reaction time, the critical interaction is significant in the predicted direction (11.67ms, 95%CI [-0.65, 22.69], p = .019, one-sided). I haven't run accuracy yet, but the effect will be close to zero, opposite the predicted direction (the point estimates are 1.76 for righties, 1.96 for lefties).
+ ***Summary.*** For reaction time, the critical interaction is significant in the predicted direction (11.67ms, 95%CI [0.65, 22.69], p = .019, one-sided). I haven't run accuracy yet, but the effect will be close to zero, opposite the predicted direction (the point estimates are 1.76 for righties, 1.96 for lefties).
 <br>
 <br>
 
@@ -685,7 +685,7 @@ rt_emm2 |>
 
 Do we find an interaction of field x level x handedness (continuous EHI score)?
 
-***Summary.*** TODO. For reaction time, the interaction trends in the predicted direction (.067ms per EHI unit, or 14.82ms for EHI = -100, 28.14ms for EHI = +100. I haven't figured out how to get confidence intervals around this estimate yet, but the one-sided p-value for an ANOVA model comparison is .020.I haven't run the accuracy stats yet, but the subject-level scatter plot looks very flat.
+***Summary.*** For reaction time, we find the critical interaction in the predicted direction (.067ms per EHI unit, or 14.82ms for EHI = -100, 28.14ms for EHI = +100. I haven't figured out how to get confidence intervals around this estimate yet, but the one-sided p-value for an ANOVA model comparison is .020. I haven't run the accuracy stats yet, but the subject-level scatter plot looks very flat.
 
 ### Reaction time
 ```{r}
