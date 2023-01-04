@@ -62,15 +62,15 @@ plot_colors <- c("#4477AA",
 
 ```{r config}
 proc_dir <- here::here("data", "proc_exp_n1008")
-fig_dir <- here::here("figures", "exp_n1008")
-manual_cache_dir <- here::here("manual_cache", "exp_n1008")
+fig_dir <- here::here("figures", "exp_n1008_b")
+manual_cache_dir <- here::here("manual_cache", "exp_n1008_b")
 
-use_cached_model_rt <- T
-use_cached_model_acc <- T
-use_cached_model_rt_ehi <- T
-use_cached_model_acc_ehi <- T
+use_cached_model_rt <- F
+use_cached_model_acc <- F
+use_cached_model_rt_ehi <- F
+use_cached_model_acc_ehi <- F
 
-use_cached_figs <- T
+use_cached_figs <- F
 
 if (use_cached_figs == TRUE) {
   use_cached_demofigs <- TRUE
@@ -96,15 +96,6 @@ aah_summary_all <- load_aah_summary(proc_dir)
 ```{r prepare_data}
 #### PREPARE SUMMARY DATA FOR DEMOGRAPHICS ANALYSES
 aah_summary <- filter_aah_summary_for_analysis(aah_summary_all)
-## Code handedness
-aah_summary <- aah_summary |> 
-  mutate(
-  handedness = case_when(
-    ehi <= -40 ~ "Left",
-    ehi >= 40 ~ "Right",
-    ehi > -40 & ehi < 40 ~ "Mixed"
-  )
-)
 
 #### PREPARE TRIAL-LEVEL DATA FOR RT, ACCURACY ANALYSES
 ## Prepare "the data" (aah_long) for all analyses:
@@ -112,14 +103,6 @@ aah_summary <- aah_summary |>
 ## This data (all present trials, correct or incorrect) will be used for
 ## accuracy analyses
 aah <- filter_aah_long_for_analysis(aah_long)
-aah <- aah |> 
-  mutate(
-  handedness = case_when(
-    ehi <= -40 ~ "Left",
-    ehi >= 40 ~ "Right",
-    ehi > -40 & ehi < 40 ~ "Mixed"
-  )
-)
 
 ## For RT analyses, prepare dataset with only correct, present trials.
 ## In our RT model, we only care about correct responses to present trials.
@@ -183,24 +166,6 @@ rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summ
 <br>
 ```{r demo_plot_config}
 plot_color = plot_blue
-```
-
-```{r demo_plot_ehi}
-fig_path <- here(fig_dir, "demo_ehi.png")
-
-if (use_cached_demofigs == FALSE) {
-g <- ggplot(aah_summary, aes(x = ehi)) +
-  geom_histogram(color = NA, fill = plot_color, alpha = .8, binwidth = 8, boundary = 100) +
-  labs(x = "EHI")+
-  xlim(c(-104, 104))
-
-g <- g |> gg_style_demo() + theme(aspect.ratio = 1/2,
-                            axis.title.y = element_blank())
-
-ggsave(fig_path, g, "png", height = 2, width = 4)
-}
-
-include_graphics(fig_path)
 ```
 
 ```{r demo_plot_age}
@@ -281,7 +246,7 @@ include_graphics(fig_path)
 Do we find an interaction of field x level x handedness, when handedness is binned as left (EHI < -40) or right (EHI > +40)?
 <br>
 <br>
- ***Summary.*** For reaction time, the interaction trends in the predicted direction (9.79ms, 95%CI [-3.84, 23.41], p = .08, one-sided). I haven't run accuracy yet, but the effect will be close to zero (the point estimates are 1.96 for righties, 1.94 for lefties).
+ ***Summary.*** For reaction time, the critical interaction is significant in the predicted direction (11.67ms, 95%CI [-0.65, 22.69], p = .019, one-sided). I haven't run accuracy yet, but the effect will be close to zero, opposite the predicted direction (the point estimates are 1.76 for righties, 1.96 for lefties).
 <br>
 <br>
 
@@ -567,7 +532,6 @@ g <- ggplot(rt_1, aes(
 
 g <- g |> gg_style_means() +
   theme(axis.text.x = element_blank(), aspect.ratio = 4/1)
-g
 ggsave(fig_path_rt_1, g, "png", height = 4, width = 4)
 g_rt_1 <- g
 }
@@ -653,7 +617,7 @@ interaction_anova |>
   pretty_table() |> 
   tab_header(title = "Field by level by handedness interaction (RT)", 
              subtitle = "ANOVA: compare models with vs. without interaction term") |> 
-  tab_footnote(footnote = "Two-sided",
+  tab_footnote(footnote = "F-test (Two-sided?)",
                locations = cells_column_labels(columns = p.value))
 ```
 <br>
@@ -721,7 +685,7 @@ rt_emm2 |>
 
 Do we find an interaction of field x level x handedness (continuous EHI score)?
 
-***Summary.*** For reaction time, the interaction trends in the predicted direction (.063ms per EHI unit, or 15.54ms for EHI = -100, 28.12ms for EHI = +100. I haven't figured out how to get confidence intervals around this estimate yet, but the one-sided p-value for an ANOVA model comparison is .056.I haven't run the accuracy stats yet, but the subject-level scatter plot looks strikingly flat.
+***Summary.*** TODO. For reaction time, the interaction trends in the predicted direction (.067ms per EHI unit, or 14.82ms for EHI = -100, 28.14ms for EHI = +100. I haven't figured out how to get confidence intervals around this estimate yet, but the one-sided p-value for an ANOVA model comparison is .020.I haven't run the accuracy stats yet, but the subject-level scatter plot looks very flat.
 
 ### Reaction time
 ```{r}
@@ -801,9 +765,23 @@ interaction_anova |>
   pretty_table() |> 
   tab_header(title = "Field by level by ehi interaction (RT)", 
              subtitle = "ANOVA: compare models with vs. without interaction term") |> 
-  tab_footnote(footnote = "Two-sided",
+  tab_footnote(footnote = "F-test (two-sided?)",
                locations = cells_column_labels(columns = p.value))
+## Is this p-valued "one-sided"?
+## https://daniellakens.blogspot.com/2016/04/one-sided-f-tests-and-halving-p-values.html
+## https://stats.libretexts.org/Bookshelves/Applied_Statistics/Book%3A_Learning_Statistics_with_R_-_A_tutorial_for_Psychology_Students_and_other_Beginners_(Navarro)/16%3A_Factorial_ANOVA/16.05%3A_The___F___test_as_a_model_comparison
 ```
+
+```{r}
+## Test whether interaction slope differs from zero
+## How to do this???
+# summary(rt_emm_ehi, infer=c(TRUE,TRUE),null=0)
+# 
+# rt_emm_ehi <- emmeans(rt_model_ehi, ~ field * level * ehi)
+# summary(test(emtrends(mod, ~syst|timing, var = "year")))
+# summary(test(emtrends(rt_model_ehi, ~field|level, var = "ehi")), infer = T)
+```
+
 
 <br>
 ```{r}
@@ -874,10 +852,10 @@ R_LVF_global_bias |>
 ```
 <br>
 $$
-28.121 - 15.546 = 12.575ms \\
-12.575/200 = 0.063ms / EHI unit
+28.144 - 14.822 = 13.322ms \\
+13.322/200 = 0.067ms / EHI unit
 $$
-Each unit change in EHI (-100:100) corresponds to a **0.064ms** difference in LVF global bias. This is the slope estimate given by the summary function:
+Each unit change in EHI (-100:100) corresponds to a **0.067ms** difference in LVF global bias. This is the slope estimate given by the summary function:
 <br>
 
 ```{r, echo = T, results = "markup"}

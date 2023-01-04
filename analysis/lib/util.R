@@ -39,7 +39,7 @@ format_p.value <- function(tbl) {
       (0.001 <= p.value & p.value < 0.01) ~
         as.character(p.value %>% round(3)),
       (0.01 <= p.value) ~
-        as.character(p.value  %>% round(2))
+        as.character(p.value  %>% round(3))
     )) |> 
     ## Remove leading zero
     mutate(p.value = p.value |> str_remove("^0+"))
