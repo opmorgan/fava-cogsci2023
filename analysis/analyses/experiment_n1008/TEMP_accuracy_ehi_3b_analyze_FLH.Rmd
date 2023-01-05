@@ -1,0 +1,31 @@
+---
+title: "temp accuracy field by level by ehi stats"
+author: "Owen Morgan"
+date: "2023-01-05"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+
+TODO!!
+---
+
+
+<br>
+TODO!!!
+$$
+28.144 - 14.822 = 13.322ms \\
+13.322/200 = 0.067ms / EHI unit
+$$
+The model estimates that an average strong right hander (EHI +100) will have **13.32ms** more LVF global bias than a strong left hander (EHI -100). Each unit change in EHI (-100:100) corresponds to a **0.067ms** difference in LVF global bias. This is also the slope estimate given by the summary function:
+<br>
+
+```{r, echo = T, results = "markup"}
+summary(rt_model_ehi)
+```
+<br>

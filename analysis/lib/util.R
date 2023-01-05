@@ -44,3 +44,11 @@ format_p.value <- function(tbl) {
     ## Remove leading zero
     mutate(p.value = p.value |> str_remove("^0+"))
 }
+
+
+## Compare two models with anova()
+interaction_stats <-
+  function(model_with_interaction,
+           model_with_no_interaction) {
+    return(anova(model_with_interaction, model_with_no_interaction))
+  }

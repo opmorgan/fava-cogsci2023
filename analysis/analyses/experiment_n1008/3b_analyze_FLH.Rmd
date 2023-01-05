@@ -119,7 +119,7 @@ aah_for_rt_model <- aah_correct |>
 ## Relevel field and level,
 ## so that emmeans will show a positive number for LVF global bias.
 aah_for_acc_model <- aah |>
-  mutate(level = level |> factor(levels = c("Global", "Local")),
+  mutate(level = level |> factor(levels = c("Local", "Global")),
          field = field |> factor(levels = c("RVF", "LVF")))
 
 #### PREPARE SUBJECT_LEVEL DATA FOR RT, ACCURACY ANALYSES
@@ -144,7 +144,7 @@ acc_subject <- aah |> group_by(subject, field, level, handedness) |>
     n_correct = sum(correct),
     acc = 100 * (n_correct / total_responses)
   ) |>
-  select(subject, field, level, acc) |>
+  select(subject, handedness, field, level, acc) |>
   mutate(level = recode(level, global = "Global", local = "Local"))
 
 acc_1 <- acc_subject |>
@@ -560,10 +560,10 @@ Reaction time is modeled as a linear effect of field, level, and handedness, usi
 <br>
 <br>
 
-```{r rt_model_test}
+```{r rt_model_2bins}
 ## Make a model with two handedness bins: Right and Left
 aah_for_rt_model_2bins <- aah_for_rt_model |> filter(handedness %in% c("Right", "Left"))
-rt_model_2bins <- lmer(rt ~ field*level*handedness + field + level + (1 | subject), data = aah_for_rt_model_2bins)
+rt_model_2bins <- lmer(rt ~ field*level*handedness + (1 | subject), data = aah_for_rt_model_2bins)
 
 if (use_cached_model_rt == FALSE) {
   ## Create emmeans model object, and manually cache it.
@@ -581,7 +581,7 @@ if (use_cached_model_rt == FALSE) {
 ```
 ```{r}
 ## Make a model with three handedness bins: Right and Left
-rt_model_3bins <- lmer(rt ~ field*level*handedness + field + level + (1 | subject), data = aah_for_rt_model)
+rt_model_3bins <- lmer(rt ~ field*level*handedness + (1 | subject), data = aah_for_rt_model)
 
 if (use_cached_model_rt == FALSE) {
   ## Create emmeans model object, and manually cache it.
@@ -676,8 +676,371 @@ rt_aov_summary |> (\(.) .[[1]])() |> tidy() |>
 ```
 <br>
 
-### Accuracy
+### Accuracy {.tabset .active}
+
+#### Plots
+
+Error bars show 95% CI.
+```{r plot_acc_config}
+plot_color <- plot_colors[[5]] # Color for interaction plots with only one color.
+```
+<br>
+```{r plot_acc_4}
+fig_path_acc_4 <- here(fig_dir, "acc_4.png")
+
+if (use_cached_accfigs == FALSE) {
+  acc_subject
+
+acc_descriptive <- acc_subject |>
+  group_by(field, level, handedness) |>
+  summarize(
+    median = median(acc),
+    mean = mean(acc),
+    SE = sd(acc) / sqrt(length((acc)))
+  )
+
+g <- ggplot(acc_subject, aes(
+  x = level,
+  y = acc,
+  fill = level,
+  color = level
+)) +
+  geom_quasirandom(alpha = .1, show.legend = F) +
+  geom_boxplot(
+    alpha = 0.5,
+    size = 0.3,
+    varwidth = F,
+    outlier.shape = NA,
+    color = "gray20",
+    show.legend = F
+  ) +
+  stat_summary(
+    fun.data = mean_cl_normal,
+    fun.args = list(conf.int = 0.95),
+    geom = "errorbar",
+    position = "dodge",
+    linetype = 1,
+    color = "gray5",
+    width = .2,
+    # size = point_size / 5,
+    show.legend = F
+  ) +
+  geom_point(
+    data = acc_descriptive,
+    aes(y = mean),
+    color = "black",
+    shape = 21,
+    show.legend = F
+  ) +
+  scale_y_continuous(minor_breaks = seq(-100 , 100, 10),
+                     breaks = seq(-100, 100, 20)) +
+  facet_grid(vars(handedness), vars(field)) +
+  labs(title = "Per-subject accuracy", x = "Level", y = "Accuracy (% correct)")
+
+g <- g |>  gg_style_means() |> gg_color()
+ggsave(fig_path_acc_4, g, "png", height = 8, width = 4)
+g_acc_4 <- g
+}
+
+include_graphics(fig_path_acc_4)
+```
+
+---
+
+```{r plot_acc_2}
+fig_path_acc_2 <- here(fig_dir, "acc_2.png")
+
+if (use_cached_accfigs == FALSE) {
+## Make a table showing:
+## For each subject and field, the difference in median acc for:
+## Global - Local
+acc_2 <- acc_subject |> 
+  pivot_wider(names_from = c(level),
+              values_from = acc) |> 
+  mutate(Global_Bias = Global - Local)
+
+acc_descriptive <- acc_2 |>
+  group_by(field, handedness) |>
+  summarize(
+    median = median(Global_Bias),
+    mean = mean(Global_Bias),
+    SE = sd(Global_Bias) / sqrt(length((Global_Bias)))
+  )
+
+g <- ggplot(acc_2, aes(x = field,
+                      y = Global_Bias, fill = handedness, color = handedness)) +
+  geom_quasirandom(
+    alpha = .1, show.legend = F,
+    # color = plot_color
+    ) +
+  geom_boxplot(
+    alpha = 0.5,
+    size = 0.3,
+    varwidth = F,
+    outlier.shape = NA,
+    # fill = plot_color,
+    color = "gray20",
+    show.legend = F
+  ) +
+  stat_summary(
+    fun.data = mean_cl_normal,
+    fun.args = list(conf.int = 0.95),
+    geom = "errorbar",
+    position = "dodge",
+    linetype = 1,
+    color = "gray5",
+    width = .2,
+    show.legend = F
+  ) +
+  geom_point(
+    data = acc_descriptive,
+    aes(y = mean),
+    # fill = plot_color,
+    color = "gray5",
+    shape = 21,
+    show.legend = F
+  ) +
+  facet_wrap(~handedness)+
+  scale_y_continuous(minor_breaks = seq(-100 , 100, 10),
+                     breaks = seq(-100, 100, 20)) +
+  scale_fill_manual(values = plot_colors[c(1, 5,  2)]) +
+  scale_color_manual(values = plot_colors[c(1, 5,  2)]) +
+  labs(title = "Global bias (Accuracy)", x = "Level", y = "Global - Local Accuracy (% correct)")
+
+g <- g |> gg_style_means()
+ggsave(fig_path_acc_2, g, "png", height = 4, width = 4)
+g_acc_2 <- g
+}
+
+include_graphics(fig_path_acc_2)
+```
+
+---
+
+```{r plot_acc_1}
+fig_path_acc_1 <- here(fig_dir, "acc_1.png")
+
+if (use_cached_accfigs == FALSE) {
+  ## Make a table showing:
+  ## For each subject and field, the difference in median acc for:
+  ## Global - Local
+  acc_1 <- acc_subject |>
+    pivot_wider(names_from = c(field, level),
+                values_from = acc) |>
+    mutate(LVF_Global_Bias = (LVF_Global - LVF_Local) - (RVF_Global - RVF_Local)) |>
+    mutate(all_one_group = "all_one_group")
+    
+acc_descriptive <- acc_1 |>
+  group_by(all_one_group, handedness) |> 
+  summarize(
+    median = median(LVF_Global_Bias),
+    mean = mean(LVF_Global_Bias),
+    SE = sd(LVF_Global_Bias) / sqrt(length((LVF_Global_Bias)))
+  )
+
+g <- ggplot(acc_1, aes(
+  x = all_one_group,
+  y = LVF_Global_Bias,
+  fill = handedness,
+  color = handedness
+)) +
+  geom_quasirandom(
+    alpha = .1, show.legend = F,
+    # color = plot_color
+    ) +
+  geom_boxplot(
+    alpha = 0.5,
+    size = 0.3,
+    varwidth = F,
+    outlier.shape = NA,
+    color = "gray20",
+    # fill = plot_color,
+    show.legend = F
+  ) +
+  stat_summary(
+    fun.data = mean_cl_normal,
+    fun.args = list(conf.int = 0.95),
+    geom = "errorbar",
+    position = "dodge",
+    linetype = 1,
+    color = "gray5",
+    width = .2,
+    # size = point_size / 5,
+    show.legend = F
+  ) +
+  geom_point(
+    data = acc_descriptive,
+    aes(y = mean),
+    # fill = plot_color,
+    color = "black",
+    shape = 21,
+    show.legend = F
+  ) +
+  facet_wrap(~handedness) +
+  # scale_y_continuous(minor_breaks = seq(-500 , 500, 50),
+  #                    breaks = seq(-500, 500, 100)) +
+  scale_fill_manual(values = plot_colors[c(1, 5,  2)]) +
+  scale_color_manual(values = plot_colors[c(1, 5,  2)]) +
+  theme(axis.text.x = element_blank()) +
+  labs(title = "LVF>RVF Global Bias (Accuracy)", x = "Level", y = "LVF - RVF, Global - Local Accuracy (% correct)")
+
+g <- g |> gg_style_means() +
+  theme(axis.text.x = element_blank(), aspect.ratio = 4/1)
+ggsave(fig_path_acc_1, g, "png", height = 4, width = 4)
+g_acc_1 <- g
+}
+
+include_graphics(fig_path_acc_1)
+```
+
+
+#### Statistics
+##### Simple mixed regression model
 ***In progress.*** 
+
+Accuracy is modeled as a binomial effect of field, level, and handedness, using binary correct/incorrect data from every target-present trial:
+<br>
+<br>
+`glmer( correct ~ field*level*handedness + (1 | subject), family = "binomial" )`
+<br>
+<br>
+```{r acc_model_2bins}
+## Make a binomial logistic model using data from every trial.
+
+
+if (use_cached_model_acc == FALSE) {
+  ## Make a model with two handedness bins: Right and Left
+  aah_for_acc_model_2bins <-
+    aah_for_acc_model |> filter(handedness %in% c("Right", "Left"))
+  
+  acc_model_2bins <-
+    glmer(correct ~ field * level * handedness + (1 | subject),
+          data = aah_for_acc_model_2bins,
+          family = "binomial")
+  
+  ## Warning: the model did not converge
+  ## max|grad .006 (tol .002)
+  ## https://rstudio-pubs-static.s3.amazonaws.com/33653_57fc7b8e5d484c909b615d8633c01d51.html
+  ## Create emmeans model object, and manually cache it.
+  acc_emm_2bins <-
+    emmeans(acc_model_2bins, ~ field * level & handedness)
+  
+  ## Manually cache model
+  saveRDS(acc_model_2bins,
+          here(manual_cache_dir,
+               "acc_model_2bins.rds"))
+  saveRDS(acc_emm_2bins, here(manual_cache_dir, "acc_emm_2bins.rds"))
+  
+} else if (use_cached_model_acc == TRUE) {
+  ## Load cached model
+  acc_model_2bins <- readRDS(here(manual_cache_dir, "acc_model_2bins.rds"))
+  acc_emm_2bins <- readRDS(here(manual_cache_dir, "acc_emm_2bins.rds"))
+}
+```
+
+
+```{r}
+if (use_cached_model_acc == FALSE) {
+  ## Make a model with three handedness bins: Right, Mixed, and Left
+  acc_model_3bins <-
+    glmer(correct ~ field * level * handedness + (1 | subject),
+          data = aah_for_acc_model,
+          family = "binomial")
+  
+  ## Warning message:
+  ##In checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv,  :
+  ##  Model failed to converge with max|grad| = 0.130807 (tol = 0.002, component 1)
+  
+  ## Create emmeans model object, and manually cache it.
+  acc_emm_3bins <-
+    emmeans(acc_model_3bins, ~ field * level * handedness)
+  
+  ## Manually cache model
+  saveRDS(acc_model_3bins,
+          here(manual_cache_dir, "acc_model_3bins.rds"))
+  saveRDS(acc_emm_3bins, here(manual_cache_dir, "acc_emm_3bins.rds"))
+  
+} else if (use_cached_model_acc == TRUE) {
+  ## Load cached model
+  acc_model_3bins <-
+    readRDS(here(manual_cache_dir, "acc_model_3bins.rds"))
+  acc_emm_3bins <-  readRDS(here(manual_cache_dir, "acc_emm_3bins.rds"))
+}
+```
+
+<br>
+```{r acc_interaction_anova}
+## Use anova() on competing models to test 2-way interaction.
+if (use_cached_model_acc == FALSE) {
+  ## Create and manually cache ANOVA
+acc_model_no_interaction <- update(acc_model_2bins, . ~ . - field:level:handedness)
+
+interaction_anova <- interaction_stats(acc_model_2bins, acc_model_no_interaction)
+  
+  ## Manually cache model
+  saveRDS(interaction_anova, here(manual_cache_dir,
+                                "acc_anova_2bins.rds"))
+  
+} else if (use_cached_model_acc == TRUE) {
+  ## Load cached ANOVA
+  interaction_anova <- readRDS(here(manual_cache_dir, "acc_anova_2bins.rds"))
+}
+
+interaction_anova |>
+  as_tibble() |>
+  rename(p.value = `Pr(>Chisq)`) |> 
+  format_p.value() |> 
+  pretty_table() |> 
+  tab_header(title = "Field by level by handedness interaction (Accuracy)", 
+             subtitle = "ANOVA: compare models with vs. without interaction term") |> 
+  tab_footnote(footnote = "F-test (two-sided? https://daniellakens.blogspot.com/2016/04/one-sided-f-tests-and-halving-p-values.html)",
+               locations = cells_column_labels(columns = p.value))
+```
+<br>
+```{r acc_interaction_emm}
+## Use emmeans() to test 3-way interaction.
+acc_interaction_emm <- acc_emm_2bins |> 
+  contrast(interaction = c("consec")) |>
+  summary(infer = T, type = "response")
+
+acc_interaction_emm |>
+  as_tibble() |>
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "Field by level by handedness interaction (Accuracy)",
+             subtitle = "Compare effect estimate to zero with emmeans()") |>
+  tab_footnote(footnote =  "Backtransformed to odds ratio from log odds ratio (tests are performed on log odds ratio scale). A ratio > 1 means global bias is stronger in the LVF for right handers (predicted by AAH)",
+               locations = cells_column_labels(columns = odds.ratio)) |>
+  tab_footnote(footnote = "'Inf' df is expected when emmeans does logistic regression. See emmeans FAQ: https://cran.r-project.org/web/packages/emmeans/vignettes/FAQs.html#asymp.",
+               locations = cells_column_labels(columns = df)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value))
+```
+<br>
+```{r acc_handedness_bias}
+## Estimate the effect of field by level for each handedness group
+acc_emm2 <- emmeans(acc_model_3bins, ~field*level | handedness) |>
+  contrast(interaction = "consec") |>
+  summary(infer = T, adj = "none", type = "response")
+
+acc_emm2 |>
+  as_tibble() |> 
+  format_p.value() |> 
+  pretty_table() |>
+  tab_header(title = "LVF Global bias by handedness bin (Accuracy)",
+             subtitle = "Compare effect estimate to zero with emmeans()") |>
+  tab_footnote(footnote =  "Backtransformed to odds ratio from log odds ratio (tests are performed on log odds ratio scale). A ratio > 1 means global bias is stronger in the LVF, as predicted for right handers. Mixed handers' global bias is shown here, but their data was not included in the binomial model.",
+               locations = cells_column_labels(columns = odds.ratio)) |>
+  tab_footnote(footnote = "'Inf' df is expected when emmeans does logistic regression. See emmeans FAQ: https://cran.r-project.org/web/packages/emmeans/vignettes/FAQs.html#asymp.",
+               locations = cells_column_labels(columns = df)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value))
+```
+<br>
 
 
 ## Field x Level x Handedness (continuous) {.tabset .tabset-pills}
@@ -772,7 +1135,7 @@ interaction_anova |>
 ```
 <br>
 ```{r}
-## Test whether interaction slope differs from zer, with emmeans
+## Test whether interaction slope differs from zero, with emmeans
 
 ## This code estimates the effect of EHI on RT for each field*level:
 rt_emt <- emtrends(rt_model_ehi, pairwise ~ field*level, var = "ehi")
@@ -980,11 +1343,244 @@ include_graphics(fig_path_acc_ehi_cor_wide)
 `acc_ehi_model <- glmer( rt ~ field*level*ehi + (1 | subject), family = "binomial" )`
 <br>
 <br>
+```{r acc_model_ehil}
+## Prepare data, so emmeans contrasts show
+## Global bias as a positive number.
+aah_for_acc_ehi_model <- aah_for_acc_model |>
+  mutate(level = level |> factor(levels = c("Global", "Local")),
+         field = field |> factor(levels = c("LVF", "RVF")))
+```
+```{r acc_model_ehi2}
+## Make a binomial logistic model using data from every trial.
+
+##TODO: To make the model converge, try:
+## - NAGQ = 0 (https://stackoverflow.com/questions/44677487/lme4glmer-vs-statas-melogit-command)
+## - using a different optimizer
+
+if (use_cached_model_acc == FALSE) {
+  ## Create and cache binomial model
+  acc_model_ehi <-
+    glmer(correct ~ field * level * ehi + (1 | subject),
+          data = aah_for_acc_ehi_model,
+          family = "binomial")
+  #  Warning messages:
+  #1: In checkConv(attr(opt, "derivs"), opt$par, ctrl = #control$checkConv,  :
+  #  Model failed to converge with max|grad| = 0.00445801 (tol = 0.002, component 1)
+  #2: In checkConv(attr(opt, "derivs"), opt$par, ctrl = #control$checkConv,  :
+  #  Model is nearly unidentifiable: very large eigenvalue
+  # - Rescale variables?
+  
+  
+  ## Create emmeans model object, and manually cache it.
+  acc_emm_ehi <-
+    emmeans(acc_model_ehi, ~ field * level * ehi)
+  
+  ## Manually cache model
+  saveRDS(acc_model_ehi, here(manual_cache_dir,
+                              "acc_model_ehi.rds"))
+  saveRDS(acc_emm_ehi, here(manual_cache_dir, "acc_emm_ehi.rds"))
+  
+} else if (use_cached_model_acc == TRUE) {
+  ## Load cached model
+  acc_model_ehi <- readRDS(here(manual_cache_dir, "acc_model_ehi.rds"))
+  acc_emm_ehi <- readRDS(here(manual_cache_dir, "acc_emm_ehi.rds"))
+}
+```
+<br>
+```{r acc_interaction_anova_ehi}
+## Use anova() on competing models to test 2-way interaction.
+
+if (use_cached_model_acc == FALSE) {
+  ## Create and manually cache ANOVA
+  acc_model_no_interaction <-
+    update(acc_model_ehi, . ~ . - field:level:ehi)
+  
+  #  Warning message:
+  #In checkConv(attr(opt, "derivs"), opt$par, ctrl = #control$checkConv,  :
+  #  Model is nearly unidentifiable: very large eigenvalue
+  # - Rescale variables?
+  
+  interaction_anova <-
+    interaction_stats(acc_model_ehi, acc_model_no_interaction)
+  
+  ## Manually cache model
+  saveRDS(interaction_anova,
+          here(manual_cache_dir,
+               "acc_anova_ehi.rds"))
+  
+} else if (use_cached_model_acc == TRUE) {
+  ## Load cached ANOVA
+  interaction_anova <- readRDS(here(manual_cache_dir, "acc_anova_ehi.rds"))
+}
+
+interaction_anova |>
+  as_tibble() |>
+  rename(p.value = `Pr(>Chisq)`) |> 
+  format_p.value() |> 
+  pretty_table() |> 
+  tab_header(title = "Field by level by EHI interaction (Accuracy)", 
+             subtitle = "ANOVA: compare models with vs. without interaction term") |> 
+  tab_footnote(footnote = "F-test (two-sided? https://daniellakens.blogspot.com/2016/04/one-sided-f-tests-and-halving-p-values.html)",
+               locations = cells_column_labels(columns = p.value))
+```
+<br>
+```{r}
+## Test whether interaction slope differs from zero, with emmeans
+
+## This code estimates the effect of EHI on acc for each field*level:
+acc_emt <- emtrends(acc_model_ehi, pairwise ~ field*level, var = "ehi")
+## We want to compare the effect of EHI on acc for:
+## (LVF Global - LVF Local) - (RVF Global - RVF Local)
+## Contrast indices: 2 - 5
+
+## Report interaction estimate, with CI and p value.
+acc_emt[[1]] |> contrast(interaction = c("consec"), var = "ehi") |> 
+  summary(infer = T)|>
+  format_p.value() |> 
+  pretty_table() |> 
+  tab_header(title = "Field by level interaction (acc)",
+             subtitle = "Compare effect estimate to zero with emmeans()") |>
+  tab_footnote(footnote = "A positive number means global bias is stronger in LVF for right handers (as predicted), in logodds per EHI unit (-100 to 100). Multiply this value by 200 to get the estimated difference in LVF global bias for strong left vs. right handers.",
+               locations = cells_column_labels(columns = estimate)) |>
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Confidence level: 95%. Lower CI for one-sided test: 0.013.",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Z-approximation",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+
+```{r}
+## Report EHI effect on bias by field, with CI and p-value
+acc_emt$contrasts |>
+  summary(infer = T, adj = "none") |> 
+  as_tibble() |> 
+  filter(contrast %in%
+           c("LVF Global - LVF Local", "RVF Global - RVF Local")) |> 
+  format_p.value() |> 
+  pretty_table() |> 
+  tab_header(title = "Field by level interaction (acc)",
+             subtitle = "Compare effect estimate to zero with emmeans()") |>
+  tab_footnote(footnote = "A positive number means more global bias, in logodds per EHI unit (-100 to 100)",
+               locations = cells_column_labels(columns = estimate)) |>
+  tab_footnote(footnote = "Two-sided, uncorrected",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Z-approximation",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+```{r}
+## Report EHI effect by field and level, with CI and p-value
+acc_emt$emtrends |> summary(infer = T, adj = "none") |>
+  as_tibble() |>
+  format_p.value() |>
+  pretty_table() |>
+  tab_header(title = "Slope of EHI and Accuracy by field and level",
+             subtitle = "Compare effect estimate to zero with emmeans()") |>
+  tab_footnote(footnote = "A positive number means higher accuracy for right handers, in logodds per EHI unit (-100 to 100).",
+               locations = cells_column_labels(columns = ehi.trend)) |>
+  tab_footnote(footnote = "Two-sided",
+               locations = cells_column_labels(columns = p.value)) |>
+  tab_footnote(footnote = "Confidence level: 95%",
+               locations = cells_column_labels(columns = ends_with("CL"))) |>
+  tab_footnote(footnote = "Z-approximation",
+               locations = cells_column_labels(columns = df))
+```
+<br>
+```{r}
+## Pull estimates for strong left and right handers (ehi = -100, +100)
+## Estimate effect of ehi on field x level.
+
+## Use ref_grid (following quant 2 HW5)
+ref <- ref_grid(acc_model_ehi, at = list(ehi = c(-100, 100)))
+#ref |> summary(infer = T) |> as_tibble() |> filter(ehi == -100)
+
+ref_L <- ref_grid(acc_model_ehi, at = list(ehi = c(-100)))
+ref_R <- ref_grid(acc_model_ehi, at = list(ehi = c(100)))
+
+L_tbl <- ref_L |> contrast("pairwise", type = "response") |> as_tibble() |> slice(2, 5)
+R_tbl <- ref_R |> contrast("pairwise", type = "response") |> as_tibble() |> slice(2, 5)
+
+L_tbl |> 
+  format_p.value() |> 
+  pretty_table() |> 
+  tab_header(title = "Estimated global bias by field, for EHI of -100 (strong left hander)") |> 
+  tab_footnote(footnote = "Estimated global bias. An odds ratio > 1 means global bias.",
+               locations = cells_column_labels(columns = odds.ratio))
+  
+## This shows the pairwise differences like RVF Global - RVF Local
+## when ehi = -100.
+```
+<br>
+```{r}
+## Estimate LVF Global bias for EHI -100
+pull_LVF_global_bias <- function(X_tbl) {
+  X_LVF_est <-
+    X_tbl |> slice(1) |> pull(odds.ratio)
+  
+  X_RVF_est <-
+    X_tbl |> slice(2) |> pull(odds.ratio)
+  
+  X_LVF_global_bias <- (X_LVF_est - X_RVF_est)
+  return(X_LVF_global_bias)
+}
+
+L_LVF_global_bias <- pull_LVF_global_bias(L_tbl)
+L_LVF_global_bias |>
+  as_tibble() |>
+  rename(LVF_global_bias = value) |>
+  pretty_table() |> 
+  tab_header(title = "Estimated LVF Global Bias for EHI of -100 (strong left hander)") 
+```
+<br>
+```{r}
+R_tbl |> 
+  format_p.value() |> 
+  pretty_table() |> 
+  tab_header(title = "Estimated global bias by field, for EHI of +100 (strong right hander)") |> 
+  tab_footnote(footnote = "Estimated global bias (ms)",
+               locations = cells_column_labels(columns = odds.ratio))
+## This shows the pairwise differences like RVF Global - RVF Local
+## when ehi = +100.
+```
+<br>
+```{r}
+R_LVF_global_bias <- pull_LVF_global_bias(R_tbl)
+R_LVF_global_bias |>
+  as_tibble() |>
+  rename(LVF_global_bias = value) |>
+  pretty_table() |> 
+  tab_header(title = "Estimated LVF Global Bias for EHI of +100 (strong right hander)")
+
+## Odds for LVF global bias for right handers: 0.98 (logodds: -0.0202)
+## Odds for LVF global bias for strong left handers: 1.138 (logodds: 0.13)
+```
+$$
+log(.98) = -0.0202
+
+log(0.135) = 0.1266
+
+-0.0202 - 0.1266 = -0.147 (logodds)
+
+-0.147 / 200 = -0.00007 logodds / EHI unit
+$$
+The model estimates that an average strong left hander (EHI -100) will have 1.135/0.98 greater relative odds of correctness for LVF global stimuli versus a strong right hander (EHI +100). Each unit change in EHI (-100:100) corresponds to a **0.00007** (logodds) difference in LVF global bias. This is close to the slope estimate given by the summary function (the difference should be due to rounding):
+<br>
+
+```{r, echo = T, results = "markup"}
+summary(acc_model_ehi)
+```
+<br>
+
+---
 
 Test for a simple correlation between each subject's EHI and LVF global bias.
 <br>
 <br>
-```{r}
+```{r quick_look_acc1}
 ## A quick look: does EHI correlate with per-subject LVF global bias?
 acc_ehi_model_simple <- lm(LVF_Global_Bias ~ ehi, data = acc_ehi_1)
 acc_ehi_model_simple |> summary() |> tidy() |> format_p.value() |> pretty_table() |>
@@ -993,7 +1589,7 @@ acc_ehi_model_simple |> summary() |> tidy() |> format_p.value() |> pretty_table(
                locations = cells_column_labels(columns = p.value))
 ```
 <br>
-```{r}
+```{r quick_look_acc2}
 cor.test(acc_ehi_1$ehi, acc_ehi_1$LVF_Global_Bias, method = "spearman", alternative = "greater") |> tidy() |>
   rename(rho = estimate) |> 
   format_p.value() |> pretty_table() |>
