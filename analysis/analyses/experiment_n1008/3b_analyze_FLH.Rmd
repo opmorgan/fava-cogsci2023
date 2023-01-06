@@ -246,7 +246,11 @@ include_graphics(fig_path)
 Do we find an interaction of field x level x handedness, when handedness is binned as left (EHI <= -40) or right (EHI > +40)?
 <br>
 <br>
- ***Summary.*** For reaction time, we find the critical interaction in the predicted direction (11.67ms, 95%CI [0.65, 22.69], p = .019, one-sided). Accuracy stats are in progress: the interaction effect will be close to zero, opposite the predicted direction (the point estimates are 1.76 for righties and 1.96 for lefties).
+
+ ***Summary.*** For reaction time, we find the critical interaction in the predicted direction (11.67ms, 95% CI [0.65, 22.69], p = .019, one-sided). Left handers show 15.64ms LVF global bias (95% CI [7.61, 23.67]), and right handers 27.31ms (95% CI [19.80, 34.81]). Mixed handers (not included in the categorical interaction analysis) show a LVF global bias of 21.66ms (95% CI [9.09, 34.23]).
+ 
+For accuracy, we find no significant interaction of field by level by handedness (OR = 0.90, 95% CI [0.70, 1.16], p = .42; where OR < 1 means greater LVF global bias for left handers). Point estimates of LVF global bias hardly differ between left handers (OR = 1.95, 95% CI [1.62, 2.35]) and right handers (OR = 1.77, 95% CI [1.49, 2.10]). For mixed handers (not included in the categorical interaction analysis), the point estimate is 1.10 (95% CI [0.82, 1.47])
+
 <br>
 <br>
 
@@ -896,7 +900,6 @@ include_graphics(fig_path_acc_1)
 
 #### Statistics
 ##### Simple mixed regression model
-***In progress.*** 
 
 Accuracy is modeled as a binomial effect of field, level, and handedness, using binary correct/incorrect data from every target-present trial:
 <br>
@@ -1046,8 +1049,15 @@ acc_emm2 |>
 ## Field x Level x Handedness (continuous) {.tabset .tabset-pills}
 
 Do we find an interaction of field x level x handedness (continuous EHI score)?
+<br>
+<br>
 
-***Summary.*** For reaction time, we find the critical interaction in the predicted direction (.067ms per EHI unit, 95% CI [0.003, 0.13], p = .020, one-sided). This slope corresponds to 14.82ms for EHI = -100, and 28.14ms for EHI = +100. Accuracy stats are in progress.
+***Summary.*** For reaction time, we find the critical interaction in the predicted direction (.067ms per EHI unit, 95% CI [0.003, 0.13], p = .020, one-sided). Estimated global bias is 13.32ms lower for strong left handers (EHI -100: 14.82ms, 95% CI [6.48, 23.17]) than for strong right handers (EHI +100: 28.14ms, 95% CI [20.31, 35.98]).
+
+For accuracy, we find no significant interaction of field by level by EHI (Beta = 0.0002 logodds per EHI unit, 95% CI [-0.001, 0.002], p = .81). Estimated LVF global bias hardly differs for strong left handers (EHI -100: OR = 1.67, 95% CI [1.37, 2.03]) and strong right handers (EHI +100: OR = 1.73, 95% CI [1.45, 2.07]).
+
+<br>
+<br>
 
 ### Reaction time
 ```{r}
@@ -1091,21 +1101,22 @@ aah_for_rt_ehi_model <- aah_for_rt_model |>
   mutate(level = level |> factor(levels = c("Local", "Global")),
          field = field |> factor(levels = c("LVF", "RVF")))
 ```
-```{r}
-rt_model_ehi <- lmer(rt ~ field:level:ehi + field:level + field:ehi + level:ehi + field + level + ehi + (1 | subject), data = aah_for_rt_ehi_model)
-```
+
 
 ```{r rt_model_ehi_caching}
 if (use_cached_model_rt_ehi == FALSE) {
+  rt_model_ehi <- lmer(rt ~ field:level:ehi + field:level + field:ehi + level:ehi + field + level + ehi + (1 | subject), data = aah_for_rt_ehi_model)
+  
   ## Create emmeans model object, and manually cache it.
-  ## TODO: run without z-score approximation.
   rt_emm_ehi <- emmeans(rt_model_ehi, ~ field * level * ehi)
   
   ## Manually cache model
+  saveRDS(rt_model_ehi, here(manual_cache_dir, "rt_model_ehi.rds"))
   saveRDS(rt_emm_ehi, here(manual_cache_dir, "rt_emm_ehi.rds"))
   
 } else if (use_cached_model_rt_ehi == TRUE) {
   ## Load cached model
+  rt_model_ehi <- readRDS(here(manual_cache_dir, "rt_model_ehi.rds"))
   rt_emm_ehi <- readRDS(here(manual_cache_dir, "rt_emm_ehi.rds"))
 }
 ```
@@ -1150,11 +1161,11 @@ rt_emt[[1]] |> contrast(interaction = c("consec"), var = "ehi") |>
   pretty_table() |> 
   tab_header(title = "Field by level interaction (RT)",
              subtitle = "Compare effect estimate to zero with emmeans()") |>
-  tab_footnote(footnote = "A positive number means global bias is stronger in LVF for right handers (as predicted), in ms per EHI unit (-100 to 100). Multiply this value by 200 to get the estimated difference in LVF global bias for strong left vs. right handers.",
+  tab_footnote(footnote = "A positive number means global bias is stronger in LVF for right handers (as predicted by AAH), in ms per EHI unit (-100 to 100). Multiply this value by 200 to get the estimated difference in LVF global bias for strong left vs. right handers.",
                locations = cells_column_labels(columns = estimate)) |>
   tab_footnote(footnote = "Two-sided",
                locations = cells_column_labels(columns = p.value)) |>
-  tab_footnote(footnote = "Confidence level: 95%. Lower CI for one-sided test: 0.013.",
+  tab_footnote(footnote = "Confidence level: 95",
                locations = cells_column_labels(columns = ends_with("CL"))) |>
   tab_footnote(footnote = "Z-approximation",
                locations = cells_column_labels(columns = df))
@@ -1204,70 +1215,54 @@ rt_emt$emtrends |> summary(infer = T) |>
 ---
 
 <br>
+
 ```{r}
+## LVF Global bias by EHI.
 ## Pull estimates for strong left and right handers (ehi = -100, +100)
 ## Estimate effect of ehi on field x level.
 
 ## Use ref_grid (following quant 2 HW5)
-ref <- ref_grid(rt_model_ehi, at = list(ehi = c(-100, 100)))
-#ref |> summary(infer = T) |> as_tibble() |> filter(ehi == -100)
+ref <- ref_grid(rt_model_ehi, at = list(ehi = c(-100, 0, 100)))
 
-ref_L <- ref_grid(rt_model_ehi, at = list(ehi = c(-100)))
-ref_R <- ref_grid(rt_model_ehi, at = list(ehi = c(100)))
-
-L_tbl <- ref_L |> contrast("pairwise") |> as_tibble() |> slice(2, 5)
-R_tbl <- ref_R |> contrast("pairwise") |> as_tibble() |> slice(2, 5)
-
-L_tbl |> 
+## Show estimates for left and right handers.
+ref |>
+  contrast(interaction = c("consec"), by = "ehi") |>
+  summary(infer = T, type = "response") |>
+  as_tibble() |> 
   format_p.value() |> 
   pretty_table() |> 
-  tab_header(title = "Estimated global bias by field, for EHI of -100 (strong left hander)") |> 
-  tab_footnote(footnote = "Estimated global bias (ms)",
+  tab_header(title = "Estimated LVF global bias, by EHI score") |> 
+  tab_footnote(footnote = "Strong left hander: -100; Mixed hander: 0; Strong right hander: +100",
+               locations = cells_column_labels(columns = ehi)) |> 
+  tab_footnote(footnote = "Estimated LVF global bias (ms); a positive number means LVF global bias",
                locations = cells_column_labels(columns = estimate))
-  
-## This shows the pairwise differences like RVF Global - RVF Local
-## when ehi = -100.
 ```
 <br>
 ```{r}
-## Estimate LVF Global bias for EHI -100
-pull_LVF_global_bias <- function(X_tbl) {
-  X_LVF_est <-
-    X_tbl |> slice(1) |> pull(estimate)
-  
-  X_RVF_est <-
-    X_tbl |> slice(2) |> pull(estimate)
-  
-  X_LVF_global_bias <- (X_LVF_est - X_RVF_est)
-  return(X_LVF_global_bias)
-}
-
-L_LVF_global_bias <- pull_LVF_global_bias(L_tbl)
-L_LVF_global_bias |>
-  as_tibble() |>
-  rename(LVF_global_bias = value) |>
-  pretty_table() |> 
-  tab_header(title = "Estimated LVF Global Bias for EHI of -100 (strong left hander)") 
-```
-<br>
-```{r}
-R_tbl |> 
+## Global bias by field, by handedness.
+ref |>
+  contrast("pairwise", by = "ehi") |> 
+  summary(infer = T, type = "response") |> 
+  as_tibble() |> 
+  slice(2, 5, 8, 11, 14, 17) |> 
   format_p.value() |> 
+  arrange(ehi) |> 
   pretty_table() |> 
-  tab_header(title = "Estimated global bias by field, for EHI of +100 (strong right hander)") |> 
-  tab_footnote(footnote = "Estimated global bias (ms)",
+  tab_header(title = "Estimated global bias by field, by EHI score") |> 
+  tab_footnote(footnote = "Estimated global bias (ms); a positive number means global bias",
                locations = cells_column_labels(columns = estimate))
-## This shows the pairwise differences like RVF Global - RVF Local
-## when ehi = +100.
 ```
 <br>
 ```{r}
-R_LVF_global_bias <- pull_LVF_global_bias(R_tbl)
-R_LVF_global_bias |>
-  as_tibble() |>
-  rename(LVF_global_bias = value) |>
+## Accuracy by field and level, by handedness.
+ref |>
+  summary(infer = T, type = "response") |> 
+  as_tibble() |> 
+  select(field, level, ehi, prediction, ends_with("CL")) |> 
   pretty_table() |> 
-  tab_header(title = "Estimated LVF Global Bias for EHI of +100 (strong right hander)")
+  tab_header(title = "Reaction time by field and level, by EHI score") |> 
+  tab_footnote(footnote = "Reaction time (ms)",
+               locations = cells_column_labels(columns = prediction))
 ```
 <br>
 $$
@@ -1284,29 +1279,6 @@ summary(rt_model_ehi)
 
 ---
 
-<br>
-
-Test for a simple correlation between each subject's EHI and LVF global bias.
-<br>
-<br>
-```{r}
-## A quick look: does EHI correlate with per-subject LVF global bias?
-rt_ehi_model_simple <- lm(LVF_Global_Bias ~ ehi, data = rt_ehi_1)
-rt_ehi_model_simple |> summary() |> tidy() |> format_p.value() |> pretty_table() |>
-  tab_header(title = "Subject-level correlation: linear model") |> 
-  tab_footnote(footnote = "Two-sided",
-               locations = cells_column_labels(columns = p.value))
-```
-<br>
-```{r}
-cor.test(rt_ehi_1$ehi, rt_ehi_1$LVF_Global_Bias, method = "spearman", alternative = "greater") |> tidy() |>
-  rename(rho = estimate) |> 
-  format_p.value() |> pretty_table() |>
-  tab_header(title = "Subject-level correlation: Spearman's rho") |> 
-  tab_footnote(footnote = "One-sided",
-               locations = cells_column_labels(columns = p.value))
-```
-<br>
 <br>
 
 ### Accuracy
@@ -1337,7 +1309,7 @@ include_graphics(fig_path_acc_ehi_cor_wide)
 
 #### Statistics
 
-***In progress.*** Model accuracy as a binomial effect of field, level, and EHI (continuous):
+Model accuracy as a binomial effect of field, level, and EHI (continuous):
 <br>
 <br>
 `acc_ehi_model <- glmer( rt ~ field*level*ehi + (1 | subject), family = "binomial" )`
@@ -1357,7 +1329,7 @@ aah_for_acc_ehi_model <- aah_for_acc_model |>
 ## - NAGQ = 0 (https://stackoverflow.com/questions/44677487/lme4glmer-vs-statas-melogit-command)
 ## - using a different optimizer
 
-if (use_cached_model_acc == FALSE) {
+if (use_cached_model_acc_ehi == FALSE) {
   ## Create and cache binomial model
   acc_model_ehi <-
     glmer(correct ~ field * level * ehi + (1 | subject),
@@ -1380,7 +1352,7 @@ if (use_cached_model_acc == FALSE) {
                               "acc_model_ehi.rds"))
   saveRDS(acc_emm_ehi, here(manual_cache_dir, "acc_emm_ehi.rds"))
   
-} else if (use_cached_model_acc == TRUE) {
+} else if (use_cached_model_acc_ehi == TRUE) {
   ## Load cached model
   acc_model_ehi <- readRDS(here(manual_cache_dir, "acc_model_ehi.rds"))
   acc_emm_ehi <- readRDS(here(manual_cache_dir, "acc_emm_ehi.rds"))
@@ -1390,7 +1362,7 @@ if (use_cached_model_acc == FALSE) {
 ```{r acc_interaction_anova_ehi}
 ## Use anova() on competing models to test 2-way interaction.
 
-if (use_cached_model_acc == FALSE) {
+if (use_cached_model_acc_ehi == FALSE) {
   ## Create and manually cache ANOVA
   acc_model_no_interaction <-
     update(acc_model_ehi, . ~ . - field:level:ehi)
@@ -1408,7 +1380,7 @@ if (use_cached_model_acc == FALSE) {
           here(manual_cache_dir,
                "acc_anova_ehi.rds"))
   
-} else if (use_cached_model_acc == TRUE) {
+} else if (use_cached_model_acc_ehi == TRUE) {
   ## Load cached ANOVA
   interaction_anova <- readRDS(here(manual_cache_dir, "acc_anova_ehi.rds"))
 }
@@ -1431,26 +1403,22 @@ interaction_anova |>
 acc_emt <- emtrends(acc_model_ehi, pairwise ~ field*level, var = "ehi")
 ## We want to compare the effect of EHI on acc for:
 ## (LVF Global - LVF Local) - (RVF Global - RVF Local)
-## Contrast indices: 2 - 5
 
 ## Report interaction estimate, with CI and p value.
 acc_emt[[1]] |> contrast(interaction = c("consec"), var = "ehi") |> 
   summary(infer = T)|>
   format_p.value() |> 
-  pretty_table() |> 
-  tab_header(title = "Field by level interaction (acc)",
+  pretty_table(digits = 4) |> 
+  tab_header(title = "Field by level by EHI interaction (Accuracy)",
              subtitle = "Compare effect estimate to zero with emmeans()") |>
   tab_footnote(footnote = "A positive number means global bias is stronger in LVF for right handers (as predicted), in logodds per EHI unit (-100 to 100). Multiply this value by 200 to get the estimated difference in LVF global bias for strong left vs. right handers.",
                locations = cells_column_labels(columns = estimate)) |>
   tab_footnote(footnote = "Two-sided",
                locations = cells_column_labels(columns = p.value)) |>
-  tab_footnote(footnote = "Confidence level: 95%. Lower CI for one-sided test: 0.013.",
-               locations = cells_column_labels(columns = ends_with("CL"))) |>
-  tab_footnote(footnote = "Z-approximation",
-               locations = cells_column_labels(columns = df))
+  tab_footnote(footnote = "Confidence level: 95% (two-sided)",
+               locations = cells_column_labels(columns = ends_with("CL")))
 ```
 <br>
-
 ```{r}
 ## Report EHI effect on bias by field, with CI and p-value
 acc_emt$contrasts |>
@@ -1459,9 +1427,8 @@ acc_emt$contrasts |>
   filter(contrast %in%
            c("LVF Global - LVF Local", "RVF Global - RVF Local")) |> 
   format_p.value() |> 
-  pretty_table() |> 
-  tab_header(title = "Field by level interaction (acc)",
-             subtitle = "Compare effect estimate to zero with emmeans()") |>
+  pretty_table(digits = 4) |> 
+  tab_header(title = "Field by level interaction (Accuracy)") |>
   tab_footnote(footnote = "A positive number means more global bias, in logodds per EHI unit (-100 to 100)",
                locations = cells_column_labels(columns = estimate)) |>
   tab_footnote(footnote = "Two-sided, uncorrected",
@@ -1477,7 +1444,7 @@ acc_emt$contrasts |>
 acc_emt$emtrends |> summary(infer = T, adj = "none") |>
   as_tibble() |>
   format_p.value() |>
-  pretty_table() |>
+  pretty_table(digits = 4) |>
   tab_header(title = "Slope of EHI and Accuracy by field and level",
              subtitle = "Compare effect estimate to zero with emmeans()") |>
   tab_footnote(footnote = "A positive number means higher accuracy for right handers, in logodds per EHI unit (-100 to 100).",
@@ -1490,84 +1457,73 @@ acc_emt$emtrends |> summary(infer = T, adj = "none") |>
                locations = cells_column_labels(columns = df))
 ```
 <br>
+
+---
+
+<br>
 ```{r}
+## LVF Global bias by handedness.
 ## Pull estimates for strong left and right handers (ehi = -100, +100)
 ## Estimate effect of ehi on field x level.
 
 ## Use ref_grid (following quant 2 HW5)
-ref <- ref_grid(acc_model_ehi, at = list(ehi = c(-100, 100)))
-#ref |> summary(infer = T) |> as_tibble() |> filter(ehi == -100)
+ref <- ref_grid(acc_model_ehi, at = list(ehi = c(-100, 0, 100)))
 
-ref_L <- ref_grid(acc_model_ehi, at = list(ehi = c(-100)))
-ref_R <- ref_grid(acc_model_ehi, at = list(ehi = c(100)))
 
-L_tbl <- ref_L |> contrast("pairwise", type = "response") |> as_tibble() |> slice(2, 5)
-R_tbl <- ref_R |> contrast("pairwise", type = "response") |> as_tibble() |> slice(2, 5)
-
-L_tbl |> 
+## Show estimates for left and right handers.
+ref |>
+  contrast(interaction = c("consec"), by = "ehi") |>
+  summary(infer = T, type = "response") |>
+  as_tibble() |> 
   format_p.value() |> 
   pretty_table() |> 
-  tab_header(title = "Estimated global bias by field, for EHI of -100 (strong left hander)") |> 
+  tab_header(title = "Estimated LVF global bias, by EHI score") |> 
+  tab_footnote(footnote = "Strong left hander: -100; Mixed hander: 0; Strong right hander: +100",
+               locations = cells_column_labels(columns = ehi)) |> 
+  tab_footnote(footnote = "Estimated LVF global bias. An odds ratio > 1 means LVF global bias.",
+               locations = cells_column_labels(columns = odds.ratio))
+```
+<br>
+```{r}
+## Global bias by field, by handedness.
+ref |>
+  contrast("pairwise", by = "ehi") |> 
+  summary(infer = T, type = "response") |> 
+  as_tibble() |> 
+  slice(2, 5, 8, 11, 14, 17) |> 
+  format_p.value() |> 
+  arrange(ehi) |> 
+  pretty_table() |> 
+  tab_header(title = "Estimated global bias by field, by EHI score") |> 
   tab_footnote(footnote = "Estimated global bias. An odds ratio > 1 means global bias.",
                locations = cells_column_labels(columns = odds.ratio))
-  
-## This shows the pairwise differences like RVF Global - RVF Local
-## when ehi = -100.
 ```
 <br>
 ```{r}
-## Estimate LVF Global bias for EHI -100
-pull_LVF_global_bias <- function(X_tbl) {
-  X_LVF_est <-
-    X_tbl |> slice(1) |> pull(odds.ratio)
-  
-  X_RVF_est <-
-    X_tbl |> slice(2) |> pull(odds.ratio)
-  
-  X_LVF_global_bias <- (X_LVF_est - X_RVF_est)
-  return(X_LVF_global_bias)
-}
-
-L_LVF_global_bias <- pull_LVF_global_bias(L_tbl)
-L_LVF_global_bias |>
-  as_tibble() |>
-  rename(LVF_global_bias = value) |>
+## Accuracy by field and level, by handedness.
+ref |>
+  summary(infer = T, type = "response") |> 
+  as_tibble() |> 
+  select(field, level, ehi, prob, ends_with("CL")) |> 
   pretty_table() |> 
-  tab_header(title = "Estimated LVF Global Bias for EHI of -100 (strong left hander)") 
+  tab_header(title = "Accurracy by field and level, by EHI score") |> 
+  tab_footnote(footnote = "Accuracy (% correct)",
+               locations = cells_column_labels(columns = prob))
 ```
 <br>
-```{r}
-R_tbl |> 
-  format_p.value() |> 
-  pretty_table() |> 
-  tab_header(title = "Estimated global bias by field, for EHI of +100 (strong right hander)") |> 
-  tab_footnote(footnote = "Estimated global bias (ms)",
-               locations = cells_column_labels(columns = odds.ratio))
-## This shows the pairwise differences like RVF Global - RVF Local
-## when ehi = +100.
-```
-<br>
-```{r}
-R_LVF_global_bias <- pull_LVF_global_bias(R_tbl)
-R_LVF_global_bias |>
-  as_tibble() |>
-  rename(LVF_global_bias = value) |>
-  pretty_table() |> 
-  tab_header(title = "Estimated LVF Global Bias for EHI of +100 (strong right hander)")
-
-## Odds for LVF global bias for right handers: 0.98 (logodds: -0.0202)
-## Odds for LVF global bias for strong left handers: 1.138 (logodds: 0.13)
-```
 $$
-log(.98) = -0.0202
-
-log(0.135) = 0.1266
-
--0.0202 - 0.1266 = -0.147 (logodds)
-
--0.147 / 200 = -0.00007 logodds / EHI unit
+log(1.73) = .548
 $$
-The model estimates that an average strong left hander (EHI -100) will have 1.135/0.98 greater relative odds of correctness for LVF global stimuli versus a strong right hander (EHI +100). Each unit change in EHI (-100:100) corresponds to a **0.00007** (logodds) difference in LVF global bias. This is close to the slope estimate given by the summary function (the difference should be due to rounding):
+$$
+log(1.67) = .513
+$$
+$$
+log(1.73) - log(1.67) = .0353
+$$
+$$
+.0353 / 200 = -0.000185 logodds / EHI unit
+$$
+The model estimates that a strong right hander (EHI +100) will have 1.73/1.67 = 1.04 greater odds of correctness for LVF global stimuli versus a strong left hander (EHI -100). Each unit change in EHI (-100:100) corresponds to a **0.0002** (logodds) difference in LVF global bias. This matches the slope estimate given by the summary function:
 <br>
 
 ```{r, echo = T, results = "markup"}
@@ -1577,25 +1533,4 @@ summary(acc_model_ehi)
 
 ---
 
-Test for a simple correlation between each subject's EHI and LVF global bias.
-<br>
-<br>
-```{r quick_look_acc1}
-## A quick look: does EHI correlate with per-subject LVF global bias?
-acc_ehi_model_simple <- lm(LVF_Global_Bias ~ ehi, data = acc_ehi_1)
-acc_ehi_model_simple |> summary() |> tidy() |> format_p.value() |> pretty_table() |>
-  tab_header(title = "Subject-level correlation: linear model") |> 
-  tab_footnote(footnote = "Two-sided",
-               locations = cells_column_labels(columns = p.value))
-```
-<br>
-```{r quick_look_acc2}
-cor.test(acc_ehi_1$ehi, acc_ehi_1$LVF_Global_Bias, method = "spearman", alternative = "greater") |> tidy() |>
-  rename(rho = estimate) |> 
-  format_p.value() |> pretty_table() |>
-  tab_header(title = "Subject-level correlation: Spearman's rho") |> 
-  tab_footnote(footnote = "One-sided",
-               locations = cells_column_labels(columns = p.value))
-```
-<br>
 <br>

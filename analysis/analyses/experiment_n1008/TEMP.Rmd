@@ -1,0 +1,84 @@
+---
+title: "TEMP"
+author: "Owen Morgan"
+date: "2023-01-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+---
+<br>
+```{r}
+## LVF Global bias by handedness.
+## Pull estimates for strong left and right handers (ehi = -100, +100)
+## Estimate effect of ehi on field x level.
+
+## Use ref_grid (following quant 2 HW5)
+ref <- ref_grid(acc_model_ehi, at = list(ehi = c(-100, 0, 100)))
+
+
+## Show estimates for left and right handers.
+ref |>
+  contrast(interaction = c("consec"), by = "ehi") |>
+  summary(infer = T, type = "response") |>
+  as_tibble() |> 
+  format_p.value() |> 
+  pretty_table() |> 
+  tab_header(title = "Estimated LVF global bias, by EHI score") |> 
+  tab_footnote(footnote = "Strong left hander: -100; Mixed hander: 0; Strong right hander: +100",
+               locations = cells_column_labels(columns = ehi)) |> 
+  tab_footnote(footnote = "Estimated LVF global bias. An odds ratio > 1 means LVF global bias.",
+               locations = cells_column_labels(columns = odds.ratio))
+```
+<br>
+```{r}
+## Global bias by field, by handedness.
+ref |>
+  contrast("pairwise", by = "ehi") |> 
+  summary(infer = T, type = "response") |> 
+  as_tibble() |> 
+  slice(2, 5, 8, 11, 14, 17) |> 
+  format_p.value() |> 
+  arrange(ehi) |> 
+  pretty_table() |> 
+  tab_header(title = "Estimated global bias by field, by EHI score") |> 
+  tab_footnote(footnote = "Estimated global bias. An odds ratio > 1 means global bias.",
+               locations = cells_column_labels(columns = odds.ratio))
+```
+<br>
+```{r}
+## Accuracy by field and level, by handedness.
+ref |>
+  summary(infer = T, type = "response") |> 
+  as_tibble() |> 
+  select(field, level, ehi, prob, ends_with("CL")) |> 
+  pretty_table() |> 
+  tab_header(title = "Accurracy by field and level, by EHI score") |> 
+  tab_footnote(footnote = "Accuracy (% correct)",
+               locations = cells_column_labels(columns = prob))
+```
+<br>
+$$
+log(1.73) = .548
+$$
+$$
+log(1.67) = .513
+$$
+$$
+log(1.73) - log(1.67) = .0353
+$$
+$$
+.0353 / 200 = -0.000185 logodds / EHI unit
+$$
+The model estimates that a strong right hander (EHI +100) will have 1.73/1.67 = 1.04 greater odds of correctness for LVF global stimuli versus a strong left hander (EHI -100). Each unit change in EHI (-100:100) corresponds to a **0.0002** (logodds) difference in LVF global bias. This matches the slope estimate given by the summary function:
+<br>
+
+```{r, echo = T, results = "markup"}
+summary(acc_model_ehi)
+```
+<br>
+
+---
