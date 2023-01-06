@@ -680,6 +680,15 @@ rt_aov_summary |> (\(.) .[[1]])() |> tidy() |>
 ```
 <br>
 
+---
+
+<br>
+```{r, echo = T, results = "markup"}
+summary(rt_model_2bins)
+```
+<br>
+
+
 ### Accuracy {.tabset .active}
 
 #### Plots
@@ -1045,6 +1054,14 @@ acc_emm2 |>
 ```
 <br>
 
+---
+
+<br>
+```{r, echo = T, results = "markup"}
+summary(acc_model_2bins)
+```
+<br>
+
 
 ## Field x Level x Handedness (continuous) {.tabset .tabset-pills}
 
@@ -1275,10 +1292,6 @@ The model estimates that an average strong right hander (EHI +100) will have **1
 ```{r, echo = T, results = "markup"}
 summary(rt_model_ehi)
 ```
-<br>
-
----
-
 <br>
 
 ### Accuracy
@@ -1531,6 +1544,3 @@ summary(acc_model_ehi)
 ```
 <br>
 
----
-
-<br>
