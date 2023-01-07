@@ -996,9 +996,11 @@ if (use_cached_model_acc == FALSE) {
 ## Use anova() on competing models to test 2-way interaction.
 if (use_cached_model_acc == FALSE) {
   ## Create and manually cache ANOVA
-acc_model_no_interaction <- update(acc_model_2bins, . ~ . - field:level:handedness)
-
-interaction_anova <- interaction_stats(acc_model_2bins, acc_model_no_interaction)
+  acc_model_no_interaction <-
+    update(acc_model_2bins, . ~ . - field:level:handedness)
+  
+  interaction_anova <-
+    interaction_stats(acc_model_2bins, acc_model_no_interaction)
   
   ## Manually cache model
   saveRDS(interaction_anova, here(manual_cache_dir,
@@ -1386,6 +1388,19 @@ if (use_cached_model_acc_ehi == FALSE) {
   #         control = glmerControl(optimizer = c("bobyqa"))
   #         )
   
+  ## To address large eigenvalue error, try rescaling continuous variables.
+  ## continuous variables: EHI.
+  # df <- as.data.frame(aah_for_acc_ehi_model)
+  # numcols <- grep("ehi|rt", names(df))
+  # df_scaled <- df
+  # df_scaled[, numcols] <- scale(df_scaled[, numcols])
+  # acc_model_ehi_scaled <- update(acc_model_ehi, data = df_scaled)
+  # acc_model_ehi_scaled
+  # summary(acc_model_ehi_scaled)
+  # 
+  # saveRDS(acc_model_ehi_scaled, here(manual_cache_dir,
+  #                             "acc_model_ehi_scaled.rds"))
+  
   
   ## Create emmeans model object, and manually cache it.
   acc_emm_ehi <-
@@ -1423,6 +1438,15 @@ if (use_cached_model_acc_ehi == FALSE) {
   saveRDS(interaction_anova,
           here(manual_cache_dir,
                "acc_anova_ehi.rds"))
+  
+  ## Do anova on scaled model
+  # acc_model_no_interaction_scaled <-
+  #   update(acc_model_ehi_scaled, . ~ . - field:level:ehi)
+  # interaction_anova_scaled <-
+  #   interaction_stats(acc_model_ehi_scaled, acc_model_no_interaction_scaled)
+  # saveRDS(interaction_anova_scaled,
+  #         here(manual_cache_dir,
+  #              "acc_anova_ehi_scaled.rds"))
   
 } else if (use_cached_model_acc_ehi == TRUE) {
   ## Load cached ANOVA
@@ -1581,6 +1605,15 @@ acc_model_ehi_bobyqa <- readRDS(here(manual_cache_dir, "models_bobyqa",
 ```
 ```{r, echo = T, results = "markup"}
 summary(acc_model_ehi_bobyqa)
+```
+<br>
+Using a model with scaled EHI gives virtually the same results, and no warning about large eigenvalues.
+```{r}
+acc_model_ehi_scaled <- readRDS(here(manual_cache_dir, "models_scaled", 
+                                     "acc_model_ehi_scaled.rds"))
+```
+```{r, echo = T, results = "markup"}
+summary(acc_model_ehi_scaled)
 ```
 <br>
 
