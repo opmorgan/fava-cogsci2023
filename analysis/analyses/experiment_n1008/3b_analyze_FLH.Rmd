@@ -906,7 +906,6 @@ g_acc_1 <- g
 include_graphics(fig_path_acc_1)
 ```
 
-
 #### Statistics
 ##### Simple mixed regression model
 
@@ -933,6 +932,18 @@ if (use_cached_model_acc == FALSE) {
   ## Warning: the model did not converge
   ## max|grad .006 (tol .002)
   ## https://rstudio-pubs-static.s3.amazonaws.com/33653_57fc7b8e5d484c909b615d8633c01d51.html
+  
+  
+  ## I re-ran the model with the bobyqa optimizer on Jan 7 2023,
+  ## and saw virtually the same estimates.
+  # acc_model_2bins <-
+  #   glmer(correct ~ field * level * handedness + (1 | subject),
+  #         data = aah_for_acc_model_2bins,
+  #         family = "binomial",
+  #         control = glmerControl(optimizer = c("bobyqa"))
+  #         )
+  
+  
   ## Create emmeans model object, and manually cache it.
   acc_emm_2bins <-
     emmeans(acc_model_2bins, ~ field * level & handedness)
@@ -1061,7 +1072,15 @@ acc_emm2 |>
 summary(acc_model_2bins)
 ```
 <br>
-
+Using the bobyqa optimizer alone gives virtually the same results.
+```{r}
+acc_model_2bins_bobyqa <- readRDS(here(manual_cache_dir, "models_bobyqa", 
+                                     "acc_model_2bins.rds"))
+```
+```{r, echo = T, results = "markup"}
+summary(acc_model_2bins_bobyqa)
+```
+<br>
 
 ## Field x Level x Handedness (continuous) {.tabset .tabset-pills}
 
@@ -1335,6 +1354,7 @@ aah_for_acc_ehi_model <- aah_for_acc_model |>
   mutate(level = level |> factor(levels = c("Global", "Local")),
          field = field |> factor(levels = c("LVF", "RVF")))
 ```
+
 ```{r acc_model_ehi2}
 ## Make a binomial logistic model using data from every trial.
 
@@ -1343,6 +1363,7 @@ aah_for_acc_ehi_model <- aah_for_acc_model |>
 ## - using a different optimizer
 
 if (use_cached_model_acc_ehi == FALSE) {
+  
   ## Create and cache binomial model
   acc_model_ehi <-
     glmer(correct ~ field * level * ehi + (1 | subject),
@@ -1354,6 +1375,16 @@ if (use_cached_model_acc_ehi == FALSE) {
   #2: In checkConv(attr(opt, "derivs"), opt$par, ctrl = #control$checkConv,  :
   #  Model is nearly unidentifiable: very large eigenvalue
   # - Rescale variables?
+  
+  ## I re-ran the model with the bobyqa estimate on Jan 7, 2023
+  ## This gave virtually the same results
+  ## (and still gave the warning about very large eigenvalue)
+  # acc_model_ehi <-
+  #   glmer(correct ~ field * level * ehi + (1 | subject),
+  #         data = aah_for_acc_ehi_model,
+  #         family = "binomial",
+  #         control = glmerControl(optimizer = c("bobyqa"))
+  #         )
   
   
   ## Create emmeans model object, and manually cache it.
@@ -1543,4 +1574,14 @@ The model estimates that a strong right hander (EHI +100) will have 1.73/1.67 = 
 summary(acc_model_ehi)
 ```
 <br>
+Using the bobyqa optimizer alone gives virtually the same results.
+```{r}
+acc_model_ehi_bobyqa <- readRDS(here(manual_cache_dir, "models_bobyqa", 
+                                     "acc_model_ehi.rds"))
+```
+```{r, echo = T, results = "markup"}
+summary(acc_model_ehi_bobyqa)
+```
+<br>
+
 
