@@ -23,11 +23,9 @@ In pilot analyses (n = 104/112 right handers), we saw a trend towards **stronger
 
 In the full sample of EHI right handers (n = 371), we see a significantly stronger global bias for squares (37.66ms, 95% CI [27.00, 48.32]) than for circles (18.13ms, 95% CI [7.72, 28.56]; difference = 19.52ms, 95% CI [4.61, 34.43], p = .01, two-sided).
 
-*Does the critical 3-way interaction (field by level by handedness) differ depending on shape?*
+For *categorical handedness*, there is no significant 4-way interaction, but **the trend is towards a larger 3-way interaction for squares** (difference = 15.89ms, 95% CI [-5.99, 37.76], p = .08, one-sided). For squares, we see a significant 3-way interaction of field by level by handedness (19.76ms, 95% CI [4.11, 35.40], p = .006, one-sided); for circles, we do not see a significant 3-way interaction (3.87ms, 95% CI [-11.41, 19.16], p = .31, one-sided), but the point estimates go in the predicted direction. For both shapes, point estimates suggest reduced, but not reversed, LVF global bias for left handers (+14.27ms for circles, +17.90ms for squares; for right handers, the estimates are +18.13ms for circles, +37.66ms for squares).
 
-For categorical handedness, there is no significant 4-way interaction, but **the trend is towards a larger 3-way interaction for squares (difference = 15.89ms, 95% CI [-5.99, 37.76], p = .08, one-sided) For squares, we see a significant 3-way interaction of field by level by handedness (19.76ms, 95% CI [4.11, 35.40], p = .006, one-sided); for circles, we do not see a significant 3-way interaction (3.87ms, 95% CI [-11.41, 19.16], p = .31, one-sided),** but the point estimates go in the predicted direction. For both shapes, point estimates suggest reduced, but not reversed, LVF global bias for left handers (+14.27ms for circles, +17.90ms for squares; for right handers, the estimates are +18.13ms for circles, +37.66ms for squares).
-
-Continuous handedness: In progress.
+For *continuous handedness*, **the trend is again towards a larger 3-way interaction for squares** (difference = 21.02ms from EHI -100 to +100; 95% CI [-4.2ms, 46.0ms], p = .05, one-sided). For squares only, we see a significant 3-way interaction of field by level by handedness (24ms from EHI -100 to +100, 95% CI [6.0, 42.0], p = .004, one-sided). For circles, we do not see a significant 3-way interaction (3.2ms from EHI -100 to +100, 95% CI [-14.4, 20.6], p = .36, one-sided). For both shapes, point estimates suggest reduced, but not reversed LVF global bias for left handers (+15.15ms for circles, +15.25 for squares; for right handers, the estimates are +18.25 for circles, +39.28 for squares).
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
@@ -482,7 +480,88 @@ emmtest_FL_H_S(use_cached_model = use_cached_models,
 <br>
 
 ### Continuous handedness
+Model RT as a linear effect of field, level, EHI, and shape (continuous):
+<br>
+<br>
+`rt_model_ehi <- lmer( rt ~ field*level*ehi + (1 | subject) )`
+<br>
+<br>
+```{r}
+## Prepare data, so emmeans contrasts show
+## Global bias as a positive number.
+aah_for_rt_ehi_model <- aah_for_rt_model |>
+  mutate(level = level |> factor(levels = c("Local", "Global")),
+         field = field |> factor(levels = c("LVF", "RVF")))
+```
+```{r FLSehi_demo}
+data_label <- "ehi"
+FLSehi_demo <- hand_demo_summary_table(aah_summary)
+FLSehi_demo |> pretty_table() |> tab_header(title = "Demographics")
+```
+<br>
+```{r FLSehi_model_emm}
+FLSehi <- model_emm_FLSehi(
+  use_cached_model = use_cached_models,
+  manual_cache_dir = manual_cache_dir,
+  data = aah_for_rt_ehi_model,
+  data_label = data_label
+)
+```
+<br>
+```{r FLSehi_anova}
+## ANOVA: is there a significant interaction of field by level by shape?
+anova_FLSehi(use_cached_anova = use_cached_models,
+          manual_cache_dir = manual_cache_dir,
+          data_label = data_label,
+          FLSehi$model,
+          title = "4-way field by level by EHI by shape interaction (RT)")
+```
+<br>
+```{r FLSehi_emmtest}
+## Use emmeans() to test 4-way interaction.
+emmtest_FLSehi(use_cached_model = use_cached_models,
+               manual_cache_dir = manual_cache_dir,
+               FLSehi_model = FLSehi$model,
+               data_label = data_label,
+               title = "4-way field by level by EHI by shape interaction (RT)")
+```
+<br>
+```{r FLehi_S_emmtest}
+## What is the estimated 3-way interaction effect for each shape?
+emmtest_FLehi_S(use_cached_model = use_cached_models,
+               manual_cache_dir = manual_cache_dir,
+               FLSehi_model = FLSehi$model,
+               data_label = data_label,
+               title = "3-way interaction effect by shape")
 
-**In progress.**
+```
+<br>
+
+#### Estimated effects for strong left and right handers
+
+<br>
+<br>
+```{r}
+## Effect of shape on LVF global bias by EHI
+pull_ehi_FLS(use_cached_model = use_cached_models,
+              manual_cache_dir = manual_cache_dir,
+              FLSehi_model <- FLSehi$model,
+              data_label = data_label,
+              title = "Estimated effect of shape on LVF global bias, by EHI score")
+
+```
+<br>
+```{r}
+## Magnitude of LVF global bias by EHI, for each shape.
+pull_ehi_FL_S(use_cached_model = use_cached_models,
+              manual_cache_dir = manual_cache_dir,
+              FLSehi_model <- FLSehi$model,
+              data_label = data_label,
+              title = "LVF global bias by EHI, for each shape (RT)")
+```
+
+
+
+
 
 
