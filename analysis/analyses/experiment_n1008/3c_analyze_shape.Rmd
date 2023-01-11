@@ -1,0 +1,488 @@
+---
+title: "Action Asymmetry Experiment (n = 1008): Shape (Square vs. Circle) Analyses"
+pagetitle: "aah | exp | analysis"
+author: "Owen Morgan"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output: html_document
+---
+
+<style type="text/css">
+  body{
+  font-family: Avenir;
+  font-size: 12pt;
+}
+</style>
+
+---
+  
+# Summary
+
+In pilot analyses (n = 104/112 right handers), we saw a trend towards **stronger LVF global bias for squares** (40.63ms, 95% CI [19.25, 62.00]) than for circles (17.62ms, 95% CI [-3.15, 38.39]; difference = 23.01ms, 95% CI [-6.80, 52.81], p = .13). 
+
+**This pattern was internally replicated**: in the second sample of right handers (204/212) we see a significantly stronger global bias for squares (38.144ms, 95% CI [23.80, 52.49]) than for circles (17.76ms, 95% CI [3.71, 31.81]; difference = 20.382ms, 95% CI [0.31, 40.47], p = .047, two-sided).
+
+In the full sample of EHI right handers (n = 371), we see a significantly stronger global bias for squares (37.66ms, 95% CI [27.00, 48.32]) than for circles (18.13ms, 95% CI [7.72, 28.56]; difference = 19.52ms, 95% CI [4.61, 34.43], p = .01, two-sided).
+
+*Does the critical 3-way interaction (field by level by handedness) differ depending on shape?*
+
+For categorical handedness, there is no significant 4-way interaction, but **the trend is towards a larger 3-way interaction for squares (difference = 15.89ms, 95% CI [-5.99, 37.76], p = .08, one-sided) For squares, we see a significant 3-way interaction of field by level by handedness (19.76ms, 95% CI [4.11, 35.40], p = .006, one-sided); for circles, we do not see a significant 3-way interaction (3.87ms, 95% CI [-11.41, 19.16], p = .31, one-sided),** but the point estimates go in the predicted direction. For both shapes, point estimates suggest reduced, but not reversed, LVF global bias for left handers (+14.27ms for circles, +17.90ms for squares; For right handers, the estimates are +18.13ms for circles, +37.66ms for squares.)
+
+Continuous handedness: In progress.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE,
+                      fig.align = "center", fig.width = 9,
+                      fig.height = 6, results = "asis")
+options(knitr.kable.NA = "")
+
+cli.progress_show_after <- 0
+
+## Do not use scientific notation until 9 decimal places.
+options(scipen = 9, digits = 9)
+
+# Suppress summarise info
+options(dplyr.summarise.inform = FALSE)
+```
+
+```{r lib}
+library(here)
+library(tidyverse)
+library(cli) # For printing error messages
+
+library(lme4)
+library(emmeans)
+library(broom)
+library(gt)
+
+library(ggpubr) ## functions for plotting SD, SEM, CI.
+library(ggbeeswarm)
+library(patchwork)
+
+library(knitr) # For include_graphics
+
+source(here::here("lib", "load_process", "load_process.R"))
+source(here::here("lib", "util.R"))
+source(here::here("lib", "demographics.R"))
+source(here::here("lib", "plots.R"))
+source(here::here("lib", "3c_analyze_shape", "stats.R"))
+
+## Colors for plots
+plot_blue <- c("#337aB7")
+plot_colors <- c("#4477AA",
+                 "#EE6677",
+                 "#CCBB44",
+                 "#66CCEE",
+                 "#AA3377",
+                 "#228833",
+                 "#BBBBBB")
+```
+
+```{r config}
+proc_dir <- here::here("data", "proc_exp_n1008")
+fig_dir <- here::here("figures", "exp_n1008_c")
+manual_cache_dir <- here::here("manual_cache", "exp_n1008_c")
+
+use_cached_models <- T
+
+use_cached_figs <- T
+
+if (use_cached_figs == TRUE) {
+  use_cached_demofigs <- TRUE
+  use_cached_rtfigs <- TRUE
+} else if (use_cached_figs == FALSE) {
+  use_cached_demofigs <- FALSE
+  use_cached_rtfigs <- FALSE
+}
+```
+
+# Analyses {.tabset}
+```{r load_data}
+## Load "the data" with all subjects & trials.
+aah_long <- load_aah_long(proc_dir)
+
+## Load summary data table (for quick demographic analyses)
+## with all subjects.
+aah_summary_all <- load_aah_summary(proc_dir)
+```
+
+```{r prepare_data}
+#### PREPARE SUMMARY DATA FOR DEMOGRAPHICS ANALYSES
+aah_summary <- filter_aah_summary_for_analysis(aah_summary_all)
+
+#### PREPARE TRIAL-LEVEL DATA FOR RT ANALYSES
+## Prepare "the data" (aah_long) for all analyses:
+## Filter out practice trials, absent trials, and excluded subjects
+## This data (all present trials, correct or incorrect) will be used for
+## accuracy analyses
+aah <- filter_aah_long_for_analysis(aah_long) |> 
+  rename(shape = target)
+
+## For RT analyses, prepare dataset with only correct, present trials.
+## In our RT model, we only care about correct responses to present trials.
+aah_correct <- aah |> filter(correct == T)
+## Code handedness
+
+## Relevel field and level with RVF first (unintuitive for plotting),
+## so that emmeans will show a positive number for LVF global bias.
+aah_for_rt_model <- aah_correct |>
+  mutate(level = level |> factor(levels = c("Global", "Local")),
+         field = field |> factor(levels = c("RVF", "LVF")))
+
+
+#### PREPARE SUBJECT_LEVEL DATA FOR RT ANALYSES
+## Prepare subject-level data (RT)
+rt_subject <- aah_correct |> group_by(subject, field, level, handedness) |>
+  summarize(rt = median(rt))
+
+## Prepare subject-level LVF Global bias summary (RT)
+rt_1 <- rt_subject |>
+  pivot_wider(names_from = c(field, level),
+              values_from = rt) |>
+  mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
+  mutate(all_one_group = "all_one_group")
+
+```
+
+## Field by level by shape {.tabset .tabset-pills}
+
+Reaction time is modeled as a linear effect of field, level, and handedness, using data from every target-present trial with a "go" response:
+<br>
+<br>
+`lmer( rt ~ field*level*shape + (1 | subject) )`
+<br>
+<br>
+
+### Pilot righties (n = 104/112)
+<br>
+```{r FLS_demo_112RH}
+data_label <- "112RH"
+data_sub <- aah_for_rt_model |> filter(sample == "Pilot righties")
+data_sub_summary <- aah_summary |> filter(sample == "Pilot righties")
+
+FLS_demo <- demo_summary_table(data_sub_summary)
+FLS_demo |> pretty_table() |> tab_header(title = "Demographics")
+```
+<br>
+```{r FLS_model_emm_112RH}
+FLS <- model_emm_FLS(
+  use_cached_model = use_cached_models,
+  manual_cache_dir = manual_cache_dir,
+  data = data_sub,
+  data_label = data_label
+)
+```
+<br>
+```{r FLS_anova_112RH}
+## ANOVA: is there a significant interaction of field by level by shape?
+anova_FLS(use_cached_anova = use_cached_models,
+          manual_cache_dir = manual_cache_dir,
+          data_label = data_label,
+          FLS$model,
+          title = "Field by level by shape interaction (RT)")
+```
+<br>
+```{r FLS_emmtest_112RH}
+## Use emmeans() to test 3-way interaction.
+emmtest_FLS(FLS$emm, title = "Field by  level by shape interaction (RT)")
+```
+<br>
+```{r FL_S_emmtest_112RH}
+## Estimate interaction of field by level for  shape
+emmtest_FL_S(use_cached_model = use_cached_models,
+             manual_cache_dir = manual_cache_dir,
+             FLS$model,
+             data_label = data_label,
+             title = "Effect of field by level for each shape (RT)")
+```
+<br>
+```{r FG_F_S_112RH}
+## Estimate global bias by field, for each shape
+emmtest_GB_F_S(FLS$emm, data_label, title = "Global bias by field, by shape (RT)")
+```
+<br>
+```{r F_L_S_emmtest_112RH}
+emmtest_F_L_S(FLS$emm, data_label, title = "RT estimates by field, level, and shape")
+```
+<br>
+
+### New righties (n = 204/224)
+<br>
+```{r FLS_demo_224RH}
+data_label <- "224RH"
+data_sub <- aah_for_rt_model |> filter(sample == "New righties")
+data_sub_summary <- aah_summary |> filter(sample == "New righties")
+
+FLS_demo <- demo_summary_table(data_sub_summary)
+FLS_demo |> pretty_table() |> tab_header(title = "Demographics")
+```
+<br>
+```{r FLS_model_emm_224RH}
+FLS <- model_emm_FLS(
+  use_cached_model = use_cached_models,
+  manual_cache_dir = manual_cache_dir,
+  data = data_sub,
+  data_label = data_label
+)
+```
+<br>
+```{r FLS_anova_224RH}
+## ANOVA: is there a significant interaction of field by level by shape?
+anova_FLS(use_cached_anova = use_cached_models,
+          manual_cache_dir = manual_cache_dir,
+          data_label = data_label,
+          FLS$model,
+          title = "Field by level by shape interaction (RT)")
+```
+<br>
+```{r FLS_emmtest_224RH}
+## Use emmeans() to test 3-way interaction.
+emmtest_FLS(FLS$emm, title = "Field by  level by shape interaction (RT)")
+```
+<br>
+```{r FL_S_emmtest_224RH}
+## Estimate interaction of field by level for  shape
+emmtest_FL_S(use_cached_model = use_cached_models,
+             manual_cache_dir = manual_cache_dir,
+             FLS$model,
+             data_label = data_label,
+             title = "Effect of field by level for each shape (RT)")
+```
+<br>
+```{r FG_F_S_224R}
+## Estimate global bias by field, for each shape
+emmtest_GB_F_S(FLS$emm, data_label, title = "Global bias by field, by shape (RT)")
+```
+<br>
+```{r F_L_S_emmtest_224RH}
+emmtest_F_L_S(FLS$emm, data_label, title = "RT estimates by field, level, and shape")
+```
+<br>
+
+### All Prolific righties (n = 308/336)
+<br>
+```{r FLS_demo_336RH}
+data_label <- "336RH"
+data_sub <- aah_for_rt_model |> filter(sample2 == "All righties")
+data_sub_summary <- aah_summary |> filter(sample2 == "All righties")
+
+FLS_demo <- demo_summary_table(data_sub_summary)
+FLS_demo |> pretty_table() |> tab_header(title = "Demographics")
+```
+<br>
+```{r FLS_model_emm_336RH}
+FLS <- model_emm_FLS(
+  use_cached_model = use_cached_models,
+  manual_cache_dir = manual_cache_dir,
+  data = data_sub,
+  data_label = data_label
+)
+```
+<br>
+```{r FLS_anova_336RH}
+## ANOVA: is there a significant interaction of field by level by shape?
+anova_FLS(use_cached_anova = use_cached_models,
+          manual_cache_dir = manual_cache_dir,
+          data_label = data_label,
+          FLS$model,
+          title = "Field by level by shape interaction (RT)")
+```
+<br>
+```{r FLS_emmtest_336RH}
+## Use emmeans() to test 3-way interaction.
+emmtest_FLS(FLS$emm, title = "Field by  level by shape interaction (RT)")
+```
+<br>
+```{r FL_S_emmtest_336RH}
+## Estimate interaction of field by level for  shape
+emmtest_FL_S(use_cached_model = use_cached_models,
+             manual_cache_dir = manual_cache_dir,
+             FLS$model,
+             data_label = data_label,
+             title = "Effect of field by level for each shape (RT)")
+```
+<br>
+```{r FG_F_S_336RH}
+## Estimate global bias by field, for each shape
+emmtest_GB_F_S(FLS$emm, data_label, title = "Global bias by field, by shape (RT)")
+```
+<br>
+```{r F_L_S_emmtest_336RH}
+emmtest_F_L_S(FLS$emm, data_label, title = "RT estimates by field, level, and shape")
+```
+<br>
+
+### EHI righties (n = 372)
+<br>
+```{r FLS_demo_378RH}
+data_label <- "378RH"
+data_sub <- aah_for_rt_model |> filter(handedness == "Right")
+data_sub_summary <- aah_summary |> filter(handedness == "Right")
+
+FLS_demo <- demo_summary_table(data_sub_summary)
+FLS_demo |> pretty_table() |> tab_header(title = "Demographics")
+```
+<br>
+```{r FLS_model_emm_378RH}
+FLS <- model_emm_FLS(
+  use_cached_model = use_cached_models,
+  manual_cache_dir = manual_cache_dir,
+  data = data_sub,
+  data_label = data_label
+)
+```
+<br>
+```{r FLS_anova_378RH}
+## ANOVA: is there a significant interaction of field by level by shape?
+anova_FLS(use_cached_anova = use_cached_models,
+          manual_cache_dir = manual_cache_dir,
+          data_label = data_label,
+          FLS$model,
+          title = "Field by level by shape interaction (RT)")
+```
+<br>
+```{r FLS_emmtest_378RH}
+## Use emmeans() to test 3-way interaction.
+emmtest_FLS(FLS$emm, title = "Field by  level by shape interaction (RT)")
+```
+<br>
+```{r FL_S_emmtest_378RH}
+## Estimate interaction of field by level for  shape
+emmtest_FL_S(use_cached_model = use_cached_models,
+             manual_cache_dir = manual_cache_dir,
+             FLS$model,
+             data_label = data_label,
+             title = "Effect of field by level for each shape (RT)")
+```
+<br>
+```{r FG_F_S_378RH}
+## Estimate global bias by field, for each shape
+emmtest_GB_F_S(FLS$emm, data_label, title = "Global bias by field, by shape (RT)")
+```
+<br>
+```{r F_L_S_emmtest_378RH}
+emmtest_F_L_S(FLS$emm, data_label, title = "RT estimates by field, level, and shape")
+```
+<br>
+
+
+### EHI lefties (n = 331)
+<br>
+```{r FLS_demo_331LH}
+data_label <- "331LH"
+data_sub <- aah_for_rt_model |> filter(handedness == "Left")
+data_sub_summary <- aah_summary |> filter(handedness == "Left")
+
+FLS_demo <- demo_summary_table(data_sub_summary)
+FLS_demo |> pretty_table() |> tab_header(title = "Demographics")
+```
+<br>
+```{r FLS_model_emm_331LH}
+FLS <- model_emm_FLS(
+  use_cached_model = use_cached_models,
+  manual_cache_dir = manual_cache_dir,
+  data = data_sub,
+  data_label = data_label
+)
+```
+<br>
+```{r FLS_anova_331LH}
+## ANOVA: is there a significant interaction of field by level by shape?
+anova_FLS(use_cached_anova = use_cached_models,
+          manual_cache_dir = manual_cache_dir,
+          data_label = data_label,
+          FLS$model,
+          title = "Field by level by shape interaction (RT)")
+```
+<br>
+```{r FLS_emmtest_331LH}
+## Use emmeans() to test 3-way interaction.
+emmtest_FLS(FLS$emm, title = "Field by  level by shape interaction (RT)")
+```
+<br>
+```{r FL_S_emmtest_331LH}
+## Estimate interaction of field by level for  shape
+emmtest_FL_S(use_cached_model = use_cached_models,
+             manual_cache_dir = manual_cache_dir,
+             FLS$model,
+             data_label = data_label,
+             title = "Effect of field by level for each shape (RT)")
+```
+<br>
+```{r FG_F_S_331LH}
+## Estimate global bias by field, for each shape
+emmtest_GB_F_S(FLS$emm, data_label, title = "Global bias by field, by shape (RT)")
+```
+<br>
+```{r F_L_S_emmtest_331LH}
+emmtest_F_L_S(FLS$emm, data_label, title = "RT estimates by field, level, and shape")
+```
+<br>
+
+
+
+## Field by level by handedness by shape {.tabset .tabset-pills}
+
+### Binned handedness
+
+Reaction time is modeled as a linear effect of field, level, handedness (EHI < -40 or EHI > +40), and shape, using data from every target-present trial with a "go" response:
+<br>
+<br>
+`lmer( rt ~ field * level * handedness * shape + (1 | subject) )`
+<br>
+<br>
+```{r FLSH_demo_2bins}
+data_label <- "2bins"
+data_sub <- aah_for_rt_model |> filter(handedness %in% c("Right", "Left"))
+data_sub_summary <- aah_summary |> filter(handedness %in% c("Right", "Left"))
+
+FLS_demo <- hand_demo_summary_table(data_sub_summary)
+FLS_demo |> pretty_table() |> tab_header(title = "Demographics")
+```
+<br>
+```{r FLSH_model_emm_2bins}
+FLSH <- model_emm_FLSH(
+  use_cached_model = use_cached_models,
+  manual_cache_dir = manual_cache_dir,
+  data = data_sub,
+  data_label = data_label
+)
+```
+<br>
+```{r FLSH_anova_2bins}
+## ANOVA: is there a significant interaction of field by level by shape?
+anova_FLSH(use_cached_anova = use_cached_models,
+          manual_cache_dir = manual_cache_dir,
+          data_label = data_label,
+          FLSH$model,
+          title = "4-way field by level by handedness by shape interaction (RT)")
+```
+<br>
+```{r FLSH_emmtest_2bins}
+## Use emmeans() to test 4-way interaction.
+emmtest_FLSH(FLSH$emm, title = "4-way field by level by handedness by shape interaction (RT)")
+```
+<br>
+```{r FL_SH_emmtest_2bins}
+## Estimate the 3-way interaction of field by level by handedness, for each shape
+emmtest_FLH_S(use_cached_model = use_cached_models,
+             manual_cache_dir = manual_cache_dir,
+             FLSH$model,
+             data_label = data_label,
+             title = "Effect of field by level for each shape (RT)")
+```
+<br>
+```{r FL_H_S_2bins}
+## Estimate the field by level interaction, for each handedness group, for each shape.
+emmtest_FL_H_S(use_cached_model = use_cached_models,
+               manual_cache_dir = manual_cache_dir,
+               FLSH$emm,
+               data_label = data_label,
+               title = "Global bias by field, by shape (RT)")
+```
+<br>
+
+### Continuous handedness
+
+**In progress.**
+
+

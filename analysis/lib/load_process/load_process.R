@@ -190,7 +190,7 @@ load_raw <- function(input_path, data_type) {
     ## Status message is down here so it can display subject ID on finish
     cli::cli_progress_step(
       msg = glue("Loading input file..."),
-      msg_done = glue("Loaded input file (subject {subject_id}).")
+      msg_done = glue("Loaded input file (subject {subjecit_id}).")
     )
     return(data_raw)
   }
@@ -1037,8 +1037,9 @@ filter_aah_long_for_analysis <- function(aah_long) {
     filter(exclude == 0) |>
     filter(block_type == "main" & target_present == "yes") |>
     select(-starts_with("exclude")) |>
-    ## Recode "level" for nicer printing.
-    mutate(level = recode(level, global = "Global", local = "Local"))
+    ## Recode "level", "target" for nicer printing.
+    mutate(level = recode(level, global = "Global", local = "Local")) |> 
+    mutate(target = recode(target, square = "Square", circle = "Circle")) 
   return(aah)
 }
 

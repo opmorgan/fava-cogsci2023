@@ -249,7 +249,7 @@ Do we find an interaction of field x level x handedness, when handedness is binn
 
  ***Summary.*** For reaction time, we find the critical interaction in the predicted direction (11.67ms, 95% CI [0.65, 22.69], p = .019, one-sided). Left handers show 15.64ms LVF global bias (95% CI [7.61, 23.67]), and right handers 27.31ms (95% CI [19.80, 34.81]). Mixed handers (not included in the categorical interaction analysis) show a LVF global bias of 21.66ms (95% CI [9.09, 34.23]).
  
-For accuracy, we find no significant interaction of field by level by handedness (OR = 0.90, 95% CI [0.70, 1.16], p = .42; where OR < 1 means greater LVF global bias for left handers). Point estimates of LVF global bias hardly differ between left handers (OR = 1.95, 95% CI [1.62, 2.35]) and right handers (OR = 1.77, 95% CI [1.49, 2.10]). For mixed handers (not included in the categorical interaction analysis), the point estimate is 1.10 (95% CI [0.82, 1.47])
+For accuracy, we find no significant interaction of field by level by handedness (OR = 0.90, 95% CI [0.70, 1.16], p = .21, one-sided; where OR < 1 means greater LVF global bias for left handers). Point estimates of LVF global bias hardly differ between left handers (OR = 1.95, 95% CI [1.62, 2.35]) and right handers (OR = 1.77, 95% CI [1.49, 2.10]). For mixed handers (not included in the categorical interaction analysis), the point estimate is 1.10 (95% CI [0.82, 1.47])
 
 <br>
 <br>
@@ -1092,7 +1092,7 @@ Do we find an interaction of field x level x handedness (continuous EHI score)?
 
 ***Summary.*** For reaction time, we find the critical interaction in the predicted direction (.067ms per EHI unit, 95% CI [0.003, 0.13], p = .020, one-sided). Estimated global bias is 13.32ms lower for strong left handers (EHI -100: 14.82ms, 95% CI [6.48, 23.17]) than for strong right handers (EHI +100: 28.14ms, 95% CI [20.31, 35.98]).
 
-For accuracy, we find no significant interaction of field by level by EHI (Beta = 0.0002 logodds per EHI unit, 95% CI [-0.001, 0.002], p = .81). Estimated LVF global bias hardly differs for strong left handers (EHI -100: OR = 1.67, 95% CI [1.37, 2.03]) and strong right handers (EHI +100: OR = 1.73, 95% CI [1.45, 2.07]).
+For accuracy, we find no significant interaction of field by level by EHI (Beta = 0.0002 logodds per EHI unit, 95% CI [-0.001, 0.002], p = .40, one-sided). Estimated LVF global bias hardly differs for strong left handers (EHI -100: OR = 1.67, 95% CI [1.37, 2.03]) and strong right handers (EHI +100: OR = 1.73, 95% CI [1.45, 2.07]).
 
 <br>
 <br>
@@ -1346,7 +1346,7 @@ include_graphics(fig_path_acc_ehi_cor_wide)
 Model accuracy as a binomial effect of field, level, and EHI (continuous):
 <br>
 <br>
-`acc_ehi_model <- glmer( rt ~ field*level*ehi + (1 | subject), family = "binomial" )`
+`acc_ehi_model <- glmer( correct ~ field*level*ehi + (1 | subject), family = "binomial" )`
 <br>
 <br>
 ```{r acc_model_ehil}
