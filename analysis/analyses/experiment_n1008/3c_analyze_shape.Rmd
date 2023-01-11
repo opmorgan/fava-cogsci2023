@@ -25,7 +25,7 @@ In the full sample of EHI right handers (n = 371), we see a significantly strong
 
 *Does the critical 3-way interaction (field by level by handedness) differ depending on shape?*
 
-For categorical handedness, there is no significant 4-way interaction, but **the trend is towards a larger 3-way interaction for squares (difference = 15.89ms, 95% CI [-5.99, 37.76], p = .08, one-sided) For squares, we see a significant 3-way interaction of field by level by handedness (19.76ms, 95% CI [4.11, 35.40], p = .006, one-sided); for circles, we do not see a significant 3-way interaction (3.87ms, 95% CI [-11.41, 19.16], p = .31, one-sided),** but the point estimates go in the predicted direction. For both shapes, point estimates suggest reduced, but not reversed, LVF global bias for left handers (+14.27ms for circles, +17.90ms for squares; For right handers, the estimates are +18.13ms for circles, +37.66ms for squares.)
+For categorical handedness, there is no significant 4-way interaction, but **the trend is towards a larger 3-way interaction for squares (difference = 15.89ms, 95% CI [-5.99, 37.76], p = .08, one-sided) For squares, we see a significant 3-way interaction of field by level by handedness (19.76ms, 95% CI [4.11, 35.40], p = .006, one-sided); for circles, we do not see a significant 3-way interaction (3.87ms, 95% CI [-11.41, 19.16], p = .31, one-sided),** but the point estimates go in the predicted direction. For both shapes, point estimates suggest reduced, but not reversed, LVF global bias for left handers (+14.27ms for circles, +17.90ms for squares; for right handers, the estimates are +18.13ms for circles, +37.66ms for squares).
 
 Continuous handedness: In progress.
 
