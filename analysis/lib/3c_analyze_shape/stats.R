@@ -330,7 +330,7 @@ emmtest_FLH_S <- function(use_cached_model = FALSE,
     pretty_table() |>
     tab_header(title = title,
                subtitle = "Compare effect estimate to zero with emmeans()") |>
-    tab_footnote(footnote = "A positive number means global bias (faster RT for global)",
+    tab_footnote(footnote = "A positive number means more LVF global bias for right handers",
                  locations = cells_column_labels(columns = estimate)) |>
     tab_footnote(footnote = "Two-sided",
                  locations = cells_column_labels(columns = p.value)) |>
@@ -375,7 +375,7 @@ emmtest_FL_H_S <- function(use_cached_model = FALSE,
     pretty_table() |>
     tab_header(title = title,
                subtitle = "Compare effect estimate to zero with emmeans()") |>
-    tab_footnote(footnote = "A positive number means LVF global bias (faster RT for global, LVF)",
+    tab_footnote(footnote = "A positive number means LVF global bias",
                  locations = cells_column_labels(columns = estimate)) |>
     tab_footnote(footnote = "Two-sided",
                  locations = cells_column_labels(columns = p.value)) |>

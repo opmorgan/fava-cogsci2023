@@ -468,7 +468,7 @@ emmtest_FLH_S(use_cached_model = use_cached_models,
              manual_cache_dir = manual_cache_dir,
              FLSH$model,
              data_label = data_label,
-             title = "Effect of field by level for each shape (RT)")
+             title = "Effect of field by level by handedness for each shape (RT)")
 ```
 <br>
 ```{r FL_H_S_2bins}
@@ -477,7 +477,7 @@ emmtest_FL_H_S(use_cached_model = use_cached_models,
                manual_cache_dir = manual_cache_dir,
                FLSH$emm,
                data_label = data_label,
-               title = "Global bias by field, by shape (RT)")
+               title = "Effect of field by level for each handedness group, by shape (RT)")
 ```
 <br>
 
