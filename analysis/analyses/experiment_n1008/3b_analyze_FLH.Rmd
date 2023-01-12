@@ -1,6 +1,6 @@
 ---
 title: "Action Asymmetry Experiment (n = 1008): Field by Level by Handedness Analyses"
-pagetitle: "aah | exp | analysis"
+pagetitle: "aah | exp | analysis (field by level by handedness)"
 author: "Owen Morgan"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: html_document
