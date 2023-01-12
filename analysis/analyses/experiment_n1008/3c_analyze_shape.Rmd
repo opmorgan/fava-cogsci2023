@@ -93,6 +93,8 @@ if (use_cached_figs == TRUE) {
 }
 ```
 
+---
+
 # Analyses {.tabset}
 ```{r load_data}
 ## Load "the data" with all subjects & trials.
