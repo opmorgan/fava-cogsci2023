@@ -248,7 +248,7 @@ emmtest_FL_S(use_cached_model = use_cached_models,
              title = "Effect of field by level for each shape (RT)")
 ```
 <br>
-```{r FG_F_S_224R}
+```{r FG_F_S_224RH}
 ## Estimate global bias by field, for each shape
 emmtest_GB_F_S(FLS$emm, data_label, title = "Global bias by field, by shape (RT)")
 ```
