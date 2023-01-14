@@ -5,18 +5,22 @@ gg_style <- function(g) {
     theme(aspect.ratio = 1 / 1,
           axis.ticks.x = element_blank(),
           panel.grid.minor = element_blank(),
-          panel.border = element_rect(fill = NA)
+          panel.border = element_rect(fill = NA),
+          ## Set a white background (so pngs aren't transparent)
+          panel.background = element_rect(fill = 'white', color = 'white'),
+          plot.background = element_rect(fill = "white", color = "white")
     )
-    return(g_styled)
+  return(g_styled)
 }
 
 gg_style_demo <- function(g) {
   g_styled <- g +
     theme_minimal(base_size = 8) +
-    theme(aspect.ratio = 1 / 1,
-          axis.ticks.x = element_blank(),
-          panel.grid.minor = element_blank(),
-          panel.border = element_rect(fill = NA, color = "gray50")
+    theme(
+      aspect.ratio = 1 / 1,
+      axis.ticks.x = element_blank(),
+      panel.grid.minor = element_blank(),
+      panel.border = element_rect(fill = NA,  color = "gray50")
     )
     return(g_styled)
 }
@@ -34,9 +38,7 @@ gg_style_means <- function(g) {
     panel.grid.minor = element_line(color = "gray92", linewidth = .2),
     panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
     panel.grid.major.x = element_line(color = "gray92", linewidth = .2),
-    panel.border = element_rect(fill = NA, color = "gray50"),
-    panel.background = element_rect(fill = 'white', color = 'white'),
-    plot.background = element_rect(fill = "white", color = "white") 
+    panel.border = element_rect(fill = NA, color = "gray50")
   )
     return(g_styled)
 }
