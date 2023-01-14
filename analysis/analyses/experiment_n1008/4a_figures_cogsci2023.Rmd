@@ -43,6 +43,7 @@ library(gt)
 library(ggpubr) ## functions for plotting SD, SEM, CI.
 library(ggbeeswarm)
 library(patchwork)
+library(ggh4x) ## for nested facets
 
 library(knitr) # For include_graphics
 
@@ -70,7 +71,7 @@ manual_cache_dir <- here::here("manual_cache", "exp_n1008_4a")
 
 use_cached_models <- T
 
-use_cached_figs <- T
+use_cached_figs <- F
 
 if (use_cached_figs == TRUE) {
   use_cached_demofigs <- TRUE
@@ -92,14 +93,26 @@ aah_summary_all <- load_aah_summary(proc_dir)
 
 ```{r prepare_data}
 #### PREPARE SUMMARY DATA FOR DEMOGRAPHICS ANALYSES
-aah_summary <- filter_aah_summary_for_analysis(aah_summary_all)
+aah_summary <- filter_aah_summary_for_analysis(aah_summary_all) |>
+  mutate(
+    handedness_extremes = case_when(ehi == -100 ~ "Left",
+                                    ehi == 100 ~ "Right",
+                                    ehi > -100 & ehi < 100 ~ "Mixed")
+  )
+
 
 #### PREPARE TRIAL-LEVEL DATA FOR RT, ACCURACY ANALYSES
 ## Prepare "the data" (aah_long) for all analyses:
 ## Filter out practice trials, absent trials, and excluded subjects
 ## This data (all present trials, correct or incorrect) will be used for
 ## accuracy analyses
-aah <- filter_aah_long_for_analysis(aah_long)
+aah <- filter_aah_long_for_analysis(aah_long) |>
+  mutate(
+    handedness_extremes = case_when(ehi == -100 ~ "Left",
+                                    ehi == 100 ~ "Right",
+                                    ehi > -100 &
+                                      ehi < 100 ~ "Mixed")
+  ) |> rename(shape = target)
 
 ## For RT analyses, prepare dataset with only correct, present trials.
 ## In our RT model, we only care about correct responses to present trials.
@@ -155,27 +168,496 @@ acc_1 <- acc_subject |>
 
 ## Demographics
 
-Make tables with all information we would want to report.
+Demographic numbers to put in tables or text.
 
-## Preregistered 3-way (RT, bins)
+### Everyone
 
-Show interaction at each level: 8 boxes, 4 boxes, 2 boxes.
+Demographics for all included participants.
+```{r demo_summary}
+rt_demo <- demo_summary_table(aah_summary)
+rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
+```
+<br>
+```{r demo_race}
+demo_race_table(aah_summary) |> pretty_table()
+```
+<br>
+```{r demo_ethnicity}
+demo_ethnicity_table(aah_summary) |> pretty_table()
+```
+<br>
+
+### By handedness group
+
+Demographics for included participants, by handedness group (EHI bins). 
+```{r}
+hand_demo_summary_table(aah_summary) |> pretty_table() |>
+  tab_footnote("Left: (EHI <= -40)  |  Mixed: (-40 < EHI < 40)  |  Right: (EHI >= 40)")
+```
+<br>
+
+## EHI distribution
+
+```{r ehi_distribution_plot}
+plot_color = plot_blue
+## Show dots instead of bars
+fig_path <- here(fig_dir, "demo_ehi_dots.png")
+
+
+ehi_plot_data <- aah_summary |> group_by(ehi) |> summarize(n = n())
+ehi_n_leftest <- ehi_plot_data |> filter(ehi == -100) |> pull(n)
+ehi_n_rightest <- ehi_plot_data |> filter(ehi == 100) |> pull(n)
+
+line_color = plot_color
+
+if (use_cached_demofigs == FALSE) {
+  g <- ggplot(ehi_plot_data, aes(x = ehi, y = n)) +
+    geom_vline(xintercept = -40, color = "gray50") +
+    geom_vline(xintercept = 40, color = "gray50") +
+    geom_area(
+      fill = plot_color,
+      alpha = .5,
+      color = NA,
+      linewidth = 0
+    ) +
+    geom_line(color = line_color, linewidth = .5) +
+    geom_point(fill = plot_color,
+               shape = 21,
+               size = 3) +
+    annotate("text", x = -69, y = 170, label = "Left \n (n = 331)", size = 3.5) +
+    annotate("text", x = 0, y = 170, label = "Mixed \n (n = 135)", size = 3.5) +
+    annotate("text", x = 69, y = 170, label = "Right \n (n = 378)", size = 3.5) +
+    annotate("text", x = -41, y = 90, label = "-40", size = 3, hjust = "right") +
+    annotate("text", x = 39, y = 90, label = "+40", size = 3, hjust = "right") +
+    scale_x_continuous(
+      breaks = seq(-100, 100, 25),
+      minor_breaks = seq(-100, 100, 25),
+      expand = expansion(mult = c(.025, .025))
+    ) +
+    scale_y_continuous(expand = expansion(mult = c(0, .1))) +
+    labs(x = "Laterality quotient from 4-item Veale Edinburgh Handedness Inventory (EHI)",
+         y = "Number of participants",
+         title = "Hand preference distribution")
+  
+  g <- g + theme_minimal(base_size = 10) +
+    theme(
+      aspect.ratio = 1 / 2,
+      plot.title = element_text(margin = margin(b = 10, unit = "pt"),
+                                hjust = 0.5),
+      axis.ticks.x = element_blank(),
+      axis.title.x = element_text(margin = margin(t = 8, unit = "pt")),
+      axis.ticks.y = element_blank(),
+      axis.title.y = element_text(margin = margin(r = 5, unit = "pt")),
+      panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
+      panel.grid.minor.y = element_blank(),
+      panel.grid.major.x = element_line(color = "gray92", linewidth = .4),
+      # panel.grid.minor.x = element_line(color = "gray92", linewidth = .2),
+      panel.grid.minor.x = element_blank(),
+    )
+  
+  ggsave(fig_path, g, "png", height = 3, width = 6)
+}
+
+include_graphics(fig_path)
+```
+
+
+
+## Preregistered 3-way (RT, bins) {.active}
+
+Show interaction at each level: 8 boxes, 4 boxes, 2 boxes. Error bars show SEM.
+
+
+```{r plot_rt_config}
+plot_color <- plot_colors[[5]] # Color for interaction plots with only one color.
+
+handedness_labels <- c("Right handers (EHI >= +40)", "Left handers (EHI <= -40)")
+names(handedness_labels) <- c("Right", "Left")
+
+handedness_labels_short <- c("Right (EHI>=+40)", "Left (EHI<=-40)")
+names(handedness_labels_short) <- c("Right", "Left")
+
+rt_subject_plot <- rt_subject |> filter(handedness %in% c("Left", "Right"))
+```
+
+```{r plot_rt_1_horizontal}
+fig_path_rt_1_horizontal <- here(fig_dir, "rt_1_horizontal.png")
+
+
+## Relevel handedness so right is on top
+rt_subject_plot_horizontal <- rt_subject |>
+  filter(handedness %in% c("Left", "Right")) |> 
+  mutate(handedness = factor(handedness, levels = c("Left", "Right")))
+
+if (use_cached_rtfigs == FALSE) {
+  ## Make a table showing:
+  ## For each subject and field, the difference in median rt for:
+  ## Global - Local
+  rt_1 <- rt_subject_plot_horizontal |>
+    pivot_wider(names_from = c(field, level),
+                values_from = rt) |>
+    mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
+    mutate(all_one_group = "all_one_group") |> 
+    ungroup()
+    
+  rt_descriptive <- rt_1 |>
+    group_by(all_one_group, handedness) |> 
+    summarize(
+      median = median(LVF_Global_Bias),
+      mean = mean(LVF_Global_Bias),
+      SE = sd(LVF_Global_Bias) / sqrt(length((LVF_Global_Bias)))
+    )
+  
+  g <- ggplot(rt_1, aes(
+    x = handedness,
+    y = LVF_Global_Bias,
+    fill = handedness,
+    color = handedness
+  )) +
+    geom_hline(yintercept = 0, color = "gray50", linewidth = .5) +
+    geom_quasirandom(
+      alpha = .2, show.legend = F,
+      ) +
+    geom_boxplot(
+      alpha = 0.5,
+      size = 0.3,
+      varwidth = F,
+      outlier.shape = NA,
+      color = "gray20",
+      # fill = plot_color,
+      show.legend = F
+    ) +
+    stat_summary(
+      fun.data = mean_se,
+      # fun.data = mean_cl_normal,
+      # fun.args = list(conf.int = 0.95), 
+      geom = "errorbar",
+      position = "dodge",
+      linetype = 1,
+      color = "gray5",
+      width = .3,
+      # size = point_size / 5,
+      show.legend = F
+    ) +
+    geom_point(
+      data = rt_descriptive,
+      aes(y = mean),
+      # fill = plot_color,
+      color = "black",
+      shape = 21,
+      show.legend = F
+    ) +
+    # ggh4x::facet_wrap2(~ handedness,
+    #                    nrow = 2,
+    #            labeller = labeller(handedness = handedness_labels_short)) +
+    # ggh4x::facet_nested(~ shape + handedness,
+    #            labeller = labeller(handedness = handedness_labels_short),
+    #            nest_line = element_line()) +
+    # facet_wrap(~ handedness,
+    #            nrow = 2, ncol = 1,
+    #            strip.position = "left",
+    #            labeller = labeller(handedness = handedness_labels_short)) +
+    # facet_grid(rows = vars(handedness), 
+    #            labeller = labeller(handedness = handedness_labels_short)) +
+    annotate("text", x = 1.55, y = 350, hjust = "left", label = "⟵ \n LVF Global Bias" , size = 3) +
+    annotate("text", x = 1.55, y = -380, hjust = "right", label = "⟶ \n RVF Global Bias", size = 3) +
+    scale_y_continuous(minor_breaks = seq(-1000 , 1000, 50),
+                       breaks = seq(-1000, 1000, 100)) +
+    scale_y_reverse() +
+    scale_fill_manual(values = plot_colors[c(1, 2)]) +
+    scale_color_manual(values = plot_colors[c(1, 2)]) +
+    coord_flip() +
+    labs(title = "LVF Global Bias by handedness (EHI > +40 / < -40)",
+         x = "Handedness", 
+         y = "RVF - LVF, Local - Global reaction time (ms)")
+  
+  g <- g |> gg_style() +
+    theme(
+      aspect.ratio = 1 / 6,
+      plot.title = element_text(hjust = 0.5),
+      # axis.text.y = element_blank(),
+      # axis.title.y = element_blank(),
+      strip.background = element_blank(),
+      panel.grid.minor = element_line(color = "gray92", linewidth = .2),
+      panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
+      panel.grid.major.x = element_line(color = "gray92", linewidth = .2),
+      panel.border = element_rect(fill = NA, color = "gray50"),
+      ggh4x.facet.nestline = element_line(color = "gray50")
+    )
+  
+  
+  
+  ggsave(fig_path_rt_1_horizontal,
+         g,
+         "png",
+         height = 3,
+         width = 8)
+  g_rt_1 <- g
+}
+
+include_graphics(fig_path_rt_1_horizontal)
+```
+
+
 
 <!-- ## Preregistered 3-way (accuracy, bins) -->
 
 <!-- Show interaction at each level: 8 boxes, 4 boxes, 2 boxes. -->
 
-## Preregistered 3-way (RT, continuous)
-
-<!-- ## Preregistered 3-way (accuracy, continuous) -->
 
 ## Zoom: EHI +/- 100
 
-Show 3-way (categorical) for strong left vs. right handers.
+Show 3-way (categorical) for strong left vs. right handers. Error bars show SEM.
+
+```{r plot_rt_1_horizontal_zoom}
+fig_path_rt_1_horizontal_zoom <- here(fig_dir, "rt_1_horizontal_zoom.png")
+
+rt_subject_plot_horizontal_zoom <- aah_correct |> group_by(subject, field, level, handedness_extremes) |>
+  summarize(rt = median(rt)) |> 
+  filter(handedness_extremes %in% c("Left", "Right")) |> 
+  ## Relevel handedness so right is on top
+  mutate(handedness_extremes = factor(handedness_extremes, levels = c("Left", "Right")))
+
+if (use_cached_rtfigs == FALSE) {
+  ## Make a table showing:
+  ## For each subject and field, the difference in median rt for:
+  ## Global - Local
+  rt_1 <- rt_subject_plot_horizontal_zoom |>
+    pivot_wider(names_from = c(field, level),
+                values_from = rt) |>
+    mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
+    mutate(all_one_group = "all_one_group") |> 
+    ungroup()
+    
+  rt_descriptive <- rt_1 |>
+    group_by(all_one_group, handedness_extremes) |> 
+    summarize(
+      median = median(LVF_Global_Bias),
+      mean = mean(LVF_Global_Bias),
+      SE = sd(LVF_Global_Bias) / sqrt(length((LVF_Global_Bias)))
+    )
+  
+  g <- ggplot(rt_1, aes(
+    x = handedness_extremes,
+    y = LVF_Global_Bias,
+    fill = handedness_extremes,
+    color = handedness_extremes
+  )) +
+    geom_hline(yintercept = 0, color = "gray50", linewidth = .5) +
+    geom_quasirandom(
+      alpha = .2, show.legend = F,
+      ) +
+    geom_boxplot(
+      alpha = 0.5,
+      size = 0.3,
+      varwidth = F,
+      outlier.shape = NA,
+      color = "gray20",
+      # fill = plot_color,
+      show.legend = F
+    ) +
+    stat_summary(
+      fun.data = mean_se,
+      # fun.data = mean_cl_normal,
+      # fun.args = list(conf.int = 0.95), 
+      geom = "errorbar",
+      position = "dodge",
+      linetype = 1,
+      color = "gray5",
+      width = .3,
+      # size = point_size / 5,
+      show.legend = F
+    ) +
+    geom_point(
+      data = rt_descriptive,
+      aes(y = mean),
+      # fill = plot_color,
+      color = "black",
+      shape = 21,
+      show.legend = F
+    ) +
+    # ggh4x::facet_wrap2(~ handedness,
+    #                    nrow = 2,
+    #            labeller = labeller(handedness = handedness_labels_short)) +
+    # ggh4x::facet_nested(~ shape + handedness,
+    #            labeller = labeller(handedness = handedness_labels_short),
+    #            nest_line = element_line()) +
+    # facet_wrap(~ handedness,
+    #            nrow = 2, ncol = 1,
+    #            strip.position = "left",
+    #            labeller = labeller(handedness = handedness_labels_short)) +
+    # facet_grid(rows = vars(handedness), 
+    #            labeller = labeller(handedness = handedness_labels_short)) +
+    annotate("text", x = 1.55, y = 350, hjust = "left", label = "⟵ \n LVF Global Bias" , size = 3) +
+    annotate("text", x = 1.55, y = -380, hjust = "right", label = "⟶ \n RVF Global Bias", size = 3) +
+    scale_y_continuous(minor_breaks = seq(-1000 , 1000, 50),
+                       breaks = seq(-1000, 1000, 100)) +
+    scale_y_reverse() +
+    scale_fill_manual(values = plot_colors[c(1, 2)]) +
+    scale_color_manual(values = plot_colors[c(1, 2)]) +
+    coord_flip() +
+    labs(title = "LVF Global Bias by handedness (EHI = +/- 100)",
+         x = "Handedness", 
+         y = "RVF - LVF, Local - Global reaction time (ms)")
+  
+  g <- g |> gg_style() +
+    theme(
+      aspect.ratio = 1 / 6,
+      plot.title = element_text(hjust = 0.5),
+      # axis.text.y = element_blank(),
+      # axis.title.y = element_blank(),
+      strip.background = element_blank(),
+      panel.grid.minor = element_line(color = "gray92", linewidth = .2),
+      panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
+      panel.grid.major.x = element_line(color = "gray92", linewidth = .2),
+      panel.border = element_rect(fill = NA, color = "gray50"),
+      ggh4x.facet.nestline = element_line(color = "gray50")
+    )
+  
+  
+  
+  ggsave(fig_path_rt_1_horizontal_zoom,
+         g,
+         "png",
+         height = 3,
+         width = 8)
+  g_rt_1 <- g
+}
+
+include_graphics(fig_path_rt_1_horizontal_zoom)
+```
+
+
+## Zoom: Shape
+
+```{r plot_rt_1_horizontal_zoom_squares}
+fig_path_rt_1_horizontal_zoom_squares <- here(fig_dir, "rt_1_horizontal_zoom_squares.png")
+
+rt_subject_plot_horizontal_zoom_squares <- aah_correct |> filter(shape == "Square") |> 
+  group_by(subject, field, level, handedness_extremes) |>
+  summarize(rt = median(rt)) |> 
+  filter(handedness_extremes %in% c("Left", "Right")) |> 
+  ## Relevel handedness so right is on top
+  mutate(handedness_extremes = factor(handedness_extremes, levels = c("Left", "Right")))
+
+if (use_cached_rtfigs == FALSE) {
+  ## Make a table showing:
+  ## For each subject and field, the difference in median rt for:
+  ## Global - Local
+  rt_1 <- rt_subject_plot_horizontal_zoom_squares |>
+    pivot_wider(names_from = c(field, level),
+                values_from = rt) |>
+    mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
+    mutate(all_one_group = "all_one_group") |> 
+    ungroup()
+    
+  rt_descriptive <- rt_1 |>
+    group_by(all_one_group, handedness_extremes) |> 
+    summarize(
+      median = median(LVF_Global_Bias),
+      mean = mean(LVF_Global_Bias),
+      SE = sd(LVF_Global_Bias) / sqrt(length((LVF_Global_Bias)))
+    )
+  
+  g <- ggplot(rt_1, aes(
+    x = handedness_extremes,
+    y = LVF_Global_Bias,
+    fill = handedness_extremes,
+    color = handedness_extremes
+  )) +
+    geom_hline(yintercept = 0, color = "gray50", linewidth = .5) +
+    geom_quasirandom(
+      alpha = .2, show.legend = F,
+      ) +
+    geom_boxplot(
+      alpha = 0.5,
+      size = 0.3,
+      varwidth = F,
+      outlier.shape = NA,
+      color = "gray20",
+      # fill = plot_color,
+      show.legend = F
+    ) +
+    stat_summary(
+      fun.data = mean_se,
+      # fun.data = mean_cl_normal,
+      # fun.args = list(conf.int = 0.95), 
+      geom = "errorbar",
+      position = "dodge",
+      linetype = 1,
+      color = "gray5",
+      width = .3,
+      # size = point_size / 5,
+      show.legend = F
+    ) +
+    geom_point(
+      data = rt_descriptive,
+      aes(y = mean),
+      # fill = plot_color,
+      color = "black",
+      shape = 21,
+      show.legend = F
+    ) +
+    # ggh4x::facet_wrap2(~ handedness,
+    #                    nrow = 2,
+    #            labeller = labeller(handedness = handedness_labels_short)) +
+    # ggh4x::facet_nested(~ shape + handedness,
+    #            labeller = labeller(handedness = handedness_labels_short),
+    #            nest_line = element_line()) +
+    # facet_wrap(~ handedness,
+    #            nrow = 2, ncol = 1,
+    #            strip.position = "left",
+    #            labeller = labeller(handedness = handedness_labels_short)) +
+    # facet_grid(rows = vars(handedness), 
+    #            labeller = labeller(handedness = handedness_labels_short)) +
+    annotate("text", x = 1.55, y = 350, hjust = "left", label = "⟵ \n LVF Global Bias" , size = 3) +
+    annotate("text", x = 1.55, y = -380, hjust = "right", label = "⟶ \n RVF Global Bias", size = 3) +
+    scale_y_continuous(minor_breaks = seq(-1000 , 1000, 50),
+                       breaks = seq(-1000, 1000, 100)) +
+    scale_y_reverse() +
+    scale_fill_manual(values = plot_colors[c(1, 2)]) +
+    scale_color_manual(values = plot_colors[c(1, 2)]) +
+    coord_flip() +
+    labs(title = "LVF Global Bias by handedness (EHI = +/- 100), square targets only",
+         x = "Handedness", 
+         y = "RVF - LVF, Local - Global reaction time (ms)")
+  
+  g <- g |> gg_style() +
+    theme(
+      aspect.ratio = 1 / 6,
+      plot.title = element_text(hjust = 0.5),
+      # axis.text.y = element_blank(),
+      # axis.title.y = element_blank(),
+      strip.background = element_blank(),
+      panel.grid.minor = element_line(color = "gray92", linewidth = .2),
+      panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
+      panel.grid.major.x = element_line(color = "gray92", linewidth = .2),
+      panel.border = element_rect(fill = NA, color = "gray50"),
+      ggh4x.facet.nestline = element_line(color = "gray50")
+    )
+  
+  
+  
+  ggsave(fig_path_rt_1_horizontal_zoom_squares,
+         g,
+         "png",
+         height = 3,
+         width = 8)
+  g_rt_1 <- g
+}
+
+include_graphics(fig_path_rt_1_horizontal_zoom_squares)
+```
+
 
 <!-- ## Zoom: EHI +/- 100, squares only -->
 
 <!-- Show 3-way (categorical) for strong left vs. right handers, squares only. -->
+
+
+## Preregistered 3-way (RT, continuous)
+
+<!-- ## Preregistered 3-way (accuracy, continuous) -->
 
 ## Final proposed figures
 - Compound figure showing RT interaction (bins; 8, 4, 2)

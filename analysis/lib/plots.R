@@ -4,7 +4,7 @@ gg_style <- function(g) {
     theme_minimal(base_size = 10) +
     theme(aspect.ratio = 1 / 1,
           axis.ticks.x = element_blank(),
-          panel.grid.minor = element_blank(),
+          # panel.grid.minor = element_blank(),
           panel.border = element_rect(fill = NA),
           ## Set a white background (so pngs aren't transparent)
           panel.background = element_rect(fill = 'white', color = 'white'),
@@ -15,12 +15,12 @@ gg_style <- function(g) {
 
 gg_style_demo <- function(g) {
   g_styled <- g +
-    theme_minimal(base_size = 8) +
     theme(
       aspect.ratio = 1 / 1,
+    plot.title = element_text(hjust = 0.5),
       axis.ticks.x = element_blank(),
-      panel.grid.minor = element_blank(),
-      panel.border = element_rect(fill = NA,  color = "gray50")
+      panel.grid.minor.y = element_blank(),
+      panel.border = element_rect(fill = NA,  color = "gray20")
     )
     return(g_styled)
 }
