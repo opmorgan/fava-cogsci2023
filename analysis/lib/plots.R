@@ -28,6 +28,12 @@ gg_style_means <- function(g) {
     aspect.ratio = 2 / 1,
     plot.title = element_text(hjust = 0.5),
     axis.title.x = element_blank(),
+    # panel.grid.minor.x = element_blank(),
+    # panel.grid.major.x = element_blank(),
+    # panel.grid.minor.y = element_blank(),
+    panel.grid.minor = element_line(color = "gray92", linewidth = .2),
+    panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
+    panel.grid.major.x = element_line(color = "gray92", linewidth = .2),
     panel.border = element_rect(fill = NA, color = "gray50")
   )
     return(g_styled)

@@ -312,13 +312,22 @@ anova_FLSH(use_cached_anova = use_cached_models,
 emmtest_FLSH(FLSH$emm, title = "4-way field by level by handedness by shape interaction (RT)")
 ```
 <br>
-```{r FL_SH_emmtest_2bins}
+```{r FLH_S_emmtest_2bins}
 ## Estimate the 3-way interaction of field by level by handedness, for each shape
 emmtest_FLH_S(use_cached_model = use_cached_models,
              manual_cache_dir = manual_cache_dir,
              FLSH$model,
              data_label = data_label,
              title = "Effect of field by level by handedness for each shape (RT)")
+```
+<br>
+```{r FLS_H_emmtest_2bins}
+## Estimate the 3-way interaction of field by level by shape, for each handedness group
+emmtest_FLS_H(use_cached_model = use_cached_models,
+             manual_cache_dir = manual_cache_dir,
+             FLSH$model,
+             data_label = data_label,
+             title = "Effect of field by level by shape for each handedness group (RT)")
 ```
 <br>
 ```{r FL_H_S_2bins}
@@ -353,6 +362,7 @@ names(handedness_labels_short) <- c("Right", "Left")
 
 ```{r plot_rt_1}
 fig_path_rt_1 <- here(fig_dir, "rt_1.png")
+fig_path_rt_1_wide <- here(fig_dir, "rt_1_wide.png")
 
 if (use_cached_rtfigs == FALSE) {
   ## Make a table showing:
@@ -378,9 +388,9 @@ if (use_cached_rtfigs == FALSE) {
     fill = handedness,
     color = handedness
   )) +
+    geom_hline(yintercept = 0, color = "gray50", linewidth = .5) +
     geom_quasirandom(
-      alpha = .1, show.legend = F,
-      # color = plot_color
+      alpha = .2, show.legend = F,
       ) +
     geom_boxplot(
       alpha = 0.5,
@@ -426,10 +436,11 @@ if (use_cached_rtfigs == FALSE) {
           ggh4x.facet.nestline = element_line(color = "gray50"))
   
   ggsave(fig_path_rt_1, g, "png", height = 5, width = 5)
+  ggsave(fig_path_rt_1_wide, g, "png", height = 5, width = 8)
   g_rt_1 <- g
 }
 
-include_graphics(fig_path_rt_1)
+include_graphics(fig_path_rt_1_wide)
 ```
 
 ---
@@ -456,8 +467,9 @@ rt_descriptive <- rt_2 |>
 
 g <- ggplot(rt_2, aes(x = field,
                       y = Global_Bias, fill = handedness, color = handedness)) +
+  geom_hline(yintercept = 0, color = "gray50", linewidth = .5) +
   geom_quasirandom(
-    alpha = .1, show.legend = F,
+    alpha = .2, show.legend = F,
     # color = plot_color
     ) +
   geom_boxplot(
@@ -512,64 +524,67 @@ include_graphics(fig_path_rt_2)
 fig_path_rt_4 <- here(fig_dir, "rt_4.png")
 
 if (use_cached_rtfigs == FALSE) {
-rt_subject <- aah_correct |>
-  group_by(subject, field, level, handedness, shape) |> 
-  summarize(rt = median(rt))
-
-rt_descriptive <- rt_subject |>
-  group_by(field, level, handedness, shape) |>
-  summarize(
-    median = median(rt),
-    mean = mean(rt),
-    SE = sd(rt) / sqrt(length((rt)))
-  )
-
-g <- ggplot(rt_subject, aes(
-  x = level,
-  y = rt,
-  fill = level,
-  color = level
-)) +
-  geom_quasirandom(alpha = .3, show.legend = F) +
-  geom_boxplot(
-    alpha = 0.5,
-    size = 0.3,
-    varwidth = F,
-    outlier.shape = NA,
-    color = "gray20",
-    show.legend = F
-  ) +
-  stat_summary(
-    fun.data = mean_cl_normal,
-    fun.args = list(conf.int = 0.95),
-    geom = "errorbar",
-    position = "dodge",
-    linetype = 1,
-    color = "gray5",
-    width = .2,
-    # size = point_size / 5,
-    show.legend = F
-  ) +
-  geom_point(
-    data = rt_descriptive,
-    aes(y = mean),
-    color = "black",
-    shape = 21,
-    show.legend = F
-  ) +
-  scale_y_continuous(minor_breaks = seq(0 , 1500, 100),
-                     breaks = seq(0, 1500, 200)) +
-  ggh4x::facet_nested(shape ~ handedness + field,
-             labeller = labeller(handedness = handedness_labels),
-             nest_line = element_line()) +
-  labs(title = "Per-subject medians (RT) by target shape", x = "Level", y = "Reaction time (ms)")
-
-g <- g |>  gg_style_means() |> gg_color() +
-  theme(strip.background = element_blank(),
-        ggh4x.facet.nestline = element_line(color = "gray50"))
-    
-ggsave(fig_path_rt_4, g, "png", height = 6, width = 6)
-g_rt_4 <- g
+  rt_subject <- aah_correct |>
+    group_by(subject, field, level, handedness, shape) |> 
+    summarize(rt = median(rt))
+  
+  rt_descriptive <- rt_subject |>
+    group_by(field, level, handedness, shape) |>
+    summarize(
+      median = median(rt),
+      mean = mean(rt),
+      SE = sd(rt) / sqrt(length((rt)))
+    )
+  
+  g <- ggplot(rt_subject, aes(
+    x = level,
+    y = rt,
+    fill = level,
+    color = level
+  )) +
+    geom_hline(yintercept = 0, color = "gray50", linewidth = .5) +
+    geom_quasirandom(alpha = .3, show.legend = F) +
+    geom_boxplot(
+      alpha = 0.5,
+      size = 0.3,
+      varwidth = F,
+      outlier.shape = NA,
+      color = "gray20",
+      show.legend = F
+    ) +
+    stat_summary(
+      fun.data = mean_cl_normal,
+      fun.args = list(conf.int = 0.95),
+      geom = "errorbar",
+      position = "dodge",
+      linetype = 1,
+      color = "gray5",
+      width = .2,
+      # size = point_size / 5,
+      show.legend = F
+    ) +
+    geom_point(
+      data = rt_descriptive,
+      aes(y = mean),
+      color = "black",
+      shape = 21,
+      show.legend = F
+    ) +
+    scale_y_continuous(
+      minor_breaks = seq(0 , 1500, 100),
+                       breaks = seq(0, 1500, 200),
+      expand = expansion(mult = c(0, .08)), limits = c(0, NA)) +
+    ggh4x::facet_nested(shape ~ handedness + field,
+               labeller = labeller(handedness = handedness_labels),
+               nest_line = element_line()) +
+    labs(title = "Per-subject medians (RT) by target shape", x = "Level", y = "Reaction time (ms)")
+  
+  g <- g |>  gg_style_means() |> gg_color() +
+    theme(strip.background = element_blank(),
+          ggh4x.facet.nestline = element_line(color = "gray50"))
+      
+  ggsave(fig_path_rt_4, g, "png", height = 6, width = 6)
+  g_rt_4 <- g
 }
 
 include_graphics(fig_path_rt_4)

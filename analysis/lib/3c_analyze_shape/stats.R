@@ -341,6 +341,50 @@ emmtest_FLH_S <- function(use_cached_model = FALSE,
   
 }
 
+emmtest_FLS_H <- function(use_cached_model = FALSE,
+                         manual_cache_dir,
+                         FLSH_model,
+                         data_label,
+                         title = "title") {
+  emmtest_path <-
+    here(manual_cache_dir,
+         str_c("FLS_H_emmtest_", data_label, ".rds"))
+  
+  if (use_cached_model == FALSE) {
+    FLS_H_emmtest <- FLSH_model |>
+      emmeans(~ field * level * shape | handedness) |>
+      contrast(interaction = c("consec")) |>
+      summary(infer = T)
+    
+    ## Cache emm test object
+    cli_progress_step(msg = "Caching emm test object: {emmtest_path}",
+                      msg_done = "Created and cached anova: {emmtest_path}")
+    saveRDS(FLS_H_emmtest, emmtest_path)
+  } else if (use_cached_model == TRUE) {
+    ## Load cached emm test
+    cli_progress_step(msg = "Loading emm test object: {emmtest_path}",
+                      msg_done = "Loaded emm test object: {emmtest_path}")
+    FLS_H_emmtest <- readRDS(emmtest_path)
+    
+  }
+  
+  FLS_H_emmtest |>
+    as_tibble() |>
+    format_p.value() |>
+    pretty_table() |>
+    tab_header(title = title,
+               subtitle = "Compare effect estimate to zero with emmeans()") |>
+    tab_footnote(footnote = "A positive number means more LVF global bias for right handers",
+                 locations = cells_column_labels(columns = estimate)) |>
+    tab_footnote(footnote = "Two-sided",
+                 locations = cells_column_labels(columns = p.value)) |>
+    tab_footnote(footnote = "Confidence level: 95%",
+                 locations = cells_column_labels(columns = ends_with("CL"))) |>
+    tab_footnote(footnote = "Z-approximation",
+                 locations = cells_column_labels(columns = df))
+  
+}
+
 emmtest_FL_H_S <- function(use_cached_model = FALSE,
                          manual_cache_dir,
                          FLSH_model,
