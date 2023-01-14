@@ -82,7 +82,7 @@ manual_cache_dir <- here::here("manual_cache", "exp_n1008_e")
 
 use_cached_models <- T
 
-use_cached_figs <- F
+use_cached_figs <- T
 
 if (use_cached_figs == TRUE) {
   use_cached_demofigs <- TRUE
@@ -583,7 +583,7 @@ fig_path_rt_4a <- here(fig_dir, "rt_4a.png")
 
 if (use_cached_rtfigs == FALSE) {
 rt_descriptive <- aah_correct |>
-  group_by(field, level, handedness) |>
+  group_by(field, level, handedness, shape) |>
   summarize(
     median = median(rt),
     mean = mean(rt),
