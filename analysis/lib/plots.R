@@ -34,7 +34,9 @@ gg_style_means <- function(g) {
     panel.grid.minor = element_line(color = "gray92", linewidth = .2),
     panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
     panel.grid.major.x = element_line(color = "gray92", linewidth = .2),
-    panel.border = element_rect(fill = NA, color = "gray50")
+    panel.border = element_rect(fill = NA, color = "gray50"),
+    panel.background = element_rect(fill = 'white', color = 'white'),
+    plot.background = element_rect(fill = "white", color = "white") 
   )
     return(g_styled)
 }
