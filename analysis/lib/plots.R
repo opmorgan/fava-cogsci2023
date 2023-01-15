@@ -60,12 +60,12 @@ gg_color <- function(g, plot_colors) {
 #### 4a_figures_cogsci2023.Rmd ####
 gg_ehi_dotarea <- function(ehi_plot_data,
                            plot_color) {
-  
+
   # ehi_n_leftest <- ehi_plot_data |> filter(ehi == -100) |> pull(n)
   # ehi_n_rightest <- ehi_plot_data |> filter(ehi == 100) |> pull(n)
-  
+
   line_color = plot_color
-  
+
   g <- ggplot(ehi_plot_data, aes(x = ehi, y = n)) +
     geom_vline(xintercept = -40, color = "gray50") +
     geom_vline(xintercept = 40, color = "gray50") +
@@ -93,7 +93,7 @@ gg_ehi_dotarea <- function(ehi_plot_data,
     labs(x = "Laterality quotient from 4-item Veale Edinburgh Handedness Inventory (EHI)",
          y = "Number of participants",
          title = "Hand preference distribution")
-  
+
   g <- g + theme_minimal(base_size = 10) +
     theme(
       aspect.ratio = 1 / 2,
@@ -108,7 +108,7 @@ gg_ehi_dotarea <- function(ehi_plot_data,
       panel.grid.major.x = element_line(color = "gray92", linewidth = .4),
       panel.grid.minor.x = element_blank(),
     )
-  
+
   return(g)
 }
 
@@ -117,7 +117,7 @@ gg_rt_1_horizontal <- function(title,
                                rt_subject_plot,
                                plot_colors,
                                handedness_labeller = NULL) {
-  
+
   rt_subject_plot_proc <- rt_subject_plot |>
     ## Relevel handedness so right is on top
     mutate(handedness = factor(handedness, levels = c("Left", "Right"))) |>
@@ -127,7 +127,7 @@ gg_rt_1_horizontal <- function(title,
     mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
     mutate(all_one_group = "all_one_group") |>
     ungroup()
-  
+
   rt_descriptive_plot <- rt_subject_plot_proc |>
   group_by(all_one_group, handedness) |>
   summarize(
@@ -135,8 +135,8 @@ gg_rt_1_horizontal <- function(title,
     mean = mean(LVF_Global_Bias),
     SE = sd(LVF_Global_Bias) / sqrt(length((LVF_Global_Bias)))
   )
-  
-  ## Make default handedness labeller 
+
+  ## Make default handedness labeller
   if (is.null(handedness_labeller)) {
     n_subjects <- rt_subject_plot_proc |> group_by(handedness) |> summarize(n = n_distinct(subject))
     handedness_labeller <- c(
@@ -157,7 +157,7 @@ gg_rt_1_horizontal <- function(title,
       )
     )
   }
-  
+
   g <- ggplot(
     rt_subject_plot_proc,
     aes(
@@ -199,7 +199,7 @@ gg_rt_1_horizontal <- function(title,
     annotate("text", x = 1.55, y = -390, hjust = "right", color = "gray30",
              label = "⟶ \n RVF Global Bias", size = 3) +
     # scale_x_discrete(labels = labeller(handedness = handedness_labeller)) +
-    scale_x_discrete(labels = c(handedness_labeller[["Left"]], 
+    scale_x_discrete(labels = c(handedness_labeller[["Left"]],
                                 handedness_labeller[["Right"]])) +
     scale_y_reverse(breaks = seq(-1000, 1000, 50),
                     minor_breaks = seq(-1000 , 1000, 25)) +
@@ -207,10 +207,10 @@ gg_rt_1_horizontal <- function(title,
     scale_fill_manual(values = plot_colors[c(1, 2)]) +
     scale_color_manual(values = plot_colors[c(1, 2)]) +
     labs(title = title,
-         x = "Handedness", 
+         x = "Handedness",
          y = "RVF - LVF, Local - Global reaction time (ms)")
-  
-  g <- g |> 
+
+  g <- g |>
     gg_style() +
     theme(
       aspect.ratio = 1 / 6,
@@ -223,7 +223,7 @@ gg_rt_1_horizontal <- function(title,
       panel.border = element_rect(fill = NA, color = "gray50"),
       ggh4x.facet.nestline = element_line(color = "gray50")
     )
-  
+
     return(g)
 }
 
@@ -232,18 +232,18 @@ gg_rt_2_horizontal <- function(title,
                                plot_colors,
                                handedness_labeller = NULL)
 {
-  
-  
+
+
   ## LVF_Bias by level for each subject
-  rt_subject_plot_proc <- rt_subject_plot |> 
+  rt_subject_plot_proc <- rt_subject_plot |>
      ## Relevel so Right & Global are on top
       mutate(handedness = factor(handedness, levels = c("Right", "Left"))) |>
       mutate(level = factor(level, levels = c("Local", "Global"))) |>
     pivot_wider(names_from = c(field),
-                values_from = rt) |> 
+                values_from = rt) |>
     mutate(LVF_Bias = RVF - LVF)
-  
-  
+
+
   ## Mean LVF_Bias by level, handedness
   rt_descriptive_plot <- rt_subject_plot_proc |>
     group_by(level, handedness) |>
@@ -252,8 +252,8 @@ gg_rt_2_horizontal <- function(title,
       mean = mean(LVF_Bias),
       SE = sd(LVF_Bias) / sqrt(length((LVF_Bias)))
     )
-  
-  ## make default handedness labeller 
+
+  ## make default handedness labeller
   if (is.null(handedness_labeller)) {
     n_subjects <- rt_subject_plot_proc |> group_by(handedness) |> summarize(n = n_distinct(subject))
     handedness_labeller <- c(
@@ -274,12 +274,12 @@ gg_rt_2_horizontal <- function(title,
       )
     )
   }
-  
+
   ## Prepare data to annotate first facet
-  data_facet1 <- rt_descriptive_plot |> 
+  data_facet1 <- rt_descriptive_plot |>
     filter(handedness == "Right")
-   
-  
+
+
   g <- ggplot(
     rt_subject_plot_proc,
     aes(
@@ -337,11 +337,11 @@ gg_rt_2_horizontal <- function(title,
     scale_fill_manual(values = plot_colors[c(2, 1)]) +
     scale_color_manual(values = plot_colors[c(2, 1)]) +
     labs(title = title,
-         x = "", 
+         x = "",
          # y = "Hemifield bias: RVF - LVF reaction time (ms)")
          y = "Difference in reaction time between RVF and LVF (ms)")
-  
-  g <- g |> 
+
+  g <- g |>
     gg_style() +
     theme(
       aspect.ratio = 1 / 6,
@@ -360,7 +360,7 @@ gg_rt_2_horizontal <- function(title,
       panel.border = element_rect(fill = NA, color = "gray50"),
       ggh4x.facet.nestline = element_line(color = "gray50")
     )
-  
+
     return(g)
 }
 
@@ -370,19 +370,19 @@ gg_rt_4_horizontal <- function(title,
                                plot_colors,
                                handedness_labeller = NULL)
 {
-  
-  
+
+
   ## RT by level for each subject
-  rt_subject_plot_proc <- rt_subject_plot |> 
+  rt_subject_plot_proc <- rt_subject_plot |>
      ## Relevel so Right & Global are on top
       mutate(handedness = factor(handedness, levels = c("Right", "Left"))) |>
       mutate(level = factor(level, levels = c("Local", "Global"))) |>
-      group_by(subject, field, level, handedness) |> 
+      group_by(subject, field, level, handedness) |>
       summarize(rt = median(rt))
-  
+
   rt_subject_plot_proc
-  
-  
+
+
   ## Mean RT by level, handedness
   rt_descriptive_plot <- rt_subject_plot_proc |>
     group_by(field, level, handedness) |>
@@ -391,10 +391,10 @@ gg_rt_4_horizontal <- function(title,
       mean = mean(rt),
       SE = sd(rt) / sqrt(length((rt)))
     )
-  
+
   rt_descriptive_plot
-  
-  ## make default handedness labeller 
+
+  ## make default handedness labeller
   if (is.null(handedness_labeller)) {
     n_subjects <- rt_subject_plot_proc |> group_by(handedness) |> summarize(n = n_distinct(subject))
     handedness_labeller <- c(
@@ -415,18 +415,18 @@ gg_rt_4_horizontal <- function(title,
       )
     )
   }
-  
+
   ## Prepare data to annotate first facet
-  data_facet1 <- rt_descriptive_plot |> 
+  data_facet1 <- rt_descriptive_plot |>
     filter(handedness == "Right" & field == "LVF")
-  
+
   ## Make Field labeller
   field_labeller <- c(
     LVF = "Left Visual Field (LVF)",
     RVF = "Right Visual Field (RVF)"
   )
-   
-  
+
+
   g <- ggplot(
     rt_subject_plot_proc,
     aes(
@@ -487,21 +487,16 @@ gg_rt_4_horizontal <- function(title,
     scale_fill_manual(values = plot_colors[c(2, 1)]) +
     scale_color_manual(values = plot_colors[c(2, 1)]) +
     labs(title = title,
-         x = "", 
+         x = "",
          y = "Reaction time (ms)")
-  
-  g <- g |> 
+
+  g <- g |>
     gg_style() +
     theme(
       aspect.ratio = 1 / 4,
       plot.title = element_text(hjust = 0.5),
       axis.title.x = element_text(margin = margin(t = 8, unit = "pt")),
-      # axis.text.y = element_text(angle = 90, vjust = 0.0, hjust = 0.5),
-      # strip.background = element_blank(),
-      # strip.text.y.left = element_text(angle = 0),
-      # strip.text.y.right = element_text(angle = 0),
       strip.background = element_rect(fill = "gray99", color = "gray50"),
-      # strip.background = element_part_rect(side = "r", fill = "gray98", color = "gray50"),
       strip.placement = "outside",
       panel.grid.minor = element_line(color = "gray92", linewidth = .2),
       panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
@@ -509,20 +504,20 @@ gg_rt_4_horizontal <- function(title,
       panel.border = element_rect(fill = NA, color = "gray50"),
       ggh4x.facet.nestline = element_line(color = "gray50")
     )
-  
+
     return(g)
 }
 
   gg_rt_1_cor <- function(title,
                           rt_subject_plot,
                           plot_colors) {
-    
+
   rt_subject_plot_proc <- rt_subject_plot
-    
-  
+
+
   ## Prepare data to annotate first facet
   data_facet1 <- rt_subject_plot_proc
-  
+
   g <- rt_subject_plot_proc |> ggplot(aes(x = ehi, y = LVF_Global_Bias)) +
     geom_hline(yintercept = 0, color = "gray50", linewidth = .5) +
     geom_quasirandom( alpha = .2, aes(fill = handedness), shape = 21, show.legend = F
@@ -538,34 +533,37 @@ gg_rt_4_horizontal <- function(title,
       x = 1.55, y = -350, hjust = "center",
       label = "RVF Bias \n ↓", size = 3
     ) +
+    scale_y_continuous(breaks = seq(-1000, 1000, 50),
+                    minor_breaks = seq(-1000 , 1000, 25)) +
+    coord_cartesian(ylim = c(-400, 350)) +
     labs(x = "Laterality quotient from EHI", y = "RVF - LVF, Local - Global reaction time (ms)",
          title = title)
-  
+
   g <- g |> gg_style() +
     theme(
-      aspect.ratio = 1/2,
+      aspect.ratio = 1/1,
       plot.title = element_text(hjust = 0.5),
       axis.title.x = element_text(margin = margin(t = 8, unit = "pt")),
       panel.grid.minor = element_line(color = "gray92", linewidth = .2),
       panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
       panel.grid.major.x = element_line(color = "gray92", linewidth = .2),
       panel.border = element_rect(fill = NA, color = "gray50"))
-    
+
   g + theme(plot.title = element_text(hjust = 0.5))
-  
+
   return(g)
   }
-  
+
  gg_rt_2_cor <- function(title,
                           rt_subject_plot,
                           plot_colors) {
-    
+
   rt_subject_plot_proc <- rt_subject_plot
-    
-  
+
+
   ## Prepare data to annotate first facet
-  data_facet1 <- rt_subject_plot_proc
-  
+  data_facet1 <- rt_subject_plot_proc |> filter(level == "Global")
+
   g <- rt_subject_plot_proc |> ggplot(aes(x = ehi, y = LVF_Bias)) +
     geom_hline(yintercept = 0, color = "gray50", linewidth = .5) +
     geom_quasirandom( alpha = .2, aes(fill = handedness), shape = 21, show.legend = F
@@ -581,22 +579,87 @@ gg_rt_4_horizontal <- function(title,
       x = 1.55, y = -350, hjust = "center",
       label = "RVF Bias \n ↓", size = 3
     ) +
+    scale_y_continuous(breaks = seq(-1000, 1000, 50),
+                    minor_breaks = seq(-1000 , 1000, 25)) +
+    coord_cartesian(ylim = c(-400, 350)) +
+    facet_wrap(~level) +
     labs(x = "Laterality quotient from EHI", y = "Difference in reaction time between LVF and RVF (ms)",
          title = title)
-  
+
   g <- g |> gg_style() +
     theme(
+      aspect.ratio = 1/1,
       plot.title = element_text(hjust = 0.5),
       axis.title.x = element_text(margin = margin(t = 8, unit = "pt")),
       panel.grid.minor = element_line(color = "gray92", linewidth = .2),
       panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
       panel.grid.major.x = element_line(color = "gray92", linewidth = .2),
       panel.border = element_rect(fill = NA, color = "gray50"))
-    
+
   g + theme(plot.title = element_text(hjust = 0.5))
-  
+
   return(g)
   }
-  
+
+ 
+  gg_rt_4_cor <- function(title,
+                          rt_subject_plot,
+                          plot_colors) {
+
+  rt_subject_plot_proc <- rt_subject_plot
+
+
+  ## Prepare data to annotate first facet
+  data_facet1 <- rt_subject_plot_proc |> filter(level == "Global" & field == "LVF")
+
+  ## Make Field labeller
+  field_labeller <- c(
+    LVF = "Left Visual Field (LVF)",
+    RVF = "Right Visual Field (RVF)"
+  )
+
+  g <- rt_subject_plot_proc |> ggplot(aes(x = ehi, y = rt)) +
+    geom_hline(yintercept = 0, color = "gray50", linewidth = .5) +
+    geom_quasirandom( alpha = .2, aes(fill = handedness), shape = 21, show.legend = F
+    ) +
+    geom_smooth(method = "lm", color = "gray30") +
+    scale_fill_manual(values = h_plot_colors) +
+    scale_color_manual(values = plot_colors[c(1, 2)]) +
+    geom_text( data = data_facet1, color = "gray50",
+      x = 0, y = 1150, hjust = "center",
+      label = "↑ \n Slower" , size = 2.5
+    ) +
+    geom_text(data = data_facet1, color = "gray50",
+      x = 1.55, y = 150, hjust = "center",
+      label = "Faster \n ↓", size = 2.5
+    ) +
+    scale_y_continuous(
+      minor_breaks = seq(0 , 1500, 100),
+                       breaks = seq(0, 1500, 200),
+      expand = expansion(mult = c(0, .08)), limits = c(0, NA)) +
+    coord_cartesian(ylim = c(0, 1200)) +
+    facet_grid2(level ~field,
+                labeller = labeller(field = field_labeller)
+                ) +
+    labs(x = "Laterality quotient from EHI", y = "Reaction time (ms)",
+         title = title)
+
+  g <- g |> gg_style() +
+    theme(
+      aspect.ratio = 1/1,
+      plot.title = element_text(hjust = 0.5),
+      strip.background = element_rect(fill = "gray99", color = "gray50"),
+      strip.placement = "outside",
+      axis.title.x = element_text(margin = margin(t = 8, unit = "pt")),
+      panel.grid.minor = element_line(color = "gray92", linewidth = .2),
+      panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
+      panel.grid.major.x = element_line(color = "gray92", linewidth = .2),
+      panel.border = element_rect(fill = NA, color = "gray50"))
+
+  g + theme(plot.title = element_text(hjust = 0.5))
+
+  return(g)
+  }
+
 
 

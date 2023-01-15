@@ -501,6 +501,7 @@ include_graphics(fig_path_var)
 - Which figures show the interaction most clearly? Could we just show the 4-box plot?
 - Is it worth showing the 8-box data for the main analysis? I think it would be nice to show this raw data.
 - Any feedback on the design of the graphs?
+- Should we show the accuracy (null) results?
 
 
 ### Proposal
