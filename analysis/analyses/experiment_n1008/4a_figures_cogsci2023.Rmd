@@ -263,20 +263,29 @@ include_graphics(fig_path)
 
 ## Preregistered 3-way (RT, bins) {.active}
 
-Show interaction at each level: 8 boxes, 4 boxes, 2 boxes. Error bars show SEM.
+Show interaction at each level: 8 boxes, 4 boxes, 2 boxes.
 
+---
+
+Dots show per-subject mnean, error bars show SEM.
 
 ```{r plot_rt_config}
 plot_color <- plot_colors[[5]] # Color for interaction plots with only one color.
 
-# names(handedness_labels) <- c("Right", "Left")
-# names(handedness_labels_short) <- c("Right", "Left")
-# 
-# handedness_labels <- c("Right handers", "Left handers")
-# handedness_labels_short <- c("Right", "Left")
-# 
-# handedness_labels <- c("Right handers (EHI >= +40)", "Left handers (EHI <= -40)")
-# handedness_labels_short <- c("Right (EHI>=+40)", "Left (EHI<=-40)")
+handedness_labeller_40 <- c(
+  Right = "Right handers (EHI >= +40)",
+  Left = "Left handers (EHI <= -40)"
+)
+
+handedness_labeller_40_short <- c(
+  Right = "Right \n EHI > +40",
+  Left = "Left \n EHI < -40"
+)
+
+handedness_labeller_generic_short <- c(
+  Right = "Right \n handers",
+  Left = "Left \n handers"
+)
 ```
 
 ```{r plot_rt_1_horizontal}
@@ -286,7 +295,7 @@ if (use_cached_rtfigs == FALSE) {
   rt_subject_plot <- rt_subject |>
     filter(handedness %in% c("Left", "Right"))
   
-    g <- gg_rt_1_horizontal(title = "LVF Global Bias by Handedness (EHI > +40 / < -40)",
+    g <- gg_rt_1_horizontal(title = "Global Bias Asymmetry by Handedness (EHI > +40 / < -40)",
                           rt_subject_plot,  plot_colors
     )
     
@@ -295,7 +304,34 @@ if (use_cached_rtfigs == FALSE) {
 
 include_graphics(fig_path_var)
 ```
+<br>
+```{r plot_rt_2_horizontal}
+fig_path_var <- here(fig_dir, "rt_2_horizontal.png")
 
+if (use_cached_rtfigs == FALSE) {
+  rt_subject_plot <- rt_subject |>
+    filter(handedness %in% c("Left", "Right"))
+  
+    g <- gg_rt_2_horizontal(title = "Hemifield bias for global and local targets, by handedness (EHI > +40 / < -40)",
+                          rt_subject_plot,
+                          handedness_labeller = NULL,
+                          plot_colors = plot_colors
+    )
+    
+  ggsave(fig_path_var, g, "png", height = 5, width = 8)
+}
+
+include_graphics(fig_path_var)
+g
+```
+
+
+
+---
+
+**In progress**. Dots show model-estimated group mean, error bars show 95% CI from model.
+
+<br>
 
 <!-- ## Preregistered 3-way (accuracy, bins) -->
 
@@ -318,7 +354,7 @@ if (use_cached_rtfigs == FALSE) {
     rename(handedness = handedness_extremes) |>
     filter(handedness %in% c("Left", "Right"))
   
-  g <- gg_rt_1_horizontal(title = "LVF Global Bias by handedness (EHI = +/- 100)",
+  g <- gg_rt_1_horizontal(title = "Global Bias Asymmetry by handedness (EHI = +/- 100)",
                           rt_subject_plot, plot_colors
     )
   
@@ -346,7 +382,7 @@ if (use_cached_rtfigs == FALSE) {
     rename(handedness = handedness_extremes) |>
     filter(handedness %in% c("Left", "Right"))
   
-  g <- gg_rt_1_horizontal(title = "LVF Global Bias by handedness (EHI = +/- 100), square targets only",
+  g <- gg_rt_1_horizontal(title = "Global Bias Asymmetry by handedness (EHI = +/- 100), square targets only",
                           rt_subject_plot, plot_colors
     )
   
