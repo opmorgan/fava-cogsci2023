@@ -249,42 +249,51 @@ if (use_cached_rtfigs == F) {
   
     
     
-    ##### Can be put into function: find_quantile_values
+    ##### Can be put into function: find_quantile_values()
     n_bins = 16
-    ## Add variable for quantile
-    quantile_data <- rt_subject_plot |> 
-      mutate(quantile = as.factor(ntile(desc(ehi), 16)),
-             bin = )
+    ## Add variable for bin
+    bin_data <- rt_subject_plot |> mutate(
+      bin = cut_interval(ehi, n_bins)
+    ) 
+    ## Calculate mean, sem by quantile.
+    ## No  need -- use per subject data in ggplot
+    # group_by(bin) |> 
+    #   summarize(mean_ehi = mean(ehi), # for sanity check
+    #             mean_dv = mean(dv),
+    #             n = n(),
+    #             sem_dv = sd(dv)/sqrt(n)
+    #             )
     
-    temp <- rt_subject_plot
+    bin_data
     
-    ehi_vec <- temp$ehi
-    dv_vec <- temp$dv
-    
-    ehi_vec |> cut_interval(16)
-    
-    temp |> mutate(
-      bin = 
-    )
-    
-    
-    
-    
-    quantile_data
-    ## Calculate means and SEM by quantile
-    ## Include each quantile's mean ehi value for plotting (x positions)
-    quantile_data |> 
-      group_by(quantile) |> 
-      summarize(n = n(),
-                mean_ehi = mean(ehi), ## Or: center at geometric intervals.
-                mean_dv = )
+    ggplot(data = bin_data, aes(x = ehi, y = dv)) +
+      stat_summary(
+        fun.data = mean_se,
+        geom = "errorbar",
+        position = "dodge",
+        linetype = 1,
+        color = "gray5",
+        width = .3,
+        show.legend = F
+      ) +
+      # stat_summary(
+      #   aes(y = dv),
+      #   fun.data = mean,
+      #   geom = "point",
+      #   color = "black",
+      #   shape = 21,
+      #   show.legend = F
+      # )
+      # geom_point(
+      #   data = rt_descriptive_plot,
+      #   aes(y = mean),
+      #   color = "black",
+      #   shape = 21,
+      #   show.legend = F
+      # ) +
       
-    
-    
-
-      
-      ### For plot function
-    rt_subject_plot_proc <- rt_subject_plot
+  ### For plot function
+  rt_subject_plot_proc <- rt_subject_plot
 
 
   ## Prepare data to annotate first facet
