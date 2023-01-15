@@ -199,66 +199,48 @@ hand_demo_summary_table(aah_summary) |> pretty_table() |>
 ## EHI distribution
 
 ```{r ehi_distribution_plot}
-plot_color = plot_blue
-## Show dots instead of bars
-fig_path <- here(fig_dir, "demo_ehi_dots.png")
+fig_path_var <- here(fig_dir, "demo_ehi_dots_blue.png")
 
-ehi_plot_data <- aah_summary |> group_by(ehi) |> summarize(n = n())
-ehi_n_leftest <- ehi_plot_data |> filter(ehi == -100) |> pull(n)
-ehi_n_rightest <- ehi_plot_data |> filter(ehi == 100) |> pull(n)
-
-line_color = plot_color
-
-if (use_cached_demofigs == FALSE) {
-  g <- ggplot(ehi_plot_data, aes(x = ehi, y = n)) +
-    geom_vline(xintercept = -40, color = "gray50") +
-    geom_vline(xintercept = 40, color = "gray50") +
-    geom_area(
-      fill = plot_color,
-      alpha = .5,
-      color = NA,
-      linewidth = 0
-    ) +
-    geom_line(color = line_color, linewidth = .5) +
-    geom_point(fill = plot_color,
-               shape = 21,
-               size = 3) +
-    annotate("text", x = -69, y = 170, label = "Left \n (n = 331)", size = 3.5) +
-    annotate("text", x = 0, y = 170, label = "Mixed \n (n = 135)", size = 3.5) +
-    annotate("text", x = 69, y = 170, label = "Right \n (n = 378)", size = 3.5) +
-    annotate("text", x = -41, y = 90, label = "-40", size = 3, hjust = "right") +
-    annotate("text", x = 39, y = 90, label = "+40", size = 3, hjust = "right") +
-    scale_x_continuous(
-      breaks = seq(-100, 100, 25),
-      minor_breaks = seq(-100, 100, 25),
-      expand = expansion(mult = c(.025, .025))
-    ) +
-    scale_y_continuous(expand = expansion(mult = c(0, .1))) +
-    labs(x = "Laterality quotient from 4-item Veale Edinburgh Handedness Inventory (EHI)",
-         y = "Number of participants",
-         title = "Hand preference distribution")
-  
-  g <- g + theme_minimal(base_size = 10) +
-    theme(
-      aspect.ratio = 1 / 2,
-      plot.title = element_text(margin = margin(b = 10, unit = "pt"),
-                                hjust = 0.5),
-      axis.ticks.x = element_blank(),
-      axis.title.x = element_text(margin = margin(t = 8, unit = "pt")),
-      axis.ticks.y = element_blank(),
-      axis.title.y = element_text(margin = margin(r = 5, unit = "pt")),
-      panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
-      panel.grid.minor.y = element_blank(),
-      panel.grid.major.x = element_line(color = "gray92", linewidth = .4),
-      panel.grid.minor.x = element_blank(),
-    )
-  
-  ggsave(fig_path, g, "png", height = 3, width = 6)
+if (use_cached_rtfigs == F) {
+  ehi_plot_data <- aah_summary |> group_by(ehi) |> summarize(n = n())
+  g <- gg_ehi_dotarea(ehi_plot_data, plot_color = plot_blue)
+  ggsave(fig_path_var, g, "png", height = 3, width = 6)
 }
 
-include_graphics(fig_path)
+include_graphics(fig_path_var)
 ```
+<br>
+<br>
+<br>
+<br>
+```{r ehi_distribution_plot_purple1}
+middle_purple1 <- "#996F91" ## In between plot colors one and two
+fig_path_var <- here(fig_dir, "demo_ehi_dots_purple.png")
 
+if (use_cached_rtfigs == T) {
+  ehi_plot_data <- aah_summary |> group_by(ehi) |> summarize(n = n())
+  g <- gg_ehi_dotarea(ehi_plot_data, plot_color = middle_purple1)
+  ggsave(fig_path_var, g, "png", height = 3, width = 6)
+}
+
+include_graphics(fig_path_var)
+```
+<br>
+<br>
+<br>
+<br>
+```{r ehi_distribution_plot_purple2}
+middle_purple2 <- "#886e92" ## In between plot colors one and two
+fig_path_var <- here(fig_dir, "demo_ehi_dots_purple2.png")
+
+if (use_cached_rtfigs == T) {
+  ehi_plot_data <- aah_summary |> group_by(ehi) |> summarize(n = n())
+  g <- gg_ehi_dotarea(ehi_plot_data, plot_color = middle_purple2)
+  ggsave(fig_path_var, g, "png", height = 3, width = 6)
+}
+
+include_graphics(fig_path_var)
+```
 
 
 ## Preregistered 3-way (RT, bins) {.active}
@@ -267,25 +249,25 @@ Show interaction at each level: 8 boxes, 4 boxes, 2 boxes.
 
 ---
 
-Dots show per-subject mnean, error bars show SEM.
+Dots show per-subject means, error bars show SEM.
 
 ```{r plot_rt_config}
 plot_color <- plot_colors[[5]] # Color for interaction plots with only one color.
 
-handedness_labeller_40 <- c(
-  Right = "Right handers (EHI >= +40)",
-  Left = "Left handers (EHI <= -40)"
-)
-
-handedness_labeller_40_short <- c(
-  Right = "Right \n EHI > +40",
-  Left = "Left \n EHI < -40"
-)
-
-handedness_labeller_generic_short <- c(
-  Right = "Right \n handers",
-  Left = "Left \n handers"
-)
+# handedness_labeller_40 <- c(
+#   Right = "Right handers (EHI >= +40)",
+#   Left = "Left handers (EHI <= -40)"
+# )
+# 
+# handedness_labeller_40_short <- c(
+#   Right = "Right \n EHI > +40",
+#   Left = "Left \n EHI < -40"
+# )
+# 
+# handedness_labeller_generic_short <- c(
+#   Right = "Right \n handers",
+#   Left = "Left \n handers"
+# )
 ```
 
 ```{r plot_rt_1_horizontal}
@@ -295,7 +277,7 @@ if (use_cached_rtfigs == FALSE) {
   rt_subject_plot <- rt_subject |>
     filter(handedness %in% c("Left", "Right"))
   
-    g <- gg_rt_1_horizontal(title = "Global Bias Asymmetry by Handedness (EHI > +40 / < -40)",
+    g <- gg_rt_1_horizontal(title = "Global bias asymmetry by handedness (EHI cut at +/-40)",
                           rt_subject_plot,  plot_colors
     )
     
@@ -304,7 +286,7 @@ if (use_cached_rtfigs == FALSE) {
 
 include_graphics(fig_path_var)
 ```
-<br>
+
 ```{r plot_rt_2_horizontal}
 fig_path_var <- here(fig_dir, "rt_2_horizontal.png")
 
@@ -312,24 +294,40 @@ if (use_cached_rtfigs == FALSE) {
   rt_subject_plot <- rt_subject |>
     filter(handedness %in% c("Left", "Right"))
   
-    g <- gg_rt_2_horizontal(title = "Hemifield bias for global and local targets, by handedness (EHI > +40 / < -40)",
+    g <- gg_rt_2_horizontal(title = "Hemifield bias for global and local targets, by handedness (EHI cut at +/-40)",
                           rt_subject_plot,
                           handedness_labeller = NULL,
                           plot_colors = plot_colors
     )
     
-  ggsave(fig_path_var, g, "png", height = 5, width = 8)
+  ggsave(fig_path_var, g, "png", height = 4, width = 8)
 }
 
 include_graphics(fig_path_var)
-g
 ```
 
+```{r plot_rt_4_horizontal}
+fig_path_var <- here(fig_dir, "rt_4_horizontal.png")
 
+if (use_cached_rtfigs == F) {
+  rt_subject_plot <- rt_subject |>
+    filter(handedness %in% c("Left", "Right"))
+  
+    g <- gg_rt_4_horizontal(title = "Reaction time by level, field, and handedness (EHI cut at +/-40)",
+                          rt_subject_plot,
+                          handedness_labeller = NULL,
+                          plot_colors = plot_colors
+    )
+    
+  ggsave(fig_path_var, g, "png", height = 4, width = 8)
+}
+
+include_graphics(fig_path_var)
+```
 
 ---
 
-**In progress**. Dots show model-estimated group mean, error bars show 95% CI from model.
+**TODO?**. Show model-estimated mean & CI, instead of per-subject.
 
 <br>
 
@@ -354,7 +352,7 @@ if (use_cached_rtfigs == FALSE) {
     rename(handedness = handedness_extremes) |>
     filter(handedness %in% c("Left", "Right"))
   
-  g <- gg_rt_1_horizontal(title = "Global Bias Asymmetry by handedness (EHI = +/- 100)",
+  g <- gg_rt_1_horizontal(title = "Global bias asymmetry by handedness (EHI = +/-100)",
                           rt_subject_plot, plot_colors
     )
   
@@ -364,15 +362,105 @@ if (use_cached_rtfigs == FALSE) {
 include_graphics(fig_path_var)
 ```
 
+```{r plot_rt_2_horizontal_zoom}
+fig_path_var <- here(fig_dir, "rt_2_horizontal_zoom.png")
+
+if (use_cached_rtfigs == FALSE) {
+  
+  rt_subject_plot <- aah_correct |>
+    group_by(subject, field, level, handedness_extremes) |>
+    summarize(rt = median(rt)) |>
+    filter(handedness_extremes %in% c("Left", "Right")) |>
+    rename(handedness = handedness_extremes) |>
+    filter(handedness %in% c("Left", "Right"))
+  
+    g <- gg_rt_2_horizontal(title = "Hemifield bias for global and local targets, by handedness (EHI = +/-100)",
+                          rt_subject_plot,
+                          handedness_labeller = NULL,
+                          plot_colors = plot_colors
+    )
+    
+  ggsave(fig_path_var, g, "png", height = 4, width = 8)
+}
+
+include_graphics(fig_path_var)
+```
+
+```{r plot_rt_4_horizontal_zoom}
+fig_path_var <- here(fig_dir, "rt_4_horizontal_zoom.png")
+
+if (use_cached_rtfigs == F) {
+  
+  rt_subject_plot <- aah_correct |>
+    group_by(subject, field, level, handedness_extremes) |>
+    summarize(rt = median(rt)) |>
+    filter(handedness_extremes %in% c("Left", "Right")) |>
+    rename(handedness = handedness_extremes) |>
+    filter(handedness %in% c("Left", "Right"))
+  
+    g <- gg_rt_4_horizontal(title = "Reaction time by level, field, and handedness (EHI = +/-100)",
+                          rt_subject_plot,
+                          handedness_labeller = NULL,
+                          plot_colors = plot_colors
+    )
+    
+  ggsave(fig_path_var, g, "png", height = 4, width = 8)
+}
+
+include_graphics(fig_path_var)
+```
 
 ## Zoom: Shape
 
 Show 3-way (categorical) for strong left vs. right handers, for squares only (and/or squares vs circles). Error bars show SEM.
+```{r}
+if (use_cached_rtfigs == FALSE) {
+  rt_subject_plot_zoom_squares <- aah_correct |>
+    filter(shape == "Square") |>
+    group_by(subject, field, level, handedness_extremes) |>
+    summarize(rt = median(rt)) |>
+    filter(handedness_extremes %in% c("Left", "Right")) |>
+    rename(handedness = handedness_extremes) |>
+    filter(handedness %in% c("Left", "Right"))
+}
+```
 
 ```{r plot_rt_1_horizontal_zoom_squares}
 fig_path_var <- here(fig_dir, "rt_1_horizontal_zoom_squares.png")
 
 if (use_cached_rtfigs == FALSE) {
+  g <- gg_rt_1_horizontal(
+    title = "Global bias asymmetry by handedness (EHI = +/- 100), square targets only",
+    rt_subject_plot = rt_subject_plot_zoom_squares,
+    plot_colors
+    )
+  
+  ggsave(fig_path_var, g, "png", height = 3, width = 8)
+}
+
+include_graphics(fig_path_var)
+```
+
+```{r plot_rt_2_horizontal_zoom_squares}
+fig_path_var <- here(fig_dir, "rt_2_horizontal_zoom_squares.png")
+
+if (use_cached_rtfigs == F) {
+  
+  g <- gg_rt_2_horizontal(
+      title = "Hemifield bias for global and local targets, by handedness (EHI = +/-100), squares only",
+      rt_subject_plot = rt_subject_plot_zoom_squares,
+      plot_colors)
+    
+  ggsave(fig_path_var, g, "png", height = 4, width = 8)
+}
+
+include_graphics(fig_path_var)
+```
+
+```{r plot_rt_4_horizontal_zoom_squares}
+fig_path_var <- here(fig_dir, "rt_4_horizontal_zoom_squares.png")
+
+if (use_cached_rtfigs == F) {
   
   rt_subject_plot <- aah_correct |>
     filter(shape == "Square") |> 
@@ -382,11 +470,13 @@ if (use_cached_rtfigs == FALSE) {
     rename(handedness = handedness_extremes) |>
     filter(handedness %in% c("Left", "Right"))
   
-  g <- gg_rt_1_horizontal(title = "Global Bias Asymmetry by handedness (EHI = +/- 100), square targets only",
-                          rt_subject_plot, plot_colors
+    g <- gg_rt_4_horizontal(
+      title = "Hemifield bias for global and local targets, by handedness (EHI = +/-100), squares only",
+      rt_subject_plot = rt_subject_plot_zoom_squares,
+      plot_colors
     )
-  
-  ggsave(fig_path_var, g, "png", height = 3, width = 8)
+    
+  ggsave(fig_path_var, g, "png", height = 4, width = 8)
 }
 
 include_graphics(fig_path_var)
@@ -402,10 +492,35 @@ include_graphics(fig_path_var)
 
 <!-- ## Preregistered 3-way (accuracy, continuous) -->
 
-## Final proposed figures
-- Compound figure showing RT interaction (bins; 8, 4, 2)
+## Discussion
+
+### Questions for discussion
+
+- Should we show SEM/CI from the subject-level data, or from the full mixed model?
+- Is it enough to show the "tier one" figures listed below? Should we show any figures illustrating zoom analyses, and the continuous analysis?
+- Which figures show the interaction most clearly? Could we just show the 4-box plot?
+- Is it worth showing the 8-box data for the main analysis? I think it would be nice to show this raw data.
+- Any feedback on the design of the graphs?
+
+
+### Proposal
+
+#### Tier one
+(1) EHI
+(2) (a, b, c) Main result: Compound figure showing RT interaction (1-box, 4-box, 8-box) in full sample.
+
+#### Tier two (could leave out if we need the space)
+(3) (a, b) Zoom: compound figure showing effect of shape, within strong lefties (1-box, 4-box). This shows the stro
+(4) Scatterplot-like figure showing RT interaction (continuous) [If convincing]
+
+### Brainstorm - all figures I think might be worth showing
+- EHI
+- (a, b, c) Main result: Compound figure showing RT interaction (1-box, 4-box, 8-box) in full sample.
+- (a, b) Zoom: Compound figure showing RT interaction (1-box, 4-box) in strong handers, or strong handers with squares only.
+- (a, b) Zoom: show effect of shape (1-box, 4-box),  either in strong handers only (revealing largest effect size, and also illustrating the effect of shape), or in the full sample (focusing on the effect of shape itself)
 - Scatterplot-like figure showing RT interaction (continuous)
-- Zoom: RT interaction for EHI +/-100
+
+
 
 
 
