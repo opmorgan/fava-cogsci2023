@@ -1,6 +1,6 @@
 ---
 title: "Action Asymmetry Experiment (n = 1008): Figures for CogSci 2023 submission"
-pagetitle: "aah | exp | analysis (shape)"
+pagetitle: "aah | exp | figures"
 author: "Owen Morgan"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: html_document
@@ -66,7 +66,7 @@ plot_colors <- c("#4477AA",
 
 ```{r config}
 proc_dir <- here::here("data", "proc_exp_n1008")
-fig_dir <- here::here("figures", "exp_n1008_4a")
+fig_dir <- here::here("figures", "exp_n1008_4x")
 manual_cache_dir <- here::here("manual_cache", "exp_n1008_4a")
 
 use_cached_models <- T
@@ -117,20 +117,6 @@ aah <- filter_aah_long_for_analysis(aah_long) |>
 ## For RT analyses, prepare dataset with only correct, present trials.
 ## In our RT model, we only care about correct responses to present trials.
 aah_correct <- aah |> filter(correct == T)
-## Code handedness
-
-## Relevel field and level with RVF first (unintuitive for plotting),
-## so that emmeans will show a positive number for LVF global bias.
-aah_for_rt_model <- aah_correct |>
-  mutate(level = level |> factor(levels = c("Global", "Local")),
-         field = field |> factor(levels = c("RVF", "LVF")))
-
-## For accuracy analyses, prepare dataset will all present trials.
-## Relevel field and level,
-## so that emmeans will show a positive number for LVF global bias.
-aah_for_acc_model <- aah |>
-  mutate(level = level |> factor(levels = c("Local", "Global")),
-         field = field |> factor(levels = c("RVF", "LVF")))
 
 #### PREPARE SUBJECT_LEVEL DATA FOR RT, ACCURACY ANALYSES
 ## Prepare subject-level data (RT)
@@ -144,302 +130,86 @@ rt_1 <- rt_subject |>
   mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
   mutate(all_one_group = "all_one_group")
 
-## Prepare subject-level LVF Global bias summary (Accuracy)
-## (For accuracy, include incorrect trials!)
-acc_subject <- aah |> group_by(subject, field, level, handedness) |>
-  summarize(
-    total_responses = n(),
-    n_present_resp = sum(correct),
-    n_absent_resp = total_responses - n_present_resp,
-    n_correct = sum(correct),
-    acc = 100 * (n_correct / total_responses)
-  ) |>
-  select(subject, handedness, field, level, acc) |>
-  mutate(level = recode(level, global = "Global", local = "Local"))
 
-acc_1 <- acc_subject |>
-  pivot_wider(names_from = c(field, level),
-              values_from = acc) |>
-  mutate(LVF_Global_Bias = (LVF_Global - LVF_Local) - (RVF_Global - RVF_Local)) |>
-  mutate(all_one_group = "all_one_group")
 ```
 
-# {.tabset .tabset-pills}
 
-## Demographics
+## Scatter plot
 
-### Everyone
-
-Demographics for all included participants.
-```{r demo_summary}
-rt_demo <- demo_summary_table(aah_summary)
-rt_demo |> pretty_table() |> tab_header(title = "Demographics", subtitle = "Summary")
-```
-<br>
-```{r demo_race}
-demo_race_table(aah_summary) |> pretty_table()
-```
-<br>
-```{r demo_ethnicity}
-demo_ethnicity_table(aah_summary) |> pretty_table()
-```
-<br>
-
-### By handedness group {.active}
-
-Demographics for included participants, by handedness group (EHI bins). 
-```{r}
-hand_demo_summary_table(aah_summary) |> pretty_table() |>
-  tab_footnote("Left: (EHI <= -40)  |  Mixed: (-40 < EHI < 40)  |  Right: (EHI >= 40)")
-```
-<br>
-```{r demo_plot_ehi_binned}
+```{r plot_rt_1_cor}
 plot_color = plot_blue
-fig_path <- here(fig_dir, "demo_ehi_binned.png")
+middle_purple1 <- "#996F91" ## In between plot colors one and two
+middle_purple2 <- "#886e92" ## In between plot colors one and two
 
-aah_summary |> group_by(ehi) |> summarize(n = n())
+h_plot_colors <- c(plot_colors[[1]], middle_purple1, plot_colors[[2]])
 
-if (use_cached_demofigs == FALSE) {
-g <- ggplot(aah_summary, aes(x = ehi)) +
-  geom_histogram(color = NA, fill = plot_color, alpha = .8, binwidth = 10, boundary = 100) +
-  # geom_vline(xintercept = -92, color = plot_colors[[2]]) +
-  # geom_vline(xintercept = 92, color = plot_colors[[2]]) +
-  geom_vline(xintercept = -40, color = "gray50") +
-  geom_vline(xintercept = 40, color = "gray50") +
-  scale_x_continuous(breaks = c(-100, -40, 0, 40, 100),
-                     minor_breaks = seq(-100, 100, 20)) +
-  # scale_x_continuous(breaks = c(-100, -40, 0, 40, 100),
-  #                    minor_breaks = seq(-100, 100, 20)) +
-  labs(x = "Edinburgh Handedness Inventory (EHI) laterality quotient",
-       y = "Number of participants",
-       title = "Hand preference distribution")
+fig_path_var <- here(fig_dir, "rt_1_cor.png")
+fig_path_var_wide <- here(fig_dir, "rt_1_cor_wide.png")
 
-g <- g |> gg_style() |> gg_style_demo() + theme(aspect.ratio = 1/2)
-
-g
-ggsave(fig_path, g, "png", height = 2, width = 4)
+if (use_cached_rtfigs == F) {
+  
+  rt_subject_plot <- rt_subject |>
+    pivot_wider(names_from = c(field, level),
+                values_from = rt) |>
+    mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
+    left_join(aah_summary, by = "subject") |>
+    mutate(handedness = handedness.x) |> ## identical
+    select(subject, ehi, starts_with("LVF"), handedness, handedness_extremes)
+  
+  g <- gg_rt_1_cor(title = "Global bias asymmetry by EHI",
+              rt_subject_plot = rt_subject_plot,
+              plot_colors = h_plot_colors)
+  
+  ggsave(fig_path_var, g, "png", height = 4, width = 4)
+  ggsave(fig_path_var_wide, g, "png", height = 4, width = 8)
+  
 }
 
-include_graphics(fig_path)
+include_graphics(fig_path_var_wide)
 g
 ```
 
-```{r ehi_distribution_plot}
-## Show dots instead of bars
-ehi_plot_data <- aah_summary |> group_by(ehi) |> summarize(n = n())
-ehi_plot_data
-ehi_n_leftest <- ehi_plot_data |> filter(ehi == -100) |> pull(n)
-ehi_n_rightest <- ehi_plot_data |> filter(ehi == 100) |> pull(n)
+```{r plot_rt_2_cor}
+fig_path_var <- here(fig_dir, "rt_2_cor.png")
+fig_path_var_wide <- here(fig_dir, "rt_2_cor_wide.png")
 
-fig_path <- here(fig_dir, "demo_ehi_dots.png")
-
-line_color = plot_color
-
-
-if (use_cached_demofigs == FALSE) {
-g <- ggplot(ehi_plot_data, aes(x = ehi, y = n)) +
-  # geom_col(width = 1, fill = plot_color) +
-  geom_vline(xintercept = -40, color = "gray50") +
-  geom_vline(xintercept = 40, color = "gray50") +
-  geom_area(fill = plot_color, alpha = .5, color = NA, linewidth = 0) +
-  geom_line(color = line_color, linewidth = .5) +
-  # geom_segment(x = -100, xend = -100, y = 0, yend = ehi_n_leftest, color = line_color, linewidth = .5, alpha = .5) +
-  # geom_segment(x = 100, xend = 100, y = 0, yend = ehi_n_rightest, color = line_color, linewidth = .5) +
-  geom_point(fill = plot_color, shape = 21, size = 3) +
-  # geom_histogram(color = NA, fill = plot_color, alpha = .8, binwidth = 10, boundary = 100) +
-  # geom_vline(xintercept = -92, color = plot_colors[[2]]) +
-  # geom_vline(xintercept = 92, color = plot_colors[[2]]) +
-  scale_x_continuous(breaks = c(-100, -75, -50, -25, 0, 25, 50, 75, 100),
-                     minor_breaks = seq(-100, 100, 12.5),
-                     expand = expansion(mult = c(.025, .025))) +
-  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
-  # scale_x_continuous(breaks = c(-100, -40, 0, 40, 100),
-  #                    minor_breaks = seq(-100, 100, 20)) +
-  labs(x = "Laterality quotient from 4-item Veale Edinburgh Handedness Inventory (EHI)",
-       y = "Number of participants",
-       title = "Hand preference distribution")
-
-g <- g + theme_minimal(base_size = 10) +
-    theme(aspect.ratio = 1 / 2,
-          plot.title = element_text(margin = margin(b = 10, unit = "pt"),
-                                    hjust = .5),
-          axis.ticks.x = element_blank(),
-          axis.title.x = element_text(margin = margin(t = 5, unit = "pt")),
-          axis.ticks.y = element_blank(),
-          axis.title.y = element_text(margin = margin(r = 5, unit = "pt"))
-    )
-
-ggsave(fig_path, g, "png", height = 2, width = 4)
+if (use_cached_rtfigs == F) {
+  
+  rt_subject_plot <- rt_subject |>
+    pivot_wider(names_from = c(field),
+                values_from = rt) |> 
+    mutate(LVF_Bias = RVF - LVF) |> 
+    left_join(aah_summary, by = "subject") |>
+    mutate(handedness = handedness.x) |> ## identical
+    select(subject, ehi, starts_with("LVF"), handedness, handedness_extremes)
+  
+  g <- gg_rt_2_cor(title = "Hemifield bias for global and local targets, by EHI",
+              rt_subject_plot = rt_subject_plot,
+              plot_colors = h_plot_colors) + facet_wrap(~ level)
+  
+  ggsave(fig_path_var, g, "png", height = 4, width = 4)
+  ggsave(fig_path_var_wide, g, "png", height = 4, width = 8)
+  
 }
 
-include_graphics(fig_path)
+include_graphics(fig_path_var_wide)
 g
+
 ```
 
-```{r ehi_distribution_plot_hacky}
-## Show dots instead of bars
-ehi_plot_data <- aah_summary |> group_by(ehi) |> summarize(n = n())
-ehi_plot_data
-ehi_n_leftest <- ehi_plot_data |> filter(ehi == -100) |> pull(n)
-ehi_n_rightest <- ehi_plot_data |> filter(ehi == 100) |> pull(n)
-
-fig_path <- here(fig_dir, "demo_ehi_dots.png")
-
-line_color = plot_color
-yr <- ehi_plot_data$n
-xr <- ehi_plot_data$ehi
-
-y_breaks = c(0, 50, 100, 150, 200)
-x_breaks = seq(-100, 100, 25)
-
-
-xr
-x_breaks
-pretty(xr)
-xr <- pretty(xr)
 
 
 
-if (use_cached_demofigs == FALSE) {
-g <- ggplot(ehi_plot_data, aes(x = ehi, y = n)) +
-
-  ### Define vertical lines: y axis and panel.major/minor.y
-  geom_segment(aes(
-    ## y = rep(9, 16) = [9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9, 9]
-    y = rep(0, length(xr)),
-    ## yend = rep(182, 16) = [182, 182...]
-    yend = rep(200, length(xr)),
-    ## x = [-100, -87.5, -75, ...]
-    x = xr,
-    ## xend = [-100, -87.5, -75, ...]
-    xend = xr
-  ), colour = "gray50") +
-
-  ### Define horizontal lines: x axis and panel.major/minor.x
-  geom_segment(aes(
-    x = rep(min(xr), length(yr)),
-    xend = rep(max(xr), length(yr)),
-    y = yr,
-    yend = yr
-  ), colour = "gray50") +
-  
-  
-  # geom_vline(xintercept = -40, color = "gray50") +
-  # geom_vline(xintercept = 40, color = "gray50") +
-  # geom_area(fill = plot_color, alpha = .5, color = NA, linewidth = 0) +
-  geom_line(color = line_color, linewidth = .5) +
-  
-  
-  # geom_segment(x = -100, xend = -100, y = 0, yend = ehi_n_leftest, color = line_color, linewidth = .5, alpha = .5) +
-  # geom_segment(x = 100, xend = 100, y = 0, yend = ehi_n_rightest, color = line_color, linewidth = .5) +
-  geom_point(fill = plot_color, shape = 21, size = 3) +
-  
-  scale_x_continuous(breaks = x_breaks,
-                     # minor_breaks = seq(-100, 100, 12.5),
-                     expand = c(0,0.02*diff(range(ehi_plot_data$n)))
-                     ) +
-                     # expand = expansion(mult = c(.025, .025))) +
-  scale_y_continuous(breaks = y_breaks,
-                     expand = c(0,0.02*diff(range(ehi_plot_data$ehi)))
-                     ) +
-  
-  
-  # scale_y_continuous(breaks = yr, expand = c(0,0.01*diff(range(ehi_plot_data$n)))) +
-  # scale_x_continuous(breaks = xr, expand = c(0,0.02*diff(range(ehi_plot_data$ehi)))) +
-  theme_classic() +
-  theme(axis.line = element_blank()) +
-  
-  
-  labs(x = "4-item Veale Edinburgh Handedness Inventory (EHI) laterality quotient",
-       y = "Number of participants",
-       title = "Hand preference distribution")
-
-g <- g + theme(aspect.ratio = 1/2, axis.ticks.x = element_blank(), axis.ticks.y = element_blank())
-# g <- g + theme_minimal()
-# g <- g |> gg_style()
-# g <- g + theme_minimal(base_size = 10) +
-#     theme(aspect.ratio = 1 / 2,
-#           axis.ticks.x = element_blank()
-#     )
-# g <- g |> gg_style() + theme_minimal()
-# g <- g |> gg_style() |> gg_style_demo() +theme_classic()+ theme(aspect.ratio = 1/2, axis.line = element_blank())
-
-g
-ggsave(fig_path, g, "png", height = 2, width = 4)
-}
-
-include_graphics(fig_path)
-g
-```
-
-```{r ehi_plot_manual_axes}
-y_breaks <- pretty(ehi_plot_data$n)
-x_breaks <- pretty(ehi_plot_data$ehi)
-
-y_breaks = c(0, 50, 100, 150, 200)
-x_breaks = seq(-100, 100, 25)
 
 
-ggplot(data = ehi_plot_data) +
-  
-  ## vertical lines (major)
-  # geom_segment(aes(
-  #   y = rep(min(y_breaks), length(x_breaks)),
-  #   yend = rep(max(y_breaks), length(x_breaks)),
-  #   x = x_breaks,
-  #   xend = x_breaks
-  # ), colour = "gray50") +
-  # 
-  # ## horizontal lines (major)
-  # geom_segment(aes(
-  #   x = rep(min(x_breaks), length(y_breaks)),
-  #   xend = rep(max(x_breaks), length(y_breaks)),
-  #   y = y_breaks,
-  #   yend = y_breaks
-  # ), colour = "gray50") +
-  
-  geom_line(aes(ehi, n), color = line_color, linewidth = .5) +
-  geom_area(aes(ehi, n), fill = plot_color, alpha = .5, color = NA, linewidth = 0) +
-  geom_point(data = ehi_plot_data, aes(ehi, n), size = 4, shape = 21, fill = plot_color) +
-  
-  # geom_point(fill = plot_color, shape = 21, size = 3) +
-  scale_y_continuous(breaks = y_breaks,
-                     expand = c(0, 0.02 * diff(range(ehi_plot_data$ehi)))) +
-  scale_x_continuous(breaks = x_breaks,
-                     expand = c(0, 0.02 * diff(range(ehi_plot_data$n)))) +
-  theme_classic() +
-  theme(axis.line = element_blank()) +
-  labs(x = "4-item Veale Edinburgh Handedness Inventory (EHI) laterality quotient",
-       y = "Number of participants",
-       title = "Hand preference distribution") +
-  theme(axis.title.x = element_text(margin = margin(t = 10, unit = "pt"))) +
-  theme(aspect.ratio = 1/2, axis.ticks.x = element_blank(), axis.ticks.y = element_blank())
-```
 
-## Preregistered 3-way (RT, bins)
 
-Show interaction at each level: 8 boxes, 4 boxes, 2 boxes.
 
-<!-- ## Preregistered 3-way (accuracy, bins) -->
 
-<!-- Show interaction at each level: 8 boxes, 4 boxes, 2 boxes. -->
 
-## Preregistered 3-way (RT, continuous)
 
-<!-- ## Preregistered 3-way (accuracy, continuous) -->
 
-## Zoom: EHI +/- 100
 
-Show 3-way (categorical) for strong left vs. right handers.
-
-<!-- ## Zoom: EHI +/- 100, squares only -->
-
-<!-- Show 3-way (categorical) for strong left vs. right handers, squares only. -->
-
-## Final proposed figures
-- Compound figure showing RT interaction (bins; 8, 4, 2)
-- Scatterplot-like figure showing RT interaction (continuous)
-- Zoom: RT interaction for EHI +/-100
 
 
 

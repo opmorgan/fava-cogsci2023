@@ -1,6 +1,6 @@
 ---
 title: "Action Asymmetry Experiment (n = 1008): Figures for CogSci 2023 submission"
-pagetitle: "aah | exp | analysis (shape)"
+pagetitle: "aah | exp | figures"
 author: "Owen Morgan"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: html_document

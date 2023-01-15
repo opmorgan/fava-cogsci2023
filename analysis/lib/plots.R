@@ -513,4 +513,90 @@ gg_rt_4_horizontal <- function(title,
     return(g)
 }
 
+  gg_rt_1_cor <- function(title,
+                          rt_subject_plot,
+                          plot_colors) {
+    
+  rt_subject_plot_proc <- rt_subject_plot
+    
+  
+  ## Prepare data to annotate first facet
+  data_facet1 <- rt_subject_plot_proc
+  
+  g <- rt_subject_plot_proc |> ggplot(aes(x = ehi, y = LVF_Global_Bias)) +
+    geom_hline(yintercept = 0, color = "gray50", linewidth = .5) +
+    geom_quasirandom( alpha = .2, aes(fill = handedness), shape = 21, show.legend = F
+    ) +
+    geom_smooth(method = "lm", color = "gray30") +
+    scale_fill_manual(values = h_plot_colors) +
+    scale_color_manual(values = plot_colors[c(1, 2)]) +
+    geom_text( data = data_facet1, color = "gray50",
+      x = 0, y = 310, hjust = "center",
+      label = "↑ \n LVF Bias" , size = 3
+    ) +
+    geom_text(data = data_facet1, color = "gray50",
+      x = 1.55, y = -350, hjust = "center",
+      label = "RVF Bias \n ↓", size = 3
+    ) +
+    labs(x = "Laterality quotient from EHI", y = "RVF - LVF, Local - Global reaction time (ms)",
+         title = title)
+  
+  g <- g |> gg_style() +
+    theme(
+      aspect.ratio = 1/2,
+      plot.title = element_text(hjust = 0.5),
+      axis.title.x = element_text(margin = margin(t = 8, unit = "pt")),
+      panel.grid.minor = element_line(color = "gray92", linewidth = .2),
+      panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
+      panel.grid.major.x = element_line(color = "gray92", linewidth = .2),
+      panel.border = element_rect(fill = NA, color = "gray50"))
+    
+  g + theme(plot.title = element_text(hjust = 0.5))
+  
+  return(g)
+  }
+  
+ gg_rt_2_cor <- function(title,
+                          rt_subject_plot,
+                          plot_colors) {
+    
+  rt_subject_plot_proc <- rt_subject_plot
+    
+  
+  ## Prepare data to annotate first facet
+  data_facet1 <- rt_subject_plot_proc
+  
+  g <- rt_subject_plot_proc |> ggplot(aes(x = ehi, y = LVF_Bias)) +
+    geom_hline(yintercept = 0, color = "gray50", linewidth = .5) +
+    geom_quasirandom( alpha = .2, aes(fill = handedness), shape = 21, show.legend = F
+    ) +
+    geom_smooth(method = "lm", color = "gray30") +
+    scale_fill_manual(values = h_plot_colors) +
+    scale_color_manual(values = plot_colors[c(1, 2)]) +
+    geom_text( data = data_facet1, color = "gray50",
+      x = 0, y = 310, hjust = "center",
+      label = "↑ \n LVF Bias" , size = 3
+    ) +
+    geom_text(data = data_facet1, color = "gray50",
+      x = 1.55, y = -350, hjust = "center",
+      label = "RVF Bias \n ↓", size = 3
+    ) +
+    labs(x = "Laterality quotient from EHI", y = "Difference in reaction time between LVF and RVF (ms)",
+         title = title)
+  
+  g <- g |> gg_style() +
+    theme(
+      plot.title = element_text(hjust = 0.5),
+      axis.title.x = element_text(margin = margin(t = 8, unit = "pt")),
+      panel.grid.minor = element_line(color = "gray92", linewidth = .2),
+      panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
+      panel.grid.major.x = element_line(color = "gray92", linewidth = .2),
+      panel.border = element_rect(fill = NA, color = "gray50"))
+    
+  g + theme(plot.title = element_text(hjust = 0.5))
+  
+  return(g)
+  }
+  
+
 
