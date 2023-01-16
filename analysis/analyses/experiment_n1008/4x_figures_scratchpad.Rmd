@@ -412,17 +412,16 @@ if (use_cached_rtfigs == F) {
         "75", "", "100", "")
     ) + 
     ## Add level to make 2-box plot
-    facet_grid(vars(level)) +
+    facet_grid(cols = vars(level)) +
     scale_y_continuous(
       expand = expansion(mult = c(.025, .025))
-    ) +
+    )
   
   ggsave(fig_path_var, g, "png", height = 4, width = 4)
   
 }
 
 include_graphics(fig_path_var)
-g
 ```
 
 
