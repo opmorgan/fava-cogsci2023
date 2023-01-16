@@ -113,6 +113,7 @@ gg_ehi_dotarea <- function(ehi_plot_data,
 }
 
 
+## Categorical RT plots
 gg_rt_1_horizontal <- function(title,
                                rt_subject_plot,
                                plot_colors,
@@ -230,9 +231,7 @@ gg_rt_1_horizontal <- function(title,
 gg_rt_2_horizontal <- function(title,
                                rt_subject_plot,
                                plot_colors,
-                               handedness_labeller = NULL)
-{
-
+                               handedness_labeller = NULL) {
 
   ## LVF_Bias by level for each subject
   rt_subject_plot_proc <- rt_subject_plot |>
@@ -368,8 +367,7 @@ gg_rt_2_horizontal <- function(title,
 gg_rt_4_horizontal <- function(title,
                                rt_subject_plot,
                                plot_colors,
-                               handedness_labeller = NULL)
-{
+                               handedness_labeller = NULL) {
 
 
   ## RT by level for each subject
@@ -508,145 +506,195 @@ gg_rt_4_horizontal <- function(title,
     return(g)
 }
 
-  gg_rt_1_cor <- function(title,
-                          rt_subject_plot,
-                          plot_colors) {
-
+## Continuous RT plots
+## Plot every data point ("cor")
+gg_rt_1_cor <- function(title,
+                        rt_subject_plot,
+                        plot_colors) {
   rt_subject_plot_proc <- rt_subject_plot
-
-
+  
+  
   ## Prepare data to annotate first facet
   data_facet1 <- rt_subject_plot_proc
-
-  g <- rt_subject_plot_proc |> ggplot(aes(x = ehi, y = LVF_Global_Bias)) +
-    geom_hline(yintercept = 0, color = "gray50", linewidth = .5) +
-    geom_quasirandom( alpha = .2, aes(fill = handedness), shape = 21, show.legend = F
+  
+  g <-
+    rt_subject_plot_proc |> ggplot(aes(x = ehi, y = LVF_Global_Bias)) +
+    geom_hline(yintercept = 0,
+               color = "gray50",
+               linewidth = .5) +
+    geom_quasirandom(
+      alpha = .2,
+      aes(fill = handedness),
+      shape = 21,
+      show.legend = F
     ) +
     geom_smooth(method = "lm", color = "gray30") +
     scale_fill_manual(values = h_plot_colors) +
     scale_color_manual(values = plot_colors[c(1, 2)]) +
-    geom_text( data = data_facet1, color = "gray50",
-      x = 0, y = 310, hjust = "center",
-      label = "↑ \n LVF Bias" , size = 3
+    geom_text(
+      data = data_facet1,
+      color = "gray50",
+      x = 0,
+      y = 310,
+      hjust = "center",
+      label = "↑ \n LVF Bias" ,
+      size = 3
     ) +
-    geom_text(data = data_facet1, color = "gray50",
-      x = 1.55, y = -350, hjust = "center",
-      label = "RVF Bias \n ↓", size = 3
+    geom_text(
+      data = data_facet1,
+      color = "gray50",
+      x = 1.55,
+      y = -350,
+      hjust = "center",
+      label = "RVF Bias \n ↓",
+      size = 3
     ) +
     scale_y_continuous(breaks = seq(-1000, 1000, 50),
-                    minor_breaks = seq(-1000 , 1000, 25)) +
+                       minor_breaks = seq(-1000 , 1000, 25)) +
     coord_cartesian(ylim = c(-400, 350)) +
     labs(x = "Laterality quotient from EHI", y = "RVF - LVF, Local - Global reaction time (ms)",
          title = title)
-
+  
   g <- g |> gg_style() +
     theme(
-      aspect.ratio = 1/1,
+      aspect.ratio = 1 / 1,
       plot.title = element_text(hjust = 0.5),
       axis.title.x = element_text(margin = margin(t = 8, unit = "pt")),
       panel.grid.minor = element_line(color = "gray92", linewidth = .2),
       panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
       panel.grid.major.x = element_line(color = "gray92", linewidth = .2),
-      panel.border = element_rect(fill = NA, color = "gray50"))
-
+      panel.border = element_rect(fill = NA, color = "gray50")
+    )
+  
   g + theme(plot.title = element_text(hjust = 0.5))
-
+  
   return(g)
-  }
+}
 
- gg_rt_2_cor <- function(title,
-                          rt_subject_plot,
-                          plot_colors) {
-
+gg_rt_2_cor <- function(title,
+                        rt_subject_plot,
+                        plot_colors) {
   rt_subject_plot_proc <- rt_subject_plot
-
-
+  
+  
   ## Prepare data to annotate first facet
   data_facet1 <- rt_subject_plot_proc |> filter(level == "Global")
-
+  
   g <- rt_subject_plot_proc |> ggplot(aes(x = ehi, y = LVF_Bias)) +
-    geom_hline(yintercept = 0, color = "gray50", linewidth = .5) +
-    geom_quasirandom( alpha = .2, aes(fill = handedness), shape = 21, show.legend = F
+    geom_hline(yintercept = 0,
+               color = "gray50",
+               linewidth = .5) +
+    geom_quasirandom(
+      alpha = .2,
+      aes(fill = handedness),
+      shape = 21,
+      show.legend = F
     ) +
     geom_smooth(method = "lm", color = "gray30") +
     scale_fill_manual(values = h_plot_colors) +
     scale_color_manual(values = plot_colors[c(1, 2)]) +
-    geom_text( data = data_facet1, color = "gray50",
-      x = 0, y = 310, hjust = "center",
-      label = "↑ \n LVF Bias" , size = 3
+    geom_text(
+      data = data_facet1,
+      color = "gray50",
+      x = 0,
+      y = 310,
+      hjust = "center",
+      label = "↑ \n LVF Bias" ,
+      size = 3
     ) +
-    geom_text(data = data_facet1, color = "gray50",
-      x = 1.55, y = -350, hjust = "center",
-      label = "RVF Bias \n ↓", size = 3
+    geom_text(
+      data = data_facet1,
+      color = "gray50",
+      x = 1.55,
+      y = -350,
+      hjust = "center",
+      label = "RVF Bias \n ↓",
+      size = 3
     ) +
     scale_y_continuous(breaks = seq(-1000, 1000, 50),
-                    minor_breaks = seq(-1000 , 1000, 25)) +
+                       minor_breaks = seq(-1000 , 1000, 25)) +
     coord_cartesian(ylim = c(-400, 350)) +
-    facet_wrap(~level) +
+    facet_wrap(~ level) +
     labs(x = "Laterality quotient from EHI", y = "Difference in reaction time between LVF and RVF (ms)",
          title = title)
-
+  
   g <- g |> gg_style() +
     theme(
-      aspect.ratio = 1/1,
+      aspect.ratio = 1 / 1,
       plot.title = element_text(hjust = 0.5),
       axis.title.x = element_text(margin = margin(t = 8, unit = "pt")),
       panel.grid.minor = element_line(color = "gray92", linewidth = .2),
       panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
       panel.grid.major.x = element_line(color = "gray92", linewidth = .2),
-      panel.border = element_rect(fill = NA, color = "gray50"))
-
+      panel.border = element_rect(fill = NA, color = "gray50")
+    )
+  
   g + theme(plot.title = element_text(hjust = 0.5))
-
+  
   return(g)
-  }
+}
 
- 
-  gg_rt_4_cor <- function(title,
-                          rt_subject_plot,
-                          plot_colors) {
 
+gg_rt_4_cor <- function(title,
+                        rt_subject_plot,
+                        plot_colors) {
   rt_subject_plot_proc <- rt_subject_plot
-
-
+  
+  
   ## Prepare data to annotate first facet
-  data_facet1 <- rt_subject_plot_proc |> filter(level == "Global" & field == "LVF")
-
+  data_facet1 <-
+    rt_subject_plot_proc |> filter(level == "Global" & field == "LVF")
+  
   ## Make Field labeller
-  field_labeller <- c(
-    LVF = "Left Visual Field (LVF)",
-    RVF = "Right Visual Field (RVF)"
-  )
-
+  field_labeller <- c(LVF = "Left Visual Field (LVF)",
+                      RVF = "Right Visual Field (RVF)")
+  
   g <- rt_subject_plot_proc |> ggplot(aes(x = ehi, y = rt)) +
-    geom_hline(yintercept = 0, color = "gray50", linewidth = .5) +
-    geom_quasirandom( alpha = .2, aes(fill = handedness), shape = 21, show.legend = F
+    geom_hline(yintercept = 0,
+               color = "gray50",
+               linewidth = .5) +
+    geom_quasirandom(
+      alpha = .2,
+      aes(fill = handedness),
+      shape = 21,
+      show.legend = F
     ) +
     geom_smooth(method = "lm", color = "gray30") +
     scale_fill_manual(values = h_plot_colors) +
     scale_color_manual(values = plot_colors[c(1, 2)]) +
-    geom_text( data = data_facet1, color = "gray50",
-      x = 0, y = 1150, hjust = "center",
-      label = "↑ \n Slower" , size = 2.5
+    geom_text(
+      data = data_facet1,
+      color = "gray50",
+      x = 0,
+      y = 1150,
+      hjust = "center",
+      label = "↑ \n Slower" ,
+      size = 2.5
     ) +
-    geom_text(data = data_facet1, color = "gray50",
-      x = 1.55, y = 150, hjust = "center",
-      label = "Faster \n ↓", size = 2.5
+    geom_text(
+      data = data_facet1,
+      color = "gray50",
+      x = 1.55,
+      y = 150,
+      hjust = "center",
+      label = "Faster \n ↓",
+      size = 2.5
     ) +
     scale_y_continuous(
       minor_breaks = seq(0 , 1500, 100),
-                       breaks = seq(0, 1500, 200),
-      expand = expansion(mult = c(0, .08)), limits = c(0, NA)) +
+      breaks = seq(0, 1500, 200),
+      expand = expansion(mult = c(0, .08)),
+      limits = c(0, NA)
+    ) +
     coord_cartesian(ylim = c(0, 1200)) +
-    facet_grid2(level ~field,
-                labeller = labeller(field = field_labeller)
-                ) +
+    facet_grid2(level ~ field,
+                labeller = labeller(field = field_labeller)) +
     labs(x = "Laterality quotient from EHI", y = "Reaction time (ms)",
          title = title)
-
+  
   g <- g |> gg_style() +
     theme(
-      aspect.ratio = 1/1,
+      aspect.ratio = 1 / 1,
       plot.title = element_text(hjust = 0.5),
       strip.background = element_rect(fill = "gray99", color = "gray50"),
       strip.placement = "outside",
@@ -654,12 +702,171 @@ gg_rt_4_horizontal <- function(title,
       panel.grid.minor = element_line(color = "gray92", linewidth = .2),
       panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
       panel.grid.major.x = element_line(color = "gray92", linewidth = .2),
-      panel.border = element_rect(fill = NA, color = "gray50"))
-
+      panel.border = element_rect(fill = NA, color = "gray50")
+    )
+  
   g + theme(plot.title = element_text(hjust = 0.5))
-
+  
   return(g)
+}
+
+
+## Plot summary stats for binned data ("cor bin")
+## Common style function for all cor bin plots
+gg_style_cor_bin <- function(g) {
+  g_out <- g |>
+    gg_style() +
+    theme(
+      aspect.ratio = 1 / 1,
+      plot.title = element_text(hjust = 0.5),
+      axis.title.x = element_text(margin = margin(t = 8, unit = "pt")),
+      panel.grid.minor = element_line(color = "gray92", linewidth = .2),
+      panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
+      panel.grid.major.x = element_line(color = "gray92", linewidth = .2),
+      panel.border = element_rect(fill = NA, color = "gray50")
+    )
+  return(g_out)
+}
+
+gg_rt_1_ntiles <- function(title = "",
+                           y_title = "DV",
+                           rt_subject_plot,
+                           n_bins = 17,
+                           plot_colors,
+                           plot_color = "black",
+                           group_by_level = FALSE,
+                           direction_labels = NULL,
+                           direction_labels_pos = NULL,
+                           ylims = NULL,
+                           ybreaks = NULL) {
+  #### Common prep for all bin plots
+  ##### Could be put into function: find_quantile_values()
+  ## Add variable for bin
+  bin_data <-
+    rt_subject_plot |> mutate(bin = cut_interval(ehi, n_bins))
+  ## Calculate mean, sem by quantile.
+  bin_data_summary <- bin_data |>
+    group_by(bin) |>
+    summarize(
+      mean_ehi = mean(ehi),
+      # for sanity check
+      mean_dv = mean(dv),
+      median_dv = median(dv),
+      n = n(),
+      sem_dv = sd(dv) / sqrt(n)
+    )
+  
+  ## Hack to quickly make two-box plot
+  if (group_by_level == T) {
+      bin_data_summary <- bin_data |>
+    group_by(bin, level) |>
+    summarize(
+      mean_ehi = mean(ehi),
+      # for sanity check
+      mean_dv = mean(dv),
+      median_dv = median(dv),
+      n = n(),
+      sem_dv = sd(dv) / sqrt(n)
+    )
   }
-
-
+  
+  #### Function to plot 1-box graph
+  ## Prepare data to annotate first facet
+  data_facet1 <- bin_data
+  
+  ## TODO. If there are more than 5 bins, show just the lowest, middlest, and highest X-axis labels
+  ## Prepare X-axis labels
+  bin_levels <- levels(bin_data$bin)
+  if (n_bins <= 5) {
+    x_labels <- bin_levels
+  } else if (n_bins > 5) {
+    label_lower <- bin_levels[[1]]
+    idx_middle <- median(1:n_bins) |> ceiling()
+    label_middle <- bin_levels[[idx_middle]]
+    label_upper <- bin_levels[[n_bins]]
+    ## If odd, then show lower, upper, and middle.
+    if ((n_bins %% 2)) {
+      filler_labels <- rep("", (n_bins - 3) / 2)
+      x_labels <-
+        c(label_lower,
+          filler_labels,
+          label_middle,
+          filler_labels,
+          label_upper)
+      ## If even, show lower, upper, and "middle"
+    } else if (!(n_bins %% 2)) {
+      filler_labels_left <- rep("", ((n_bins - 3) / 2 + 1))
+      filler_labels_right <- rep("", (n_bins - 3) / 2)
+      x_labels <- c(
+        label_lower,
+        filler_labels_left,
+        label_middle,
+        filler_labels_right,
+        label_upper
+      )
+    }
+  }
+  
+  ## Make plot
+  g <- ggplot(data = bin_data, aes(x = bin, y = dv)) +
+      stat_summary(
+        fun.data = mean_se,
+        geom = "linerange",
+        linetype = 1,
+        color = "gray20",
+        show.legend = F,
+      ) +
+      geom_point(
+        data = bin_data_summary,
+        aes(y = mean_dv, size = n),
+        fill = plot_color,
+        color = "gray20",
+        shape = 21,
+        show.legend = F
+      ) +
+    geom_hline(yintercept = 0,
+               color = "gray50",
+               linewidth = .5) +
+    # scale_fill_manual(values = h_plot_colors) + ## to color handedness groups
+    scale_x_discrete(labels = x_labels) +
+    {
+      if (!is.null(ybreaks))
+        scale_y_continuous(
+          breaks = seq(-1000, 1000, ybreaks$major),
+          minor_breaks = seq(-1000 , 1000, ybreaks$minor)
+        )
+    } +
+    {
+      if (!is.null(ylims))
+        coord_cartesian(ylim = c(ylims$lower, ylims$upper))
+    } +
+    {
+      if (!is.null(direction_labels) & !is.null(direction_labels_pos))
+        geom_text(
+          data = data_facet1,
+          color = "gray50",
+          x = (n_bins / 2) + 0.5,
+          y = direction_labels_pos$up,
+          hjust = "center",
+          label = "↑ \n LVF Bias" ,
+          size = 3
+        )
+    } +
+    {
+      if (!is.null(direction_labels) & !is.null(direction_labels_pos))
+        geom_text(
+          data = data_facet1,
+          color = "gray50",
+          x = (n_bins / 2) + 0.5,
+          y = direction_labels_pos$down,
+          hjust = "center",
+          label = "RVF Bias \n ↓",
+          size = 3
+        )
+    } +
+    labs(title = title,
+         y = y_title,
+         x = "Laterality quotient from EHI")
+  return(g)
+}
 

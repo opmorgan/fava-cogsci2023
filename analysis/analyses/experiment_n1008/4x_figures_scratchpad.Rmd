@@ -189,7 +189,7 @@ if (use_cached_rtfigs == F) {
   ggsave(fig_path_var, g, "png", height = 4, width = 8)
 }
 
-include_graphics(fig_path_var_wide)
+include_graphics(fig_path_var)
 ```
 
 ```{r plot_rt_4_cor_dots}
@@ -212,126 +212,77 @@ if (use_cached_rtfigs == F) {
   
 }
 
-include_graphics(fig_path_var_wide)
+include_graphics(fig_path_var)
 ```
 
 
 
 ### Summary stats only
 
-```{r plot_rt_1_cor_bins}
-plot_color = plot_blue
+```{rplot_rt_cor_bins_config}
+# plot_color = plot_blue
 middle_purple1 <- "#996F91" ## In between plot colors one and two
 middle_purple2 <- "#886e92" ## In between plot colors one and two
+plot_color <- middle_purple1
 
 h_plot_colors <- c(plot_colors[[1]], middle_purple1, plot_colors[[2]])
+```
 
-fig_path_var <- here(fig_dir, "rt_1_cor_dots.png")
-fig_path_var_wide <- here(fig_dir, "rt_1_cor_dots_wide.png")
 
+```{r plot_rt_1_cor_bins}
+fig_path_var <- here(fig_dir, "rt_1_cor_bins.png")
+fig_path_var_wide <- here(fig_dir, "rt_1_cor_bins.png")
+
+rt_subject_plot <- rt_subject |>
+  pivot_wider(names_from = c(field, level),
+              values_from = rt) |>
+  mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
+  left_join(aah_summary, by = c("subject", "handedness")) |>
+  select(subject, ehi, starts_with("LVF"), handedness, handedness_extremes) |> 
+  ## Set "dv" here to make it easy to write a reusable function
+  mutate(dv = LVF_Global_Bias) |> 
+  ungroup()
+
+title = "Global bias asymmetry by EHI"
+y_title = "RVF - LVF, Local - Global reaction time (ms)"
+rt_subject_plot = rt_subject_plot
+n_bins = 17
+plot_colors = h_plot_colors
+plot_color = plot_color
+  
 if (use_cached_rtfigs == F) {
   
-  rt_subject_plot <- rt_subject |>
-    pivot_wider(names_from = c(field, level),
-                values_from = rt) |>
-    mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
-    left_join(aah_summary, by = c("subject", "handedness")) |>
-    select(subject, ehi, starts_with("LVF"), handedness, handedness_extremes) |> 
-    ## For easy reusable function
-    mutate(dv = LVF_Global_Bias) |> 
-    ungroup()
-  
-  # g <- gg_rt_1_ntiles(title = "Global bias asymmetry by EHI",
-  #             rt_subject_plot = rt_subject_plot,
-  #             plot_colors = h_plot_colors)
-  
-  title = "Global bias asymmetry by EHI"
-  
-    
-    
-    ##### Can be put into function: find_quantile_values()
-    n_bins = 16
-    ## Add variable for bin
-    bin_data <- rt_subject_plot |> mutate(
-      bin = cut_interval(ehi, n_bins)
-    ) 
-    ## Calculate mean, sem by quantile.
-    ## No  need -- use per subject data in ggplot
-    # group_by(bin) |> 
-    #   summarize(mean_ehi = mean(ehi), # for sanity check
-    #             mean_dv = mean(dv),
-    #             n = n(),
-    #             sem_dv = sd(dv)/sqrt(n)
-    #             )
-    
-    bin_data
-    
-    ggplot(data = bin_data, aes(x = ehi, y = dv)) +
-      stat_summary(
-        fun.data = mean_se,
-        geom = "errorbar",
-        position = "dodge",
-        linetype = 1,
-        color = "gray5",
-        width = .3,
-        show.legend = F
-      ) +
-      # stat_summary(
-      #   aes(y = dv),
-      #   fun.data = mean,
-      #   geom = "point",
-      #   color = "black",
-      #   shape = 21,
-      #   show.legend = F
-      # )
-      # geom_point(
-      #   data = rt_descriptive_plot,
-      #   aes(y = mean),
-      #   color = "black",
-      #   shape = 21,
-      #   show.legend = F
-      # ) +
-      
-  ### For plot function
-  rt_subject_plot_proc <- rt_subject_plot
-
-
-  ## Prepare data to annotate first facet
-  data_facet1 <- rt_subject_plot_proc
-
-  g <- rt_subject_plot_proc |> ggplot(aes(x = ehi, y = LVF_Global_Bias)) +
-    geom_hline(yintercept = 0, color = "gray50", linewidth = .5) +
-    geom_quasirandom( alpha = .2, aes(fill = handedness), shape = 21, show.legend = F
-    ) +
-    geom_smooth(method = "lm", color = "gray30") +
-    scale_fill_manual(values = h_plot_colors) +
-    scale_color_manual(values = plot_colors[c(1, 2)]) +
-    geom_text( data = data_facet1, color = "gray50",
-      x = 0, y = 310, hjust = "center",
-      label = "↑ \n LVF Bias" , size = 3
-    ) +
-    geom_text(data = data_facet1, color = "gray50",
-      x = 1.55, y = -350, hjust = "center",
-      label = "RVF Bias \n ↓", size = 3
-    ) +
-    scale_y_continuous(breaks = seq(-1000, 1000, 50),
-                    minor_breaks = seq(-1000 , 1000, 25)) +
-    coord_cartesian(ylim = c(-400, 350)) +
-    labs(x = "Laterality quotient from EHI", y = "RVF - LVF, Local - Global reaction time (ms)",
-         title = title)
-
-  g <- g |> gg_style() +
-    theme(
-      aspect.ratio = 1/1,
-      plot.title = element_text(hjust = 0.5),
-      axis.title.x = element_text(margin = margin(t = 8, unit = "pt")),
-      panel.grid.minor = element_line(color = "gray92", linewidth = .2),
-      panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
-      panel.grid.major.x = element_line(color = "gray92", linewidth = .2),
-      panel.border = element_rect(fill = NA, color = "gray50"))
-
-  g + theme(plot.title = element_text(hjust = 0.5))
-  
+  g <-
+    gg_rt_1_ntiles(
+      title = "Global bias asymmetry by handedness (continuous)",
+      y_title = "RVF - LVF, Local - Global reaction time (ms)",
+      rt_subject_plot = rt_subject_plot,
+      n_bins = 17,
+      plot_colors = h_plot_colors,
+      plot_color = plot_color,
+      direction_labels = list(
+        up = "LVF Global Bias",
+        down = "RVF Global bias"),
+      direction_labels_pos = list(
+        up = 45,
+        down = -35),
+      ylims = list(
+        upper = 50,
+        lower = -40),
+      ybreaks = list(
+        major = 20,
+        minor = 10)
+    ) |>
+    gg_style_cor_bin() +
+    ## Manually override tick mark labels (for 17-bin graph)
+    scale_x_discrete(
+      labels = c(
+        "-100", "", "-75", "",
+        "- 50", "", "-25", "",
+        "0", "",
+        "25", "", "50", "",
+        "75", "", "100", "")
+    )
   
   ggsave(fig_path_var, g, "png", height = 4, width = 4)
   ggsave(fig_path_var_wide, g, "png", height = 4, width = 8)
@@ -339,94 +290,139 @@ if (use_cached_rtfigs == F) {
 }
 
 include_graphics(fig_path_var_wide)
+g
 ```
 
+```{r save_plot_rt_1_cor_nbins}
+## Save plots for many bin sizes (means)
+for (j in 5:17) {
+fig_path_var <- here(fig_dir, "nbins", str_c("rt_1_cor_", j, "bins.png"))
+  g <-
+    gg_rt_1_ntiles(
+      title = "Global bias asymmetry by EHI",
+      y_title = "RVF - LVF, Local - Global reaction time (ms)",
+      rt_subject_plot = rt_subject_plot,
+      n_bins = j,
+      plot_colors = h_plot_colors,
+      plot_color = plot_color,
+      # direction_labels = list(
+      #   up = "LVF Global Bias",
+      #   down = "RVF Global bias"),
+      # direction_labels_pos = list(
+      #   up = 27,
+      #   down = -7),
+      # ylims = list(
+      #   upper = 30,
+      #   lower = -10),
+      # ybreaks = list(
+      #   major = 20,
+      #   minor = 10)
+    ) |>
+    gg_style_cor_bin()
 
-
-
-
-```{r}
-## Snipet from CH:
-## Depends on analyses/professions/lib/es_functions.R
-find_quantile_counts <- function(hand_data, n_quantiles) {
-
-  ## Add variable for quantile
-  hand_data <- hand_data %>%
-    mutate(quantile = as.factor(ntile(desc(occ_creative), n_quantiles)))
-
-  ## Count n and percent leftire by quantile
-  counts <- hand_data %>%
-    group_by(quantile, handedness) %>%
-    dplyr::summarize(n = n()) %>%
-    pivot_wider(names_from = handedness,
-                names_glue = "n_{handedness}", values_from = n) %>%
-    mutate(n_left = replace_na(n_left, 0)) %>%
-    mutate(n_total = n_right + n_left) %>%
-    mutate(percent_left =  (n_left / n_total) * 100) %>%
-    ## Depends on analyses/professions/lib/es_functions.R
-    mutate(lower = (find_prop_score(n_left, n_total) %>% .[["lower"]]) * 100,
-           upper = (find_prop_score(n_left, n_total) %>% .[["upper"]]) * 100)
-    return(counts)
+ggsave(fig_path_var, g, "png", height = 4, width = 4)
 }
-
-
-find_total_count <- function(counts) {
-  ## Find overall mean proportion
-  total_count <- counts %>%
-    ungroup() %>%
-    dplyr::summarize(n_left = sum(n_left),
-              n_right = sum(n_right),
-              n_total = sum(n_total),
-              percent_left = (sum(n_left) / sum(n_total)) * 100) %>%
-    ## Depends on analyses/professions/lib/es_functions.R
-    mutate(lower = (find_prop_score(n_left, n_total) %>% .[["lower"]]) * 100,
-           upper = (find_prop_score(n_left, n_total) %>% .[["upper"]]) * 100)
-  return(total_count)
-}
-
-
-## X axis: n bins, one for each quantile of creativity ratings.
-## Then, to visualize:
-## Y axis: (1) Dot showing proportion of lefties
-## Y axis: (2) Line error bounds showing 95% CI
-## - Add horizontal line sample mean proportion, with error bounds
-graph_quantile_counts <- function(counts, y_limits = c(5, 15), title = "") {
-  n_quantiles <- length(counts$quantile)
-
-  g <- ggplot(data = counts, aes(x = fct_rev(quantile), y = percent_left)) +
-    ## Hack for error "Discrete value... continuous scale"
-    geom_point(shape = NA) +
-    ## Add ribbon, line showing sample mean and CI
-    geom_ribbon(aes(x = 1:n_quantiles,
-                    ymin = total_count$lower, ymax = total_count$upper),
-                fill = "gray70", alpha = .2) +
-    geom_line(aes(x = 1:n_quantiles, y = total_count$percent_left),
-              size = .1, color = "gray10", linetype = "dashed") +
-    ## Add error bars
-    geom_errorbar(aes(ymin = lower, ymax = upper), width = .3) +
-    labs(title = title,
-         x = "Originality/Inductive Reasoning Quantile",
-         y = "% Left-handed") +
-    geom_point() +
-    scale_y_continuous(limits = y_limits, expand = c(0, 0))
-  g <- g %>% gg_style()
-}
-
-
-print_quantile_counts <- function(counts) {
-  counts %>%
-    arrange(quantile) %>%
-    mutate(ci = str_c("[", lower, ", ", upper, "]")) %>%
-    select(quantile, n_total, n_left, n_right, percent_left, ci) %>%
-    rename(Quantile = quantile, n = n_total, `% left` = percent_left,
-           `n (left)` = n_left, `n (right)` = n_right, `95% CI` = ci) %>%
-    head(20) %>%
-    pretty_table(digits = 2)
-}
-
 ```
 
+```{r save_plot_rt_1_cor_nbins_medians}
+#### TEMP
+## Save plots for many bin sizes (medians)
+# for (j in 5:17) {
+# fig_path_var <- here(fig_dir, "nbins", "medians", str_c("rt_1_cor_", j, "bins_medians.png"))
+#   g <-
+#     gg_rt_1_ntiles(
+#       title = "Global bias asymmetry by EHI",
+#       y_title = "RVF - LVF, Local - Global reaction time (ms)",
+#       rt_subject_plot = rt_subject_plot,
+#       n_bins = j,
+#       plot_colors = h_plot_colors,
+#       plot_color = plot_color,
+#       # direction_labels = list(
+#       #   up = "LVF Global Bias",
+#       #   down = "RVF Global bias"),
+#       # direction_labels_pos = list(
+#       #   up = 27,
+#       #   down = -7),
+#       # ylims = list(
+#       #   upper = 30,
+#       #   lower = -10),
+#       # ybreaks = list(
+#       #   major = 20,
+#       #   minor = 10)
+#     ) |>
+#     gg_style_cor_bin()
+# 
+# ggsave(fig_path_var, g, "png", height = 4, width = 4)
+# }
+```
+
+```{r plot_rt_2_cor_bins}
+fig_path_var <- here(fig_dir, "rt_2_cor_bins.png")
 
 
+rt_subject_plot <- rt_subject |>
+  pivot_wider(names_from = c(field),
+              values_from = rt) |>
+   mutate(LVF_Bias = RVF - LVF) |> 
+  left_join(aah_summary, by = c("subject", "handedness")) |>
+  select(subject, ehi, starts_with("LVF"), handedness, handedness_extremes) |> 
+  ## Set "dv" here to make it easy to write a reusable function
+  mutate(dv = LVF_Bias) |> 
+  ungroup()
+
+title = "Global bias asymmetry by EHI"
+y_title = "RVF - LVF, Local - Global reaction time (ms)"
+rt_subject_plot = rt_subject_plot
+n_bins = 17
+plot_colors = h_plot_colors
+plot_color = plot_color
+  
+if (use_cached_rtfigs == F) {
+  
+  g <-
+    gg_rt_1_ntiles(
+      title = "Hemifield bias for global and local targets, by EHI",
+      y_title = "Difference in reaction time between LVF and RVF",
+      rt_subject_plot = rt_subject_plot,
+      n_bins = 17,
+      plot_colors = h_plot_colors,
+      plot_color = plot_color,
+      group_by_level = T, ## Hack to quickly make 2-box plot
+      direction_labels = list(
+        up = "LVF Global Bias",
+        down = "RVF Global bias"),
+      direction_labels_pos = list(
+        up = 45,
+        down = -35),
+      ylims = list(
+        upper = 50,
+        lower = -40),
+      ybreaks = list(
+        major = 20,
+        minor = 10)
+    ) |>
+    gg_style_cor_bin() +
+    ## Manually override tick mark labels (for 17-bin graph)
+    scale_x_discrete(
+      labels = c(
+        "-100", "", "-75", "",
+        "- 50", "", "-25", "",
+        "0", "",
+        "25", "", "50", "",
+        "75", "", "100", "")
+    ) + 
+    ## Add level to make 2-box plot
+    facet_grid(vars(level)) +
+    scale_y_continuous(
+      expand = expansion(mult = c(.025, .025))
+    ) +
+  
+  ggsave(fig_path_var, g, "png", height = 4, width = 4)
+  
+}
+
+include_graphics(fig_path_var)
+g
+```
 
 

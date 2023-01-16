@@ -490,16 +490,218 @@ include_graphics(fig_path_var)
 
 ## Preregistered 3-way (RT, continuous)
 
+```{r}
+## CONFIG
+plot_color = plot_blue
+middle_purple1 <- "#996F91" ## In between plot colors one and two
+middle_purple2 <- "#886e92" ## In between plot colors one and two
+
+h_plot_colors <- c(plot_colors[[1]], middle_purple1, plot_colors[[2]])
+
+```
+
+
+### Subject-level means and SEM
+
+```{r plot_rt_1_cor_bins}
+fig_path_var <- here(fig_dir, "rt_1_cor_bins.png")
+fig_path_var_wide <- here(fig_dir, "rt_1_cor_bins.png")
+
+rt_subject_plot <- rt_subject |>
+  pivot_wider(names_from = c(field, level),
+              values_from = rt) |>
+  mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
+  left_join(aah_summary, by = c("subject", "handedness")) |>
+  select(subject, ehi, starts_with("LVF"), handedness, handedness_extremes) |> 
+  ## Set "dv" here to make it easy to write a reusable function
+  mutate(dv = LVF_Global_Bias) |> 
+  ungroup()
+
+title = "Global bias asymmetry by EHI"
+y_title = "RVF - LVF, Local - Global reaction time (ms)"
+rt_subject_plot = rt_subject_plot
+n_bins = 17
+plot_colors = h_plot_colors
+plot_color = plot_color
+  
+if (use_cached_rtfigs == F) {
+  
+  g <-
+    gg_rt_1_ntiles(
+      title = "Global bias asymmetry by handedness (continuous)",
+      y_title = "RVF - LVF, Local - Global reaction time (ms)",
+      rt_subject_plot = rt_subject_plot,
+      n_bins = 17,
+      plot_colors = h_plot_colors,
+      plot_color = middle_purple1,
+      direction_labels = list(
+        up = "LVF Global Bias",
+        down = "RVF Global bias"),
+      direction_labels_pos = list(
+        up = 45,
+        down = -35),
+      ylims = list(
+        upper = 50,
+        lower = -40),
+      ybreaks = list(
+        major = 20,
+        minor = 10)
+    ) |>
+    gg_style_cor_bin() +
+    ## Manually override tick mark labels (for 17-bin graph)
+    scale_x_discrete(
+      labels = c(
+        "-100", "", "-75", "",
+        "- 50", "", "-25", "",
+        "0", "",
+        "25", "", "50", "",
+        "75", "", "100", "")
+    )
+  
+  ggsave(fig_path_var, g, "png", height = 4, width = 4)
+  ggsave(fig_path_var_wide, g, "png", height = 4, width = 8)
+  
+}
+
+include_graphics(fig_path_var_wide)
+```
+
+```{r plot_rt_2_cor_bins}
+fig_path_var <- here(fig_dir, "rt_2_cor_bins.png")
+
+
+rt_subject_plot <- rt_subject |>
+  pivot_wider(names_from = c(field),
+              values_from = rt) |>
+   mutate(LVF_Bias = RVF - LVF) |> 
+  left_join(aah_summary, by = c("subject", "handedness")) |>
+  select(subject, ehi, starts_with("LVF"), handedness, handedness_extremes) |> 
+  ## Set "dv" here to make it easy to write a reusable function
+  mutate(dv = LVF_Bias) |> 
+  ungroup()
+
+title = "Global bias asymmetry by EHI"
+y_title = "RVF - LVF, Local - Global reaction time (ms)"
+rt_subject_plot = rt_subject_plot
+n_bins = 17
+plot_colors = h_plot_colors
+plot_color = plot_color
+  
+if (use_cached_rtfigs == F) {
+  
+  g <-
+    gg_rt_1_ntiles(
+      title = "Hemifield bias for global and local targets, by EHI",
+      y_title = "Difference in reaction time between LVF and RVF",
+      rt_subject_plot = rt_subject_plot,
+      n_bins = 17,
+      plot_colors = h_plot_colors,
+      plot_color = middle_purple1,
+      group_by_level = T, ## Hack to quickly make 2-box plot
+      direction_labels = list(
+        up = "LVF Global Bias",
+        down = "RVF Global bias"),
+      direction_labels_pos = list(
+        up = 45,
+        down = -35),
+      ylims = list(
+        upper = 50,
+        lower = -40),
+      ybreaks = list(
+        major = 20,
+        minor = 10)
+    ) |>
+    gg_style_cor_bin() +
+    ## Manually override tick mark labels (for 17-bin graph)
+    scale_x_discrete(
+      labels = c(
+        "-100", "", "-75", "",
+        "- 50", "", "-25", "",
+        "0", "",
+        "25", "", "50", "",
+        "75", "", "100", "")
+    ) + 
+    ## Add level to make 2-box plot
+    facet_grid(cols = vars(level)) +
+    scale_y_continuous(
+      expand = expansion(mult = c(.025, .025))
+    )
+  
+  ggsave(fig_path_var, g, "png", height = 4, width = 8)
+  
+}
+
+include_graphics(fig_path_var)
+```
+
+### A dot for every subject
+
+```{r plot_rt_1_cor_dots}
+fig_path_var <- here(fig_dir, "rt_1_cor_dots.png")
+fig_path_var_wide <- here(fig_dir, "rt_1_cor_dots_wide.png")
+
+if (use_cached_rtfigs == F) {
+  
+  rt_subject_plot <- rt_subject |>
+    pivot_wider(names_from = c(field, level),
+                values_from = rt) |>
+    mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
+    left_join(aah_summary, by = c("subject", "handedness")) |>
+    select(subject, ehi, starts_with("LVF"), handedness, handedness_extremes)
+  
+  g <- gg_rt_1_cor(title = "Global bias asymmetry by EHI",
+              rt_subject_plot = rt_subject_plot,
+              plot_colors = h_plot_colors)
+  
+  
+  ggsave(fig_path_var, g, "png", height = 4, width = 4)
+  ggsave(fig_path_var_wide, g, "png", height = 4, width = 8)
+  
+}
+
+include_graphics(fig_path_var_wide)
+```
+
+```{r plot_rt_2_cor_dots}
+fig_path_var <- here(fig_dir, "rt_2_cor_dots.png")
+
+if (use_cached_rtfigs == F) {
+  
+  rt_subject_plot <- rt_subject |>
+    pivot_wider(names_from = c(field),
+                values_from = rt) |> 
+    mutate(LVF_Bias = RVF - LVF) |> 
+    left_join(aah_summary, by = c("subject", "handedness")) |>
+    select(subject, ehi, level, starts_with("LVF"), handedness, handedness_extremes)
+  
+  g <- gg_rt_2_cor(title = "Hemifield bias for global and local targets, by EHI",
+              rt_subject_plot = rt_subject_plot,
+              plot_colors = h_plot_colors)
+  
+  ggsave(fig_path_var, g, "png", height = 4, width = 8)
+}
+
+include_graphics(fig_path_var)
+```
+
+
+I think the dot for every subject is not very useful! I think the summary stats for LVF Global bias (top graph) help show the effect -- the group of left handers on the far left really pops out. Coloring by categorical group could make it even clearer. And, it could be nice to superimpose a trend line (from the subject level data pictured?) 
+
+It also could be worth visualizing the summary stats from the model in this way, with the point estimates from the full mixed model.
+
 <!-- ## Preregistered 3-way (accuracy, continuous) -->
+
 
 ## Discussion
 
 ### Questions for discussion
 
 - Should we show SEM/CI from the subject-level data, or from the full mixed model?
+- For the categorical plots, would it be more compelling and clear to visualize summary stats only, leaving out the subject-level dots? I like to "show all the data", but in this case, the wide range makes the patterns too hard to see.
+- For the categorical plots, would it be more compelling and clear to visualize summary stats from the model, instead of/in addition to the subject-level data and subject level summary stats (which aren't the estimates we will discuss in Results)? 
 - Is it enough to show the "tier one" figures listed below? Should we show any figures illustrating zoom analyses, and the continuous analysis?
 - Which figures show the interaction most clearly? Could we just show the 4-box plot?
-- Is it worth showing the 8-box data for the main analysis? I think it would be nice to show this raw data.
+- Is it worth showing the 8-box data for the main analysis? I think it would be nice to show this more "raw" data, to help people understand the design. 
 - Any feedback on the design of the graphs?
 - Should we show the accuracy (null) results?
 
