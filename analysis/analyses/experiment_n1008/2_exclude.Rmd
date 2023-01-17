@@ -251,6 +251,17 @@ tibble(
 <br>
 
 We have recruited `r n_recruited` participants through prolific. Of these, `r n_all` completed the task phase of the experiment. `r n_exclusions` were excluded for the reasons described below, leaving `r n_keepers` keepers.
+```{r}
+## Check number of participants excluded for multiple reasons
+aah_summary_all |> 
+  select(-exclude) |> 
+  mutate(n_exclusion_reasons = rowSums(across(starts_with("exclude")))) |> 
+  select(subject, exclude_many_gos, exclude_low_rt, n_exclusion_reasons) |> 
+  group_by(n_exclusion_reasons) |> 
+  summarize(n_subjects = n()) |> 
+  pretty_table("How many subjects were excluded for multiple reasons?")
+```
+
 
 <br>
 ```{r describe_exclusions_2}
@@ -410,6 +421,17 @@ aah_summary_all |> group_by(prolific_handedness) |>
   pretty_table()
 ```
 
+```{r}
+## Check number of participants excluded for multiple reasons
+aah_summary_all |> 
+  select(-exclude) |> 
+  mutate(n_exclusion_reasons = rowSums(across(starts_with("exclude")))) |> 
+  select(subject, handedness, exclude_many_gos, exclude_low_rt, n_exclusion_reasons) |> 
+  group_by(handedness, n_exclusion_reasons) |> 
+  summarize(n_subjects = n()) |> 
+  pretty_table("How many subjects were excluded for multiple reasons?")
+```
+
 <br>
 ```{r describe_exclusions_2_grouped_R}
 exclusion_tbl <- aah_summary_all |> 
@@ -542,7 +564,7 @@ if (use_cached_demofigs == FALSE) {
     ) +
     labs(title = "Distribution within each EHI bin (keepers only)")
   
-  g <- g |> gg_style_demo() + theme(aspect.ratio = 1 / 1,
+  g <- g |> gg_style() + theme(aspect.ratio = 1 / 1,
                                     axis.title.y = element_blank())
   
   ggsave(fig_path, g, "png", height = 3, width = 6)
@@ -584,7 +606,7 @@ if (use_cached_demofigs == FALSE) {
     ) +
     labs(title = "EHI distribution for each of Prolific's prescreened handedness groups (keepers only)")
   
-  g <- g |> gg_style_demo() + theme(aspect.ratio = 1 / 1,
+  g <- g |> gg_style() + theme(aspect.ratio = 1 / 1,
                                     axis.title.y = element_blank())
   
   ggsave(fig_path, g, "png", height = 3, width = 6)
