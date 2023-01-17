@@ -132,7 +132,7 @@ aah_summary_all <- aah_summary_all |>
 
 
 
-### Recruitment & Exclusions
+### Recruitment & Exclusions {.tabset .tabset-pills}
 
 ```{r make_exclusions}
 ## Calculate any exclusions not based on task data.
@@ -231,6 +231,8 @@ aah_summary_all <- aah_summary_all |> mutate(
 aah_summary <- aah_summary_all |> filter(exclude == 0)
 ```
 
+#### Everyone
+
 ```{r describe_exclusions_1}
 n_all <- aah_summary_all$subject |> unique() |> length()
 n_exclusions <- aah_summary_all$exclude |> sum()
@@ -320,7 +322,7 @@ if (use_cached_demofigs == FALSE) {
     ) +
     labs(title = "EHI distribution for each of Prolific's prescreened handedness groups (all recruits with task data)")
   
-  g <- g |> gg_style_demo() + theme(aspect.ratio = 1 / 1,
+  g <- g |> gg_style() + theme(aspect.ratio = 1 / 1,
                                     axis.title.y = element_blank())
   
   ggsave(fig_path, g, "png", height = 3, width = 6)
@@ -365,7 +367,7 @@ if (use_cached_demofigs == FALSE) {
     ) +
     labs(title = "EHI distribution for each of Prolific's prescreened handedness groups (mismatches excluded)")
   
-  g <- g |> gg_style_demo() + theme(aspect.ratio = 1 / 1,
+  g <- g |> gg_style() + theme(aspect.ratio = 1 / 1,
                                     axis.title.y = element_blank())
   
   ggsave(fig_path, g, "png", height = 3, width = 6)
@@ -391,7 +393,109 @@ aah_summary_all |> filter(exclude_ehi_mismatch == 1) |>
     locations = cells_column_labels(columns = `EHI handedness`)
   )
 ```
+
+
 <br>
+
+#### By handedness group
+```{r demo_allrecruits_grouped}
+aah_summary_all |> group_by(handedness) |> demo_summary_table() |> 
+  pretty_table()
+```
+<br>
+```{r}
+aah_summary_all |> group_by(prolific_handedness) |> 
+  summarize(n = n(),
+            ehi_mismatches = sum(exclude_ehi_mismatch)) |> 
+  pretty_table()
+```
+
+<br>
+```{r describe_exclusions_2_grouped_R}
+exclusion_tbl <- aah_summary_all |> 
+  filter(handedness == "Right") |> 
+  rename(exclude_any = exclude) |> 
+summarize(across(starts_with("exclude"), sum)) |> 
+pivot_longer(cols = everything(), 
+             names_to = 'exclusion', values_to = "n",
+             names_prefix = "exclude_") |> 
+  mutate('exclusion' = recode(exclusion,
+    any = "Any",
+    country = "Non-US country",
+    age = "Age outside 18-40",
+    done_before = "Reported having done the task before",
+    high_rt = "High RT (median > 1500ms)",
+    low_rt = "Low RT (median < 200ms)",
+    low_acc = "Low accuracy (below 60% on any block)",
+    many_gos = "Too many 'gos' (78/80 trials or more)",
+    no_ehi = "Quit before completing EHI",
+    ehi_mismatch = "Prescreener/EHI mismatch"
+  )) |> 
+  arrange(-n, exclusion) |> 
+  select(n, exclusion) |> 
+  rename('Reason for exclusion' = exclusion,
+         "n (Right)" = n)
+
+exclusion_tbl |> pretty_table()
+```
+<br>
+```{r describe_exclusions_2_grouped_M}
+exclusion_tbl <- aah_summary_all |> 
+  filter(handedness == "Mixed") |> 
+  rename(exclude_any = exclude) |> 
+summarize(across(starts_with("exclude"), sum)) |> 
+pivot_longer(cols = everything(), 
+             names_to = 'exclusion', values_to = "n",
+             names_prefix = "exclude_") |> 
+  mutate('exclusion' = recode(exclusion,
+    any = "Any",
+    country = "Non-US country",
+    age = "Age outside 18-40",
+    done_before = "Reported having done the task before",
+    high_rt = "High RT (median > 1500ms)",
+    low_rt = "Low RT (median < 200ms)",
+    low_acc = "Low accuracy (below 60% on any block)",
+    many_gos = "Too many 'gos' (78/80 trials or more)",
+    no_ehi = "Quit before completing EHI",
+    ehi_mismatch = "Prescreener/EHI mismatch"
+  )) |> 
+  arrange(-n, exclusion) |> 
+  select(n, exclusion) |> 
+  rename('Reason for exclusion' = exclusion,
+         "n (Mixed)" = n)
+
+exclusion_tbl |> pretty_table()
+```
+<br>
+```{r describe_exclusions_2_grouped_L}
+exclusion_tbl <- aah_summary_all |> 
+  filter(handedness == "Left") |> 
+  rename(exclude_any = exclude) |> 
+summarize(across(starts_with("exclude"), sum)) |> 
+pivot_longer(cols = everything(), 
+             names_to = 'exclusion', values_to = "n",
+             names_prefix = "exclude_") |> 
+  mutate('exclusion' = recode(exclusion,
+    any = "Any",
+    country = "Non-US country",
+    age = "Age outside 18-40",
+    done_before = "Reported having done the task before",
+    high_rt = "High RT (median > 1500ms)",
+    low_rt = "Low RT (median < 200ms)",
+    low_acc = "Low accuracy (below 60% on any block)",
+    many_gos = "Too many 'gos' (78/80 trials or more)",
+    no_ehi = "Quit before completing EHI",
+    ehi_mismatch = "Prescreener/EHI mismatch"
+  )) |> 
+  arrange(-n, exclusion) |> 
+  select(n, exclusion) |> 
+  rename('Reason for exclusion' = exclusion,
+         "n (Left)" = n)
+
+exclusion_tbl |> pretty_table()
+```
+<br>
+
 
 ### Demographics (Keepers) {.tabset .tabset-pills}
 
