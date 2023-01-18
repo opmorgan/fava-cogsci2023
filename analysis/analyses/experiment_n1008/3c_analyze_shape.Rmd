@@ -80,7 +80,7 @@ proc_dir <- here::here("data", "proc_exp_n1008")
 fig_dir <- here::here("figures", "exp_n1008_c")
 manual_cache_dir <- here::here("manual_cache", "exp_n1008_c")
 
-use_cached_models <- T
+use_cached_models <- F
 
 use_cached_figs <- T
 
@@ -462,7 +462,7 @@ anova_FLSH(use_cached_anova = use_cached_models,
 emmtest_FLSH(FLSH$emm, title = "4-way field by level by handedness by shape interaction (RT)")
 ```
 <br>
-```{r FL_SH_emmtest_2bins}
+```{r FLH_S_emmtest_2bins}
 ## Estimate the 3-way interaction of field by level by handedness, for each shape
 emmtest_FLH_S(use_cached_model = use_cached_models,
              manual_cache_dir = manual_cache_dir,
@@ -480,6 +480,288 @@ emmtest_FL_H_S(use_cached_model = use_cached_models,
                title = "Effect of field by level for each handedness group, by shape (RT)")
 ```
 <br>
+
+### Estimates for paper
+
+Reaction time is modeled as a linear effect of field, level, handedness (EHI < -40 or EHI > +40), and shape, using data from every target-present trial with a "go" response:
+<br>
+<br>
+`lmer( rt ~ field * level * handedness * shape + (1 | subject) )`
+<br>
+<br>
+
+```{r}
+data_label <- "2bins"
+data_sub <- aah_for_rt_model |> filter(handedness %in% c("Right", "Left"))
+data_sub_summary <- aah_summary |> filter(handedness %in% c("Right", "Left"))
+
+FLS_demo <- hand_demo_summary_table(data_sub_summary)
+FLS_demo |> pretty_table() |> tab_header(title = "Demographics")
+```
+
+```{r paper_FLSH}
+## Test the 4-way interaction
+emmtest_FLSH(FLSH$emm, title = "4-way field by level by handedness by shape interaction (RT)")
+```
+
+```{r paper_FLS_H}
+## Within each handedness group, what is the effect of shape on field by level?
+emmtest_FLS_H(use_cached_model = use_cached_models,
+             manual_cache_dir = manual_cache_dir,
+             FLSH$model,
+             data_label = data_label,
+             title = "Effect of field by level by shape for each handedness group (RT)")
+```
+
+
+```{r paper_FL_H_S}
+## Within each handedness group, what is the effect of each shape on field by level?
+emmtest_FL_H_S(use_cached_model = use_cached_models,
+               manual_cache_dir = manual_cache_dir,
+               FLSH$emm,
+               data_label = data_label,
+               title = "Effect of field by level for each handedness group, by shape (RT)")
+```
+
+```{r paper_LS}
+## Estimate the effect of shape on level, collapsing across handedness groups
+emmtest_LS <- function(use_cached_model = FALSE,
+                         manual_cache_dir,
+                         FLSH_model,
+                         data_label,
+                         title = "title") {
+  emmtest_path <-
+    here(manual_cache_dir,
+         str_c("LS_emmtest_", data_label, ".rds"))
+  
+  if (use_cached_model == FALSE) {
+    LS_emmtest <- FLSH_model |>
+      emmeans(~ level * shape) |>
+      contrast(interaction = c("consec")) |>
+      summary(infer = T)
+    
+    ## Cache emm test object
+    cli_progress_step(msg = "Caching emm test object: {emmtest_path}",
+                      msg_done = "Created and cached anova: {emmtest_path}")
+    saveRDS(LS_emmtest, emmtest_path)
+  } else if (use_cached_model == TRUE) {
+    ## Load cached emm test
+    cli_progress_step(msg = "Loading emm test object: {emmtest_path}",
+                      msg_done = "Loaded emm test object: {emmtest_path}")
+    LS_emmtest <- readRDS(emmtest_path)
+    
+  }
+  
+  LS_emmtest |>
+    as_tibble() |>
+    format_p.value() |>
+    pretty_table() |>
+    tab_header(title = title,
+               subtitle = "Compare effect estimate to zero with emmeans()") |>
+    tab_footnote(footnote = "A positive number means global bias is stronger for squares",
+                 locations = cells_column_labels(columns = estimate)) |>
+    tab_footnote(footnote = "Two-sided",
+                 locations = cells_column_labels(columns = p.value)) |>
+    tab_footnote(footnote = "Confidence level: 95%",
+                 locations = cells_column_labels(columns = ends_with("CL"))) |>
+    tab_footnote(footnote = "Z-approximation",
+                 locations = cells_column_labels(columns = df))
+  
+}
+
+
+emmtest_LS(use_cached_model = use_cached_models,
+               manual_cache_dir = manual_cache_dir,
+               FLSH$emm,
+               data_label = data_label,
+               title = "Effect of shape by level, collapsing across field and handedness (RT)")
+```
+
+```{r paper_LS_H}
+## Estimate the effect of shape on level, by handedness group
+emmtest_LS_H <- function(use_cached_model = FALSE,
+                         manual_cache_dir,
+                         FLSH_model,
+                         data_label,
+                         title = "title") {
+  emmtest_path <-
+    here(manual_cache_dir,
+         str_c("LS_H_emmtest_", data_label, ".rds"))
+  
+  if (use_cached_model == FALSE) {
+    LS_H_emmtest <- FLSH_model |>
+      emmeans(~ level * shape | handedness) |>
+      contrast(interaction = c("consec")) |>
+      summary(infer = T)
+    
+    ## Cache emm test object
+    cli_progress_step(msg = "Caching emm test object: {emmtest_path}",
+                      msg_done = "Created and cached anova: {emmtest_path}")
+    saveRDS(LS_H_emmtest, emmtest_path)
+  } else if (use_cached_model == TRUE) {
+    ## Load cached emm test
+    cli_progress_step(msg = "Loading emm test object: {emmtest_path}",
+                      msg_done = "Loaded emm test object: {emmtest_path}")
+    LS_H_emmtest <- readRDS(emmtest_path)
+    
+  }
+  
+  LS_H_emmtest |>
+    as_tibble() |>
+    format_p.value() |>
+    pretty_table() |>
+    tab_header(title = title,
+               subtitle = "Compare effect estimate to zero with emmeans()") |>
+    tab_footnote(footnote = "A positive number means global bias is stronger for squares",
+                 locations = cells_column_labels(columns = estimate)) |>
+    tab_footnote(footnote = "Two-sided",
+                 locations = cells_column_labels(columns = p.value)) |>
+    tab_footnote(footnote = "Confidence level: 95%",
+                 locations = cells_column_labels(columns = ends_with("CL"))) |>
+    tab_footnote(footnote = "Z-approximation",
+                 locations = cells_column_labels(columns = df))
+  
+}
+
+
+emmtest_LS_H(use_cached_model = use_cached_models,
+               manual_cache_dir = manual_cache_dir,
+               FLSH$emm,
+               data_label = data_label,
+               title = "Effect of shape by level for each handedness group (RT)")
+```
+
+```{r paper_S}
+## In the full sample, is RT slower to squares?
+## Estimate the effect of shape on level, by handedness group
+emmtest_S <- function(use_cached_model = FALSE,
+                         manual_cache_dir,
+                         FLSH_model,
+                         data_label,
+                         title = "title") {
+  emmtest_path <-
+    here(manual_cache_dir,
+         str_c("S_emmtest_", data_label, ".rds"))
+  
+  if (use_cached_model == FALSE) {
+    S_emmtest <- FLSH_model |>
+      emmeans(~ shape) |>
+      contrast(interaction = c("consec")) |>
+      summary(infer = T)
+    
+    ## Cache emm test object
+    cli_progress_step(msg = "Caching emm test object: {emmtest_path}",
+                      msg_done = "Created and cached anova: {emmtest_path}")
+    saveRDS(S_emmtest, emmtest_path)
+  } else if (use_cached_model == TRUE) {
+    ## Load cached emm test
+    cli_progress_step(msg = "Loading emm test object: {emmtest_path}",
+                      msg_done = "Loaded emm test object: {emmtest_path}")
+    S_emmtest <- readRDS(emmtest_path)
+    
+  }
+  
+  S_emmtest |>
+    as_tibble() |>
+    format_p.value() |>
+    pretty_table() |>
+    tab_header(title = title,
+               subtitle = "Compare effect estimate to zero with emmeans()") |>
+    tab_footnote(footnote = "A positive number means global bias is stronger for squares",
+                 locations = cells_column_labels(columns = estimate)) |>
+    tab_footnote(footnote = "Two-sided",
+                 locations = cells_column_labels(columns = p.value)) |>
+    tab_footnote(footnote = "Confidence level: 95%",
+                 locations = cells_column_labels(columns = ends_with("CL"))) |>
+    tab_footnote(footnote = "Z-approximation",
+                 locations = cells_column_labels(columns = df))
+  
+}
+
+
+emmtest_S(use_cached_model = use_cached_models,
+               manual_cache_dir = manual_cache_dir,
+               FLSH$emm,
+               data_label = data_label,
+               title = "Effect of shape by level for each handedness group (RT)")
+```
+
+```{r paper_SL}
+## In the full sample, is RT slower to squares, at each level?
+## Estimate the effect of shape on level, by handedness group
+emmtest_SL <- function(use_cached_model = FALSE,
+                         manual_cache_dir,
+                         FLSH_model,
+                         data_label,
+                         title = "title") {
+  emmtest_path <-
+    here(manual_cache_dir,
+         str_c("SL_emmtest_", data_label, ".rds"))
+  
+  if (use_cached_model == FALSE) {
+    SL_emmtest <- FLSH_model |>
+      emmeans(~ shape | level) |>
+      contrast(interaction = c("consec")) |>
+      summary(infer = T)
+    
+    ## Cache emm test object
+    cli_progress_step(msg = "Caching emm test object: {emmtest_path}",
+                      msg_done = "Created and cached anova: {emmtest_path}")
+    saveRDS(SL_emmtest, emmtest_path)
+  } else if (use_cached_model == TRUE) {
+    ## Load cached emm test
+    cli_progress_step(msg = "Loading emm test object: {emmtest_path}",
+                      msg_done = "Loaded emm test object: {emmtest_path}")
+    SL_emmtest <- readRDS(emmtest_path)
+    
+  }
+  
+  SL_emmtest |>
+    as_tibble() |>
+    format_p.value() |>
+    pretty_table() |>
+    tab_header(title = title,
+               subtitle = "Compare effect estimate to zero with emmeans()") |>
+    tab_footnote(footnote = "A positive number means global bias is stronger for squares",
+                 locations = cells_column_labels(columns = estimate)) |>
+    tab_footnote(footnote = "Two-sided",
+                 locations = cells_column_labels(columns = p.value)) |>
+    tab_footnote(footnote = "Confidence level: 95%",
+                 locations = cells_column_labels(columns = ends_with("CL"))) |>
+    tab_footnote(footnote = "Z-approximation",
+                 locations = cells_column_labels(columns = df))
+  
+}
+
+
+emmtest_SL(use_cached_model = use_cached_models,
+               manual_cache_dir = manual_cache_dir,
+               FLSH$emm,
+               data_label = data_label,
+               title = "Effect of shape by level for each handedness group (RT)")
+```
+
+
+```{r paper_FLH_S}
+## What is the interaction of field by level by handedness, for each shape?
+emmtest_FLH_S(use_cached_model = use_cached_models,
+             manual_cache_dir = manual_cache_dir,
+             FLSH$model,
+             data_label = data_label,
+             title = "Effect of field by level by handedness for each shape (RT)")
+```
+
+```{r}
+## What is the interaction of field by level, for each shape, for each handedness group?
+emmtest_FL_H_S(use_cached_model = use_cached_models,
+               manual_cache_dir = manual_cache_dir,
+               FLSH$emm,
+               data_label = data_label,
+               title = "Effect of field by level for each handedness group, by shape (RT)")
+```
+
+See report 3d for stats on EHI+/-100.
+
 
 ### Continuous handedness
 Model RT as a linear effect of field, level, EHI, and shape (continuous):
@@ -539,27 +821,30 @@ emmtest_FLehi_S(use_cached_model = use_cached_models,
 ```
 <br>
 
-#### Estimated effects for strong left and right handers
+<!-- #### Estimated effects for strong left and right handers -->
+
+<!-- This is now in 3d_analyze... -->
+
 
 <br>
 <br>
 ```{r}
 ## Effect of shape on LVF global bias by EHI
-pull_ehi_FLS(use_cached_model = use_cached_models,
-              manual_cache_dir = manual_cache_dir,
-              FLSehi_model <- FLSehi$model,
-              data_label = data_label,
-              title = "Estimated effect of shape on LVF global bias, by EHI score")
+# pull_ehi_FLS(use_cached_model = use_cached_models,
+#               manual_cache_dir = manual_cache_dir,
+#               FLSehi_model <- FLSehi$model,
+#               data_label = data_label,
+#               title = "Estimated effect of shape on LVF global bias, by EHI score")
 
 ```
 <br>
 ```{r}
 ## Magnitude of LVF global bias by EHI, for each shape.
-pull_ehi_FL_S(use_cached_model = use_cached_models,
-              manual_cache_dir = manual_cache_dir,
-              FLSehi_model <- FLSehi$model,
-              data_label = data_label,
-              title = "LVF global bias by EHI, for each shape (RT)")
+# pull_ehi_FL_S(use_cached_model = use_cached_models,
+#               manual_cache_dir = manual_cache_dir,
+#               FLSehi_model <- FLSehi$model,
+#               data_label = data_label,
+#               title = "LVF global bias by EHI, for each shape (RT)")
 ```
 
 

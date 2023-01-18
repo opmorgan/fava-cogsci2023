@@ -374,7 +374,7 @@ emmtest_FLS_H <- function(use_cached_model = FALSE,
     pretty_table() |>
     tab_header(title = title,
                subtitle = "Compare effect estimate to zero with emmeans()") |>
-    tab_footnote(footnote = "A positive number means more LVF global bias for right handers",
+    tab_footnote(footnote = "A positive number means the interaction of field by level by handedness is stronger for squares",
                  locations = cells_column_labels(columns = estimate)) |>
     tab_footnote(footnote = "Two-sided",
                  locations = cells_column_labels(columns = p.value)) |>
