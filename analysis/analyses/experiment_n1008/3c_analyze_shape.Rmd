@@ -80,7 +80,7 @@ proc_dir <- here::here("data", "proc_exp_n1008")
 fig_dir <- here::here("figures", "exp_n1008_c")
 manual_cache_dir <- here::here("manual_cache", "exp_n1008_c")
 
-use_cached_models <- F
+use_cached_models <- T
 
 use_cached_figs <- T
 
@@ -761,6 +761,121 @@ emmtest_FL_H_S(use_cached_model = use_cached_models,
 ```
 
 See report 3d for stats on EHI+/-100.
+
+```{r}
+## Thinking about conventionality. If squares are more conventional than circles, we would expect to see a LVF bias for global squares > global circles.
+
+## What is the effect of field by shape, for each level?
+emmtest_FS_L <- function(use_cached_model = FALSE,
+                         manual_cache_dir,
+                         FLSH_model,
+                         data_label,
+                         title = "title") {
+  emmtest_path <-
+    here(manual_cache_dir,
+         str_c("FS_L_emmtest_", data_label, ".rds"))
+  
+  if (use_cached_model == FALSE) {
+    FS_L_emmtest <- FLSH_model |>
+      emmeans(~ field * shape | level) |>
+      contrast(interaction = c("consec")) |>
+      summary(infer = T)
+    
+    ## Cache emm test object
+    cli_progress_step(msg = "Caching emm test object: {emmtest_path}",
+                      msg_done = "Created and cached anova: {emmtest_path}")
+    saveRDS(FS_L_emmtest, emmtest_path)
+  } else if (use_cached_model == TRUE) {
+    ## Load cached emm test
+    cli_progress_step(msg = "Loading emm test object: {emmtest_path}",
+                      msg_done = "Loaded emm test object: {emmtest_path}")
+    FS_L_emmtest <- readRDS(emmtest_path)
+    
+  }
+  
+  FS_L_emmtest |>
+    as_tibble() |>
+    format_p.value() |>
+    pretty_table() |>
+    tab_header(title = title,
+               subtitle = "Compare effect estimate to zero with emmeans()") |>
+    tab_footnote(footnote = "A negative number means LVF bias for squares",
+                 locations = cells_column_labels(columns = estimate)) |>
+    tab_footnote(footnote = "Two-sided",
+                 locations = cells_column_labels(columns = p.value)) |>
+    tab_footnote(footnote = "Confidence level: 95%",
+                 locations = cells_column_labels(columns = ends_with("CL"))) |>
+    tab_footnote(footnote = "Z-approximation",
+                 locations = cells_column_labels(columns = df))
+  
+}
+
+
+emmtest_FS_L(use_cached_model = use_cached_models,
+               manual_cache_dir = manual_cache_dir,
+               FLSH$emm,
+               data_label = data_label,
+               title = "Effect of shape on field, for each level")
+
+```
+
+```{r}
+## What is the effect of field by shape, for each level, for each handedness group?
+
+emmtest_FS_L_H <- function(use_cached_model = FALSE,
+                         manual_cache_dir,
+                         FLSH_model,
+                         data_label,
+                         title = "title") {
+  emmtest_path <-
+    here(manual_cache_dir,
+         str_c("FS_L_H_emmtest_", data_label, ".rds"))
+  
+  if (use_cached_model == FALSE) {
+    FS_L_H_emmtest <- FLSH_model |>
+      emmeans(~ field * shape | level + handedness) |>
+      contrast(interaction = c("consec")) |>
+      summary(infer = T)
+    
+    ## Cache emm test object
+    cli_progress_step(msg = "Caching emm test object: {emmtest_path}",
+                      msg_done = "Created and cached anova: {emmtest_path}")
+    saveRDS(FS_L_H_emmtest, emmtest_path)
+  } else if (use_cached_model == TRUE) {
+    ## Load cached emm test
+    cli_progress_step(msg = "Loading emm test object: {emmtest_path}",
+                      msg_done = "Loaded emm test object: {emmtest_path}")
+    FS_L_H_emmtest <- readRDS(emmtest_path)
+    
+  }
+  
+  FS_L_H_emmtest |>
+    as_tibble() |>
+    format_p.value() |>
+    pretty_table() |>
+    tab_header(title = title,
+               subtitle = "Compare effect estimate to zero with emmeans()") |>
+    tab_footnote(footnote = "A negative number means LVF bias for squares",
+                 locations = cells_column_labels(columns = estimate)) |>
+    tab_footnote(footnote = "Two-sided",
+                 locations = cells_column_labels(columns = p.value)) |>
+    tab_footnote(footnote = "Confidence level: 95%",
+                 locations = cells_column_labels(columns = ends_with("CL"))) |>
+    tab_footnote(footnote = "Z-approximation",
+                 locations = cells_column_labels(columns = df))
+  
+}
+
+
+emmtest_FS_L_H(use_cached_model = use_cached_models,
+               manual_cache_dir = manual_cache_dir,
+               FLSH$emm,
+               data_label = data_label,
+               title = "Effect of shape on field, for each levely level")
+
+```
+
+
 
 
 ### Continuous handedness
