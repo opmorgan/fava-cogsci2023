@@ -193,6 +193,12 @@ Demographics for included participants, by handedness group (EHI bins).
 ```{r}
 hand_demo_summary_table(aah_summary) |> pretty_table() |>
   tab_footnote("Left: (EHI <= -40)  |  Mixed: (-40 < EHI < 40)  |  Right: (EHI >= 40)")
+
+## Save as latex object
+# out_table <- hand_demo_summary_table(aah_summary) |> pretty_table() |>
+#   tab_footnote("Left: (EHI <= -40)  |  Mixed: (-40 < EHI < 40)  |  Right: (EHI >= 40)")
+# here("tables")
+# gt::gtsave(out_table, filename = "table1.tex", path = here("tables"))
 ```
 <br>
 
