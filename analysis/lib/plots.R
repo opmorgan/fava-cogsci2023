@@ -848,7 +848,7 @@ gg_rt_1_ntiles <- function(title = "",
           x = (n_bins / 2) + 0.5,
           y = direction_labels_pos$up,
           hjust = "center",
-          label = "↑ \n LVF Bias" ,
+          label = str_c("↑ \n",  direction_labels$up) ,
           size = 3
         )
     } +
@@ -860,7 +860,7 @@ gg_rt_1_ntiles <- function(title = "",
           x = (n_bins / 2) + 0.5,
           y = direction_labels_pos$down,
           hjust = "center",
-          label = "RVF Bias \n ↓",
+          label = str_c(direction_labels$down, "\n ↓"),
           size = 3
         )
     } +
@@ -870,3 +870,93 @@ gg_rt_1_ntiles <- function(title = "",
   return(g)
 }
 
+gg_rt_1_line <- function(title = "",
+                         y_title = "DV",
+                         rt_subject_plot,
+                         plot_colors,
+                         plot_color = "black",
+                         group_by_level = FALSE,
+                         direction_labels = NULL,
+                         direction_labels_pos = NULL,
+                         ylims = NULL,
+                         ybreaks = NULL) {
+  
+  ## Calculate mean, sem by quantile.
+  summary_data <- rt_subject_plot |>
+    group_by(ehi) |>
+    summarize(
+      # for sanity check
+      mean_dv = mean(dv),
+      median_dv = median(dv),
+      n = n(),
+      sem_dv = sd(dv) / sqrt(n)
+    )
+  
+  
+  #### Function to plot 1-box graph
+  ## Prepare data to annotate first facet
+  data_facet1 <- summary_data
+  
+  ## Make plot
+  g <- ggplot(data = rt_subject_plot, aes(x = ehi, y = dv)) +
+    stat_summary(
+      fun.data = mean_se,
+      geom = "linerange",
+      linetype = 1,
+      color = "gray70",
+      show.legend = F,
+      linewidth = .5
+    ) +
+    geom_point(
+      data = summary_data,
+      aes(y = mean_dv, size = n),
+      fill = plot_color,
+      color = "gray20",
+      shape = 21,
+      show.legend = F
+    ) +
+    geom_hline(yintercept = 0,
+               color = "gray50",
+               linewidth = .5) +
+    # scale_fill_manual(values = h_plot_colors) + ## to color handedness groups
+    # scale_x_discrete(labels = x_labels) +
+    {
+      if (!is.null(ybreaks))
+        scale_y_continuous(
+          breaks = seq(-1000, 1000, ybreaks$major),
+          minor_breaks = seq(-1000 , 1000, ybreaks$minor)
+        )
+    } +
+    {
+      if (!is.null(ylims))
+        coord_cartesian(ylim = c(ylims$lower, ylims$upper))
+    } +
+    {
+      if (!is.null(direction_labels) & !is.null(direction_labels_pos))
+        geom_text(
+          data = data_facet1,
+          color = "gray50",
+          x = 10,
+          y = direction_labels_pos$up,
+          hjust = "center",
+          label = str_c("↑ \n",  direction_labels$up) ,
+          size = 3
+        )
+    } +
+    # {
+    #   if (!is.null(direction_labels) & !is.null(direction_labels_pos))
+    #     geom_text(
+    #       data = data_facet1,
+    #       color = "gray50",
+    #       x = (n_bins / 2) + 0.5,
+    #       y = direction_labels_pos$down,
+    #       hjust = "center",
+    #       label = str_c(direction_labels$down, "\n ↓"),
+    #       size = 3
+    #     )
+  # } +
+  labs(title = title,
+       y = y_title,
+       x = "EHI laterality quotient")
+  return(g)
+}
