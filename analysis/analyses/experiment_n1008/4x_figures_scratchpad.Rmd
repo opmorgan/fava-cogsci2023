@@ -112,7 +112,7 @@ aah <- filter_aah_long_for_analysis(aah_long) |>
                                     ehi == 100 ~ "Right",
                                     ehi > -100 &
                                       ehi < 100 ~ "Mixed")
-  )
+  ) |> rename(shape = target)
 
 ## For RT analyses, prepare dataset with only correct, present trials.
 ## In our RT model, we only care about correct responses to present trials.
@@ -140,466 +140,15 @@ rt_1 <- rt_subject |>
 ```
 
 
-## Scatter plots {.tabset}
-
-### All points
-
-```{r plot_rt_1_cor_dots}
-plot_color = plot_blue
-middle_purple1 <- "#996F91" ## In between plot colors one and two
-middle_purple2 <- "#886e92" ## In between plot colors one and two
-
-h_plot_colors <- c(plot_colors[[1]], middle_purple1, plot_colors[[2]])
-
-fig_path_var <- here(fig_dir, "rt_1_cor_dots.png")
-fig_path_var_wide <- here(fig_dir, "rt_1_cor_dots_wide.png")
-
-if (use_cached_rtfigs == F) {
-  
-  rt_subject_plot <- rt_subject |>
-    pivot_wider(names_from = c(field, level),
-                values_from = rt) |>
-    mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
-    left_join(aah_summary, by = c("subject", "handedness")) |>
-    select(subject, ehi, starts_with("LVF"), handedness, handedness_extremes)
-  
-  g <- gg_rt_1_cor(title = "Global bias asymmetry by EHI",
-              rt_subject_plot = rt_subject_plot,
-              plot_colors = h_plot_colors)
-  
-  
-  ggsave(fig_path_var, g, "png", height = 4, width = 4)
-  ggsave(fig_path_var_wide, g, "png", height = 4, width = 8)
-  
-}
-
-include_graphics(fig_path_var_wide)
-```
-
-```{r plot_rt_2_cor_dots}
-fig_path_var <- here(fig_dir, "rt_2_cor_dots.png")
-
-if (use_cached_rtfigs == F) {
-  
-  rt_subject_plot <- rt_subject |>
-    pivot_wider(names_from = c(field),
-                values_from = rt) |> 
-    mutate(LVF_Bias = RVF - LVF) |> 
-    left_join(aah_summary, by = c("subject", "handedness")) |>
-    select(subject, ehi, level, starts_with("LVF"), handedness, handedness_extremes)
-  
-  g <- gg_rt_2_cor(title = "Hemifield bias for global and local targets, by EHI",
-              rt_subject_plot = rt_subject_plot,
-              plot_colors = h_plot_colors)
-  
-  ggsave(fig_path_var, g, "png", height = 4, width = 8)
-}
-
-include_graphics(fig_path_var)
-```
-
-```{r plot_rt_4_cor_dots}
-fig_path_var <- here(fig_dir, "rt_4_cor_dots.png")
-
-if (use_cached_rtfigs == F) {
-  
-  rt_subject_plot <- rt_subject |>
-    group_by(field, level) |>
-    left_join(aah_summary, by = c("subject", "handedness")) |> 
-    select(subject, ehi, field, level, rt, handedness, handedness_extremes)
-  
-  rt_subject_plot
-  g <- gg_rt_4_cor(title = "Hemifield bias for global and local targets, by EHI",
-              rt_subject_plot = rt_subject_plot,
-              plot_colors = h_plot_colors)
-    
-  
-  ggsave(fig_path_var, g, "png", height = 8, width = 8)
-  
-}
-
-include_graphics(fig_path_var)
-```
-
-
-
-### Summary stats only
-
-```{rplot_rt_cor_bins_config}
-# plot_color = plot_blue
-middle_purple1 <- "#996F91" ## In between plot colors one and two
-middle_purple2 <- "#886e92" ## In between plot colors one and two
-plot_color <- middle_purple1
-
-h_plot_colors <- c(plot_colors[[1]], middle_purple1, plot_colors[[2]])
-```
-
-
-```{r plot_rt_1_cor_bins}
-fig_path_var <- here(fig_dir, "rt_1_cor_bins.png")
-fig_path_var_wide <- here(fig_dir, "rt_1_cor_bins.png")
-
-rt_subject_plot <- rt_subject |>
-  pivot_wider(names_from = c(field, level),
-              values_from = rt) |>
-  mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
-  left_join(aah_summary, by = c("subject", "handedness")) |>
-  select(subject, ehi, starts_with("LVF"), handedness, handedness_extremes) |> 
-  ## Set "dv" here to make it easy to write a reusable function
-  mutate(dv = LVF_Global_Bias) |> 
-  ungroup()
-
-title = "Global bias asymmetry by EHI"
-y_title = "RVF - LVF, Local - Global reaction time (ms)"
-rt_subject_plot = rt_subject_plot
-n_bins = 17
-plot_colors = h_plot_colors
-plot_color = plot_color
-  
-if (use_cached_rtfigs == F) {
-  
-  g <-
-    gg_rt_1_ntiles(
-      title = "Global bias asymmetry by handedness (continuous)",
-      y_title = "RVF - LVF, Local - Global reaction time (ms)",
-      rt_subject_plot = rt_subject_plot,
-      n_bins = 17,
-      plot_colors = h_plot_colors,
-      plot_color = plot_color,
-      direction_labels = list(
-        up = "LVF Global Bias",
-        down = "RVF Global bias"),
-      direction_labels_pos = list(
-        up = 45,
-        down = -35),
-      ylims = list(
-        upper = 50,
-        lower = -40),
-      ybreaks = list(
-        major = 20,
-        minor = 10)
-    ) |>
-    gg_style_cor_bin() +
-    ## Manually override tick mark labels (for 17-bin graph)
-    scale_x_discrete(
-      labels = c(
-        "-100", "", "-75", "",
-        "- 50", "", "-25", "",
-        "0", "",
-        "25", "", "50", "",
-        "75", "", "100", "")
-    )
-  
-  ggsave(fig_path_var, g, "png", height = 4, width = 4)
-  ggsave(fig_path_var_wide, g, "png", height = 4, width = 8)
-  
-}
-
-include_graphics(fig_path_var_wide)
-```
-
-
-```{r plot_rt_1_cor_bins_line}
-## Start over, with numeric y axis
-## Add a line with CI from the model
-fig_path_var <- here(fig_dir, "rt_1_cor_bins_line.png")
-fig_path_var_wide <- here(fig_dir, "rt_1_cor_bins_line.png")
-
-
-## Extract line of best fit, confidence bounds from model.
-model_cache_dir <- here("manual_cache", "exp_n1008_b")
-rt_model_ehi <- readRDS(here(model_cache_dir, "rt_model_ehi.rds"))
-ref <- ref_grid(rt_model_ehi, at = list(ehi = seq(-100, 100, 12.5)))
-line_data <- ref |> contrast(interaction = c("consec"), by = "ehi", level = .90) |>
-  summary(infer = T) |>
-  as_tibble()
-
-rt_subject_plot <- rt_subject |>
-  pivot_wider(names_from = c(field, level),
-              values_from = rt) |>
-  mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
-  left_join(aah_summary, by = c("subject", "handedness")) |>
-  select(subject, ehi, starts_with("LVF"), handedness, handedness_extremes) |>
-  ## Set "dv" here to make it easy to write a reusable function
-  mutate(dv = LVF_Global_Bias) |>
-  ungroup()
-
-
-if (use_cached_rtfigs == F) {
-  
-  g <-
-    gg_rt_1_line(
-      title = "Frequency specialization by handedness (continuous)",
-      y_title = "RVF - LVF, Local - Global reaction time (ms)",
-      rt_subject_plot = rt_subject_plot,
-      plot_colors = h_plot_colors,
-      plot_color = plot_color,
-      direction_labels = list(
-        up = "LVF Global Bias",
-        down = "RVF Global bias"),
-      direction_labels_pos = list(
-        up = 45,
-        down = -15),
-      ylims = list(
-        upper = 46,
-        lower = -30),
-      ybreaks = list(
-        major = 10,
-        minor = 5)
-    ) |>
-    gg_style_cor_bin()
-  
-  g <- g +
-  geom_line(data = line_data,
-            aes(y = estimate)) +
-    geom_ribbon(data = line_data,
-                inherit.aes = F,
-              aes(x = ehi, ymin = asymp.LCL, ymax = asymp.UCL),
-              fill = plot_color,
-              alpha = .2)
-  
-  ggsave(fig_path_var, g, "png", height = 4, width = 4)
-  ggsave(fig_path_var_wide, g, "png", height = 4, width = 8)
-  
-}
-```
-
-
-```{r plot_cor_bins_line_shapes_only}
-### Make a correlation plot for shapes only
-
-## Start over, with numeric y axis
-## Add a line with CI from the model
-fig_path_var <- here(fig_dir, "rt_1_cor_bins_line_squares.png")
-fig_path_var_wide <- here(fig_dir, "rt_1_cor_bins_line_squares.png")
-
-
-## Extract line of best fit, confidence bounds from model.
-squares_data <- aah_for_rt_model |> filter(target == "Square")
-  
-if (use_cached_models == FALSE) {
-  rt_model_ehi <- lme4::lmer(rt ~ field*level*ehi + (1|subject), data = squares_data)
-  ## Create emmeans model object, and manually cache it.
-  rt_emm_ehi <- emmeans(rt_model_ehi, ~ field * level * ehi)
-  
-  ## Manually cache model
-  saveRDS(rt_model_ehi, here(manual_cache_dir, "rt_model_ehi_squares.rds"))
-  saveRDS(rt_emm_ehi, here(manual_cache_dir, "rt_emm_ehi_squares.rds"))
-  
-} else if (use_cached_models == TRUE) {
-  ## Load cached model
-  rt_model_ehi <- readRDS(here(manual_cache_dir, "rt_model_ehi_squares.rds"))
-  rt_emm_ehi <- readRDS(here(manual_cache_dir, "rt_emm_ehi_squares.rds"))
-}
-
-
-
-
-ref <- ref_grid(rt_model_ehi, at = list(ehi = seq(-100, 100, 12.5)))
-line_data <- ref |> contrast(interaction = c("consec"), by = "ehi", level = .90) |>
-  summary(infer = T) |>
-  as_tibble()
-
-
-
-
-rt_subject_plot_squares <-  aah_correct |>
-  filter(target == "Square") |> 
-  group_by(subject, field, level, handedness) |>
-  summarize(rt = median(rt)) |> 
-  pivot_wider(names_from = c(field, level),
-              values_from = rt) |>
-  mutate(LVF_Global_Bias = (RVF_Global - RVF_Local) - (LVF_Global - LVF_Local)) |>
-  left_join(aah_summary, by = c("subject", "handedness")) |>
-  select(subject, ehi, starts_with("LVF"), handedness, handedness_extremes) |>
-  ## Set "dv" here to make it easy to write a reusable function
-  mutate(dv = LVF_Global_Bias) |>
-  ungroup()
-
-
-if (use_cached_rtfigs == F) {
-  
-  g <-
-    gg_rt_1_line(
-      title = "Frequency specialization by handedness (continuous), squares only",
-      y_title = "RVF - LVF, Local - Global reaction time (ms)",
-      rt_subject_plot = rt_subject_plot_squares,
-      plot_colors = h_plot_colors,
-      plot_color = plot_color,
-      direction_labels = list(
-        up = "LVF Global Bias",
-        down = "RVF Global bias"),
-      direction_labels_pos = list(
-        up = 70,
-        down = -15),
-      ylims = list(
-        upper = 70,
-        lower = -35),
-      ybreaks = list(
-        major = 10,
-        minor = 5)
-    ) |>
-    gg_style_cor_bin()
-  
-  g <- g +
-  geom_line(data = line_data,
-            aes(y = estimate)) +
-    geom_ribbon(data = line_data,
-                inherit.aes = F,
-              aes(x = ehi, ymin = asymp.LCL, ymax = asymp.UCL),
-              fill = plot_color,
-              alpha = .2)
-  g
-  ggsave(fig_path_var, g, "png", height = 4, width = 4)
-  ggsave(fig_path_var_wide, g, "png", height = 4, width = 8)
-  
-}
-g
-```
-
-
-
-```{r save_plot_rt_1_cor_nbins}
-## Save plots for many bin sizes (means)
-for (j in 5:17) {
-fig_path_var <- here(fig_dir, "nbins", str_c("rt_1_cor_", j, "bins.png"))
-  g <-
-    gg_rt_1_ntiles(
-      title = "Global bias asymmetry by EHI",
-      y_title = "RVF - LVF, Local - Global reaction time (ms)",
-      rt_subject_plot = rt_subject_plot,
-      n_bins = j,
-      plot_colors = h_plot_colors,
-      plot_color = plot_color,
-      # direction_labels = list(
-      #   up = "LVF Global Bias",
-      #   down = "RVF Global bias"),
-      # direction_labels_pos = list(
-      #   up = 27,
-      #   down = -7),
-      # ylims = list(
-      #   upper = 30,
-      #   lower = -10),
-      # ybreaks = list(
-      #   major = 20,
-      #   minor = 10)
-    ) |>
-    gg_style_cor_bin()
-
-ggsave(fig_path_var, g, "png", height = 4, width = 4)
-}
-```
-
-```{r save_plot_rt_1_cor_nbins_medians}
-#### TEMP
-## Save plots for many bin sizes (medians)
-# for (j in 5:17) {
-# fig_path_var <- here(fig_dir, "nbins", "medians", str_c("rt_1_cor_", j, "bins_medians.png"))
-#   g <-
-#     gg_rt_1_ntiles(
-#       title = "Global bias asymmetry by EHI",
-#       y_title = "RVF - LVF, Local - Global reaction time (ms)",
-#       rt_subject_plot = rt_subject_plot,
-#       n_bins = j,
-#       plot_colors = h_plot_colors,
-#       plot_color = plot_color,
-#       # direction_labels = list(
-#       #   up = "LVF Global Bias",
-#       #   down = "RVF Global bias"),
-#       # direction_labels_pos = list(
-#       #   up = 27,
-#       #   down = -7),
-#       # ylims = list(
-#       #   upper = 30,
-#       #   lower = -10),
-#       # ybreaks = list(
-#       #   major = 20,
-#       #   minor = 10)
-#     ) |>
-#     gg_style_cor_bin()
-# 
-# ggsave(fig_path_var, g, "png", height = 4, width = 4)
-# }
-```
-
-```{r plot_rt_2_cor_bins}
-fig_path_var <- here(fig_dir, "rt_2_cor_bins.png")
-
-
-rt_subject_plot <- rt_subject |>
-  pivot_wider(names_from = c(field),
-              values_from = rt) |>
-   mutate(LVF_Bias = RVF - LVF) |> 
-  left_join(aah_summary, by = c("subject", "handedness")) |>
-  select(subject, ehi, starts_with("LVF"), handedness, handedness_extremes) |> 
-  ## Set "dv" here to make it easy to write a reusable function
-  mutate(dv = LVF_Bias) |> 
-  ungroup()
-
-title = "Global bias asymmetry by EHI"
-y_title = "RVF - LVF, Local - Global reaction time (ms)"
-rt_subject_plot = rt_subject_plot
-n_bins = 17
-plot_colors = h_plot_colors
-plot_color = plot_color
-  
-if (use_cached_rtfigs == F) {
-  
-  g <-
-    gg_rt_1_ntiles(
-      title = "Hemifield bias for global and local targets, by EHI",
-      y_title = "Difference in reaction time between LVF and RVF",
-      rt_subject_plot = rt_subject_plot,
-      n_bins = 17,
-      plot_colors = h_plot_colors,
-      plot_color = plot_color,
-      group_by_level = T, ## Hack to quickly make 2-box plot
-      direction_labels = list(
-        up = "LVF Global Bias",
-        down = "RVF Global bias"),
-      direction_labels_pos = list(
-        up = 45,
-        down = -35),
-      ylims = list(
-        upper = 50,
-        lower = -40),
-      ybreaks = list(
-        major = 20,
-        minor = 10)
-    ) |>
-    gg_style_cor_bin() +
-    ## Manually override tick mark labels (for 17-bin graph)
-    scale_x_discrete(
-      labels = c(
-        "-100", "", "-75", "",
-        "- 50", "", "-25", "",
-        "0", "",
-        "25", "", "50", "",
-        "75", "", "100", "")
-    ) + 
-    ## Add level to make 2-box plot
-    facet_grid(cols = vars(level)) +
-    scale_y_continuous(
-      expand = expansion(mult = c(.025, .025))
-    )
-  
-  ggsave(fig_path_var, g, "png", height = 4, width = 4)
-  
-}
-
-include_graphics(fig_path_var)
-```
-
-
-
-
 ## Smaller categorical plots
 ```{r plot_cat_model}
 ## Start over, with numeric y axis
 ## Add a line with CI from the model
 fig_path_var <- here(fig_dir, "rt_1_lmer.png")
-fig_path_var_wide <- here(fig_dir, "rt_1_lmer.png")
+fig_path_var_wide <- here(fig_dir, "rt_1_lmer_wide.png")
 
+
+model_cache_dir <- here("manual_cache", "exp_n1008_b")
 rt_emm <- readRDS(here(model_cache_dir, "rt_emm_2bins.rds"))
 
 ## Get estimates for right and left handers.
@@ -636,22 +185,27 @@ g <- gg_rt_2_lmer(
   )
 )
 
-ggsave(fig_path_var, g, "png", height = 4, width = 4)
+ggsave(fig_path_var, g, "png", height = 3, width = 4)
+ggsave(fig_path_var_wide, g, "png", height = 3, width = 6)
 
 include_graphics(fig_path_var)
 ```
+```{r}
+
+# include_graphics(fig_path_var_wide)
+```
+
 
 ```{r plot_cat_model_zoom}
-## Categorical plots: EHI extremes
-## Start over, with numeric y axis
-## Add a line with CI from the model
+# Categorical plots: EHI extremes
+# Start over, with numeric y axis
+# Add a line with CI from the model
 fig_path_var <- here(fig_dir, "rt_1_lmer_zoom.png")
-fig_path_var_wide <- here(fig_dir, "rt_1_lmer_zoom.png")
+fig_path_var_wide <- here(fig_dir, "rt_1_lmer_zoom_wide.png")
 
 rt_emm <- readRDS(here(model_cache_dir, "rt_emm_2bins.rds"))
 
 ## Get estimates for right and left handers.
-aah_correct |> colnames()
 zoom_squares_data <- aah_for_rt_model |>
   filter(handedness_extremes %in% c("Right", "Left"))
 
@@ -674,7 +228,6 @@ emm_data_2 <- rt_emm |>
 
 
 plot_data <- emm_data_2 |> mutate(dv = estimate)
-plot_data
 
 g <- gg_rt_2_lmer(
   title = "Hemifield bias by level (EHI +/-100)",
@@ -695,7 +248,7 @@ g <- gg_rt_2_lmer(
   )
 )
 
-ggsave(fig_path_var, g, "png", height = 4, width = 4)
+ggsave(fig_path_var, g, "png", height = 3, width = 4)
 
 include_graphics(fig_path_var)
 ```
@@ -705,12 +258,11 @@ include_graphics(fig_path_var)
 ## Start over, with numeric y axis
 ## Add a line with CI from the model
 fig_path_var <- here(fig_dir, "rt_1_lmer_zoom_squares.png")
-fig_path_var_wide <- here(fig_dir, "rt_1_lmer_zoom_squares.png")
+fig_path_var_wide <- here(fig_dir, "rt_1_lmer_zoom_squares_wide.png")
 
 rt_emm <- readRDS(here(model_cache_dir, "rt_emm_2bins.rds"))
 
 ## Get estimates for right and left handers.
-aah_correct |> colnames()
 zoom_squares_data <- aah_for_rt_model |>
   filter(handedness_extremes %in% c("Right", "Left")) |> 
   filter(shape == "Square")
@@ -734,17 +286,16 @@ emm_data_2 <- rt_emm |>
 
 
 plot_data <- emm_data_2 |> mutate(dv = estimate)
-plot_data
 
 g <- gg_rt_2_lmer(
-  title = "Hemifield bias by level, squares only (EHI +/-100)",
+  title = "Hemifield bias, squares only (EHI +/-100)",
   plot_data,
   handedness_labeller = NULL,
   plot_colors = plot_colors,
   direction_labels = list(up = "LVF bias",
                           down = "RVF bias"),
   direction_labels_pos = list(up = 38,
-                              down = -38),
+                              down = -40),
   ylims = list(upper = 38,
                lower = -38),
   ybreaks = list(major = 10,

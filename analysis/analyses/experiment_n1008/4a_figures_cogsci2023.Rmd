@@ -544,10 +544,9 @@ g <- gg_rt_2_lmer(
   )
 )
 
-ggsave(fig_path_var, g, "png", height = 4, width = 4)
-ggsave(fig_path_var_wide, g, "png", height = 4, width = 8)
+ggsave(fig_path_var, g, "png", height = 3, width = 4)
 
-include_graphics(fig_path_var_wide)
+include_graphics(fig_path_var)
 ```
 <br>
 ```{r plot_cat_model_zoom}
@@ -602,11 +601,11 @@ g <- gg_rt_2_lmer(
   )
 )
 
-ggsave(fig_path_var, g, "png", height = 4, width = 4)
-ggsave(fig_path_var_wide, g, "png", height = 4, width = 8)
+ggsave(fig_path_var, g, "png", height = 3, width = 4)
 
-include_graphics(fig_path_var_wide)
+include_graphics(fig_path_var)
 ```
+
 <br>
 ```{r plot_cat_model_squares}
 ## Categorical plots: EHI extremes
@@ -661,10 +660,9 @@ g <- gg_rt_2_lmer(
   )
 )
 
-ggsave(fig_path_var, g, "png", height = 4, width = 4)
-ggsave(fig_path_var_wide, g, "png", height = 4, width = 8)
+ggsave(fig_path_var, g, "png", height = 3, width = 4)
 
-include_graphics(fig_path_var_wide)
+include_graphics(fig_path_var)
 ```
 <br>
 ```{r plot_cat_model_zoom_squares}
@@ -709,7 +707,7 @@ g <- gg_rt_2_lmer(
   direction_labels = list(up = "LVF bias",
                           down = "RVF bias"),
   direction_labels_pos = list(up = 38,
-                              down = -38),
+                              down = -40),
   ylims = list(upper = 38,
                lower = -38),
   ybreaks = list(major = 10,
@@ -720,10 +718,9 @@ g <- gg_rt_2_lmer(
   )
 )
 
-ggsave(fig_path_var, g, "png", height = 4, width = 4)
-ggsave(fig_path_var_wide, g, "png", height = 4, width = 8)
+ggsave(fig_path_var, g, "png", height = 3, width = 4)
 
-include_graphics(fig_path_var_wide)
+include_graphics(fig_path_var)
 ```
 <br>
 

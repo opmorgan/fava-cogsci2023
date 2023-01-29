@@ -1062,7 +1062,7 @@ gg_rt_2_lmer <- function(title,
   g <- g |>
     gg_style() +
     theme(
-      aspect.ratio = 1 / 2,
+      aspect.ratio = 1 / 4,
       plot.title = element_text(hjust = 0.5),
       axis.title.x = element_text(margin = margin(t = 8, unit = "pt")),
       # axis.text.y = element_text(angle = 90, vjust = 0.0, hjust = 0.5),
