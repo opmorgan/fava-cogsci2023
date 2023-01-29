@@ -960,3 +960,124 @@ gg_rt_1_line <- function(title = "",
        x = "EHI laterality quotient")
   return(g)
 }
+
+gg_rt_2_lmer <- function(title,
+                         plot_data,
+                         plot_colors,
+                         handedness_labeller = NULL,
+                         direction_labels = NULL,
+                         direction_labels_pos = NULL,
+                         ylims = NULL,
+                         ybreaks = NULL,
+                         n_subjects = list(
+                           right = NA,
+                           left = NA
+                         )) {
+  ## LVF blias by level for each group, witih 95%CI
+  plot_proc <- plot_data |>
+    mutate(handedness = factor(handedness, levels = c("Right", "Left"))) |>
+    mutate(level = factor(level, levels = c("Local", "Global")))
+  
+  ## make default handedness labeller
+  if (is.null(handedness_labeller)) {
+    # n_subjects <- rt_subject_plot_proc |> group_by(handedness) |> summarize(n = n_distinct(subject))
+    handedness_labeller <- c(
+      Right = str_c("Right handed \n (n = ", n_subjects$right, ")"),
+      Left = str_c("Left handed \n (n = ", n_subjects$left, ")")
+    )
+  }
+
+  ## Prepare data to annotate first facet
+  data_facet1 <- plot_data |>
+    filter(handedness == "Right")
+
+
+  g <- ggplot(
+    plot_proc,
+    aes(
+      x = level,
+      y = estimate,
+      fill = handedness,
+      color = handedness
+  )) +
+    # geom_line(aes(group = handedness), show.legend = F) +
+    geom_hline(yintercept = 0, color = "gray50", linewidth = .5) +
+    geom_linerange(
+      aes(ymin = asymp.LCL, ymax = asymp.UCL),
+      color = "gray30",
+      position = position_dodge(1),
+      linewidth = .5
+    ) +
+      geom_point(
+      color = "black",
+      shape = 23,
+      show.legend = F,
+      size = 4,
+      position = position_dodge(1)
+    )  +
+    facet_wrap(~ handedness, nrow = 2, strip.position = "left",
+               labeller = labeller(handedness = handedness_labeller)) +
+    {
+      if (!is.null(ybreaks))
+        scale_y_reverse(
+          breaks = seq(-1000, 1000, ybreaks$major),
+          minor_breaks = seq(-1000 , 1000, ybreaks$minor)
+        )
+    } +
+    {
+      if (!is.null(ylims))
+        coord_flip(ylim = c(ylims$lower, ylims$upper))
+    } +
+    {
+      if (!is.null(direction_labels) & !is.null(direction_labels_pos))
+        geom_text(
+          data = data_facet1,
+          color = "gray50",
+          x = 1.5,
+          y = direction_labels_pos$up,
+          hjust = "left",
+          label = str_c("⟵  \n",  direction_labels$up) ,
+          size = 3
+        )
+    } +
+    {
+      if (!is.null(direction_labels) & !is.null(direction_labels_pos))
+        geom_text(
+          data = data_facet1,
+          color = "gray50",
+          x = 1.5,
+          y = direction_labels_pos$down,
+          hjust = "right",
+          label = str_c("⟶ \n",  direction_labels$down),
+          size = 3
+        )
+    } +
+    scale_fill_manual(values = plot_colors[c(2, 1)]) +
+    scale_color_manual(values = plot_colors[c(2, 1)]) +
+    labs(title = title,
+         x = "",
+         # y = "Hemifield bias: RVF - LVF reaction time (ms)")
+         y = "Difference in RT between LVF and RVF (ms)")
+  
+  g <- g |>
+    gg_style() +
+    theme(
+      aspect.ratio = 1 / 2,
+      plot.title = element_text(hjust = 0.5),
+      axis.title.x = element_text(margin = margin(t = 8, unit = "pt")),
+      # axis.text.y = element_text(angle = 90, vjust = 0.0, hjust = 0.5),
+      # strip.background = element_blank(),
+      # strip.text.y.left = element_text(angle = 0),
+      # strip.text.y.right = element_text(angle = 0),
+      strip.background = element_rect(fill = "gray99", color = "gray50"),
+      # strip.background = element_part_rect(side = "r", fill = "gray98", color = "gray50"),
+      strip.placement = "outside",
+      panel.grid.minor = element_line(color = "gray92", linewidth = .2),
+      panel.grid.major.y = element_line(color = "gray92", linewidth = .4),
+      panel.grid.major.x = element_line(color = "gray92", linewidth = .2),
+      panel.border = element_rect(fill = NA, color = "gray50"),
+      ggh4x.facet.nestline = element_line(color = "gray50")
+    )
+
+    return(g)
+}
