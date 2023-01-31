@@ -1,6 +1,5 @@
 ---
 title: "Action Asymmetry Hypothesis (n = 1008): Process and test raw data"
-author: "Owen Morgan"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output:
   html_document:

@@ -1,7 +1,6 @@
 ---
 title: "Action Asymmetry Pilot: Analyses"
 pagetitle: "aah | pilot | analysis"
-author: "Owen Morgan"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: html_document
 ---

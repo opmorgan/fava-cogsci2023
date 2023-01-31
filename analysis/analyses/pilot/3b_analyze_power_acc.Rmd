@@ -1,7 +1,6 @@
 ---
 title: "Power analysis for preregistration: Accuracy"
 pagetitle: "aah | pilot | power (acc)"
-author: "Owen Morgan"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: html_document
 ---

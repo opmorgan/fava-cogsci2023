@@ -1,7 +1,6 @@
 ---
 title: "Action Asymmetry Experiment (n = 1008): Shape Analyses (EHI +/-100 only)"
 pagetitle: "aah | exp | analysis (shape)"
-author: "Owen Morgan"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: html_document
 ---

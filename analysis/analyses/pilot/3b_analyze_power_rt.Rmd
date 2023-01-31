@@ -1,7 +1,6 @@
 ---
 title: "Power analysis for preregistration (Reaction time)"
 pagetitle: "aah | pilot | power (rt)"
-author: "Owen Morgan"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: html_document
 ---
