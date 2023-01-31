@@ -750,7 +750,7 @@ fig_path_var_wide <- here(fig_dir, "rt_1_cor_bins_line.png")
 model_cache_dir <- here("manual_cache", "exp_n1008_b")
 rt_model_ehi <- readRDS(here(model_cache_dir, "rt_model_ehi.rds"))
 ref <- ref_grid(rt_model_ehi, at = list(ehi = seq(-100, 100, 12.5)))
-line_data <- ref |> contrast(interaction = c("consec"), by = "ehi", level = .90) |>
+line_data <- ref |> contrast(interaction = c("consec"), by = "ehi", level = .95) |>
   summary(infer = T) |>
   as_tibble()
 
@@ -836,7 +836,7 @@ if (use_cached_models == FALSE) {
 
 
 ref <- ref_grid(rt_model_ehi, at = list(ehi = seq(-100, 100, 12.5)))
-line_data <- ref |> contrast(interaction = c("consec"), by = "ehi", level = .90) |>
+line_data <- ref |> contrast(interaction = c("consec"), by = "ehi", level = .95) |>
   summary(infer = T) |>
   as_tibble()
 
