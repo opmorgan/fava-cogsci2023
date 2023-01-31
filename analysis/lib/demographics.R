@@ -48,6 +48,20 @@ demo_table <- aah_summary |>
 return(demo_table)
 }
 
+hand_extremes_demo_summary_table <- function(aah_summary) {
+demo_table <- aah_summary |>
+  group_by(handedness_extremes) |> 
+  summarize(
+            N = n(),
+            `Age (years)` = report_mean_sd(age),
+            `Education (years)`= report_mean_sd(education),
+            `Sex (M/F/O)` = report_sex(sex),
+            EHI = report_mean_sd(ehi)
+  ) |> 
+  rename(Handedness = handedness_extremes)
+return(demo_table)
+}
+
 sample_demo_summary_table <- function(aah_summary) {
 demo_table <- aah_summary |>
   group_by(sample) |> 
