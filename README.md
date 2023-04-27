@@ -1,4 +1,4 @@
-This repo contains data and analysis code for the anonymous CogSci 2023 conference submission, "Frequency asymmetries in vision and action."
+This repo contains data and analysis code for the 45th Annual Conference of the Cognitive Science Society paper, "Frequency asymmetries in vision and action."
 
 # Experiment script and stimuli
 The folder "inquisit_task" contains experiment scripts. Because of Inquisit Web's design, all scripts and resources are in the same, top-level directory, organized with filename prefixes.
@@ -13,11 +13,11 @@ The heirarchical shape stimuli and mask have the prefix "stimuli_". These svg fi
 Files with the prefixes "resources_" and "inst_" contain images and html shown as instructions, used in scripts. 'style.css" contains css to style these instructions.
 
 ## Consent
-The consent form is the file "consent.html." In this anonymous submission, identifying language in the consent form has been censored.
+The consent form is the file "consent.html."
 
 # Data and analysis code
 
-Data, analysis code, and output (figures, tables, and html reports) are in the analysis/ directory. Analysis scripts are found in analysis/analyses/. The folder analyses/lib/ contains supporting functions used by analysis scripts. analysis/figures/ contains figures, and analysis/tables contains generated .tex tables. analysis/manual_cache is used to cache models and other objects that take a while to create.Raw, intermediate, and processed data are found in analyses/data/.
+Data, analysis code, and output (figures, tables, and html reports) are in the analysis/ directory. Analysis scripts are found in analysis/analyses/. The folder analyses/lib/ contains supporting functions used by analysis scripts. analysis/figures/ contains figures, and analysis/tables contains generated .tex tables. analysis/manual_cache is used to cache models and other objects that take a while to create. Raw, intermediate, and processed data are found in analyses/data/.
 
 An additional copy of "the data" (the preprocessed data for every participant with at least one full experimental run) is available in the data/ directory. data/aah_long.tsv includes task data, with a row for every trial. data/aah_summary.tsv includes demographic and summary data, with a row for every subject.
 
