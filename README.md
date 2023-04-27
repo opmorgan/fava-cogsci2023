@@ -1,5 +1,7 @@
 This repo contains data and analysis code for the 45th Annual Conference of the Cognitive Science Society paper, "Frequency asymmetries in vision and action."
 
+Preregistration: https://aspredicted.org/yc8g2.pdf
+
 # Experiment script and stimuli
 The folder "inquisit_task" contains experiment scripts. Because of Inquisit Web's design, all scripts and resources are in the same, top-level directory, organized with filename prefixes.
 
